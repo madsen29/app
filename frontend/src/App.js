@@ -124,33 +124,96 @@ function App() {
     <div className="step-container">
       <h2 className="step-title">Step 1: Configuration</h2>
       <form onSubmit={handleConfigurationSubmit} className="config-form">
-        <div className="form-group">
-          <label htmlFor="itemsPerCase">Items per Case:</label>
-          <input
-            type="number"
-            id="itemsPerCase"
-            min="1"
-            max="100"
-            value={configuration.itemsPerCase}
-            onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
-            required
-          />
+        <div className="form-grid">
+          <div className="form-group">
+            <label htmlFor="itemsPerCase">Items per Case:</label>
+            <input
+              type="number"
+              id="itemsPerCase"
+              min="1"
+              max="100"
+              value={configuration.itemsPerCase}
+              onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="numberOfCases">Number of Cases:</label>
+            <input
+              type="number"
+              id="numberOfCases"
+              min="1"
+              max="50"
+              value={configuration.numberOfCases}
+              onChange={(e) => setConfiguration({...configuration, numberOfCases: parseInt(e.target.value)})}
+              required
+            />
+          </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="numberOfCases">Number of Cases:</label>
-          <input
-            type="number"
-            id="numberOfCases"
-            min="1"
-            max="50"
-            value={configuration.numberOfCases}
-            onChange={(e) => setConfiguration({...configuration, numberOfCases: parseInt(e.target.value)})}
-            required
-          />
+        
+        <div className="gs1-section">
+          <h3>GS1 Identifier Configuration</h3>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="companyPrefix">Company Prefix:</label>
+              <input
+                type="text"
+                id="companyPrefix"
+                value={configuration.companyPrefix}
+                onChange={(e) => setConfiguration({...configuration, companyPrefix: e.target.value})}
+                placeholder="e.g., 1234567"
+                required
+              />
+              <small className="form-hint">Your GS1 Company Prefix (usually 7-12 digits)</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="productCode">Product Code:</label>
+              <input
+                type="text"
+                id="productCode"
+                value={configuration.productCode}
+                onChange={(e) => setConfiguration({...configuration, productCode: e.target.value})}
+                placeholder="e.g., 000000"
+                required
+              />
+              <small className="form-hint">Item reference for SGTIN generation</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="caseIndicatorDigit">Case Indicator Digit:</label>
+              <input
+                type="text"
+                id="caseIndicatorDigit"
+                maxLength="1"
+                value={configuration.caseIndicatorDigit}
+                onChange={(e) => setConfiguration({...configuration, caseIndicatorDigit: e.target.value})}
+                placeholder="0"
+                required
+              />
+              <small className="form-hint">Single digit (0-9) for SSCC generation</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="itemIndicatorDigit">Item Indicator Digit:</label>
+              <input
+                type="text"
+                id="itemIndicatorDigit"
+                maxLength="1"
+                value={configuration.itemIndicatorDigit}
+                onChange={(e) => setConfiguration({...configuration, itemIndicatorDigit: e.target.value})}
+                placeholder="0"
+                required
+              />
+              <small className="form-hint">Single digit (0-9) for SGTIN generation</small>
+            </div>
+          </div>
         </div>
+        
         <div className="summary">
-          <p>Total Items: {configuration.itemsPerCase * configuration.numberOfCases}</p>
+          <h4>Summary</h4>
+          <p><strong>Total Items:</strong> {configuration.itemsPerCase * configuration.numberOfCases}</p>
+          <p><strong>Example SSCC:</strong> urn:epc:id:sscc:{configuration.companyPrefix}.{configuration.caseIndicatorDigit}[case_serial]</p>
+          <p><strong>Example SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.productCode}.[item_serial]</p>
         </div>
+        
         <button type="submit" disabled={isLoading} className="btn-primary">
           {isLoading ? 'Saving...' : 'Save Configuration'}
         </button>
