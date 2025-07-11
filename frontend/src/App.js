@@ -70,7 +70,9 @@ function App() {
     setError('');
     
     // Validate all serial numbers are filled
-    if (caseSerials.some(serial => !serial.trim()) || itemSerials.some(serial => !serial.trim())) {
+    if (ssccSerials.some(serial => !serial.trim()) || 
+        caseSerials.some(serial => !serial.trim()) || 
+        itemSerials.some(serial => !serial.trim())) {
       setError('All serial numbers must be filled');
       setIsLoading(false);
       return;
@@ -79,6 +81,7 @@ function App() {
     try {
       await axios.post(`${API}/serial-numbers`, {
         configuration_id: configurationId,
+        sscc_serial_numbers: ssccSerials,
         case_serial_numbers: caseSerials,
         item_serial_numbers: itemSerials
       });
