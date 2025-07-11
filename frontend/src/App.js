@@ -314,7 +314,10 @@ function App() {
           <h4>EPCIS File Details</h4>
           <p>The generated file will contain GS1 compliant EPCIS XML with aggregation events for pharmaceutical serialization.</p>
           <ul>
-            <li>Company Prefix: 1234567</li>
+            <li>Company Prefix: {configuration.companyPrefix}</li>
+            <li>Product Code: {configuration.productCode}</li>
+            <li>Case Indicator: {configuration.caseIndicatorDigit}</li>
+            <li>Item Indicator: {configuration.itemIndicatorDigit}</li>
             <li>Format: EPCIS 2.0 Standard</li>
             <li>Event Type: Aggregation Events</li>
             <li>Business Step: Packing</li>
