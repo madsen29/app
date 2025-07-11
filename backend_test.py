@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for EPCIS Serial Number Aggregation App
-Tests the three main backend endpoints:
-1. POST /api/configuration
-2. POST /api/serial-numbers  
-3. POST /api/generate-epcis
+Backend API Testing for EPCIS Serial Number Aggregation App - RESTRUCTURED VERSION
+Tests the three main backend endpoints with new GS1 EPCIS hierarchy:
+1. POST /api/configuration (with SSCC→Cases→Items structure)
+2. POST /api/serial-numbers (with SSCC, case, and item serial numbers)
+3. POST /api/generate-epcis (EPCIS 1.2 with commissioning + aggregation events)
 """
 
 import requests
@@ -58,12 +58,16 @@ class BackendTester:
             return False
     
     def test_configuration_creation(self):
-        """Test POST /api/configuration with valid data including GS1 parameters"""
+        """Test POST /api/configuration with new GS1 EPCIS hierarchy structure"""
+        # Test scenario: 10 items per case, 5 cases per SSCC, 2 SSCCs
         test_data = {
             "items_per_case": 10,
-            "number_of_cases": 5,
+            "cases_per_sscc": 5,
+            "number_of_sscc": 2,
             "company_prefix": "9876543",
-            "product_code": "123456",
+            "item_product_code": "123456",
+            "case_product_code": "789012",
+            "sscc_indicator_digit": "3",
             "case_indicator_digit": "2",
             "item_indicator_digit": "1"
         }
