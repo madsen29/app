@@ -31,11 +31,19 @@ class SerialConfiguration(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     items_per_case: int
     number_of_cases: int
+    company_prefix: str
+    product_code: str
+    case_indicator_digit: str
+    item_indicator_digit: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class SerialConfigurationCreate(BaseModel):
     items_per_case: int
     number_of_cases: int
+    company_prefix: str
+    product_code: str
+    case_indicator_digit: str
+    item_indicator_digit: str
 
 class SerialNumbers(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
