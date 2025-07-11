@@ -165,6 +165,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Created step 1 form for inputting items per case and number of cases"
+      - working: "NA"
+        agent: "main"
+        comment: "Enhanced with GS1 configuration fields: company prefix, product code, case indicator digit, item indicator digit. Added form hints and live preview of GS1 identifier formats"
   
   - task: "Serial number input UI"
     implemented: true
@@ -189,6 +192,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Created step 3 summary view with EPCIS generation and file download functionality"
+      - working: "NA"
+        agent: "main"
+        comment: "Updated to show user-configured GS1 parameters in summary instead of hardcoded values"
 
 metadata:
   created_by: "main_agent"
