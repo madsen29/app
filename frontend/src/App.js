@@ -9,7 +9,11 @@ function App() {
   const [currentStep, setCurrentStep] = useState(1);
   const [configuration, setConfiguration] = useState({
     itemsPerCase: 10,
-    numberOfCases: 5
+    numberOfCases: 5,
+    companyPrefix: '1234567',
+    productCode: '000000',
+    caseIndicatorDigit: '0',
+    itemIndicatorDigit: '0'
   });
   const [configurationId, setConfigurationId] = useState('');
   const [caseSerials, setCaseSerials] = useState([]);
