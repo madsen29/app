@@ -138,7 +138,7 @@ async def generate_epcis(request: EPCISGenerationRequest):
         headers={"Content-Disposition": "attachment; filename=epcis_aggregation.xml"}
     )
 
-def generate_epcis_xml(config, serial_numbers, company_prefix, read_point, biz_location):
+def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     """Generate GS1 EPCIS XML for pharmaceutical aggregation"""
     
     # Create root element
@@ -151,6 +151,12 @@ def generate_epcis_xml(config, serial_numbers, company_prefix, read_point, biz_l
     # Create EPCISBody
     epcis_body = ET.SubElement(root, "EPCISBody")
     event_list = ET.SubElement(epcis_body, "EventList")
+    
+    # Get GS1 parameters from configuration
+    company_prefix = config["company_prefix"]
+    product_code = config["product_code"]
+    case_indicator_digit = config["case_indicator_digit"]
+    item_indicator_digit = config["item_indicator_digit"]
     
     # Generate aggregation events for each case
     items_per_case = config["items_per_case"]
@@ -169,18 +175,19 @@ def generate_epcis_xml(config, serial_numbers, company_prefix, read_point, biz_l
         event_timezone = ET.SubElement(aggregation_event, "eventTimeZoneOffset")
         event_timezone.text = "+00:00"
         
-        # Parent ID (Case SSCC)
+        # Parent ID (Case SSCC) - Format: urn:epc:id:sscc:company_prefix.indicator_digit+serial_number
         parent_id = ET.SubElement(aggregation_event, "parentID")
-        parent_id.text = f"urn:epc:id:sscc:{company_prefix}.{case_serial.zfill(17)}"
+        sscc_serial = f"{case_indicator_digit}{case_serial}".zfill(17)
+        parent_id.text = f"urn:epc:id:sscc:{company_prefix}.{sscc_serial}"
         
-        # Child EPCs (Item SGTINs)
+        # Child EPCs (Item SGTINs) - Format: urn:epc:id:sgtin:company_prefix.product_code.serial_number
         child_epcs = ET.SubElement(aggregation_event, "childEPCs")
         start_idx = i * items_per_case
         end_idx = start_idx + items_per_case
         
         for item_serial in item_serials[start_idx:end_idx]:
             epc = ET.SubElement(child_epcs, "epc")
-            epc.text = f"urn:epc:id:sgtin:{company_prefix}.000000.{item_serial}"
+            epc.text = f"urn:epc:id:sgtin:{company_prefix}.{product_code}.{item_serial}"
         
         # Action
         action = ET.SubElement(aggregation_event, "action")
