@@ -248,24 +248,36 @@ class BackendTester:
                 return False
             
             # Check namespace
-            if "urn:epcglobal:epcis:xsd:2" not in root.get("xmlns", ""):
-                print(f"   Invalid or missing EPCIS namespace")
+            xmlns = root.get("xmlns", "")
+            if "urn:epcglobal:epcis:xsd:2" not in xmlns:
+                print(f"   Invalid or missing EPCIS namespace: {xmlns}")
                 return False
+            
+            # Define namespace for finding elements
+            ns = {"epcis": "urn:epcglobal:epcis:xsd:2"}
             
             # Check for EPCISBody
-            epcis_body = root.find("EPCISBody")
+            epcis_body = root.find("epcis:EPCISBody", ns)
             if epcis_body is None:
-                print(f"   Missing EPCISBody element")
-                return False
+                # Try without namespace prefix
+                epcis_body = root.find("EPCISBody")
+                if epcis_body is None:
+                    print(f"   Missing EPCISBody element")
+                    return False
             
             # Check for EventList
-            event_list = epcis_body.find("EventList")
+            event_list = epcis_body.find("epcis:EventList", ns)
             if event_list is None:
-                print(f"   Missing EventList element")
-                return False
+                event_list = epcis_body.find("EventList")
+                if event_list is None:
+                    print(f"   Missing EventList element")
+                    return False
             
             # Check for AggregationEvents
-            aggregation_events = event_list.findall("AggregationEvent")
+            aggregation_events = event_list.findall("epcis:AggregationEvent", ns)
+            if not aggregation_events:
+                aggregation_events = event_list.findall("AggregationEvent")
+            
             if len(aggregation_events) != 5:  # Should have 5 events for 5 cases
                 print(f"   Expected 5 AggregationEvents, found {len(aggregation_events)}")
                 return False
