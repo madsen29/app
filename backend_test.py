@@ -247,10 +247,9 @@ class BackendTester:
                 print(f"   Invalid root element: {root.tag}")
                 return False
             
-            # Check namespace
-            xmlns = root.get("xmlns", "")
-            if "urn:epcglobal:epcis:xsd:2" not in xmlns:
-                print(f"   Invalid or missing EPCIS namespace: {xmlns}")
+            # Check namespace (it's embedded in the tag name when parsed)
+            if not root.tag.startswith("{urn:epcglobal:epcis:xsd:2}"):
+                print(f"   Invalid or missing EPCIS namespace in tag: {root.tag}")
                 return False
             
             # Define namespace for finding elements
