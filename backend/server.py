@@ -127,7 +127,6 @@ async def generate_epcis(request: EPCISGenerationRequest):
     xml_content = generate_epcis_xml(
         config, 
         serial_numbers, 
-        request.company_prefix,
         request.read_point,
         request.biz_location
     )
