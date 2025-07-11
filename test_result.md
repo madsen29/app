@@ -119,14 +119,17 @@ backend:
       - working: "NA"
         agent: "main"
         comment: "Enhanced configuration to include GS1 parameters: company_prefix, product_code, case_indicator_digit, item_indicator_digit"
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR RESTRUCTURE: Corrected GS1 hierarchy to SSCC→Cases→Items. Added cases_per_sscc, number_of_sscc, separate item_product_code and case_product_code, sscc_indicator_digit. Indicator digits now correctly placed before product code per EPCIS standards."
   
   - task: "Serial numbers API endpoints"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
@@ -134,6 +137,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Tested successfully - validates serial number counts against configuration"
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR RESTRUCTURE: Added SSCC serial numbers to match new hierarchy. Now validates SSCC, case, and item serial number counts against configuration."
   
   - task: "EPCIS XML generation"
     implemented: true
@@ -152,6 +158,9 @@ backend:
       - working: "NA"
         agent: "main"
         comment: "Updated to use configuration-based GS1 parameters instead of hardcoded values. Now uses proper SSCC and SGTIN formatting with user-defined company prefix, product code, and indicator digits"
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR RESTRUCTURE: Changed to EPCIS 1.2 schema. Added commissioning events for all levels (Items, Cases, SSCCs) before aggregation events. Corrected GS1 identifier formats with proper indicator digit placement. Now generates: ObjectEvent (commissioning) + AggregationEvent (Items→Cases) + AggregationEvent (Cases→SSCCs)"
 
 frontend:
   - task: "Configuration form UI"
