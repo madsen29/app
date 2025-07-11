@@ -77,12 +77,15 @@ class BackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                required_fields = ["id", "items_per_case", "number_of_cases", "timestamp"]
+                required_fields = ["id", "items_per_case", "number_of_cases", "company_prefix", 
+                                 "product_code", "case_indicator_digit", "item_indicator_digit", "timestamp"]
                 
                 if all(field in data for field in required_fields):
-                    if data["items_per_case"] == 10 and data["number_of_cases"] == 5:
-                        self.log_test("Configuration Creation", True, "Configuration created successfully", 
-                                    f"ID: {data['id']}")
+                    if (data["items_per_case"] == 10 and data["number_of_cases"] == 5 and
+                        data["company_prefix"] == "9876543" and data["product_code"] == "123456" and
+                        data["case_indicator_digit"] == "2" and data["item_indicator_digit"] == "1"):
+                        self.log_test("Configuration Creation", True, "Configuration created successfully with GS1 parameters", 
+                                    f"ID: {data['id']}, Company Prefix: {data['company_prefix']}")
                         return data["id"]  # Return config ID for subsequent tests
                     else:
                         self.log_test("Configuration Creation", False, "Data mismatch in response", data)
