@@ -307,20 +307,20 @@ function App() {
       <form onSubmit={handleSerialNumbersSubmit} className="serial-form">
         
         <div className="serial-section">
-          <h3>Case Serial Numbers</h3>
+          <h3>SSCC Serial Numbers</h3>
           <div className="serial-grid">
-            {caseSerials.map((serial, index) => (
+            {ssccSerials.map((serial, index) => (
               <div key={index} className="serial-input-group">
-                <label>Case {index + 1}:</label>
+                <label>SSCC {index + 1}:</label>
                 <input
                   type="text"
                   value={serial}
                   onChange={(e) => {
-                    const newSerials = [...caseSerials];
+                    const newSerials = [...ssccSerials];
                     newSerials[index] = e.target.value;
-                    setCaseSerials(newSerials);
+                    setSsccSerials(newSerials);
                   }}
-                  placeholder={`Case ${index + 1} serial number`}
+                  placeholder={`SSCC ${index + 1} serial number`}
                   required
                 />
               </div>
@@ -329,14 +329,43 @@ function App() {
         </div>
 
         <div className="serial-section">
+          <h3>Case Serial Numbers</h3>
+          <div className="serial-grid">
+            {caseSerials.map((serial, index) => {
+              const ssccNumber = Math.floor(index / configuration.casesPerSscc) + 1;
+              const caseNumber = (index % configuration.casesPerSscc) + 1;
+              return (
+                <div key={index} className="serial-input-group">
+                  <label>SSCC {ssccNumber} - Case {caseNumber}:</label>
+                  <input
+                    type="text"
+                    value={serial}
+                    onChange={(e) => {
+                      const newSerials = [...caseSerials];
+                      newSerials[index] = e.target.value;
+                      setCaseSerials(newSerials);
+                    }}
+                    placeholder={`Case ${index + 1} serial number`}
+                    required
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="serial-section">
           <h3>Item Serial Numbers</h3>
           <div className="serial-grid">
             {itemSerials.map((serial, index) => {
-              const caseNumber = Math.floor(index / configuration.itemsPerCase) + 1;
+              const totalCases = configuration.casesPerSscc * configuration.numberOfSscc;
+              const caseIndex = Math.floor(index / configuration.itemsPerCase);
+              const ssccNumber = Math.floor(caseIndex / configuration.casesPerSscc) + 1;
+              const caseNumber = (caseIndex % configuration.casesPerSscc) + 1;
               const itemNumber = (index % configuration.itemsPerCase) + 1;
               return (
                 <div key={index} className="serial-input-group">
-                  <label>Case {caseNumber} - Item {itemNumber}:</label>
+                  <label>SSCC {ssccNumber} - Case {caseNumber} - Item {itemNumber}:</label>
                   <input
                     type="text"
                     value={serial}
