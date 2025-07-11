@@ -58,10 +58,14 @@ class BackendTester:
             return False
     
     def test_configuration_creation(self):
-        """Test POST /api/configuration with valid data"""
+        """Test POST /api/configuration with valid data including GS1 parameters"""
         test_data = {
             "items_per_case": 10,
-            "number_of_cases": 5
+            "number_of_cases": 5,
+            "company_prefix": "9876543",
+            "product_code": "123456",
+            "case_indicator_digit": "2",
+            "item_indicator_digit": "1"
         }
         
         try:
