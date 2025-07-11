@@ -87,7 +87,6 @@ function App() {
     try {
       const response = await axios.post(`${API}/generate-epcis`, {
         configuration_id: configurationId,
-        company_prefix: "1234567",
         read_point: "urn:epc:id:sgln:1234567.00000.0",
         biz_location: "urn:epc:id:sgln:1234567.00001.0"
       }, {
