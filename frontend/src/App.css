@@ -31,10 +31,17 @@ body {
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #000000;
   color: white;
   padding: 3rem 2rem;
   text-align: center;
+}
+
+.header .header-logo {
+  width: 60px;
+}
+.header .header-logo svg {
+  fill: white;
 }
 
 .header h1 {
