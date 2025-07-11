@@ -453,6 +453,7 @@ function App() {
     <div className="app">
       <div className="container">
         <header className="header">
+          <img src="https://rxerp.com/wp-content/uploads/2025/01/rxerp-logo-hero-tagline.svg" width={100}></img>
           <h1>RxERP Aggregator</h1>
           <p>Generate GS1 compliant EPCIS files for pharmaceutical serialization</p>
         </header>
