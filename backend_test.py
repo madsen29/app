@@ -116,11 +116,11 @@ class BackendTester:
                 headers={"Content-Type": "application/json"}
             )
             
-            # Should either reject with 400 or accept (depending on validation implementation)
+            # Should reject with 422 due to missing required fields
             if response.status_code in [400, 422]:
-                self.log_test("Configuration Validation", True, "Invalid data properly rejected")
+                self.log_test("Configuration Validation", True, "Missing GS1 parameters properly rejected")
             elif response.status_code == 200:
-                self.log_test("Configuration Validation", False, "Invalid data was accepted (no validation)")
+                self.log_test("Configuration Validation", False, "Missing GS1 parameters were accepted (validation issue)")
             else:
                 self.log_test("Configuration Validation", False, f"Unexpected status: {response.status_code}")
                 
