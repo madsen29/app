@@ -453,7 +453,7 @@ function App() {
     <div className="app">
       <div className="container">
         <header className="header">
-          <h1>Rx EPCIS Serial Number Aggregation</h1>
+          <h1>RxERP Aggregator</h1>
           <p>Generate GS1 compliant EPCIS files for pharmaceutical serialization</p>
         </header>
 
