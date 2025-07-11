@@ -34,18 +34,26 @@ function App() {
     try {
       const response = await axios.post(`${API}/configuration`, {
         items_per_case: configuration.itemsPerCase,
-        number_of_cases: configuration.numberOfCases,
+        cases_per_sscc: configuration.casesPerSscc,
+        number_of_sscc: configuration.numberOfSscc,
         company_prefix: configuration.companyPrefix,
-        product_code: configuration.productCode,
+        item_product_code: configuration.itemProductCode,
+        case_product_code: configuration.caseProductCode,
+        sscc_indicator_digit: configuration.ssccIndicatorDigit,
         case_indicator_digit: configuration.caseIndicatorDigit,
         item_indicator_digit: configuration.itemIndicatorDigit
       });
       
       setConfigurationId(response.data.id);
       
+      // Calculate totals
+      const totalCases = configuration.casesPerSscc * configuration.numberOfSscc;
+      const totalItems = configuration.itemsPerCase * totalCases;
+      
       // Initialize serial number arrays
-      setCaseSerials(new Array(configuration.numberOfCases).fill(''));
-      setItemSerials(new Array(configuration.itemsPerCase * configuration.numberOfCases).fill(''));
+      setSsccSerials(new Array(configuration.numberOfSscc).fill(''));
+      setCaseSerials(new Array(totalCases).fill(''));
+      setItemSerials(new Array(totalItems).fill(''));
       
       setCurrentStep(2);
       setSuccess('Configuration saved successfully!');
