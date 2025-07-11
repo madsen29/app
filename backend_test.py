@@ -208,16 +208,15 @@ class BackendTester:
             self.log_test("Serial Numbers Validation", False, f"Request error: {str(e)}")
     
     def test_epcis_generation(self, config_id):
-        """Test POST /api/generate-epcis and validate XML output"""
+        """Test POST /api/generate-epcis and validate XML output with user-configured GS1 parameters"""
         if not config_id:
             self.log_test("EPCIS Generation", False, "No configuration ID available")
             return
             
         test_data = {
             "configuration_id": config_id,
-            "company_prefix": "1234567",
-            "read_point": "urn:epc:id:sgln:1234567.00000.0",
-            "biz_location": "urn:epc:id:sgln:1234567.00001.0"
+            "read_point": "urn:epc:id:sgln:9876543.00000.0",
+            "biz_location": "urn:epc:id:sgln:9876543.00001.0"
         }
         
         try:
