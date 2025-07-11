@@ -94,18 +94,27 @@ async def create_serial_numbers(input: SerialNumbersCreate):
     if not config:
         raise HTTPException(status_code=404, detail="Configuration not found")
     
+    # Calculate expected quantities
+    total_cases = config["cases_per_sscc"] * config["number_of_sscc"]
+    total_items = config["items_per_case"] * total_cases
+    
     # Validate serial numbers count
-    expected_items = config["items_per_case"] * config["number_of_cases"]
-    if len(input.item_serial_numbers) != expected_items:
+    if len(input.sscc_serial_numbers) != config["number_of_sscc"]:
         raise HTTPException(
             status_code=400, 
-            detail=f"Expected {expected_items} item serial numbers, got {len(input.item_serial_numbers)}"
+            detail=f"Expected {config['number_of_sscc']} SSCC serial numbers, got {len(input.sscc_serial_numbers)}"
         )
     
-    if len(input.case_serial_numbers) != config["number_of_cases"]:
+    if len(input.case_serial_numbers) != total_cases:
         raise HTTPException(
             status_code=400, 
-            detail=f"Expected {config['number_of_cases']} case serial numbers, got {len(input.case_serial_numbers)}"
+            detail=f"Expected {total_cases} case serial numbers, got {len(input.case_serial_numbers)}"
+        )
+    
+    if len(input.item_serial_numbers) != total_items:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Expected {total_items} item serial numbers, got {len(input.item_serial_numbers)}"
         )
     
     serial_dict = input.dict()
