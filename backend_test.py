@@ -231,11 +231,11 @@ class BackendTester:
                 content_type = response.headers.get('content-type', '')
                 if 'xml' in content_type:
                     xml_content = response.text
-                    if self.validate_epcis_xml(xml_content):
-                        self.log_test("EPCIS Generation", True, "Valid EPCIS XML generated successfully",
+                    if self.validate_epcis_xml_with_gs1_params(xml_content):
+                        self.log_test("EPCIS Generation", True, "Valid EPCIS XML generated with user-configured GS1 parameters",
                                     f"XML length: {len(xml_content)} characters")
                     else:
-                        self.log_test("EPCIS Generation", False, "Generated XML is not valid EPCIS format")
+                        self.log_test("EPCIS Generation", False, "Generated XML does not use correct GS1 parameters")
                 else:
                     self.log_test("EPCIS Generation", False, f"Expected XML, got content-type: {content_type}")
             else:
