@@ -405,24 +405,32 @@ function App() {
             <strong>Items per Case:</strong> {configuration.itemsPerCase}
           </div>
           <div className="summary-item">
-            <strong>Number of Cases:</strong> {configuration.numberOfCases}
+            <strong>Cases per SSCC:</strong> {configuration.casesPerSscc}
           </div>
           <div className="summary-item">
-            <strong>Total Items:</strong> {configuration.itemsPerCase * configuration.numberOfCases}
+            <strong>Number of SSCCs:</strong> {configuration.numberOfSscc}
+          </div>
+          <div className="summary-item">
+            <strong>Total Cases:</strong> {configuration.casesPerSscc * configuration.numberOfSscc}
+          </div>
+          <div className="summary-item">
+            <strong>Total Items:</strong> {configuration.itemsPerCase * configuration.casesPerSscc * configuration.numberOfSscc}
           </div>
         </div>
         
         <div className="epcis-info">
           <h4>EPCIS File Details</h4>
-          <p>The generated file will contain GS1 compliant EPCIS XML with aggregation events for pharmaceutical serialization.</p>
+          <p>The generated file will contain GS1 compliant EPCIS 1.2 XML with commissioning and aggregation events for pharmaceutical serialization.</p>
           <ul>
             <li>Company Prefix: {configuration.companyPrefix}</li>
-            <li>Product Code: {configuration.productCode}</li>
+            <li>Item Product Code: {configuration.itemProductCode}</li>
+            <li>Case Product Code: {configuration.caseProductCode}</li>
+            <li>SSCC Indicator: {configuration.ssccIndicatorDigit}</li>
             <li>Case Indicator: {configuration.caseIndicatorDigit}</li>
             <li>Item Indicator: {configuration.itemIndicatorDigit}</li>
-            <li>Format: EPCIS 2.0 Standard</li>
-            <li>Event Type: Aggregation Events</li>
-            <li>Business Step: Packing</li>
+            <li>Format: EPCIS 1.2 Standard</li>
+            <li>Event Types: Commissioning + Aggregation Events</li>
+            <li>Business Step: Commissioning + Packing</li>
           </ul>
         </div>
       </div>
