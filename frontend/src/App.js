@@ -164,14 +164,26 @@ function App() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="numberOfCases">Number of Cases:</label>
+            <label htmlFor="casesPerSscc">Cases per SSCC:</label>
             <input
               type="number"
-              id="numberOfCases"
+              id="casesPerSscc"
               min="1"
               max="50"
-              value={configuration.numberOfCases}
-              onChange={(e) => setConfiguration({...configuration, numberOfCases: parseInt(e.target.value)})}
+              value={configuration.casesPerSscc}
+              onChange={(e) => setConfiguration({...configuration, casesPerSscc: parseInt(e.target.value)})}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="numberOfSscc">Number of SSCCs:</label>
+            <input
+              type="number"
+              id="numberOfSscc"
+              min="1"
+              max="20"
+              value={configuration.numberOfSscc}
+              onChange={(e) => setConfiguration({...configuration, numberOfSscc: parseInt(e.target.value)})}
               required
             />
           </div>
@@ -193,16 +205,41 @@ function App() {
               <small className="form-hint">Your GS1 Company Prefix (usually 7-12 digits)</small>
             </div>
             <div className="form-group">
-              <label htmlFor="productCode">Product Code:</label>
+              <label htmlFor="itemProductCode">Item Product Code:</label>
               <input
                 type="text"
-                id="productCode"
-                value={configuration.productCode}
-                onChange={(e) => setConfiguration({...configuration, productCode: e.target.value})}
+                id="itemProductCode"
+                value={configuration.itemProductCode}
+                onChange={(e) => setConfiguration({...configuration, itemProductCode: e.target.value})}
                 placeholder="e.g., 000000"
                 required
               />
-              <small className="form-hint">Item reference for SGTIN generation</small>
+              <small className="form-hint">Product code for individual items</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="caseProductCode">Case Product Code:</label>
+              <input
+                type="text"
+                id="caseProductCode"
+                value={configuration.caseProductCode}
+                onChange={(e) => setConfiguration({...configuration, caseProductCode: e.target.value})}
+                placeholder="e.g., 111111"
+                required
+              />
+              <small className="form-hint">Product code for case containers</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="ssccIndicatorDigit">SSCC Indicator Digit:</label>
+              <input
+                type="text"
+                id="ssccIndicatorDigit"
+                maxLength="1"
+                value={configuration.ssccIndicatorDigit}
+                onChange={(e) => setConfiguration({...configuration, ssccIndicatorDigit: e.target.value})}
+                placeholder="0"
+                required
+              />
+              <small className="form-hint">Single digit (0-9) for SSCC containers</small>
             </div>
             <div className="form-group">
               <label htmlFor="caseIndicatorDigit">Case Indicator Digit:</label>
@@ -215,7 +252,7 @@ function App() {
                 placeholder="0"
                 required
               />
-              <small className="form-hint">Single digit (0-9) for SSCC generation</small>
+              <small className="form-hint">Single digit (0-9) for case SGTINs</small>
             </div>
             <div className="form-group">
               <label htmlFor="itemIndicatorDigit">Item Indicator Digit:</label>
@@ -228,16 +265,33 @@ function App() {
                 placeholder="0"
                 required
               />
-              <small className="form-hint">Single digit (0-9) for SGTIN generation</small>
+              <small className="form-hint">Single digit (0-9) for item SGTINs</small>
+            </div>
+          </div>
+        </div>
+        
+        <div className="hierarchy-section">
+          <h3>Packaging Hierarchy</h3>
+          <div className="hierarchy-visual">
+            <div className="hierarchy-level">
+              <strong>SSCCs:</strong> {configuration.numberOfSscc}
+            </div>
+            <div className="hierarchy-arrow">↓</div>
+            <div className="hierarchy-level">
+              <strong>Cases:</strong> {configuration.casesPerSscc * configuration.numberOfSscc} total
+            </div>
+            <div className="hierarchy-arrow">↓</div>
+            <div className="hierarchy-level">
+              <strong>Items:</strong> {configuration.itemsPerCase * configuration.casesPerSscc * configuration.numberOfSscc} total
             </div>
           </div>
         </div>
         
         <div className="summary">
-          <h4>Summary</h4>
-          <p><strong>Total Items:</strong> {configuration.itemsPerCase * configuration.numberOfCases}</p>
-          <p><strong>Example SSCC:</strong> urn:epc:id:sscc:{configuration.companyPrefix}.{configuration.caseIndicatorDigit}[case_serial]</p>
-          <p><strong>Example SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.productCode}.[item_serial]</p>
+          <h4>GS1 Identifier Examples</h4>
+          <p><strong>SSCC:</strong> urn:epc:id:sscc:{configuration.companyPrefix}.{configuration.ssccIndicatorDigit}[sscc_serial]</p>
+          <p><strong>Case SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.caseIndicatorDigit}{configuration.caseProductCode}.[case_serial]</p>
+          <p><strong>Item SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.itemIndicatorDigit}{configuration.itemProductCode}.[item_serial]</p>
         </div>
         
         <button type="submit" disabled={isLoading} className="btn-primary">
