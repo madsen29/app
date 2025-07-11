@@ -30,7 +30,11 @@ function App() {
     try {
       const response = await axios.post(`${API}/configuration`, {
         items_per_case: configuration.itemsPerCase,
-        number_of_cases: configuration.numberOfCases
+        number_of_cases: configuration.numberOfCases,
+        company_prefix: configuration.companyPrefix,
+        product_code: configuration.productCode,
+        case_indicator_digit: configuration.caseIndicatorDigit,
+        item_indicator_digit: configuration.itemIndicatorDigit
       });
       
       setConfigurationId(response.data.id);
