@@ -287,19 +287,26 @@ class BackendTester:
             required_elements = ["eventTime", "parentID", "childEPCs", "action", "bizStep"]
             
             for element in required_elements:
-                if first_event.find(element) is None:
-                    print(f"   Missing required element in AggregationEvent: {element}")
-                    return False
+                elem = first_event.find(f"epcis:{element}", ns)
+                if elem is None:
+                    elem = first_event.find(element)
+                    if elem is None:
+                        print(f"   Missing required element in AggregationEvent: {element}")
+                        return False
             
             # Check parent ID format (should be SSCC)
-            parent_id = first_event.find("parentID").text
+            parent_id_elem = first_event.find("epcis:parentID", ns) or first_event.find("parentID")
+            parent_id = parent_id_elem.text
             if not parent_id.startswith("urn:epc:id:sscc:"):
                 print(f"   Invalid parent ID format: {parent_id}")
                 return False
             
             # Check child EPCs format (should be SGTIN)
-            child_epcs = first_event.find("childEPCs")
-            epcs = child_epcs.findall("epc")
+            child_epcs_elem = first_event.find("epcis:childEPCs", ns) or first_event.find("childEPCs")
+            epcs = child_epcs_elem.findall("epcis:epc", ns)
+            if not epcs:
+                epcs = child_epcs_elem.findall("epc")
+            
             if len(epcs) != 10:  # Should have 10 items per case
                 print(f"   Expected 10 child EPCs per case, found {len(epcs)}")
                 return False
@@ -310,7 +317,8 @@ class BackendTester:
                     return False
             
             # Check action
-            action = first_event.find("action").text
+            action_elem = first_event.find("epcis:action", ns) or first_event.find("action")
+            action = action_elem.text
             if action != "ADD":
                 print(f"   Expected action 'ADD', found '{action}'")
                 return False
