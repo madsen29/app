@@ -54,12 +54,14 @@ class SerialConfigurationCreate(BaseModel):
 class SerialNumbers(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     configuration_id: str
+    sscc_serial_numbers: List[str]
     case_serial_numbers: List[str]
     item_serial_numbers: List[str]
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class SerialNumbersCreate(BaseModel):
     configuration_id: str
+    sscc_serial_numbers: List[str]
     case_serial_numbers: List[str]
     item_serial_numbers: List[str]
 
