@@ -244,7 +244,128 @@ class BackendTester:
         except Exception as e:
             self.log_test("EPCIS Generation", False, f"Request error: {str(e)}")
     
-    def validate_epcis_xml(self, xml_content):
+    def validate_epcis_xml_with_gs1_params(self, xml_content):
+        """Validate that the generated XML uses user-configured GS1 parameters"""
+        try:
+            root = ET.fromstring(xml_content)
+            
+            # Check root element (handle namespace)
+            if not root.tag.endswith("EPCISDocument"):
+                print(f"   Invalid root element: {root.tag}")
+                return False
+            
+            # Check namespace (it's embedded in the tag name when parsed)
+            if not root.tag.startswith("{urn:epcglobal:epcis:xsd:2}"):
+                print(f"   Invalid or missing EPCIS namespace in tag: {root.tag}")
+                return False
+            
+            # Define namespace for finding elements
+            ns = {"epcis": "urn:epcglobal:epcis:xsd:2"}
+            
+            # Check for EPCISBody (with namespace in tag)
+            epcis_body = None
+            for child in root:
+                if child.tag.endswith("EPCISBody"):
+                    epcis_body = child
+                    break
+            
+            if epcis_body is None:
+                print(f"   Missing EPCISBody element")
+                return False
+            
+            # Check for EventList
+            event_list = None
+            for child in epcis_body:
+                if child.tag.endswith("EventList"):
+                    event_list = child
+                    break
+                    
+            if event_list is None:
+                print(f"   Missing EventList element")
+                return False
+            
+            # Check for AggregationEvents
+            aggregation_events = []
+            for child in event_list:
+                if child.tag.endswith("AggregationEvent"):
+                    aggregation_events.append(child)
+            
+            if len(aggregation_events) != 5:  # Should have 5 events for 5 cases
+                print(f"   Expected 5 AggregationEvents, found {len(aggregation_events)}")
+                return False
+            
+            # Validate first aggregation event structure
+            first_event = aggregation_events[0]
+            required_elements = ["eventTime", "parentID", "childEPCs", "action", "bizStep"]
+            
+            # Helper function to find element by tag ending
+            def find_element_by_ending(parent, tag_ending):
+                for child in parent:
+                    if child.tag.endswith(tag_ending):
+                        return child
+                return None
+            
+            for element in required_elements:
+                elem = find_element_by_ending(first_event, element)
+                if elem is None:
+                    print(f"   Missing required element in AggregationEvent: {element}")
+                    return False
+            
+            # Check parent ID format (should be SSCC with user-configured company prefix)
+            parent_id_elem = find_element_by_ending(first_event, "parentID")
+            parent_id = parent_id_elem.text
+            expected_company_prefix = "9876543"  # From our test configuration
+            expected_case_indicator = "2"  # From our test configuration
+            
+            if not parent_id.startswith(f"urn:epc:id:sscc:{expected_company_prefix}."):
+                print(f"   Invalid parent ID format or company prefix: {parent_id}")
+                print(f"   Expected to start with: urn:epc:id:sscc:{expected_company_prefix}.")
+                return False
+            
+            # Extract the serial part and check case indicator digit
+            sscc_part = parent_id.split(f"urn:epc:id:sscc:{expected_company_prefix}.")[1]
+            if not sscc_part.startswith(expected_case_indicator):
+                print(f"   SSCC does not start with case indicator digit '{expected_case_indicator}': {sscc_part}")
+                return False
+            
+            # Check child EPCs format (should be SGTIN with user-configured parameters)
+            child_epcs_elem = find_element_by_ending(first_event, "childEPCs")
+            epcs = []
+            for child in child_epcs_elem:
+                if child.tag.endswith("epc"):
+                    epcs.append(child)
+            
+            if len(epcs) != 10:  # Should have 10 items per case
+                print(f"   Expected 10 child EPCs per case, found {len(epcs)}")
+                return False
+            
+            expected_product_code = "123456"  # From our test configuration
+            for epc in epcs:
+                expected_sgtin_prefix = f"urn:epc:id:sgtin:{expected_company_prefix}.{expected_product_code}."
+                if not epc.text.startswith(expected_sgtin_prefix):
+                    print(f"   Invalid child EPC format or parameters: {epc.text}")
+                    print(f"   Expected to start with: {expected_sgtin_prefix}")
+                    return False
+            
+            # Check action
+            action_elem = find_element_by_ending(first_event, "action")
+            action = action_elem.text
+            if action != "ADD":
+                print(f"   Expected action 'ADD', found '{action}'")
+                return False
+            
+            print(f"   ✓ Valid EPCIS XML with {len(aggregation_events)} aggregation events")
+            print(f"   ✓ Parent ID uses company prefix {expected_company_prefix} and case indicator {expected_case_indicator}: {parent_id}")
+            print(f"   ✓ Child EPCs use company prefix {expected_company_prefix} and product code {expected_product_code}")
+            print(f"   ✓ Child EPCs per case: {len(epcs)}")
+            return True
+            
+        except ET.ParseError as e:
+            print(f"   XML parsing error: {str(e)}")
+            return False
+        except Exception as e:
+            print(f"   Validation error: {str(e)}")
+            return False
         """Validate that the generated XML is proper EPCIS format"""
         try:
             root = ET.fromstring(xml_content)
