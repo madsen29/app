@@ -550,6 +550,7 @@ class BackendTester:
                 f"{self.base_url}/serial-numbers",
                 json={
                     "configuration_id": fake_config_id,
+                    "sscc_serial_numbers": ["SSCC001"],
                     "case_serial_numbers": ["CASE001"],
                     "item_serial_numbers": ["ITEM001"]
                 },
@@ -569,38 +570,41 @@ class BackendTester:
             self.log_test("Error Handling", False, f"Request error: {str(e)}")
     
     def run_all_tests(self):
-        """Run all backend tests in sequence"""
-        print("=" * 60)
-        print("EPCIS BACKEND API TESTING")
-        print("=" * 60)
+        """Run all backend tests in sequence for restructured EPCIS API"""
+        print("=" * 80)
+        print("EPCIS BACKEND API TESTING - RESTRUCTURED GS1 HIERARCHY")
+        print("=" * 80)
+        print("Testing new structure: SSCC→Cases→Items with EPCIS 1.2 schema")
+        print("Expected: 2 SSCCs, 10 Cases (5×2), 100 Items (10×5×2)")
+        print("=" * 80)
         
         # Test 1: API Health Check
         if not self.test_api_health():
             print("\n❌ API is not accessible. Stopping tests.")
             return False
         
-        # Test 2: Configuration Creation
+        # Test 2: Configuration Creation with new structure
         config_id = self.test_configuration_creation()
         
         # Test 3: Configuration Validation
         self.test_configuration_validation()
         
-        # Test 4: Serial Numbers Creation (requires config_id)
+        # Test 4: Serial Numbers Creation with new hierarchy (requires config_id)
         serial_id = self.test_serial_numbers_creation(config_id)
         
-        # Test 5: Serial Numbers Validation
+        # Test 5: Serial Numbers Validation with new counts
         self.test_serial_numbers_validation(config_id)
         
-        # Test 6: EPCIS Generation
+        # Test 6: EPCIS 1.2 Generation with commissioning + aggregation events
         self.test_epcis_generation(config_id)
         
         # Test 7: Error Handling
         self.test_error_handling()
         
         # Summary
-        print("\n" + "=" * 60)
-        print("TEST SUMMARY")
-        print("=" * 60)
+        print("\n" + "=" * 80)
+        print("TEST SUMMARY - RESTRUCTURED EPCIS API")
+        print("=" * 80)
         
         passed = sum(1 for result in self.test_results if result['success'])
         total = len(self.test_results)
@@ -615,6 +619,14 @@ class BackendTester:
             for result in self.test_results:
                 if not result['success']:
                     print(f"  - {result['test']}: {result['message']}")
+        
+        print("\nKey Features Tested:")
+        print("✓ New GS1 hierarchy: SSCC→Cases→Items")
+        print("✓ Separate product codes for items and cases")
+        print("✓ Indicator digits before product codes")
+        print("✓ EPCIS 1.2 schema with commissioning events")
+        print("✓ Proper aggregation events (Items→Cases, Cases→SSCCs)")
+        print("✓ GS1 identifier format validation")
         
         return passed == total
 
