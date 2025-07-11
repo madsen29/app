@@ -255,27 +255,33 @@ class BackendTester:
             # Define namespace for finding elements
             ns = {"epcis": "urn:epcglobal:epcis:xsd:2"}
             
-            # Check for EPCISBody
-            epcis_body = root.find("epcis:EPCISBody", ns)
+            # Check for EPCISBody (with namespace in tag)
+            epcis_body = None
+            for child in root:
+                if child.tag.endswith("EPCISBody"):
+                    epcis_body = child
+                    break
+            
             if epcis_body is None:
-                # Try without namespace prefix
-                epcis_body = root.find("EPCISBody")
-                if epcis_body is None:
-                    print(f"   Missing EPCISBody element")
-                    return False
+                print(f"   Missing EPCISBody element")
+                return False
             
             # Check for EventList
-            event_list = epcis_body.find("epcis:EventList", ns)
+            event_list = None
+            for child in epcis_body:
+                if child.tag.endswith("EventList"):
+                    event_list = child
+                    break
+                    
             if event_list is None:
-                event_list = epcis_body.find("EventList")
-                if event_list is None:
-                    print(f"   Missing EventList element")
-                    return False
+                print(f"   Missing EventList element")
+                return False
             
             # Check for AggregationEvents
-            aggregation_events = event_list.findall("epcis:AggregationEvent", ns)
-            if not aggregation_events:
-                aggregation_events = event_list.findall("AggregationEvent")
+            aggregation_events = []
+            for child in event_list:
+                if child.tag.endswith("AggregationEvent"):
+                    aggregation_events.append(child)
             
             if len(aggregation_events) != 5:  # Should have 5 events for 5 cases
                 print(f"   Expected 5 AggregationEvents, found {len(aggregation_events)}")
