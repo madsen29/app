@@ -129,13 +129,17 @@ function App() {
     setCurrentStep(1);
     setConfiguration({ 
       itemsPerCase: 10, 
-      numberOfCases: 5,
+      casesPerSscc: 5,
+      numberOfSscc: 2,
       companyPrefix: '1234567',
-      productCode: '000000',
+      itemProductCode: '000000',
+      caseProductCode: '111111',
+      ssccIndicatorDigit: '0',
       caseIndicatorDigit: '0',
       itemIndicatorDigit: '0'
     });
     setConfigurationId('');
+    setSsccSerials([]);
     setCaseSerials([]);
     setItemSerials([]);
     setError('');
