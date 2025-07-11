@@ -242,8 +242,8 @@ class BackendTester:
         try:
             root = ET.fromstring(xml_content)
             
-            # Check root element
-            if root.tag != "EPCISDocument":
+            # Check root element (handle namespace)
+            if not root.tag.endswith("EPCISDocument"):
                 print(f"   Invalid root element: {root.tag}")
                 return False
             
