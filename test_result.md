@@ -177,6 +177,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Enhanced with GS1 configuration fields: company prefix, product code, case indicator digit, item indicator digit. Added form hints and live preview of GS1 identifier formats"
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR RESTRUCTURE: Added SSCC configuration (cases_per_sscc, number_of_sscc). Separated item and case product codes. Added hierarchy visualization showing SSCC→Cases→Items relationship. Updated GS1 identifier examples with correct format."
   
   - task: "Serial number input UI"
     implemented: true
@@ -189,6 +192,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Created step 2 forms for inputting case serial numbers and item serial numbers with proper organization"
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR RESTRUCTURE: Added SSCC serial number input section. Reorganized to show proper hierarchy: SSCC serials → Case serials (organized by SSCC) → Item serials (organized by SSCC and Case). Clear labeling shows which items belong to which cases and SSCCs."
   
   - task: "EPCIS generation and download UI"
     implemented: true
@@ -204,6 +210,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Updated to show user-configured GS1 parameters in summary instead of hardcoded values"
+      - working: "NA"
+        agent: "main"
+        comment: "MAJOR RESTRUCTURE: Updated summary to show correct hierarchy totals (SSCCs, Cases, Items). Changed EPCIS details to reflect 1.2 schema and commissioning + aggregation events. Shows all GS1 parameters including separate item and case product codes."
 
 metadata:
   created_by: "main_agent"
