@@ -59,7 +59,6 @@ class SerialNumbersCreate(BaseModel):
 
 class EPCISGenerationRequest(BaseModel):
     configuration_id: str
-    company_prefix: str = "1234567"
     read_point: str = "urn:epc:id:sgln:1234567.00000.0"
     biz_location: str = "urn:epc:id:sgln:1234567.00001.0"
 
