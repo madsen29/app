@@ -102,10 +102,11 @@ class BackendTester:
             return None
     
     def test_configuration_validation(self):
-        """Test configuration creation with invalid data"""
+        """Test configuration creation with missing GS1 parameters"""
         invalid_data = {
-            "items_per_case": -1,  # Invalid negative value
-            "number_of_cases": 0   # Invalid zero value
+            "items_per_case": 10,
+            "number_of_cases": 5
+            # Missing required GS1 parameters
         }
         
         try:
