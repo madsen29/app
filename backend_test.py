@@ -81,15 +81,17 @@ class BackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                required_fields = ["id", "items_per_case", "number_of_cases", "company_prefix", 
-                                 "product_code", "case_indicator_digit", "item_indicator_digit", "timestamp"]
+                required_fields = ["id", "items_per_case", "cases_per_sscc", "number_of_sscc", 
+                                 "company_prefix", "item_product_code", "case_product_code",
+                                 "sscc_indicator_digit", "case_indicator_digit", "item_indicator_digit", "timestamp"]
                 
                 if all(field in data for field in required_fields):
-                    if (data["items_per_case"] == 10 and data["number_of_cases"] == 5 and
-                        data["company_prefix"] == "9876543" and data["product_code"] == "123456" and
+                    if (data["items_per_case"] == 10 and data["cases_per_sscc"] == 5 and data["number_of_sscc"] == 2 and
+                        data["company_prefix"] == "9876543" and data["item_product_code"] == "123456" and
+                        data["case_product_code"] == "789012" and data["sscc_indicator_digit"] == "3" and
                         data["case_indicator_digit"] == "2" and data["item_indicator_digit"] == "1"):
-                        self.log_test("Configuration Creation", True, "Configuration created successfully with GS1 parameters", 
-                                    f"ID: {data['id']}, Company Prefix: {data['company_prefix']}")
+                        self.log_test("Configuration Creation", True, "Configuration created with new GS1 EPCIS hierarchy", 
+                                    f"ID: {data['id']}, SSCC→Cases→Items: {data['number_of_sscc']}→{data['cases_per_sscc']}→{data['items_per_case']}")
                         return data["id"]  # Return config ID for subsequent tests
                     else:
                         self.log_test("Configuration Creation", False, "Data mismatch in response", data)
@@ -106,11 +108,11 @@ class BackendTester:
             return None
     
     def test_configuration_validation(self):
-        """Test configuration creation with missing GS1 parameters"""
+        """Test configuration creation with missing required GS1 parameters"""
         invalid_data = {
             "items_per_case": 10,
-            "number_of_cases": 5
-            # Missing required GS1 parameters
+            "cases_per_sscc": 5
+            # Missing required GS1 parameters: number_of_sscc, company_prefix, product codes, indicator digits
         }
         
         try:
@@ -132,17 +134,20 @@ class BackendTester:
             self.log_test("Configuration Validation", False, f"Request error: {str(e)}")
     
     def test_serial_numbers_creation(self, config_id):
-        """Test POST /api/serial-numbers with valid data"""
+        """Test POST /api/serial-numbers with new hierarchy validation"""
         if not config_id:
             self.log_test("Serial Numbers Creation", False, "No configuration ID available")
             return None
             
-        # Generate test serial numbers for 10 items per case, 5 cases = 50 total items
-        case_serials = [f"CASE{i+1:03d}" for i in range(5)]
-        item_serials = [f"ITEM{i+1:03d}" for i in range(50)]
+        # For config: 10 items per case, 5 cases per SSCC, 2 SSCCs
+        # Expected: 2 SSCC serials, 10 case serials (5×2), 100 item serials (10×5×2)
+        sscc_serials = [f"SSCC{i+1:03d}" for i in range(2)]
+        case_serials = [f"CASE{i+1:03d}" for i in range(10)]  # 5 cases per SSCC × 2 SSCCs = 10 total cases
+        item_serials = [f"ITEM{i+1:03d}" for i in range(100)]  # 10 items per case × 10 cases = 100 total items
         
         test_data = {
             "configuration_id": config_id,
+            "sscc_serial_numbers": sscc_serials,
             "case_serial_numbers": case_serials,
             "item_serial_numbers": item_serials
         }
@@ -156,14 +161,15 @@ class BackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                required_fields = ["id", "configuration_id", "case_serial_numbers", "item_serial_numbers", "timestamp"]
+                required_fields = ["id", "configuration_id", "sscc_serial_numbers", "case_serial_numbers", "item_serial_numbers", "timestamp"]
                 
                 if all(field in data for field in required_fields):
-                    if (len(data["case_serial_numbers"]) == 5 and 
-                        len(data["item_serial_numbers"]) == 50 and
+                    if (len(data["sscc_serial_numbers"]) == 2 and 
+                        len(data["case_serial_numbers"]) == 10 and
+                        len(data["item_serial_numbers"]) == 100 and
                         data["configuration_id"] == config_id):
-                        self.log_test("Serial Numbers Creation", True, "Serial numbers saved successfully",
-                                    f"Cases: {len(data['case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
+                        self.log_test("Serial Numbers Creation", True, "Serial numbers saved with correct hierarchy validation",
+                                    f"SSCCs: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
                         return data["id"]
                     else:
                         self.log_test("Serial Numbers Creation", False, "Data validation failed", data)
@@ -180,16 +186,17 @@ class BackendTester:
             return None
     
     def test_serial_numbers_validation(self, config_id):
-        """Test serial numbers validation with incorrect counts"""
+        """Test serial numbers validation with incorrect counts for new hierarchy"""
         if not config_id:
             self.log_test("Serial Numbers Validation", False, "No configuration ID available")
             return
             
-        # Test with wrong number of items (should be 50, providing 30)
+        # Test with wrong number of SSCC serials (should be 2, providing 1)
         invalid_data = {
             "configuration_id": config_id,
-            "case_serial_numbers": [f"CASE{i+1:03d}" for i in range(5)],  # Correct: 5 cases
-            "item_serial_numbers": [f"ITEM{i+1:03d}" for i in range(30)]  # Wrong: 30 items instead of 50
+            "sscc_serial_numbers": [f"SSCC{i+1:03d}" for i in range(1)],  # Wrong: 1 SSCC instead of 2
+            "case_serial_numbers": [f"CASE{i+1:03d}" for i in range(10)],  # Correct: 10 cases
+            "item_serial_numbers": [f"ITEM{i+1:03d}" for i in range(100)]  # Correct: 100 items
         }
         
         try:
@@ -201,8 +208,8 @@ class BackendTester:
             
             if response.status_code == 400:
                 error_msg = response.json().get("detail", "")
-                if "Expected 50 item serial numbers" in error_msg:
-                    self.log_test("Serial Numbers Validation", True, "Validation correctly rejected wrong item count")
+                if "Expected 2 SSCC serial numbers" in error_msg:
+                    self.log_test("Serial Numbers Validation", True, "Validation correctly rejected wrong SSCC count")
                 else:
                     self.log_test("Serial Numbers Validation", False, f"Wrong error message: {error_msg}")
             else:
@@ -212,7 +219,7 @@ class BackendTester:
             self.log_test("Serial Numbers Validation", False, f"Request error: {str(e)}")
     
     def test_epcis_generation(self, config_id):
-        """Test POST /api/generate-epcis and validate XML output with user-configured GS1 parameters"""
+        """Test POST /api/generate-epcis and validate EPCIS 1.2 XML with commissioning + aggregation events"""
         if not config_id:
             self.log_test("EPCIS Generation", False, "No configuration ID available")
             return
@@ -235,11 +242,11 @@ class BackendTester:
                 content_type = response.headers.get('content-type', '')
                 if 'xml' in content_type:
                     xml_content = response.text
-                    if self.validate_epcis_xml_with_gs1_params(xml_content):
-                        self.log_test("EPCIS Generation", True, "Valid EPCIS XML generated with user-configured GS1 parameters",
+                    if self.validate_epcis_1_2_xml(xml_content):
+                        self.log_test("EPCIS Generation", True, "Valid EPCIS 1.2 XML generated with commissioning + aggregation events",
                                     f"XML length: {len(xml_content)} characters")
                     else:
-                        self.log_test("EPCIS Generation", False, "Generated XML does not use correct GS1 parameters")
+                        self.log_test("EPCIS Generation", False, "Generated XML does not meet EPCIS 1.2 standards")
                 else:
                     self.log_test("EPCIS Generation", False, f"Expected XML, got content-type: {content_type}")
             else:
@@ -248,25 +255,28 @@ class BackendTester:
         except Exception as e:
             self.log_test("EPCIS Generation", False, f"Request error: {str(e)}")
     
-    def validate_epcis_xml_with_gs1_params(self, xml_content):
-        """Validate that the generated XML uses user-configured GS1 parameters"""
+    def validate_epcis_1_2_xml(self, xml_content):
+        """Validate EPCIS 1.2 XML with commissioning events and proper GS1 identifiers"""
         try:
             root = ET.fromstring(xml_content)
             
-            # Check root element (handle namespace)
+            # Check root element and EPCIS 1.2 namespace
             if not root.tag.endswith("EPCISDocument"):
                 print(f"   Invalid root element: {root.tag}")
                 return False
             
-            # Check namespace (it's embedded in the tag name when parsed)
-            if not root.tag.startswith("{urn:epcglobal:epcis:xsd:2}"):
-                print(f"   Invalid or missing EPCIS namespace in tag: {root.tag}")
+            # Check for EPCIS 1.2 namespace (should be urn:epcglobal:epcis:xsd:1)
+            if not root.tag.startswith("{urn:epcglobal:epcis:xsd:1}"):
+                print(f"   Invalid EPCIS namespace - expected 1.2: {root.tag}")
                 return False
             
-            # Define namespace for finding elements
-            ns = {"epcis": "urn:epcglobal:epcis:xsd:2"}
+            # Check schema version
+            schema_version = root.get("schemaVersion")
+            if schema_version != "1.2":
+                print(f"   Expected schemaVersion='1.2', got '{schema_version}'")
+                return False
             
-            # Check for EPCISBody (with namespace in tag)
+            # Find EPCISBody and EventList
             epcis_body = None
             for child in root:
                 if child.tag.endswith("EPCISBody"):
@@ -277,7 +287,6 @@ class BackendTester:
                 print(f"   Missing EPCISBody element")
                 return False
             
-            # Check for EventList
             event_list = None
             for child in epcis_body:
                 if child.tag.endswith("EventList"):
@@ -288,80 +297,54 @@ class BackendTester:
                 print(f"   Missing EventList element")
                 return False
             
-            # Check for AggregationEvents
+            # Count different event types
+            object_events = []
             aggregation_events = []
+            
             for child in event_list:
-                if child.tag.endswith("AggregationEvent"):
+                if child.tag.endswith("ObjectEvent"):
+                    object_events.append(child)
+                elif child.tag.endswith("AggregationEvent"):
                     aggregation_events.append(child)
             
-            if len(aggregation_events) != 5:  # Should have 5 events for 5 cases
-                print(f"   Expected 5 AggregationEvents, found {len(aggregation_events)}")
+            # Expected events for our test scenario:
+            # - 100 ObjectEvents for item commissioning
+            # - 10 ObjectEvents for case commissioning  
+            # - 2 ObjectEvents for SSCC commissioning
+            # - 10 AggregationEvents for Items→Cases
+            # - 2 AggregationEvents for Cases→SSCCs
+            # Total: 112 ObjectEvents + 12 AggregationEvents = 124 events
+            
+            expected_object_events = 100 + 10 + 2  # Items + Cases + SSCCs
+            expected_aggregation_events = 10 + 2   # Items→Cases + Cases→SSCCs
+            
+            if len(object_events) != expected_object_events:
+                print(f"   Expected {expected_object_events} ObjectEvents (commissioning), found {len(object_events)}")
+                return False
+                
+            if len(aggregation_events) != expected_aggregation_events:
+                print(f"   Expected {expected_aggregation_events} AggregationEvents, found {len(aggregation_events)}")
                 return False
             
-            # Validate first aggregation event structure
-            first_event = aggregation_events[0]
-            required_elements = ["eventTime", "parentID", "childEPCs", "action", "bizStep"]
-            
-            # Helper function to find element by tag ending
-            def find_element_by_ending(parent, tag_ending):
-                for child in parent:
-                    if child.tag.endswith(tag_ending):
-                        return child
-                return None
-            
-            for element in required_elements:
-                elem = find_element_by_ending(first_event, element)
-                if elem is None:
-                    print(f"   Missing required element in AggregationEvent: {element}")
-                    return False
-            
-            # Check parent ID format (should be SSCC with user-configured company prefix)
-            parent_id_elem = find_element_by_ending(first_event, "parentID")
-            parent_id = parent_id_elem.text
-            expected_company_prefix = "9876543"  # From our test configuration
-            expected_case_indicator = "2"  # From our test configuration
-            
-            if not parent_id.startswith(f"urn:epc:id:sscc:{expected_company_prefix}."):
-                print(f"   Invalid parent ID format or company prefix: {parent_id}")
-                print(f"   Expected to start with: urn:epc:id:sscc:{expected_company_prefix}.")
+            # Validate commissioning events (ObjectEvents)
+            commissioning_events_validated = self.validate_commissioning_events(object_events)
+            if not commissioning_events_validated:
                 return False
             
-            # Extract the serial part and check case indicator digit
-            sscc_part = parent_id.split(f"urn:epc:id:sscc:{expected_company_prefix}.")[1]
-            if not sscc_part.startswith(expected_case_indicator):
-                print(f"   SSCC does not start with case indicator digit '{expected_case_indicator}': {sscc_part}")
+            # Validate aggregation events structure
+            aggregation_events_validated = self.validate_aggregation_events(aggregation_events)
+            if not aggregation_events_validated:
                 return False
             
-            # Check child EPCs format (should be SGTIN with user-configured parameters)
-            child_epcs_elem = find_element_by_ending(first_event, "childEPCs")
-            epcs = []
-            for child in child_epcs_elem:
-                if child.tag.endswith("epc"):
-                    epcs.append(child)
-            
-            if len(epcs) != 10:  # Should have 10 items per case
-                print(f"   Expected 10 child EPCs per case, found {len(epcs)}")
+            # Validate GS1 identifier formats
+            gs1_identifiers_validated = self.validate_gs1_identifiers(object_events, aggregation_events)
+            if not gs1_identifiers_validated:
                 return False
             
-            expected_product_code = "123456"  # From our test configuration
-            for epc in epcs:
-                expected_sgtin_prefix = f"urn:epc:id:sgtin:{expected_company_prefix}.{expected_product_code}."
-                if not epc.text.startswith(expected_sgtin_prefix):
-                    print(f"   Invalid child EPC format or parameters: {epc.text}")
-                    print(f"   Expected to start with: {expected_sgtin_prefix}")
-                    return False
-            
-            # Check action
-            action_elem = find_element_by_ending(first_event, "action")
-            action = action_elem.text
-            if action != "ADD":
-                print(f"   Expected action 'ADD', found '{action}'")
-                return False
-            
-            print(f"   ✓ Valid EPCIS XML with {len(aggregation_events)} aggregation events")
-            print(f"   ✓ Parent ID uses company prefix {expected_company_prefix} and case indicator {expected_case_indicator}: {parent_id}")
-            print(f"   ✓ Child EPCs use company prefix {expected_company_prefix} and product code {expected_product_code}")
-            print(f"   ✓ Child EPCs per case: {len(epcs)}")
+            print(f"   ✓ Valid EPCIS 1.2 XML with schema version {schema_version}")
+            print(f"   ✓ Commissioning events: {len(object_events)} ObjectEvents")
+            print(f"   ✓ Aggregation events: {len(aggregation_events)} AggregationEvents")
+            print(f"   ✓ GS1 identifiers use correct format with indicator digits")
             return True
             
         except ET.ParseError as e:
@@ -370,112 +353,191 @@ class BackendTester:
         except Exception as e:
             print(f"   Validation error: {str(e)}")
             return False
-        """Validate that the generated XML is proper EPCIS format"""
+    
+    def validate_commissioning_events(self, object_events):
+        """Validate ObjectEvents are proper commissioning events"""
         try:
-            root = ET.fromstring(xml_content)
-            
-            # Check root element (handle namespace)
-            if not root.tag.endswith("EPCISDocument"):
-                print(f"   Invalid root element: {root.tag}")
-                return False
-            
-            # Check namespace (it's embedded in the tag name when parsed)
-            if not root.tag.startswith("{urn:epcglobal:epcis:xsd:2}"):
-                print(f"   Invalid or missing EPCIS namespace in tag: {root.tag}")
-                return False
-            
-            # Define namespace for finding elements
-            ns = {"epcis": "urn:epcglobal:epcis:xsd:2"}
-            
-            # Check for EPCISBody (with namespace in tag)
-            epcis_body = None
-            for child in root:
-                if child.tag.endswith("EPCISBody"):
-                    epcis_body = child
-                    break
-            
-            if epcis_body is None:
-                print(f"   Missing EPCISBody element")
-                return False
-            
-            # Check for EventList
-            event_list = None
-            for child in epcis_body:
-                if child.tag.endswith("EventList"):
-                    event_list = child
-                    break
-                    
-            if event_list is None:
-                print(f"   Missing EventList element")
-                return False
-            
-            # Check for AggregationEvents
-            aggregation_events = []
-            for child in event_list:
-                if child.tag.endswith("AggregationEvent"):
-                    aggregation_events.append(child)
-            
-            if len(aggregation_events) != 5:  # Should have 5 events for 5 cases
-                print(f"   Expected 5 AggregationEvents, found {len(aggregation_events)}")
-                return False
-            
-            # Validate first aggregation event structure
-            first_event = aggregation_events[0]
-            required_elements = ["eventTime", "parentID", "childEPCs", "action", "bizStep"]
-            
-            # Helper function to find element by tag ending
-            def find_element_by_ending(parent, tag_ending):
-                for child in parent:
-                    if child.tag.endswith(tag_ending):
-                        return child
-                return None
-            
-            for element in required_elements:
-                elem = find_element_by_ending(first_event, element)
-                if elem is None:
-                    print(f"   Missing required element in AggregationEvent: {element}")
+            for event in object_events:
+                # Check required elements
+                required_elements = ["eventTime", "epcList", "action", "bizStep", "disposition"]
+                
+                for element_name in required_elements:
+                    elem = None
+                    for child in event:
+                        if child.tag.endswith(element_name):
+                            elem = child
+                            break
+                    if elem is None:
+                        print(f"   Missing {element_name} in ObjectEvent")
+                        return False
+                
+                # Check action is ADD
+                action_elem = None
+                for child in event:
+                    if child.tag.endswith("action"):
+                        action_elem = child
+                        break
+                if action_elem.text != "ADD":
+                    print(f"   Expected action 'ADD' in commissioning event, got '{action_elem.text}'")
+                    return False
+                
+                # Check bizStep is commissioning
+                bizstep_elem = None
+                for child in event:
+                    if child.tag.endswith("bizStep"):
+                        bizstep_elem = child
+                        break
+                if "commissioning" not in bizstep_elem.text:
+                    print(f"   Expected commissioning bizStep, got '{bizstep_elem.text}'")
                     return False
             
-            # Check parent ID format (should be SSCC)
-            parent_id_elem = find_element_by_ending(first_event, "parentID")
-            parent_id = parent_id_elem.text
-            if not parent_id.startswith("urn:epc:id:sscc:"):
-                print(f"   Invalid parent ID format: {parent_id}")
-                return False
-            
-            # Check child EPCs format (should be SGTIN)
-            child_epcs_elem = find_element_by_ending(first_event, "childEPCs")
-            epcs = []
-            for child in child_epcs_elem:
-                if child.tag.endswith("epc"):
-                    epcs.append(child)
-            
-            if len(epcs) != 10:  # Should have 10 items per case
-                print(f"   Expected 10 child EPCs per case, found {len(epcs)}")
-                return False
-            
-            for epc in epcs:
-                if not epc.text.startswith("urn:epc:id:sgtin:"):
-                    print(f"   Invalid child EPC format: {epc.text}")
-                    return False
-            
-            # Check action
-            action_elem = find_element_by_ending(first_event, "action")
-            action = action_elem.text
-            if action != "ADD":
-                print(f"   Expected action 'ADD', found '{action}'")
-                return False
-            
-            print(f"   ✓ Valid EPCIS XML with {len(aggregation_events)} aggregation events")
-            print(f"   ✓ Parent ID format: {parent_id}")
-            print(f"   ✓ Child EPCs per case: {len(epcs)}")
             return True
-            
-        except ET.ParseError as e:
-            print(f"   XML parsing error: {str(e)}")
-            return False
         except Exception as e:
-            print(f"   Validation error: {str(e)}")
+            print(f"   Error validating commissioning events: {str(e)}")
+            return False
+    
+    def validate_aggregation_events(self, aggregation_events):
+        """Validate AggregationEvents structure"""
+        try:
+            for event in aggregation_events:
+                # Check required elements
+                required_elements = ["eventTime", "parentID", "childEPCs", "action", "bizStep"]
+                
+                for element_name in required_elements:
+                    elem = None
+                    for child in event:
+                        if child.tag.endswith(element_name):
+                            elem = child
+                            break
+                    if elem is None:
+                        print(f"   Missing {element_name} in AggregationEvent")
+                        return False
+                
+                # Check action is ADD
+                action_elem = None
+                for child in event:
+                    if child.tag.endswith("action"):
+                        action_elem = child
+                        break
+                if action_elem.text != "ADD":
+                    print(f"   Expected action 'ADD' in aggregation event, got '{action_elem.text}'")
+                    return False
+                
+                # Check bizStep is packing
+                bizstep_elem = None
+                for child in event:
+                    if child.tag.endswith("bizStep"):
+                        bizstep_elem = child
+                        break
+                if "packing" not in bizstep_elem.text:
+                    print(f"   Expected packing bizStep, got '{bizstep_elem.text}'")
+                    return False
+            
+            return True
+        except Exception as e:
+            print(f"   Error validating aggregation events: {str(e)}")
+            return False
+    
+    def validate_gs1_identifiers(self, object_events, aggregation_events):
+        """Validate GS1 identifier formats with correct indicator digit placement"""
+        try:
+            company_prefix = "9876543"
+            item_product_code = "123456"
+            case_product_code = "789012"
+            sscc_indicator_digit = "3"
+            case_indicator_digit = "2"
+            item_indicator_digit = "1"
+            
+            # Check ObjectEvent EPCs
+            for event in object_events:
+                epc_list_elem = None
+                for child in event:
+                    if child.tag.endswith("epcList"):
+                        epc_list_elem = child
+                        break
+                
+                if epc_list_elem is not None:
+                    for epc_elem in epc_list_elem:
+                        if epc_elem.tag.endswith("epc"):
+                            epc = epc_elem.text
+                            
+                            # Validate EPC format
+                            if epc.startswith("urn:epc:id:sscc:"):
+                                # SSCC format: urn:epc:id:sscc:{company_prefix}.{sscc_indicator_digit}{sscc_serial}
+                                expected_prefix = f"urn:epc:id:sscc:{company_prefix}.{sscc_indicator_digit}"
+                                if not epc.startswith(expected_prefix):
+                                    print(f"   Invalid SSCC format: {epc}")
+                                    print(f"   Expected to start with: {expected_prefix}")
+                                    return False
+                            elif epc.startswith("urn:epc:id:sgtin:"):
+                                # SGTIN format: urn:epc:id:sgtin:{company_prefix}.{indicator_digit}{product_code}.{serial}
+                                if f".{case_indicator_digit}{case_product_code}." in epc:
+                                    # Case SGTIN
+                                    expected_prefix = f"urn:epc:id:sgtin:{company_prefix}.{case_indicator_digit}{case_product_code}."
+                                    if not epc.startswith(expected_prefix):
+                                        print(f"   Invalid Case SGTIN format: {epc}")
+                                        print(f"   Expected to start with: {expected_prefix}")
+                                        return False
+                                elif f".{item_indicator_digit}{item_product_code}." in epc:
+                                    # Item SGTIN
+                                    expected_prefix = f"urn:epc:id:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}."
+                                    if not epc.startswith(expected_prefix):
+                                        print(f"   Invalid Item SGTIN format: {epc}")
+                                        print(f"   Expected to start with: {expected_prefix}")
+                                        return False
+                                else:
+                                    print(f"   Unknown SGTIN format: {epc}")
+                                    return False
+                            else:
+                                print(f"   Unknown EPC format: {epc}")
+                                return False
+            
+            # Check AggregationEvent parent and child EPCs
+            for event in aggregation_events:
+                parent_id_elem = None
+                child_epcs_elem = None
+                
+                for child in event:
+                    if child.tag.endswith("parentID"):
+                        parent_id_elem = child
+                    elif child.tag.endswith("childEPCs"):
+                        child_epcs_elem = child
+                
+                # Validate parent ID
+                if parent_id_elem is not None:
+                    parent_epc = parent_id_elem.text
+                    if parent_epc.startswith("urn:epc:id:sscc:"):
+                        expected_prefix = f"urn:epc:id:sscc:{company_prefix}.{sscc_indicator_digit}"
+                        if not parent_epc.startswith(expected_prefix):
+                            print(f"   Invalid parent SSCC format: {parent_epc}")
+                            return False
+                    elif parent_epc.startswith("urn:epc:id:sgtin:"):
+                        expected_prefix = f"urn:epc:id:sgtin:{company_prefix}.{case_indicator_digit}{case_product_code}."
+                        if not parent_epc.startswith(expected_prefix):
+                            print(f"   Invalid parent Case SGTIN format: {parent_epc}")
+                            return False
+                
+                # Validate child EPCs
+                if child_epcs_elem is not None:
+                    for child_epc_elem in child_epcs_elem:
+                        if child_epc_elem.tag.endswith("epc"):
+                            child_epc = child_epc_elem.text
+                            if child_epc.startswith("urn:epc:id:sgtin:"):
+                                if f".{case_indicator_digit}{case_product_code}." in child_epc:
+                                    expected_prefix = f"urn:epc:id:sgtin:{company_prefix}.{case_indicator_digit}{case_product_code}."
+                                elif f".{item_indicator_digit}{item_product_code}." in child_epc:
+                                    expected_prefix = f"urn:epc:id:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}."
+                                else:
+                                    print(f"   Unknown child SGTIN format: {child_epc}")
+                                    return False
+                                
+                                if not child_epc.startswith(expected_prefix):
+                                    print(f"   Invalid child SGTIN format: {child_epc}")
+                                    return False
+            
+            return True
+        except Exception as e:
+            print(f"   Error validating GS1 identifiers: {str(e)}")
             return False
     
     def test_error_handling(self):
