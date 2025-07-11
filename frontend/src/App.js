@@ -112,7 +112,14 @@ function App() {
 
   const handleReset = () => {
     setCurrentStep(1);
-    setConfiguration({ itemsPerCase: 10, numberOfCases: 5 });
+    setConfiguration({ 
+      itemsPerCase: 10, 
+      numberOfCases: 5,
+      companyPrefix: '1234567',
+      productCode: '000000',
+      caseIndicatorDigit: '0',
+      itemIndicatorDigit: '0'
+    });
     setConfigurationId('');
     setCaseSerials([]);
     setItemSerials([]);
