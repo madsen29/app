@@ -39,9 +39,7 @@ body {
 
 .header .header-logo {
   width: 60px;
-}
-.header .header-logo svg {
-  fill: white;
+  margin: 0 auto;
 }
 
 .header h1 {
