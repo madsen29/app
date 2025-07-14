@@ -79,7 +79,7 @@ body {
 }
 
 .progress-step.active {
-  background: #667eea;
+  background: #0055fb;
   color: white;
 }
 
@@ -95,7 +95,7 @@ body {
 }
 
 .progress-step.active:not(:last-child)::after {
-  background: #667eea;
+  background: #0055fb;
 }
 
 /* Main Content */
@@ -144,7 +144,7 @@ body {
   font-weight: 600;
   margin-bottom: 1rem;
   color: #2d3748;
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid #0055fb;
   padding-bottom: 0.5rem;
 }
 
@@ -210,7 +210,7 @@ body {
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0055fb;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -253,7 +253,7 @@ body {
   font-weight: 600;
   margin-bottom: 1rem;
   color: #2d3748;
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid #0055fb;
   padding-bottom: 0.5rem;
 }
 
@@ -284,7 +284,7 @@ body {
 
 .serial-input-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #0055fb;
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
@@ -362,7 +362,7 @@ body {
 }
 
 .btn-primary {
-  background: #667eea;
+  background: #0055fb;
   color: white;
   padding: 0.75rem 1.5rem;
   border: none;
@@ -401,9 +401,9 @@ body {
 
 .btn-outline {
   background: transparent;
-  color: #667eea;
+  color: #0055fb;
   padding: 0.75rem 1.5rem;
-  border: 2px solid #667eea;
+  border: 2px solid #0055fb;
   border-radius: 6px;
   font-size: 1rem;
   font-weight: 600;
@@ -412,7 +412,7 @@ body {
 }
 
 .btn-outline:hover {
-  background: #667eea;
+  background: #0055fb;
   color: white;
 }
 
