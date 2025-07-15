@@ -76,11 +76,21 @@ body {
   color: #a0aec0;
   margin: 0 1rem;
   position: relative;
+  transition: all 0.2s ease;
 }
 
 .progress-step.active {
   background: #0055fb;
   color: white;
+}
+
+.progress-step.clickable {
+  cursor: pointer;
+}
+
+.progress-step.clickable:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 85, 251, 0.2);
 }
 
 .progress-step:not(:last-child)::after {
