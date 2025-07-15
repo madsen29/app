@@ -335,6 +335,8 @@ function App() {
       // Parse GS1 Data Matrix barcode
       const parsedData = parseGS1Barcode(scannedData);
       
+      console.log('Parsed GS1 Data:', parsedData); // Debug log
+      
       if (parsedData.serialNumber) {
         // Add the scanned serial number to the current text area
         const currentValue = scannerModal.targetField === 'sscc' ? ssccSerials :
@@ -345,7 +347,19 @@ function App() {
         const newValue = currentValue ? currentValue + '\n' + parsedData.serialNumber : parsedData.serialNumber;
         scannerModal.targetSetter(newValue);
         
-        setSuccess(`Scanned serial number: ${parsedData.serialNumber}`);
+        // Show detailed success message
+        let successMessage = `Scanned serial number: ${parsedData.serialNumber}`;
+        if (parsedData.gtin) {
+          successMessage += `\nGTIN: ${parsedData.gtin}`;
+        }
+        if (parsedData.batchLot) {
+          successMessage += `\nBatch/Lot: ${parsedData.batchLot}`;
+        }
+        if (parsedData.expirationDate) {
+          successMessage += `\nExp Date: ${parsedData.expirationDate}`;
+        }
+        
+        setSuccess(successMessage);
         closeScanner();
       } else {
         setError('Could not extract serial number from barcode');
