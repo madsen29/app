@@ -131,6 +131,44 @@ body {
   margin-bottom: 1.5rem;
 }
 
+.checkbox-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.checkbox-text strong {
+  font-size: 1rem;
+  color: #2d3748;
+}
+
+.checkbox-text small {
+  color: #718096;
+  font-weight: normal;
+  font-size: 0.875rem;
+}
+
+.packaging-config {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.config-explanation {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #edf2f7;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.config-explanation p {
+  margin: 0;
+  font-weight: 600;
+  color: #4a5568;
+}
+
 .gs1-section {
   background: #edf2f7;
   padding: 1.5rem;
@@ -144,7 +182,7 @@ body {
   font-weight: 600;
   margin-bottom: 1rem;
   color: #2d3748;
-  border-bottom: 2px solid #0055fb;
+  border-bottom: 2px solid #667eea;
   padding-bottom: 0.5rem;
 }
 
