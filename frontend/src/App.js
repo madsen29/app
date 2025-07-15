@@ -710,6 +710,29 @@ function App() {
               <small className="form-hint">Product code used for all packaging levels</small>
             </div>
             <div className="form-group">
+              <label htmlFor="lotNumber">Lot Number:</label>
+              <input
+                type="text"
+                id="lotNumber"
+                value={configuration.lotNumber}
+                onChange={(e) => setConfiguration({...configuration, lotNumber: e.target.value})}
+                placeholder="e.g., 4JT0482"
+                required
+              />
+              <small className="form-hint">Lot number applied to Case, Inner Case, and Item levels</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="expirationDate">Expiration Date:</label>
+              <input
+                type="date"
+                id="expirationDate"
+                value={configuration.expirationDate}
+                onChange={(e) => setConfiguration({...configuration, expirationDate: e.target.value})}
+                required
+              />
+              <small className="form-hint">Expiration date applied to Case, Inner Case, and Item levels</small>
+            </div>
+            <div className="form-group">
               <label htmlFor="ssccExtensionDigit">SSCC Extension Digit:</label>
               <input
                 type="text"
