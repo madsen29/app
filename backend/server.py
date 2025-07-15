@@ -66,6 +66,7 @@ class SerialNumbers(BaseModel):
     configuration_id: str
     sscc_serial_numbers: List[str]
     case_serial_numbers: List[str]
+    inner_case_serial_numbers: List[str] = Field(default_factory=list)
     item_serial_numbers: List[str]
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
@@ -73,6 +74,7 @@ class SerialNumbersCreate(BaseModel):
     configuration_id: str
     sscc_serial_numbers: List[str]
     case_serial_numbers: List[str]
+    inner_case_serial_numbers: List[str] = Field(default_factory=list)
     item_serial_numbers: List[str]
 
 class EPCISGenerationRequest(BaseModel):
