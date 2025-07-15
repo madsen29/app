@@ -44,19 +44,19 @@ function App() {
     
     try {
       const response = await axios.post(`${API}/configuration`, {
-        items_per_case: configuration.useInnerCases ? 0 : configuration.itemsPerCase,
+        items_per_case: configuration.casesPerSscc === 0 ? configuration.itemsPerCase : (configuration.useInnerCases ? 0 : configuration.itemsPerCase),
         cases_per_sscc: configuration.casesPerSscc,
         number_of_sscc: configuration.numberOfSscc,
-        use_inner_cases: configuration.useInnerCases,
-        inner_cases_per_case: configuration.useInnerCases ? configuration.innerCasesPerCase : 0,
-        items_per_inner_case: configuration.useInnerCases ? configuration.itemsPerInnerCase : 0,
+        use_inner_cases: configuration.casesPerSscc === 0 ? false : configuration.useInnerCases,
+        inner_cases_per_case: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.innerCasesPerCase : 0,
+        items_per_inner_case: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.itemsPerInnerCase : 0,
         company_prefix: configuration.companyPrefix,
         item_product_code: configuration.productCode,
         case_product_code: configuration.productCode,
-        inner_case_product_code: configuration.useInnerCases ? configuration.productCode : '',
+        inner_case_product_code: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.productCode : '',
         sscc_indicator_digit: configuration.ssccExtensionDigit,
         case_indicator_digit: configuration.caseIndicatorDigit,
-        inner_case_indicator_digit: configuration.useInnerCases ? configuration.innerCaseIndicatorDigit : '',
+        inner_case_indicator_digit: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.innerCaseIndicatorDigit : '',
         item_indicator_digit: configuration.itemIndicatorDigit
       });
       
