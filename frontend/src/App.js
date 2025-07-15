@@ -266,6 +266,60 @@ function App() {
     setItemSerials(validatedValue);
   };
 
+  // FDA API functions
+  const searchFdaApi = async (ndc) => {
+    setFdaModal({ ...fdaModal, isLoading: true });
+    
+    try {
+      const response = await fetch(`https://api.fda.gov/drug/ndc.json?search=product_ndc:"${ndc}"&limit=10`);
+      const data = await response.json();
+      
+      if (data.results && data.results.length > 0) {
+        setFdaModal({
+          isOpen: true,
+          searchResults: data.results,
+          isLoading: false
+        });
+      } else {
+        setError('No products found for this NDC number');
+        setFdaModal({ ...fdaModal, isLoading: false });
+      }
+    } catch (error) {
+      setError('Failed to search FDA API: ' + error.message);
+      setFdaModal({ ...fdaModal, isLoading: false });
+    }
+  };
+
+  const handleFdaSearch = () => {
+    if (configuration.productNdc) {
+      searchFdaApi(configuration.productNdc);
+    } else {
+      setError('Please enter a Product NDC number');
+    }
+  };
+
+  const selectFdaProduct = (product) => {
+    setConfiguration({
+      ...configuration,
+      regulatedProductName: product.brand_name || product.generic_name || '',
+      manufacturerName: product.labeler_name || '',
+      dosageFormType: product.dosage_form || '',
+      strengthDescription: product.active_ingredients?.map(ing => 
+        `${ing.name} ${ing.strength}`
+      ).join(', ') || '',
+      netContentDescription: product.packaging?.map(pkg => 
+        `${pkg.package_ndc} ${pkg.description}`
+      ).join(', ') || ''
+    });
+    
+    setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
+    setSuccess('Product information loaded from FDA API');
+  };
+
+  const closeFdaModal = () => {
+    setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
+  };
+
   // Barcode scanning functions
   const openScanner = (targetField, targetSetter) => {
     setScannerModal({ isOpen: true, targetField, targetSetter });
