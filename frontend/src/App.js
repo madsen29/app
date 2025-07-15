@@ -943,7 +943,14 @@ function App() {
           </div>
 
           <div className="button-group">
-            <button type="button" onClick={() => setCurrentStep(1)} className="btn-secondary">
+            <button 
+              type="button" 
+              onClick={() => {
+                setCurrentStep(1);
+                scrollToTop();
+              }} 
+              className="btn-secondary"
+            >
               Back
             </button>
             <button type="submit" disabled={isLoading} className="btn-primary">
