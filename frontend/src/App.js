@@ -918,12 +918,8 @@ function App() {
             <p>The generated file will contain GS1 compliant EPCIS 1.2 XML with commissioning and aggregation events for pharmaceutical serialization.</p>
             <ul>
               <li>Company Prefix: {configuration.companyPrefix}</li>
-              <li>Item Product Code: {configuration.itemProductCode}</li>
-              <li>Case Product Code: {configuration.caseProductCode}</li>
-              {configuration.useInnerCases && (
-                <li>Inner Case Product Code: {configuration.innerCaseProductCode}</li>
-              )}
-              <li>SSCC Indicator: {configuration.ssccIndicatorDigit}</li>
+              <li>Product Code: {configuration.productCode}</li>
+              <li>SSCC Extension: {configuration.ssccExtensionDigit}</li>
               <li>Case Indicator: {configuration.caseIndicatorDigit}</li>
               {configuration.useInnerCases && (
                 <li>Inner Case Indicator: {configuration.innerCaseIndicatorDigit}</li>
