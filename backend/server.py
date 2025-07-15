@@ -198,6 +198,21 @@ async def generate_epcis(request: EPCISGenerationRequest):
         headers={"Content-Disposition": "attachment; filename=epcis_aggregation.xml"}
     )
 
+def add_ilmd_extension(event_element, lot_number, expiration_date):
+    """Add ILMD extension with lot number and expiration date to an event"""
+    if lot_number or expiration_date:
+        extension = ET.SubElement(event_element, "extension")
+        ilmd = ET.SubElement(extension, "ilmd")
+        ilmd.set("xmlns:cbvmda", "urn:epcglobal:cbv:mda")
+        
+        if lot_number:
+            lot_elem = ET.SubElement(ilmd, "cbvmda:lotNumber")
+            lot_elem.text = lot_number
+        
+        if expiration_date:
+            exp_elem = ET.SubElement(ilmd, "cbvmda:itemExpirationDate")
+            exp_elem.text = expiration_date
+
 def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     """Generate GS1 EPCIS 1.2 XML for pharmaceutical aggregation with optional inner cases"""
     
