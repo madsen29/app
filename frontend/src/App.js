@@ -852,7 +852,7 @@ function App() {
                   onClick={() => openScanner('item', setItemSerials)}
                   title="Scan barcode"
                 >
-                  <Camera size={20} />
+                  <FiCamera size={20} />
                 </button>
               </div>
               <small className="form-hint">Enter {totals.totalItems} item serial numbers, one per line</small>
