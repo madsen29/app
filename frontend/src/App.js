@@ -385,24 +385,221 @@ function App() {
     return value;
   };
 
-  const handleSsccSerialsChange = (e) => {
-    const validatedValue = validateSerialNumbers(e.target.value, 'SSCC Serial Numbers');
-    setSsccSerials(validatedValue);
+  // Hierarchical serial number functions
+  const handleSerialInput = (value) => {
+    setSerialCollectionStep({
+      ...serialCollectionStep,
+      currentSerial: value
+    });
   };
 
-  const handleCaseSerialsChange = (e) => {
-    const validatedValue = validateSerialNumbers(e.target.value, 'Case Serial Numbers');
-    setCaseSerials(validatedValue);
+  const handleNextSerial = () => {
+    if (!serialCollectionStep.currentSerial.trim()) {
+      setError('Please enter a serial number');
+      return;
+    }
+
+    // Save current serial and move to next
+    const updatedSerials = [...hierarchicalSerials];
+    const currentSSCC = updatedSerials[serialCollectionStep.ssccIndex];
+    
+    switch (serialCollectionStep.currentLevel) {
+      case 'sscc':
+        currentSSCC.ssccSerial = serialCollectionStep.currentSerial;
+        break;
+      case 'case':
+        currentSSCC.cases[serialCollectionStep.caseIndex].caseSerial = serialCollectionStep.currentSerial;
+        break;
+      case 'innerCase':
+        currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].innerCaseSerial = serialCollectionStep.currentSerial;
+        break;
+      case 'item':
+        if (configuration.useInnerCases) {
+          currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+        } else if (configuration.casesPerSscc > 0) {
+          currentSSCC.cases[serialCollectionStep.caseIndex].items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+        } else {
+          currentSSCC.items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+        }
+        break;
+    }
+    
+    setHierarchicalSerials(updatedSerials);
+    
+    // Calculate next step
+    const nextStep = calculateNextStep();
+    setSerialCollectionStep({
+      ...nextStep,
+      currentSerial: ''
+    });
   };
 
-  const handleInnerCaseSerialsChange = (e) => {
-    const validatedValue = validateSerialNumbers(e.target.value, 'Inner Case Serial Numbers');
-    setInnerCaseSerials(validatedValue);
-  };
-
-  const handleItemSerialsChange = (e) => {
-    const validatedValue = validateSerialNumbers(e.target.value, 'Item Serial Numbers');
-    setItemSerials(validatedValue);
+  const calculateNextStep = () => {
+    const current = serialCollectionStep;
+    const totals = calculateTotals();
+    
+    if (current.currentLevel === 'sscc') {
+      // Move to first case or first item (if direct SSCC→Items)
+      if (configuration.casesPerSscc === 0) {
+        return {
+          ...current,
+          currentLevel: 'item',
+          itemIndex: 0
+        };
+      } else {
+        return {
+          ...current,
+          currentLevel: 'case',
+          caseIndex: 0
+        };
+      }
+    } else if (current.currentLevel === 'case') {
+      // Move to first inner case or first item
+      if (configuration.useInnerCases) {
+        return {
+          ...current,
+          currentLevel: 'innerCase',
+          innerCaseIndex: 0
+        };
+      } else {
+        return {
+          ...current,
+          currentLevel: 'item',
+          itemIndex: 0
+        };
+      }
+    } else if (current.currentLevel === 'innerCase') {
+      // Move to first item in this inner case
+      return {
+        ...current,
+        currentLevel: 'item',
+        itemIndex: 0
+      };
+    } else if (current.currentLevel === 'item') {
+      // Move to next item, inner case, case, or SSCC
+      const nextItemIndex = current.itemIndex + 1;
+      
+      if (configuration.useInnerCases) {
+        const itemsPerInnerCase = configuration.itemsPerInnerCase;
+        if (nextItemIndex < itemsPerInnerCase) {
+          // More items in this inner case
+          return {
+            ...current,
+            itemIndex: nextItemIndex
+          };
+        } else {
+          // Move to next inner case
+          const nextInnerCaseIndex = current.innerCaseIndex + 1;
+          if (nextInnerCaseIndex < configuration.innerCasesPerCase) {
+            return {
+              ...current,
+              innerCaseIndex: nextInnerCaseIndex,
+              itemIndex: 0,
+              currentLevel: 'innerCase'
+            };
+          } else {
+            // Move to next case
+            const nextCaseIndex = current.caseIndex + 1;
+            if (nextCaseIndex < configuration.casesPerSscc) {
+              return {
+                ...current,
+                caseIndex: nextCaseIndex,
+                innerCaseIndex: 0,
+                itemIndex: 0,
+                currentLevel: 'case'
+              };
+            } else {
+              // Move to next SSCC
+              const nextSSCCIndex = current.ssccIndex + 1;
+              if (nextSSCCIndex < configuration.numberOfSscc) {
+                return {
+                  ...current,
+                  ssccIndex: nextSSCCIndex,
+                  caseIndex: 0,
+                  innerCaseIndex: 0,
+                  itemIndex: 0,
+                  currentLevel: 'sscc'
+                };
+              } else {
+                // All done
+                return {
+                  ...current,
+                  isComplete: true
+                };
+              }
+            }
+          }
+        }
+      } else if (configuration.casesPerSscc > 0) {
+        // Cases → Items
+        const itemsPerCase = configuration.itemsPerCase;
+        if (nextItemIndex < itemsPerCase) {
+          // More items in this case
+          return {
+            ...current,
+            itemIndex: nextItemIndex
+          };
+        } else {
+          // Move to next case
+          const nextCaseIndex = current.caseIndex + 1;
+          if (nextCaseIndex < configuration.casesPerSscc) {
+            return {
+              ...current,
+              caseIndex: nextCaseIndex,
+              itemIndex: 0,
+              currentLevel: 'case'
+            };
+          } else {
+            // Move to next SSCC
+            const nextSSCCIndex = current.ssccIndex + 1;
+            if (nextSSCCIndex < configuration.numberOfSscc) {
+              return {
+                ...current,
+                ssccIndex: nextSSCCIndex,
+                caseIndex: 0,
+                itemIndex: 0,
+                currentLevel: 'sscc'
+              };
+            } else {
+              // All done
+              return {
+                ...current,
+                isComplete: true
+              };
+            }
+          }
+        }
+      } else {
+        // Direct SSCC → Items
+        const itemsPerSSCC = configuration.itemsPerCase;
+        if (nextItemIndex < itemsPerSSCC) {
+          // More items in this SSCC
+          return {
+            ...current,
+            itemIndex: nextItemIndex
+          };
+        } else {
+          // Move to next SSCC
+          const nextSSCCIndex = current.ssccIndex + 1;
+          if (nextSSCCIndex < configuration.numberOfSscc) {
+            return {
+              ...current,
+              ssccIndex: nextSSCCIndex,
+              itemIndex: 0,
+              currentLevel: 'sscc'
+            };
+          } else {
+            // All done
+            return {
+              ...current,
+              isComplete: true
+            };
+          }
+        }
+      }
+    }
+    
+    return current;
   };
 
   // Package NDC formatting functions
