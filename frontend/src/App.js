@@ -397,6 +397,19 @@ function App() {
       productCodeForGS1 = packageNdc.replace(/-/g, '').slice(5);
     }
     
+    // Extract Company Prefix from first section of Package NDC
+    // Example: "0574-0820-10" -> first section is "0574" -> prepend "03" -> "030574"
+    let companyPrefix = '';
+    if (ndcParts.length >= 1) {
+      // Take the first section and prepend "03"
+      const firstSection = ndcParts[0];
+      companyPrefix = "03" + firstSection;
+    } else {
+      // Fallback if NDC format is unexpected
+      const rawPackageNdc = packageNdc.replace(/-/g, '');
+      companyPrefix = "03" + rawPackageNdc.slice(0, 5);
+    }
+    
     // For Package NDC storage, ensure it's properly formatted as 11 digits
     const rawPackageNdc = packageNdc.replace(/-/g, '');
     let selectedPackageNdc;
@@ -416,17 +429,11 @@ function App() {
       selectedPackageNdc = rawPackageNdc;
     }
     
-    // Extract labeler code (first 5 digits) for company prefix
-    const labelerCode = selectedPackageNdc.slice(0, 5);
-    
-    // Create GS1 Company Prefix by prepending "03" to labeler code
-    const companyPrefix = "03" + labelerCode;
-    
     setConfiguration({
       ...configuration,
       productNdc: productOption.productNdc, // Store the 10-digit product NDC
       packageNdc: selectedPackageNdc, // Store the 11-digit package NDC without hyphens
-      companyPrefix: companyPrefix,
+      companyPrefix: companyPrefix, // Company prefix from first section of Package NDC
       productCode: productCodeForGS1, // Product code from last 2 sections of Package NDC
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
       manufacturerName: productOption.labeler_name || '',
