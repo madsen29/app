@@ -371,104 +371,92 @@ function App() {
   };
 
   const parseGS1Barcode = (barcodeData) => {
-    // GS1 Application Identifiers for raw barcode data (without parentheses)
+    // GS1 Group Separator character (ASCII 29)
+    const GS1_SEPARATOR = '\u001d';
+    
     let serialNumber = '';
     let gtin = '';
     let sscc = '';
     let batchLot = '';
     let expirationDate = '';
     
-    // Parse raw GS1 data without parentheses
-    let remainingData = barcodeData;
+    // Clean the data and split by GS1 separators
+    let cleanData = barcodeData;
     
-    while (remainingData.length > 0) {
-      // Check for AI 01 (GTIN) - Fixed length 14 digits
-      if (remainingData.startsWith('01')) {
-        if (remainingData.length >= 16) { // 2 (AI) + 14 (GTIN)
-          gtin = remainingData.substring(2, 16);
-          remainingData = remainingData.substring(16);
-          continue;
-        }
-      }
+    // Replace GS1 separators with a marker we can split on
+    const segments = cleanData.split(GS1_SEPARATOR);
+    
+    console.log('GS1 Segments:', segments);
+    
+    // Process each segment
+    for (let segment of segments) {
+      if (!segment) continue;
       
-      // Check for AI 00 (SSCC) - Fixed length 18 digits
-      if (remainingData.startsWith('00')) {
-        if (remainingData.length >= 20) { // 2 (AI) + 18 (SSCC)
-          sscc = remainingData.substring(2, 20);
-          remainingData = remainingData.substring(20);
-          continue;
-        }
-      }
+      // Process this segment
+      let remainingData = segment;
       
-      // Check for AI 21 (Serial Number) - Variable length
-      if (remainingData.startsWith('21')) {
-        // Look for the next AI starting from position 2
-        let nextAI = -1;
-        for (let i = 3; i < remainingData.length - 1; i++) { // Start from position 3 (after '21')
-          const potentialAI = remainingData.substring(i, i + 2);
-          // Common GS1 AIs that might follow
-          if (['01', '00', '10', '11', '17', '21', '30', '37', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99'].includes(potentialAI)) {
-            nextAI = i;
-            break;
+      while (remainingData.length > 0) {
+        // Check for AI 01 (GTIN) - Fixed length 14 digits
+        if (remainingData.startsWith('01')) {
+          if (remainingData.length >= 16) { // 2 (AI) + 14 (GTIN)
+            gtin = remainingData.substring(2, 16);
+            remainingData = remainingData.substring(16);
+            continue;
           }
         }
         
-        if (nextAI === -1) {
-          // Serial number goes to end of string
+        // Check for AI 00 (SSCC) - Fixed length 18 digits
+        if (remainingData.startsWith('00')) {
+          if (remainingData.length >= 20) { // 2 (AI) + 18 (SSCC)
+            sscc = remainingData.substring(2, 20);
+            remainingData = remainingData.substring(20);
+            continue;
+          }
+        }
+        
+        // Check for AI 21 (Serial Number) - Variable length (terminated by separator or next AI)
+        if (remainingData.startsWith('21')) {
+          // For variable length fields, take everything after the AI
+          // The separator should have already split this
           serialNumber = remainingData.substring(2);
           remainingData = '';
-        } else {
-          serialNumber = remainingData.substring(2, nextAI);
-          remainingData = remainingData.substring(nextAI);
+          continue;
         }
-        continue;
-      }
-      
-      // Check for AI 10 (Batch/Lot) - Variable length
-      if (remainingData.startsWith('10')) {
-        let nextAI = -1;
-        for (let i = 3; i < remainingData.length - 1; i++) { // Start from position 3 (after '10')
-          const potentialAI = remainingData.substring(i, i + 2);
-          if (['01', '00', '17', '21', '30', '37', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99'].includes(potentialAI)) {
-            nextAI = i;
-            break;
+        
+        // Check for AI 17 (Expiration Date) - Fixed length 6 digits (YYMMDD)
+        if (remainingData.startsWith('17')) {
+          if (remainingData.length >= 8) { // 2 (AI) + 6 (Date)
+            expirationDate = remainingData.substring(2, 8);
+            remainingData = remainingData.substring(8);
+            continue;
           }
         }
         
-        if (nextAI === -1) {
+        // Check for AI 10 (Batch/Lot) - Variable length
+        if (remainingData.startsWith('10')) {
+          // For variable length fields, take everything after the AI
           batchLot = remainingData.substring(2);
           remainingData = '';
-        } else {
-          batchLot = remainingData.substring(2, nextAI);
-          remainingData = remainingData.substring(nextAI);
-        }
-        continue;
-      }
-      
-      // Check for AI 17 (Expiration Date) - Fixed length 6 digits (YYMMDD)
-      if (remainingData.startsWith('17')) {
-        if (remainingData.length >= 8) { // 2 (AI) + 6 (Date)
-          expirationDate = remainingData.substring(2, 8);
-          remainingData = remainingData.substring(8);
           continue;
         }
-      }
-      
-      // Check for AI 11 (Production Date) - Fixed length 6 digits (YYMMDD)
-      if (remainingData.startsWith('11')) {
-        if (remainingData.length >= 8) { // 2 (AI) + 6 (Date)
-          // Skip production date for now, but consume it
-          remainingData = remainingData.substring(8);
-          continue;
+        
+        // Check for AI 11 (Production Date) - Fixed length 6 digits (YYMMDD)
+        if (remainingData.startsWith('11')) {
+          if (remainingData.length >= 8) { // 2 (AI) + 6 (Date)
+            // Skip production date for now, but consume it
+            remainingData = remainingData.substring(8);
+            continue;
+          }
         }
+        
+        // If we can't parse, skip to next character
+        remainingData = remainingData.substring(1);
       }
-      
-      // If we can't parse, skip to next character
-      remainingData = remainingData.substring(1);
     }
     
     console.log('GS1 Parsing Debug:', {
       originalData: barcodeData,
+      segments: segments,
       gtin,
       serialNumber,
       expirationDate,
