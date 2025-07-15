@@ -141,7 +141,7 @@ function App() {
     setConfiguration({ 
       itemsPerCase: 10,
       casesPerSscc: 5,
-      numberOfSscc: 2,
+      numberOfSscc: 1,
       useInnerCases: false,
       innerCasesPerCase: 2,
       itemsPerInnerCase: 5,
