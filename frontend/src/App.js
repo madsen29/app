@@ -3,7 +3,7 @@ import "./App.css";
 import axios from "axios";
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { BarcodeFormat } from '@zxing/library';
-import { FiCamera } from 'react-icons/fi';
+import { FiCamera, FiChevronRight } from 'react-icons/fi';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
