@@ -87,6 +87,7 @@ class EPCClassTester:
                 if missing_fields:
                     self.log_test("Configuration with EPCClass Data", False, 
                                 f"Missing EPCClass fields: {missing_fields}")
+                    print(f"   Actual response data: {json.dumps(data, indent=2)}")
                     return None
                 elif incorrect_values:
                     self.log_test("Configuration with EPCClass Data", False, 
