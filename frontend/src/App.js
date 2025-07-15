@@ -18,7 +18,7 @@ function App() {
     innerCasesPerCase: 2,
     itemsPerInnerCase: 5,
     companyPrefix: '0345802',
-    productCode: '046',
+    productCode: '46653',
     lotNumber: '',
     expirationDate: '',
     ssccExtensionDigit: '0',
