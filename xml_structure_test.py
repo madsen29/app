@@ -157,9 +157,11 @@ def test_xml_structure():
                 ilmd_found = True
                 
                 # Check namespace attribute
-                if 'cbvmda' not in ET.tostring(child, encoding='unicode'):
+                if 'urn:epcglobal:cbv:mda' not in ET.tostring(child, encoding='unicode'):
                     structure_matches = False
                     print("❌ Missing cbvmda namespace in ILMD")
+                else:
+                    print("✅ Correct cbvmda namespace found")
                 
                 # Check lot number element
                 lot_found = False
