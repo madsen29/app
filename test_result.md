@@ -128,6 +128,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "LOT NUMBER AND EXPIRATION DATE TESTING COMPLETED: ✅ Configuration API properly stores lot_number and expiration_date fields ✅ Fields default to empty strings when not provided ✅ Database persistence working correctly ✅ All existing functionality remains intact ✅ Test data: lot_number='4JT0482', expiration_date='2026-08-31' successfully stored and retrieved"
+      - working: true
+        agent: "testing"
+        comment: "PACKAGE NDC FIELD TESTING COMPLETED: ✅ NEW package_ndc field properly stored and retrieved in configuration API ✅ Field correctly persisted in database ✅ Test data: package_ndc='45802-046-85' successfully stored and retrieved ✅ All existing functionality remains intact ✅ Configuration API handles all hierarchy scenarios (2-level, 3-level, 4-level) with package_ndc field ✅ Field validation working correctly"
   
   - task: "Serial numbers API endpoints"
     implemented: true
@@ -149,6 +152,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "RETESTED AND CONFIRMED: Serial numbers API working correctly with new hierarchy. ✅ Validates SSCC, case, and item serial counts ✅ Handles edge cases (direct SSCC→Items with 0 cases) ✅ Supports inner cases configuration ✅ Proper error handling for invalid counts ✅ Configuration validation working"
+      - working: true
+        agent: "testing"
+        comment: "PACKAGE NDC INTEGRATION TESTING COMPLETED: ✅ Serial numbers API works correctly with configurations containing package_ndc field ✅ All hierarchy scenarios validated: 2-level (SSCC→Items), 3-level (SSCC→Cases→Items), 4-level (SSCC→Cases→Inner Cases→Items) ✅ Test configuration: 1 SSCC, 2 Cases, 6 Inner Cases, 48 Items successfully validated ✅ Serial number counts properly validated against configuration ✅ No regressions detected"
   
   - task: "EPCIS XML generation"
     implemented: true
@@ -176,6 +182,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "CASE COMMISSIONING EVENT ILMD EXTENSION TESTING COMPLETED: ✅ CONFIRMED: Case commissioning event now properly includes ILMD extension with lot number and expiration date ✅ Complete ILMD coverage verified: Items ✓, Inner Cases ✓, Cases ✓ (newly confirmed), SSCCs ✗ (correctly excluded) ✅ XML structure validation passed: Case commissioning event contains proper <extension><ilmd><cbvmda:lotNumber>4JT0482</cbvmda:lotNumber><cbvmda:itemExpirationDate>2026-08-31</cbvmda:itemExpirationDate></ilmd></extension> structure ✅ Test configuration used: Company Prefix: 1234567, Product Code: 000000, Lot: 4JT0482, Expiry: 2026-08-31, Hierarchy: 1 SSCC → 5 Cases → 10 Items/case (50 total items) ✅ All three packaging levels (Items, Inner Cases, Cases) now properly include ILMD extensions ✅ SSCC commissioning events correctly do NOT include ILMD extensions ✅ Generated XML matches expected format from review request ✅ Comprehensive testing with multiple test suites confirms implementation is working correctly"
+      - working: true
+        agent: "testing"
+        comment: "PACKAGE NDC AND EPCCLASS GENERATION TESTING COMPLETED: ✅ COMPREHENSIVE VALIDATION PASSED: All new package_ndc and EPCClass requirements fully implemented and working ✅ EPCISMasterData properly wrapped inside <extension> element ✅ EPCClass vocabulary elements generated for each packaging level with correct indicator digits ✅ package_ndc field used for additionalTradeItemIdentification (not product_ndc) ✅ Multiple hierarchy scenarios tested: 2-level (1 EPCClass), 3-level (2 EPCClasses), 4-level (3 EPCClasses) ✅ Review request configuration verified: Company Prefix: 1234567, Package NDC: 45802-046-85, 1 SSCC → 2 Cases → 6 Inner Cases → 48 Items ✅ All EPCClass patterns use correct indicator digits: Item (1), Case (2), Inner Case (4) ✅ package_ndc (45802-046-85) correctly used in all EPCClass additionalTradeItemIdentification attributes ✅ XML structure validation passed: EPCISHeader → extension → EPCISMasterData → VocabularyList → Vocabulary → VocabularyElementList ✅ 100% test success rate across all scenarios"
 
 frontend:
   - task: "Configuration form UI"
