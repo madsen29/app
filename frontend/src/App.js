@@ -1149,6 +1149,24 @@ function App() {
           </div>
         )}
 
+        {/* Toast Notifications */}
+        <div className="toast-container">
+          {error && (
+            <div className={`toast toast-error ${isToastExiting ? 'toast-exit' : ''}`}>
+              <span>{error}</span>
+              <button className="toast-close" onClick={() => dismissAlert('error')}>×</button>
+              <div className="toast-progress"></div>
+            </div>
+          )}
+          {success && (
+            <div className={`toast toast-success ${isToastExiting ? 'toast-exit' : ''}`}>
+              <span>{success}</span>
+              <button className="toast-close" onClick={() => dismissAlert('success')}>×</button>
+              <div className="toast-progress"></div>
+            </div>
+          )}
+        </div>
+
         {/* Barcode Scanner Modal */}
         {scannerModal.isOpen && (
           <div className="scanner-modal">
