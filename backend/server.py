@@ -239,13 +239,70 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     root.set("schemaVersion", "1.2")
     root.set("creationDate", datetime.now(timezone.utc).isoformat())
     
+    # Create EPCISHeader and EPCISMasterData
+    epcis_header = ET.SubElement(root, "EPCISHeader")
+    
+    # Add EPCISMasterData with EPCClass vocabulary
+    epcis_master_data = ET.SubElement(epcis_header, "EPCISMasterData")
+    vocabulary_list = ET.SubElement(epcis_master_data, "VocabularyList")
+    
+    # Add EPCClass vocabulary
+    vocabulary = ET.SubElement(vocabulary_list, "Vocabulary")
+    vocabulary.set("type", "urn:epcglobal:epcis:vtype:EPCClass")
+    
+    vocabulary_element_list = ET.SubElement(vocabulary, "VocabularyElementList")
+    
+    # Create EPCClass vocabulary element
+    company_prefix = config["company_prefix"]
+    item_product_code = config["item_product_code"]
+    item_indicator_digit = config["item_indicator_digit"]
+    
+    # Generate the EPC pattern for items
+    epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}.*"
+    
+    vocabulary_element = ET.SubElement(vocabulary_element_list, "VocabularyElement")
+    vocabulary_element.set("id", epc_pattern)
+    
+    # Add EPCClass attributes
+    if config.get("product_ndc"):
+        attr = ET.SubElement(vocabulary_element, "attribute")
+        attr.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentification")
+        attr.text = config["product_ndc"]
+        
+        attr_type = ET.SubElement(vocabulary_element, "attribute")
+        attr_type.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode")
+        attr_type.text = "FDA_NDC_11"
+    
+    if config.get("regulated_product_name"):
+        attr = ET.SubElement(vocabulary_element, "attribute")
+        attr.set("id", "urn:epcglobal:cbv:mda#regulatedProductName")
+        attr.text = config["regulated_product_name"]
+    
+    if config.get("manufacturer_name"):
+        attr = ET.SubElement(vocabulary_element, "attribute")
+        attr.set("id", "urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName")
+        attr.text = config["manufacturer_name"]
+    
+    if config.get("dosage_form_type"):
+        attr = ET.SubElement(vocabulary_element, "attribute")
+        attr.set("id", "urn:epcglobal:cbv:mda#dosageFormType")
+        attr.text = config["dosage_form_type"]
+    
+    if config.get("strength_description"):
+        attr = ET.SubElement(vocabulary_element, "attribute")
+        attr.set("id", "urn:epcglobal:cbv:mda#strengthDescription")
+        attr.text = config["strength_description"]
+    
+    if config.get("net_content_description"):
+        attr = ET.SubElement(vocabulary_element, "attribute")
+        attr.set("id", "urn:epcglobal:cbv:mda#netContentDescription")
+        attr.text = config["net_content_description"]
+    
     # Create EPCISBody
     epcis_body = ET.SubElement(root, "EPCISBody")
     event_list = ET.SubElement(epcis_body, "EventList")
     
     # Get configuration parameters
-    company_prefix = config["company_prefix"]
-    item_product_code = config["item_product_code"]
     case_product_code = config["case_product_code"]
     inner_case_product_code = config.get("inner_case_product_code", "")
     lot_number = config.get("lot_number", "")
