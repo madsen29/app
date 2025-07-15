@@ -514,59 +514,85 @@ function App() {
     );
   };
 
-  const renderStep3 = () => (
-    <div className="step-container">
-      <h2 className="step-title">Step 3: Generate EPCIS File</h2>
-      <div className="summary-section">
-        <h3>Configuration Summary</h3>
-        <div className="summary-grid">
-          <div className="summary-item">
-            <strong>Items per Case:</strong> {configuration.itemsPerCase}
+  const renderStep3 = () => {
+    const totals = calculateTotals();
+    
+    return (
+      <div className="step-container">
+        <h2 className="step-title">Step 3: Generate EPCIS File</h2>
+        <div className="summary-section">
+          <h3>Configuration Summary</h3>
+          <div className="summary-grid">
+            <div className="summary-item">
+              <strong>Cases per SSCC:</strong> {configuration.casesPerSscc}
+            </div>
+            <div className="summary-item">
+              <strong>Number of SSCCs:</strong> {configuration.numberOfSscc}
+            </div>
+            <div className="summary-item">
+              <strong>Total Cases:</strong> {totals.totalCases}
+            </div>
+            {configuration.useInnerCases && (
+              <>
+                <div className="summary-item">
+                  <strong>Inner Cases per Case:</strong> {configuration.innerCasesPerCase}
+                </div>
+                <div className="summary-item">
+                  <strong>Total Inner Cases:</strong> {totals.totalInnerCases}
+                </div>
+                <div className="summary-item">
+                  <strong>Items per Inner Case:</strong> {configuration.itemsPerInnerCase}
+                </div>
+              </>
+            )}
+            {!configuration.useInnerCases && (
+              <div className="summary-item">
+                <strong>Items per Case:</strong> {configuration.itemsPerCase}
+              </div>
+            )}
+            <div className="summary-item">
+              <strong>Total Items:</strong> {totals.totalItems}
+            </div>
           </div>
-          <div className="summary-item">
-            <strong>Cases per SSCC:</strong> {configuration.casesPerSscc}
-          </div>
-          <div className="summary-item">
-            <strong>Number of SSCCs:</strong> {configuration.numberOfSscc}
-          </div>
-          <div className="summary-item">
-            <strong>Total Cases:</strong> {configuration.casesPerSscc * configuration.numberOfSscc}
-          </div>
-          <div className="summary-item">
-            <strong>Total Items:</strong> {configuration.itemsPerCase * configuration.casesPerSscc * configuration.numberOfSscc}
+          
+          <div className="epcis-info">
+            <h4>EPCIS File Details</h4>
+            <p>The generated file will contain GS1 compliant EPCIS 1.2 XML with commissioning and aggregation events for pharmaceutical serialization.</p>
+            <ul>
+              <li>Company Prefix: {configuration.companyPrefix}</li>
+              <li>Item Product Code: {configuration.itemProductCode}</li>
+              <li>Case Product Code: {configuration.caseProductCode}</li>
+              {configuration.useInnerCases && (
+                <li>Inner Case Product Code: {configuration.innerCaseProductCode}</li>
+              )}
+              <li>SSCC Indicator: {configuration.ssccIndicatorDigit}</li>
+              <li>Case Indicator: {configuration.caseIndicatorDigit}</li>
+              {configuration.useInnerCases && (
+                <li>Inner Case Indicator: {configuration.innerCaseIndicatorDigit}</li>
+              )}
+              <li>Item Indicator: {configuration.itemIndicatorDigit}</li>
+              <li>Format: EPCIS 1.2 Standard</li>
+              <li>Event Types: Commissioning + Aggregation Events</li>
+              <li>Hierarchy: {configuration.useInnerCases ? 'SSCC → Cases → Inner Cases → Items' : 'SSCC → Cases → Items'}</li>
+              <li>Business Step: Commissioning + Packing</li>
+            </ul>
           </div>
         </div>
         
-        <div className="epcis-info">
-          <h4>EPCIS File Details</h4>
-          <p>The generated file will contain GS1 compliant EPCIS 1.2 XML with commissioning and aggregation events for pharmaceutical serialization.</p>
-          <ul>
-            <li>Company Prefix: {configuration.companyPrefix}</li>
-            <li>Item Product Code: {configuration.itemProductCode}</li>
-            <li>Case Product Code: {configuration.caseProductCode}</li>
-            <li>SSCC Indicator: {configuration.ssccIndicatorDigit}</li>
-            <li>Case Indicator: {configuration.caseIndicatorDigit}</li>
-            <li>Item Indicator: {configuration.itemIndicatorDigit}</li>
-            <li>Format: EPCIS 1.2 Standard</li>
-            <li>Event Types: Commissioning + Aggregation Events</li>
-            <li>Business Step: Commissioning + Packing</li>
-          </ul>
+        <div className="button-group">
+          <button type="button" onClick={() => setCurrentStep(2)} className="btn-secondary">
+            Back
+          </button>
+          <button onClick={handleGenerateEPCIS} disabled={isLoading} className="btn-primary">
+            {isLoading ? 'Generating...' : 'Generate & Download EPCIS'}
+          </button>
+          <button onClick={handleReset} className="btn-outline">
+            Start Over
+          </button>
         </div>
       </div>
-      
-      <div className="button-group">
-        <button type="button" onClick={() => setCurrentStep(2)} className="btn-secondary">
-          Back
-        </button>
-        <button onClick={handleGenerateEPCIS} disabled={isLoading} className="btn-primary">
-          {isLoading ? 'Generating...' : 'Generate & Download EPCIS'}
-        </button>
-        <button onClick={handleReset} className="btn-outline">
-          Start Over
-        </button>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="app">
