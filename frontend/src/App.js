@@ -158,23 +158,23 @@ function App() {
     setSuccess('');
   };
 
+  const calculateTotals = () => {
+    const totalCases = configuration.casesPerSscc * configuration.numberOfSscc;
+    if (configuration.useInnerCases) {
+      const totalInnerCases = configuration.innerCasesPerCase * totalCases;
+      const totalItems = configuration.itemsPerInnerCase * totalInnerCases;
+      return { totalCases, totalInnerCases, totalItems };
+    } else {
+      const totalItems = configuration.itemsPerCase * totalCases;
+      return { totalCases, totalInnerCases: 0, totalItems };
+    }
+  };
+
   const renderStep1 = () => (
     <div className="step-container">
       <h2 className="step-title">Step 1: Configuration</h2>
       <form onSubmit={handleConfigurationSubmit} className="config-form">
         <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="itemsPerCase">Items per Case:</label>
-            <input
-              type="number"
-              id="itemsPerCase"
-              min="1"
-              max="100"
-              value={configuration.itemsPerCase}
-              onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
-              required
-            />
-          </div>
           <div className="form-group">
             <label htmlFor="casesPerSscc">Cases per SSCC:</label>
             <input
@@ -199,6 +199,63 @@ function App() {
               required
             />
           </div>
+        </div>
+        
+        <div className="inner-case-section">
+          <h3>Inner Case Configuration</h3>
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={configuration.useInnerCases}
+                onChange={(e) => setConfiguration({...configuration, useInnerCases: e.target.checked})}
+              />
+              Use Inner Cases (optional intermediate packaging level)
+            </label>
+            <small className="form-hint">Enable this if you have inner cases between cases and items</small>
+          </div>
+          
+          {configuration.useInnerCases ? (
+            <div className="form-grid">
+              <div className="form-group">
+                <label htmlFor="innerCasesPerCase">Inner Cases per Case:</label>
+                <input
+                  type="number"
+                  id="innerCasesPerCase"
+                  min="1"
+                  max="50"
+                  value={configuration.innerCasesPerCase}
+                  onChange={(e) => setConfiguration({...configuration, innerCasesPerCase: parseInt(e.target.value)})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="itemsPerInnerCase">Items per Inner Case:</label>
+                <input
+                  type="number"
+                  id="itemsPerInnerCase"
+                  min="1"
+                  max="100"
+                  value={configuration.itemsPerInnerCase}
+                  onChange={(e) => setConfiguration({...configuration, itemsPerInnerCase: parseInt(e.target.value)})}
+                  required
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="form-group">
+              <label htmlFor="itemsPerCase">Items per Case (direct):</label>
+              <input
+                type="number"
+                id="itemsPerCase"
+                min="1"
+                max="100"
+                value={configuration.itemsPerCase}
+                onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
+                required
+              />
+            </div>
+          )}
         </div>
         
         <div className="gs1-section">
@@ -226,7 +283,7 @@ function App() {
                 placeholder="e.g., 000000"
                 required
               />
-              <small className="form-hint">Product code for individual items</small>
+              <small className="form-hint">Product code for individual items (eaches)</small>
             </div>
             <div className="form-group">
               <label htmlFor="caseProductCode">Case Product Code:</label>
@@ -240,6 +297,23 @@ function App() {
               />
               <small className="form-hint">Product code for case containers</small>
             </div>
+            {configuration.useInnerCases && (
+              <div className="form-group">
+                <label htmlFor="innerCaseProductCode">Inner Case Product Code:</label>
+                <input
+                  type="text"
+                  id="innerCaseProductCode"
+                  value={configuration.innerCaseProductCode}
+                  onChange={(e) => setConfiguration({...configuration, innerCaseProductCode: e.target.value})}
+                  placeholder="e.g., 222222"
+                  required
+                />
+                <small className="form-hint">Product code for inner case containers</small>
+              </div>
+            )}
+          </div>
+          
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="ssccIndicatorDigit">SSCC Indicator Digit:</label>
               <input
@@ -266,6 +340,21 @@ function App() {
               />
               <small className="form-hint">Single digit (0-9) for case SGTINs</small>
             </div>
+            {configuration.useInnerCases && (
+              <div className="form-group">
+                <label htmlFor="innerCaseIndicatorDigit">Inner Case Indicator Digit:</label>
+                <input
+                  type="text"
+                  id="innerCaseIndicatorDigit"
+                  maxLength="1"
+                  value={configuration.innerCaseIndicatorDigit}
+                  onChange={(e) => setConfiguration({...configuration, innerCaseIndicatorDigit: e.target.value})}
+                  placeholder="0"
+                  required
+                />
+                <small className="form-hint">Single digit (0-9) for inner case SGTINs</small>
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="itemIndicatorDigit">Item Indicator Digit:</label>
               <input
@@ -290,11 +379,19 @@ function App() {
             </div>
             <div className="hierarchy-arrow">↓</div>
             <div className="hierarchy-level">
-              <strong>Cases:</strong> {configuration.casesPerSscc * configuration.numberOfSscc} total
+              <strong>Cases:</strong> {calculateTotals().totalCases} total
             </div>
+            {configuration.useInnerCases && (
+              <>
+                <div className="hierarchy-arrow">↓</div>
+                <div className="hierarchy-level">
+                  <strong>Inner Cases:</strong> {calculateTotals().totalInnerCases} total
+                </div>
+              </>
+            )}
             <div className="hierarchy-arrow">↓</div>
             <div className="hierarchy-level">
-              <strong>Items:</strong> {configuration.itemsPerCase * configuration.casesPerSscc * configuration.numberOfSscc} total
+              <strong>Items (Eaches):</strong> {calculateTotals().totalItems} total
             </div>
           </div>
         </div>
@@ -303,6 +400,9 @@ function App() {
           <h4>GS1 Identifier Examples</h4>
           <p><strong>SSCC:</strong> urn:epc:id:sscc:{configuration.companyPrefix}.{configuration.ssccIndicatorDigit}[sscc_serial]</p>
           <p><strong>Case SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.caseIndicatorDigit}{configuration.caseProductCode}.[case_serial]</p>
+          {configuration.useInnerCases && (
+            <p><strong>Inner Case SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.innerCaseIndicatorDigit}{configuration.innerCaseProductCode}.[inner_case_serial]</p>
+          )}
           <p><strong>Item SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.itemIndicatorDigit}{configuration.itemProductCode}.[item_serial]</p>
         </div>
         
