@@ -354,6 +354,9 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         biz_location_elem = ET.SubElement(object_event, "bizLocation")
         biz_location_id = ET.SubElement(biz_location_elem, "id")
         biz_location_id.text = biz_location
+        
+        # Add ILMD extension for cases
+        add_ilmd_extension(object_event, lot_number, expiration_date)
     
     # 3. Single Commissioning Event for All Cases (if they exist)
     if case_epcs and not direct_sscc_items:
