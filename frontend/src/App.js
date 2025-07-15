@@ -237,31 +237,80 @@ function App() {
       // Initialize the code reader
       codeReader.current = new BrowserMultiFormatReader();
       
-      // Get available video devices
-      const videoInputDevices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = videoInputDevices.filter(device => device.kind === 'videoinput');
+      // Request camera permissions and get stream
+      const constraints = {
+        video: {
+          facingMode: 'environment', // Try to use back camera
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      };
       
-      if (cameras.length === 0) {
-        setError('No camera found on this device');
-        return;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          
+          // Wait for video to be ready
+          await new Promise((resolve) => {
+            videoRef.current.onloadedmetadata = resolve;
+          });
+          
+          // Start scanning
+          const scanLoop = async () => {
+            if (!scannerModal.isOpen) return;
+            
+            try {
+              const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
+              if (result) {
+                const scannedData = result.getText();
+                handleBarcodeResult(scannedData);
+                return;
+              }
+            } catch (scanError) {
+              // Continue scanning
+            }
+            
+            // Continue scanning
+            setTimeout(scanLoop, 100);
+          };
+          
+          scanLoop();
+        }
+        
+      } catch (permissionError) {
+        // Fallback to any available camera
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          
+          await new Promise((resolve) => {
+            videoRef.current.onloadedmetadata = resolve;
+          });
+          
+          // Start scanning loop
+          const scanLoop = async () => {
+            if (!scannerModal.isOpen) return;
+            
+            try {
+              const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
+              if (result) {
+                const scannedData = result.getText();
+                handleBarcodeResult(scannedData);
+                return;
+              }
+            } catch (scanError) {
+              // Continue scanning
+            }
+            
+            setTimeout(scanLoop, 100);
+          };
+          
+          scanLoop();
+        }
       }
-
-      // Use the first available camera (or back camera if available)
-      const selectedDevice = cameras.find(device => 
-        device.label.toLowerCase().includes('back') || 
-        device.label.toLowerCase().includes('rear')
-      ) || cameras[0];
-
-      // Start continuous scanning
-      await codeReader.current.decodeFromVideoDevice(selectedDevice.deviceId, videoRef.current, (result, error) => {
-        if (result) {
-          const scannedData = result.getText();
-          handleBarcodeResult(scannedData);
-        }
-        if (error && !error.message.includes('No MultiFormat Readers')) {
-          console.log('Scanning error:', error);
-        }
-      });
       
     } catch (err) {
       console.error('Error starting continuous scanner:', err);
