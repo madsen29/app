@@ -998,7 +998,7 @@ function App() {
                 <div className="textarea-with-scanner">
                   <textarea
                     value={innerCaseSerials}
-                    onChange={(e) => setInnerCaseSerials(e.target.value)}
+                    onChange={handleInnerCaseSerialsChange}
                     placeholder="Enter inner case serial numbers, one per line"
                     rows="10"
                     required
