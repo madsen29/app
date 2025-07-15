@@ -1201,25 +1201,11 @@ function App() {
           </div>
         </header>
 
-        <div className="progress-bar">
-          <div 
-            className={`progress-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'clickable' : ''}`}
-            onClick={() => handleStepClick(1)}
-          >
-            1
-          </div>
-          <div 
-            className={`progress-step ${currentStep >= 2 ? 'active' : ''} ${currentStep > 2 ? 'clickable' : ''}`}
-            onClick={() => handleStepClick(2)}
-          >
-            2
-          </div>
-          <div 
-            className={`progress-step ${currentStep >= 3 ? 'active' : ''}`}
-          >
-            3
-          </div>
-        </div>
+        <main className="main-content">
+          {currentStep === 1 && renderStep1()}
+          {currentStep === 2 && renderStep2()}
+          {currentStep === 3 && renderStep3()}
+        </main>
 
         {/* Toast Notifications */}
         <div className="toast-container">
