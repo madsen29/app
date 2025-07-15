@@ -1136,6 +1136,9 @@ function App() {
           </div>
         </div>
 
+        {currentStep === 1 && renderStep1()}
+        {currentStep === 2 && renderStep2()}
+        {currentStep === 3 && renderStep3()}
 
         {/* Toast Notifications */}
         <div className="toast-container">
