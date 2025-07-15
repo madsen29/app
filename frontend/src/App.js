@@ -1568,6 +1568,64 @@ function App() {
     </div>
   );
 
+  const getCurrentContext = () => {
+    const step = serialCollectionStep;
+    const ssccNum = step.ssccIndex + 1;
+    const caseNum = step.caseIndex + 1;
+    const innerCaseNum = step.innerCaseIndex + 1;
+    const itemNum = step.itemIndex + 1;
+    
+    switch (step.currentLevel) {
+      case 'sscc':
+        return {
+          path: `SSCC ${ssccNum}`,
+          label: 'SSCC Serial Number'
+        };
+      case 'case':
+        return {
+          path: `SSCC ${ssccNum} → Case ${caseNum}`,
+          label: 'Case Serial Number'
+        };
+      case 'innerCase':
+        return {
+          path: `SSCC ${ssccNum} → Case ${caseNum} → Inner Case ${innerCaseNum}`,
+          label: 'Inner Case Serial Number'
+        };
+      case 'item':
+        if (configuration.useInnerCases) {
+          return {
+            path: `SSCC ${ssccNum} → Case ${caseNum} → Inner Case ${innerCaseNum} → Item ${itemNum}`,
+            label: 'Item Serial Number'
+          };
+        } else if (configuration.casesPerSscc > 0) {
+          return {
+            path: `SSCC ${ssccNum} → Case ${caseNum} → Item ${itemNum}`,
+            label: 'Item Serial Number'
+          };
+        } else {
+          return {
+            path: `SSCC ${ssccNum} → Item ${itemNum}`,
+            label: 'Item Serial Number'
+          };
+        }
+      default:
+        return {
+          path: 'Unknown',
+          label: 'Serial Number'
+        };
+    }
+  };
+
+  const getCurrentItemCount = () => {
+    if (configuration.useInnerCases) {
+      return configuration.itemsPerInnerCase;
+    } else if (configuration.casesPerSscc > 0) {
+      return configuration.itemsPerCase;
+    } else {
+      return configuration.itemsPerCase;
+    }
+  };
+
   const renderStep2 = () => {
     const totals = calculateTotals();
     
