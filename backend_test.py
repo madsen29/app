@@ -307,15 +307,15 @@ class BackendTester:
                 elif child.tag.endswith("AggregationEvent"):
                     aggregation_events.append(child)
             
-            # Expected events for our test scenario:
-            # - 100 ObjectEvents for item commissioning
-            # - 10 ObjectEvents for case commissioning  
-            # - 2 ObjectEvents for SSCC commissioning
-            # - 10 AggregationEvents for Items→Cases
-            # - 2 AggregationEvents for Cases→SSCCs
-            # Total: 112 ObjectEvents + 12 AggregationEvents = 124 events
+            # Expected events for our test scenario (CORRECTED):
+            # - 1 ObjectEvent for all item commissioning (100 EPCs)
+            # - 1 ObjectEvent for all case commissioning (10 EPCs)
+            # - 1 ObjectEvent for all SSCC commissioning (2 EPCs)
+            # - 10 AggregationEvents for Items→Cases (10 items per case × 10 cases)
+            # - 2 AggregationEvents for Cases→SSCCs (5 cases per SSCC × 2 SSCCs)
+            # Total: 3 ObjectEvents + 12 AggregationEvents = 15 events
             
-            expected_object_events = 100 + 10 + 2  # Items + Cases + SSCCs
+            expected_object_events = 3  # One bulk event each for Items, Cases, SSCCs
             expected_aggregation_events = 10 + 2   # Items→Cases + Cases→SSCCs
             
             if len(object_events) != expected_object_events:
