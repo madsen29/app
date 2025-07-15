@@ -35,10 +35,20 @@ function App() {
     netContentDescription: ''
   });
   const [configurationId, setConfigurationId] = useState('');
-  const [ssccSerials, setSsccSerials] = useState('');
-  const [caseSerials, setCaseSerials] = useState('');
-  const [innerCaseSerials, setInnerCaseSerials] = useState('');
-  const [itemSerials, setItemSerials] = useState('');
+  
+  // New hierarchical serial number collection state
+  const [hierarchicalSerials, setHierarchicalSerials] = useState([]);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [serialCollectionStep, setSerialCollectionStep] = useState({
+    ssccIndex: 0,
+    caseIndex: 0,
+    innerCaseIndex: 0,
+    itemIndex: 0,
+    currentLevel: 'sscc', // 'sscc', 'case', 'innerCase', 'item'
+    currentSerial: '',
+    isComplete: false
+  });
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
