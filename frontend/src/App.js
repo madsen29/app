@@ -394,6 +394,8 @@ function App() {
     // FDA API might return 10-digit NDCs that need to be padded to 11 digits
     // NDC format should be: 5-digit labeler + 4-digit product + 2-digit package
     let selectedPackageNdc;
+    let productCodeForGS1;
+    
     if (rawPackageNdc.length === 10) {
       // Convert 10-digit to 11-digit by adding leading zero to product code
       // Format: LLLLL-PPP-KK becomes LLLLL-0PPP-KK
@@ -401,17 +403,22 @@ function App() {
       const productCode = rawPackageNdc.slice(5, 8);
       const packageCode = rawPackageNdc.slice(8, 10);
       selectedPackageNdc = labelerCode + '0' + productCode + packageCode;
+      // For GS1 Product Code, use the original product code + package code (without leading 0)
+      productCodeForGS1 = productCode + packageCode;
     } else if (rawPackageNdc.length === 11) {
       // Already 11 digits, use as-is
       selectedPackageNdc = rawPackageNdc;
+      // For GS1 Product Code, use last 6 digits but remove leading 0 if present
+      const last6Digits = rawPackageNdc.slice(5);
+      productCodeForGS1 = last6Digits.startsWith('0') ? last6Digits.slice(1) : last6Digits;
     } else {
       // Invalid length, use as-is but might cause issues
       selectedPackageNdc = rawPackageNdc;
+      productCodeForGS1 = rawPackageNdc.slice(5);
     }
     
-    // Extract labeler code (first 5 digits) and product code (last 6 digits)
+    // Extract labeler code (first 5 digits) for company prefix
     const labelerCode = selectedPackageNdc.slice(0, 5);
-    const productCode = selectedPackageNdc.slice(5); // This includes the package code
     
     // Create GS1 Company Prefix by prepending "03" to labeler code
     const companyPrefix = "03" + labelerCode;
@@ -421,7 +428,7 @@ function App() {
       productNdc: productOption.productNdc, // Store the 10-digit product NDC
       packageNdc: selectedPackageNdc, // Store the 11-digit package NDC without hyphens
       companyPrefix: companyPrefix,
-      productCode: productCode, // Product code from selected Package NDC
+      productCode: productCodeForGS1, // Product code without leading 0
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
       manufacturerName: productOption.labeler_name || '',
       dosageFormType: productOption.dosage_form || '',
@@ -432,7 +439,7 @@ function App() {
     });
     
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
-    setSuccess(`Product loaded: ${productOption.packageDescription}. Company Prefix: ${companyPrefix}, Product Code: ${productCode}`);
+    setSuccess(`Product loaded: ${productOption.packageDescription}. Company Prefix: ${companyPrefix}, Product Code: ${productCodeForGS1}`);
   };
 
   const closeFdaModal = () => {
