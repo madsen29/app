@@ -803,6 +803,47 @@ function App() {
         <div className="epcclass-section">
           <h3>Product Information (EPCClass)</h3>
           <div className="form-grid">
+            <div className="form-group fda-search-group">
+              <label htmlFor="productNdc">Search FDA by Product NDC:</label>
+              <div className="fda-search-container">
+                <input
+                  type="text"
+                  id="productNdc"
+                  value={configuration.productNdc}
+                  onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
+                  placeholder="Enter 11-digit NDC (e.g., 45802046653)"
+                  required
+                />
+                <button 
+                  type="button" 
+                  className="fda-search-button"
+                  onClick={handleFdaSearch}
+                  disabled={fdaModal.isLoading}
+                >
+                  {fdaModal.isLoading ? 'Searching...' : 'Search FDA Database'}
+                </button>
+              </div>
+              <small className="form-hint">Enter 11-digit NDC (no hyphens) to search FDA database</small>
+            </div>
+          </div>
+          
+          {configuration.packageNdc && (
+            <div className="form-grid">
+              <div className="form-group">
+                <label htmlFor="packageNdc">Package NDC:</label>
+                <input
+                  type="text"
+                  id="packageNdc"
+                  value={configuration.packageNdc}
+                  readOnly
+                  className="readonly-field"
+                />
+                <small className="form-hint">Full package NDC from FDA database (read-only)</small>
+              </div>
+            </div>
+          )}
+          
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="productNdc">Product NDC (11-digit):</label>
               <div className="input-with-button">
