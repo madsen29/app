@@ -977,6 +977,7 @@ function App() {
     
     return (
       <div className="step-container">
+        {renderProgressBar()}
         <h2 className="step-title">Step 2: Serial Numbers</h2>
         <form onSubmit={handleSerialNumbersSubmit} className="serial-form">
           
