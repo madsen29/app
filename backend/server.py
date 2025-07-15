@@ -241,11 +241,12 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     root.set("schemaVersion", "1.2")
     root.set("creationDate", datetime.now(timezone.utc).isoformat())
     
-    # Create EPCISHeader and EPCISMasterData
+    # Create EPCISHeader with extension containing EPCISMasterData
     epcis_header = ET.SubElement(root, "EPCISHeader")
     
-    # Add EPCISMasterData with EPCClass vocabulary
-    epcis_master_data = ET.SubElement(epcis_header, "EPCISMasterData")
+    # Add extension element containing EPCISMasterData
+    extension = ET.SubElement(epcis_header, "extension")
+    epcis_master_data = ET.SubElement(extension, "EPCISMasterData")
     vocabulary_list = ET.SubElement(epcis_master_data, "VocabularyList")
     
     # Add EPCClass vocabulary
@@ -254,51 +255,74 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     
     vocabulary_element_list = ET.SubElement(vocabulary, "VocabularyElementList")
     
-    # Create EPCClass vocabulary element
+    # Get configuration parameters
     company_prefix = config["company_prefix"]
     item_product_code = config["item_product_code"]
+    case_product_code = config["case_product_code"]
+    inner_case_product_code = config.get("inner_case_product_code", "")
     item_indicator_digit = config["item_indicator_digit"]
+    case_indicator_digit = config["case_indicator_digit"]
+    inner_case_indicator_digit = config.get("inner_case_indicator_digit", "")
+    use_inner_cases = config["use_inner_cases"]
+    cases_per_sscc = config["cases_per_sscc"]
     
-    # Generate the EPC pattern for items
-    epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}.*"
-    
-    vocabulary_element = ET.SubElement(vocabulary_element_list, "VocabularyElement")
-    vocabulary_element.set("id", epc_pattern)
-    
-    # Add EPCClass attributes
-    if config.get("product_ndc"):
-        attr = ET.SubElement(vocabulary_element, "attribute")
-        attr.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentification")
-        attr.text = config["product_ndc"]
+    # Helper function to add EPCClass attributes
+    def add_epcclass_attributes(vocab_element, config):
+        if config.get("package_ndc"):
+            attr = ET.SubElement(vocab_element, "attribute")
+            attr.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentification")
+            attr.text = config["package_ndc"]
+            
+            attr_type = ET.SubElement(vocab_element, "attribute")
+            attr_type.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode")
+            attr_type.text = "FDA_NDC_11"
         
-        attr_type = ET.SubElement(vocabulary_element, "attribute")
-        attr_type.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode")
-        attr_type.text = "FDA_NDC_11"
+        if config.get("regulated_product_name"):
+            attr = ET.SubElement(vocab_element, "attribute")
+            attr.set("id", "urn:epcglobal:cbv:mda#regulatedProductName")
+            attr.text = config["regulated_product_name"]
+        
+        if config.get("manufacturer_name"):
+            attr = ET.SubElement(vocab_element, "attribute")
+            attr.set("id", "urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName")
+            attr.text = config["manufacturer_name"]
+        
+        if config.get("dosage_form_type"):
+            attr = ET.SubElement(vocab_element, "attribute")
+            attr.set("id", "urn:epcglobal:cbv:mda#dosageFormType")
+            attr.text = config["dosage_form_type"]
+        
+        if config.get("strength_description"):
+            attr = ET.SubElement(vocab_element, "attribute")
+            attr.set("id", "urn:epcglobal:cbv:mda#strengthDescription")
+            attr.text = config["strength_description"]
+        
+        if config.get("net_content_description"):
+            attr = ET.SubElement(vocab_element, "attribute")
+            attr.set("id", "urn:epcglobal:cbv:mda#netContentDescription")
+            attr.text = config["net_content_description"]
     
-    if config.get("regulated_product_name"):
-        attr = ET.SubElement(vocabulary_element, "attribute")
-        attr.set("id", "urn:epcglobal:cbv:mda#regulatedProductName")
-        attr.text = config["regulated_product_name"]
+    # Create EPCClass vocabulary elements for each packaging level
     
-    if config.get("manufacturer_name"):
-        attr = ET.SubElement(vocabulary_element, "attribute")
-        attr.set("id", "urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName")
-        attr.text = config["manufacturer_name"]
+    # 1. Item Level EPCClass (always present)
+    item_epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}.*"
+    item_vocabulary_element = ET.SubElement(vocabulary_element_list, "VocabularyElement")
+    item_vocabulary_element.set("id", item_epc_pattern)
+    add_epcclass_attributes(item_vocabulary_element, config)
     
-    if config.get("dosage_form_type"):
-        attr = ET.SubElement(vocabulary_element, "attribute")
-        attr.set("id", "urn:epcglobal:cbv:mda#dosageFormType")
-        attr.text = config["dosage_form_type"]
+    # 2. Case Level EPCClass (if cases are used)
+    if cases_per_sscc > 0:
+        case_epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{case_indicator_digit}{case_product_code}.*"
+        case_vocabulary_element = ET.SubElement(vocabulary_element_list, "VocabularyElement")
+        case_vocabulary_element.set("id", case_epc_pattern)
+        add_epcclass_attributes(case_vocabulary_element, config)
     
-    if config.get("strength_description"):
-        attr = ET.SubElement(vocabulary_element, "attribute")
-        attr.set("id", "urn:epcglobal:cbv:mda#strengthDescription")
-        attr.text = config["strength_description"]
-    
-    if config.get("net_content_description"):
-        attr = ET.SubElement(vocabulary_element, "attribute")
-        attr.set("id", "urn:epcglobal:cbv:mda#netContentDescription")
-        attr.text = config["net_content_description"]
+    # 3. Inner Case Level EPCClass (if inner cases are used)
+    if use_inner_cases and inner_case_product_code and inner_case_indicator_digit:
+        inner_case_epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{inner_case_indicator_digit}{inner_case_product_code}.*"
+        inner_case_vocabulary_element = ET.SubElement(vocabulary_element_list, "VocabularyElement")
+        inner_case_vocabulary_element.set("id", inner_case_epc_pattern)
+        add_epcclass_attributes(inner_case_vocabulary_element, config)
     
     # Create EPCISBody
     epcis_body = ET.SubElement(root, "EPCISBody")
