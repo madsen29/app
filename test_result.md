@@ -267,8 +267,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Configuration form UI"
-  stuck_tasks: []
+    - "EPCIS XML generation"
+  stuck_tasks:
+    - "EPCIS XML generation"
   test_all: false
   test_priority: "high_first"
 
