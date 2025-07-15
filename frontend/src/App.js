@@ -827,21 +827,33 @@ function App() {
             </div>
           </div>
           
-          {configuration.packageNdc && (
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="packageNdc">Package NDC:</label>
-                <input
-                  type="text"
-                  id="packageNdc"
-                  value={configuration.packageNdc}
-                  readOnly
-                  className="readonly-field"
-                />
-                <small className="form-hint">Full package NDC from FDA database (read-only)</small>
-              </div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="packageNdc">Package NDC (11-digit):</label>
+              <input
+                type="text"
+                id="packageNdc"
+                value={formatPackageNdc(configuration.packageNdc)}
+                onChange={handlePackageNdcChange}
+                placeholder="e.g., 45802-046-85"
+                maxLength="13"
+                required
+              />
+              <small className="form-hint">11-digit NDC with hyphens for readability</small>
             </div>
-          )}
+            <div className="form-group">
+              <label htmlFor="regulatedProductName">Regulated Product Name:</label>
+              <input
+                type="text"
+                id="regulatedProductName"
+                value={configuration.regulatedProductName}
+                onChange={(e) => setConfiguration({...configuration, regulatedProductName: e.target.value})}
+                placeholder="e.g., RX ECONAZOLE NITRATE 1% CRM 85G"
+                required
+              />
+              <small className="form-hint">Official product name</small>
+            </div>
+          </div>
           
           <div className="form-grid">
             <div className="form-group">
