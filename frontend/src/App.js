@@ -106,8 +106,8 @@ function App() {
       });
       
       setCurrentStep(3);
-      scrollToTop();
       setSuccess('Serial numbers saved successfully!');
+      scrollToTop();
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to save serial numbers');
     } finally {
