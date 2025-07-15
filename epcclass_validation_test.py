@@ -8,7 +8,7 @@ import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-BACKEND_URL = "https://b592395b-b7d6-4a00-b6d1-3e8882cb2379.preview.emergentagent.com/api"
+BACKEND_URL = "https://1379817a-9549-4f0e-8757-8e6eaf81b9ac.preview.emergentagent.com/api"
 
 def test_epcclass_xml_structure():
     """Test EPCClass XML structure against GS1 standard"""
