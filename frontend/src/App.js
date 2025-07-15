@@ -171,19 +171,23 @@ function App() {
 
   const closeScanner = () => {
     setIsScanning(false);
-    if (codeReader.current) {
-      try {
-        codeReader.current.reset();
-      } catch (error) {
-        console.log('Error stopping scanner:', error);
-      }
-    }
     
     // Stop all video streams
     if (videoRef.current && videoRef.current.srcObject) {
       const tracks = videoRef.current.srcObject.getTracks();
       tracks.forEach(track => track.stop());
       videoRef.current.srcObject = null;
+    }
+    
+    // Clean up code reader
+    if (codeReader.current) {
+      try {
+        if (typeof codeReader.current.reset === 'function') {
+          codeReader.current.reset();
+        }
+      } catch (error) {
+        console.log('Error stopping scanner:', error);
+      }
     }
     
     setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
