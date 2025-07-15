@@ -745,6 +745,12 @@ body {
   padding: 1rem;
 }
 
+.modal-instruction {
+  margin-bottom: 1rem;
+  color: #4a5568;
+  font-style: italic;
+}
+
 .fda-results {
   display: flex;
   flex-direction: column;
@@ -757,24 +763,80 @@ body {
   border-radius: 6px;
   border: 1px solid #e2e8f0;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .fda-result-item:hover {
   background: #edf2f7;
   border-color: #cbd5e0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.fda-result-item h4 {
-  margin: 0 0 0.5rem 0;
+.fda-product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.fda-product-header h4 {
+  margin: 0;
   color: #2d3748;
   font-size: 1.1rem;
+  flex: 1;
 }
 
-.fda-result-item p {
+.fda-ndc-badge {
+  background: #3182ce;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+.ndc-label {
+  font-weight: 500;
+  margin-right: 0.25rem;
+}
+
+.ndc-value {
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.fda-product-details {
+  margin-bottom: 0.75rem;
+}
+
+.fda-product-details p {
   margin: 0.25rem 0;
   color: #4a5568;
   font-size: 0.9rem;
+}
+
+.fda-packaging-info {
+  background: #e6fffa;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #81e6d9;
+  margin-top: 0.5rem;
+}
+
+.packaging-header {
+  color: #234e52;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.packaging-description {
+  color: #285e61;
+  font-size: 0.9rem;
+  font-family: monospace;
 }
 .summary-section {
   background: #f7fafc;
