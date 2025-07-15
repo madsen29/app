@@ -158,9 +158,9 @@ backend:
   
   - task: "EPCIS XML generation"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -185,6 +185,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "PACKAGE NDC AND EPCCLASS GENERATION TESTING COMPLETED: ✅ COMPREHENSIVE VALIDATION PASSED: All new package_ndc and EPCClass requirements fully implemented and working ✅ EPCISMasterData properly wrapped inside <extension> element ✅ EPCClass vocabulary elements generated for each packaging level with correct indicator digits ✅ package_ndc field used for additionalTradeItemIdentification (not product_ndc) ✅ Multiple hierarchy scenarios tested: 2-level (1 EPCClass), 3-level (2 EPCClasses), 4-level (3 EPCClasses) ✅ Review request configuration verified: Company Prefix: 1234567, Package NDC: 45802-046-85, 1 SSCC → 2 Cases → 6 Inner Cases → 48 Items ✅ All EPCClass patterns use correct indicator digits: Item (1), Case (2), Inner Case (4) ✅ package_ndc (45802-046-85) correctly used in all EPCClass additionalTradeItemIdentification attributes ✅ XML structure validation passed: EPCISHeader → extension → EPCISMasterData → VocabularyList → Vocabulary → VocabularyElementList ✅ 100% test success rate across all scenarios"
+      - working: false
+        agent: "testing"
+        comment: "REVIEW REQUEST SPECIFIC TESTING FAILED: ❌ CRITICAL ISSUES FOUND: 1) Package NDC Hyphen Removal NOT WORKING: EPCIS XML contains '45802-046-85' instead of expected clean NDC '4580204685' in additionalTradeItemIdentification. The .replace('-', '') code exists at line 273 but is not functioning. 2) EPCClass Vocabulary Element Order INCORRECT: Found order is Item → Case → Inner Case, but review request requires Item → Inner Case → Case. Expected patterns: ['urn:epc:idpat:sgtin:1234567.1000000.*', 'urn:epc:idpat:sgtin:1234567.4000001.*', 'urn:epc:idpat:sgtin:1234567.2000000.*'] but found ['urn:epc:idpat:sgtin:1234567.1000000.*', 'urn:epc:idpat:sgtin:1234567.2000000.*', 'urn:epc:idpat:sgtin:1234567.4000001.*']. ✅ 11-digit Package NDC validation works correctly for both formatted and unformatted inputs. Test configuration: Company Prefix: 1234567, Package NDC: '45802-046-85', 4-level hierarchy: 1 SSCC → 2 Cases → 6 Inner Cases → 48 Items, Indicators: Item(1), Case(2), Inner Case(4)."
 
 frontend:
   - task: "Configuration form UI"
