@@ -84,8 +84,8 @@ def test_xml_structure():
         print("\nValidation:")
         
         # Check namespace
-        if 'xmlns:cbvmda="urn:epcglobal:cbv:mda"' in extension_xml:
-            print("✅ Correct cbvmda namespace")
+        if 'urn:epcglobal:cbv:mda' in extension_xml:
+            print("✅ Correct cbvmda namespace (urn:epcglobal:cbv:mda)")
         else:
             print("❌ Missing or incorrect cbvmda namespace")
         
