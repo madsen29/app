@@ -285,10 +285,18 @@ function App() {
     setFdaModal({ ...fdaModal, isLoading: true });
     
     try {
-      // Convert 11-digit NDC to 10-digit Product NDC format
+      // Handle 11-digit NDC input - convert to 10-digit Product NDC format
       const cleanNdc = ndc.replace(/-/g, '');
-      const productNdc = cleanNdc.slice(0, 10);
-      const formattedNdc = productNdc.replace(/(\d{5})(\d{3,4})/, '$1-$2');
+      
+      // For 11-digit NDC, take first 10 digits (remove packaging code)
+      const productNdc = cleanNdc.length === 11 ? cleanNdc.slice(0, 10) : cleanNdc;
+      
+      // Format as 5-4 or 5-3 depending on length
+      const labelerCode = productNdc.slice(0, 5);
+      const productCode = productNdc.slice(5);
+      const formattedNdc = `${labelerCode}-${productCode}`;
+      
+      console.log('Searching FDA API with NDC:', formattedNdc);
       
       const response = await fetch(`https://api.fda.gov/drug/ndc.json?search=product_ndc:"${formattedNdc}"&limit=1`);
       const data = await response.json();
@@ -306,7 +314,9 @@ function App() {
               selectedPackaging: pkg,
               packageNdc: pkg.package_ndc,
               packageDescription: pkg.description,
-              productNdc: formattedNdc
+              productNdc: formattedNdc,
+              labelerCode: labelerCode,
+              productCode: productCode
             });
           });
         } else {
@@ -316,7 +326,9 @@ function App() {
             selectedPackaging: null,
             packageNdc: product.product_ndc,
             packageDescription: 'No packaging information available',
-            productNdc: formattedNdc
+            productNdc: formattedNdc,
+            labelerCode: labelerCode,
+            productCode: productCode
           });
         }
         
@@ -326,10 +338,11 @@ function App() {
           isLoading: false
         });
       } else {
-        setError('No products found for this NDC number');
+        setError(`No products found for NDC: ${formattedNdc}`);
         setFdaModal({ ...fdaModal, isLoading: false });
       }
     } catch (error) {
+      console.error('FDA API Error:', error);
       setError('Failed to search FDA API: ' + error.message);
       setFdaModal({ ...fdaModal, isLoading: false });
     }
@@ -344,22 +357,18 @@ function App() {
   };
 
   const selectFdaProduct = (productOption) => {
-    // Get the 10-digit Product NDC
-    const productNdc = productOption.productNdc;
-    
-    // Parse the NDC to extract labeler code and product code
-    const cleanNdc = productNdc.replace(/-/g, '');
-    const labelerCode = cleanNdc.slice(0, 5); // First 5 digits
-    const productCode = cleanNdc.slice(5); // Remaining digits
+    // Use the pre-calculated labeler code and product code
+    const labelerCode = productOption.labelerCode;
+    const productCode = productOption.productCode;
     
     // Create GS1 Company Prefix by prepending "03" to labeler code
     const companyPrefix = "03" + labelerCode;
     
     setConfiguration({
       ...configuration,
-      productNdc: productNdc,
+      productNdc: productOption.productNdc,
       companyPrefix: companyPrefix,
-      productCode: productCode,
+      productCode: productCode, // This is now just the product code without packaging
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
       manufacturerName: productOption.labeler_name || '',
       dosageFormType: productOption.dosage_form || '',
@@ -370,7 +379,7 @@ function App() {
     });
     
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
-    setSuccess(`Product information loaded: ${productOption.packageDescription}. Company Prefix: ${companyPrefix}, Product Code: ${productCode}`);
+    setSuccess(`Product loaded: ${productOption.packageDescription}. Company Prefix: ${companyPrefix}, Product Code: ${productCode}`);
   };
 
   const closeFdaModal = () => {
