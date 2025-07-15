@@ -357,9 +357,15 @@ function App() {
   };
 
   const selectFdaProduct = (productOption) => {
-    // Use the pre-calculated labeler code and product code
+    // Use the pre-calculated labeler code 
     const labelerCode = productOption.labelerCode;
-    const productCode = productOption.productCode;
+    
+    // For Product Code, we need to get it from the original 11-digit NDC
+    // Get the original input NDC (11-digit)
+    const originalNdc = configuration.productNdc.replace(/-/g, '');
+    
+    // Product Code = middle part + packaging code (last 6 digits of 11-digit NDC)
+    const productCode = originalNdc.slice(5); // Gets digits 6-11 (both middle and packaging)
     
     // Create GS1 Company Prefix by prepending "03" to labeler code
     const companyPrefix = "03" + labelerCode;
@@ -368,7 +374,7 @@ function App() {
       ...configuration,
       productNdc: productOption.productNdc,
       companyPrefix: companyPrefix,
-      productCode: productCode, // This is now just the product code without packaging
+      productCode: productCode, // Now includes middle part + packaging code
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
       manufacturerName: productOption.labeler_name || '',
       dosageFormType: productOption.dosage_form || '',
