@@ -208,11 +208,7 @@ function App() {
   };
 
   const dismissAlert = (type) => {
-    if (type === 'error') {
-      setError('');
-    } else if (type === 'success') {
-      setSuccess('');
-    }
+    dismissToast();
   };
 
   // Barcode scanning functions
