@@ -827,35 +827,37 @@ function App() {
             </div>
           </div>
 
-          <div className="serial-section">
-            <h3>Case Serial Numbers 
-              <span className={`counter ${caseCount === totals.totalCases ? 'counter-complete' : ''}`}>
-                ({caseCount}/{totals.totalCases})
-              </span>
-            </h3>
-            <div className="textarea-group">
-              <div className="textarea-with-scanner">
-                <textarea
-                  value={caseSerials}
-                  onChange={(e) => setCaseSerials(e.target.value)}
-                  placeholder="Enter case serial numbers, one per line"
-                  rows="8"
-                  required
-                />
-                <button 
-                  type="button" 
-                  className="scan-button"
-                  onClick={() => openScanner('case', setCaseSerials)}
-                  title="Scan barcode"
-                >
-                  <FiCamera size={20} />
-                </button>
+          {totals.totalCases > 0 && (
+            <div className="serial-section">
+              <h3>Case Serial Numbers 
+                <span className={`counter ${caseCount === totals.totalCases ? 'counter-complete' : ''}`}>
+                  ({caseCount}/{totals.totalCases})
+                </span>
+              </h3>
+              <div className="textarea-group">
+                <div className="textarea-with-scanner">
+                  <textarea
+                    value={caseSerials}
+                    onChange={(e) => setCaseSerials(e.target.value)}
+                    placeholder="Enter case serial numbers, one per line"
+                    rows="8"
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    className="scan-button"
+                    onClick={() => openScanner('case', setCaseSerials)}
+                    title="Scan barcode"
+                  >
+                    <FiCamera size={20} />
+                  </button>
+                </div>
+                <small className="form-hint">Enter {totals.totalCases} case serial numbers, one per line</small>
               </div>
-              <small className="form-hint">Enter {totals.totalCases} case serial numbers, one per line</small>
             </div>
-          </div>
+          )}
 
-          {configuration.useInnerCases && (
+          {configuration.useInnerCases && totals.totalInnerCases > 0 && (
             <div className="serial-section">
               <h3>Inner Case Serial Numbers 
                 <span className={`counter ${innerCaseCount === totals.totalInnerCases ? 'counter-complete' : ''}`}>
