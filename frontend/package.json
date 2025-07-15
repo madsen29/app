@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
     "axios": "^1.8.4",
     "cra-template": "1.2.0",
     "react": "^19.0.0",
