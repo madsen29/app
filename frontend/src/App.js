@@ -1027,7 +1027,7 @@ function App() {
               <div className="textarea-with-scanner">
                 <textarea
                   value={itemSerials}
-                  onChange={(e) => setItemSerials(e.target.value)}
+                  onChange={handleItemSerialsChange}
                   placeholder="Enter item serial numbers, one per line"
                   rows="15"
                   required
