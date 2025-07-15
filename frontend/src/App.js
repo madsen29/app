@@ -790,6 +790,201 @@ function App() {
       <h2 className="step-title">Step 1: Configuration</h2>
       <form onSubmit={handleConfigurationSubmit}>
         
+        <div className="epcclass-section">
+          <h3>Product Information (EPCClass)</h3>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="productNdc">Product NDC (11-digit):</label>
+              <div className="input-with-button">
+                <input
+                  type="text"
+                  id="productNdc"
+                  value={configuration.productNdc}
+                  onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
+                  placeholder="e.g., 45802-046-85"
+                  required
+                />
+                <button 
+                  type="button" 
+                  className="api-search-button"
+                  onClick={handleFdaSearch}
+                  disabled={fdaModal.isLoading}
+                >
+                  {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
+                </button>
+              </div>
+              <small className="form-hint">Enter 11-digit NDC to search FDA database and auto-populate GS1 codes</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="regulatedProductName">Regulated Product Name:</label>
+              <input
+                type="text"
+                id="regulatedProductName"
+                value={configuration.regulatedProductName}
+                onChange={(e) => setConfiguration({...configuration, regulatedProductName: e.target.value})}
+                placeholder="e.g., RX ECONAZOLE NITRATE 1% CRM 85G"
+                required
+              />
+              <small className="form-hint">Official product name</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="manufacturerName">Manufacturer Name:</label>
+              <input
+                type="text"
+                id="manufacturerName"
+                value={configuration.manufacturerName}
+                onChange={(e) => setConfiguration({...configuration, manufacturerName: e.target.value})}
+                placeholder="e.g., Padagis LLC"
+                required
+              />
+              <small className="form-hint">Manufacturer or labeler name</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="dosageFormType">Dosage Form Type:</label>
+              <input
+                type="text"
+                id="dosageFormType"
+                value={configuration.dosageFormType}
+                onChange={(e) => setConfiguration({...configuration, dosageFormType: e.target.value})}
+                placeholder="e.g., CREAM"
+                required
+              />
+              <small className="form-hint">Dosage form (e.g., TABLET, CREAM, INJECTION)</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="strengthDescription">Strength Description:</label>
+              <input
+                type="text"
+                id="strengthDescription"
+                value={configuration.strengthDescription}
+                onChange={(e) => setConfiguration({...configuration, strengthDescription: e.target.value})}
+                placeholder="e.g., 10 mg/g"
+                required
+              />
+              <small className="form-hint">Active ingredient strength</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="netContentDescription">Net Content Description:</label>
+              <input
+                type="text"
+                id="netContentDescription"
+                value={configuration.netContentDescription}
+                onChange={(e) => setConfiguration({...configuration, netContentDescription: e.target.value})}
+                placeholder="e.g., 85GM     Wgt"
+                required
+              />
+              <small className="form-hint">Package size and weight</small>
+            </div>
+          </div>
+        </div>
+        
+        <div className="gs1-section">
+          <h3>GS1 Configuration</h3>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="companyPrefix">Company Prefix:</label>
+              <input
+                type="text"
+                id="companyPrefix"
+                value={configuration.companyPrefix}
+                onChange={(e) => setConfiguration({...configuration, companyPrefix: e.target.value})}
+                placeholder="e.g., 0345802"
+                required
+              />
+              <small className="form-hint">Your GS1 Company Prefix (auto-populated from NDC)</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="productCode">Product Code:</label>
+              <input
+                type="text"
+                id="productCode"
+                value={configuration.productCode}
+                onChange={(e) => setConfiguration({...configuration, productCode: e.target.value})}
+                placeholder="e.g., 046"
+                required
+              />
+              <small className="form-hint">Product code (auto-populated from NDC)</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="lotNumber">Lot Number:</label>
+              <input
+                type="text"
+                id="lotNumber"
+                value={configuration.lotNumber}
+                onChange={(e) => setConfiguration({...configuration, lotNumber: e.target.value})}
+                placeholder="e.g., 4JT0482"
+                required
+              />
+              <small className="form-hint">Lot number applied to Case, Inner Case, and Item levels</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="expirationDate">Expiration Date:</label>
+              <input
+                type="date"
+                id="expirationDate"
+                value={configuration.expirationDate}
+                onChange={(e) => setConfiguration({...configuration, expirationDate: e.target.value})}
+                required
+              />
+              <small className="form-hint">Expiration date applied to Case, Inner Case, and Item levels</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="ssccExtensionDigit">SSCC Extension Digit:</label>
+              <input
+                type="text"
+                id="ssccExtensionDigit"
+                maxLength="1"
+                value={configuration.ssccExtensionDigit}
+                onChange={(e) => setConfiguration({...configuration, ssccExtensionDigit: e.target.value})}
+                placeholder="0"
+                required
+              />
+              <small className="form-hint">Single digit (0-9) for SSCC extension</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="caseIndicatorDigit">Case Indicator Digit:</label>
+              <input
+                type="text"
+                id="caseIndicatorDigit"
+                maxLength="1"
+                value={configuration.caseIndicatorDigit}
+                onChange={(e) => setConfiguration({...configuration, caseIndicatorDigit: e.target.value})}
+                placeholder="0"
+                required
+              />
+              <small className="form-hint">Single digit (0-9) for case SGTINs</small>
+            </div>
+            {configuration.useInnerCases && (
+              <div className="form-group">
+                <label htmlFor="innerCaseIndicatorDigit">Inner Case Indicator Digit:</label>
+                <input
+                  type="text"
+                  id="innerCaseIndicatorDigit"
+                  maxLength="1"
+                  value={configuration.innerCaseIndicatorDigit}
+                  onChange={(e) => setConfiguration({...configuration, innerCaseIndicatorDigit: e.target.value})}
+                  placeholder="0"
+                  required
+                />
+                <small className="form-hint">Single digit (0-9) for inner case SGTINs</small>
+              </div>
+            )}
+            <div className="form-group">
+              <label htmlFor="itemIndicatorDigit">Item Indicator Digit:</label>
+              <input
+                type="text"
+                id="itemIndicatorDigit"
+                maxLength="1"
+                value={configuration.itemIndicatorDigit}
+                onChange={(e) => setConfiguration({...configuration, itemIndicatorDigit: e.target.value})}
+                placeholder="0"
+                required
+              />
+              <small className="form-hint">Single digit (0-9) for item SGTINs</small>
+            </div>
+          </div>
+        </div>
+
         <div className="inner-case-section">
           <h3>Packaging Configuration</h3>
           <div className="form-grid">
@@ -904,201 +1099,6 @@ function App() {
               </div>
             </div>
           )}
-        </div>
-        
-        <div className="gs1-section">
-          <h3>GS1 Configuration</h3>
-          <div className="form-grid">
-            <div className="form-group">
-              <label htmlFor="companyPrefix">Company Prefix:</label>
-              <input
-                type="text"
-                id="companyPrefix"
-                value={configuration.companyPrefix}
-                onChange={(e) => setConfiguration({...configuration, companyPrefix: e.target.value})}
-                placeholder="e.g., 1234567"
-                required
-              />
-              <small className="form-hint">Your GS1 Company Prefix (usually 7-12 digits)</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="productCode">Product Code:</label>
-              <input
-                type="text"
-                id="productCode"
-                value={configuration.productCode}
-                onChange={(e) => setConfiguration({...configuration, productCode: e.target.value})}
-                placeholder="e.g., 000000"
-                required
-              />
-              <small className="form-hint">Product code used for all packaging levels</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="lotNumber">Lot Number:</label>
-              <input
-                type="text"
-                id="lotNumber"
-                value={configuration.lotNumber}
-                onChange={(e) => setConfiguration({...configuration, lotNumber: e.target.value})}
-                placeholder="e.g., 4JT0482"
-                required
-              />
-              <small className="form-hint">Lot number applied to Case, Inner Case, and Item levels</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="expirationDate">Expiration Date:</label>
-              <input
-                type="date"
-                id="expirationDate"
-                value={configuration.expirationDate}
-                onChange={(e) => setConfiguration({...configuration, expirationDate: e.target.value})}
-                required
-              />
-              <small className="form-hint">Expiration date applied to Case, Inner Case, and Item levels</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="ssccExtensionDigit">SSCC Extension Digit:</label>
-              <input
-                type="text"
-                id="ssccExtensionDigit"
-                maxLength="1"
-                value={configuration.ssccExtensionDigit}
-                onChange={(e) => setConfiguration({...configuration, ssccExtensionDigit: e.target.value})}
-                placeholder="0"
-                required
-              />
-              <small className="form-hint">Single digit (0-9) for SSCC extension</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="caseIndicatorDigit">Case Indicator Digit:</label>
-              <input
-                type="text"
-                id="caseIndicatorDigit"
-                maxLength="1"
-                value={configuration.caseIndicatorDigit}
-                onChange={(e) => setConfiguration({...configuration, caseIndicatorDigit: e.target.value})}
-                placeholder="0"
-                required
-              />
-              <small className="form-hint">Single digit (0-9) for case SGTINs</small>
-            </div>
-            {configuration.useInnerCases && (
-              <div className="form-group">
-                <label htmlFor="innerCaseIndicatorDigit">Inner Case Indicator Digit:</label>
-                <input
-                  type="text"
-                  id="innerCaseIndicatorDigit"
-                  maxLength="1"
-                  value={configuration.innerCaseIndicatorDigit}
-                  onChange={(e) => setConfiguration({...configuration, innerCaseIndicatorDigit: e.target.value})}
-                  placeholder="0"
-                  required
-                />
-                <small className="form-hint">Single digit (0-9) for inner case SGTINs</small>
-              </div>
-            )}
-            <div className="form-group">
-              <label htmlFor="itemIndicatorDigit">Item Indicator Digit:</label>
-              <input
-                type="text"
-                id="itemIndicatorDigit"
-                maxLength="1"
-                value={configuration.itemIndicatorDigit}
-                onChange={(e) => setConfiguration({...configuration, itemIndicatorDigit: e.target.value})}
-                placeholder="0"
-                required
-              />
-              <small className="form-hint">Single digit (0-9) for item SGTINs</small>
-            </div>
-          </div>
-        </div>
-        
-        <div className="epcclass-section">
-          <h3>Product Information (EPCClass)</h3>
-          <div className="form-grid">
-            <div className="form-group">
-              <label htmlFor="productNdc">Product NDC (11-digit):</label>
-              <div className="input-with-button">
-                <input
-                  type="text"
-                  id="productNdc"
-                  value={configuration.productNdc}
-                  onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
-                  placeholder="e.g., 45802-046-85"
-                  required
-                />
-                <button 
-                  type="button" 
-                  className="api-search-button"
-                  onClick={handleFdaSearch}
-                  disabled={fdaModal.isLoading}
-                >
-                  {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
-                </button>
-              </div>
-              <small className="form-hint">Enter 11-digit NDC to search FDA database and auto-populate GS1 codes</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="regulatedProductName">Regulated Product Name:</label>
-              <input
-                type="text"
-                id="regulatedProductName"
-                value={configuration.regulatedProductName}
-                onChange={(e) => setConfiguration({...configuration, regulatedProductName: e.target.value})}
-                placeholder="e.g., RX ECONAZOLE NITRATE 1% CRM 85G"
-                required
-              />
-              <small className="form-hint">Official product name</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="manufacturerName">Manufacturer Name:</label>
-              <input
-                type="text"
-                id="manufacturerName"
-                value={configuration.manufacturerName}
-                onChange={(e) => setConfiguration({...configuration, manufacturerName: e.target.value})}
-                placeholder="e.g., Padagis LLC"
-                required
-              />
-              <small className="form-hint">Manufacturer or labeler name</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="dosageFormType">Dosage Form Type:</label>
-              <input
-                type="text"
-                id="dosageFormType"
-                value={configuration.dosageFormType}
-                onChange={(e) => setConfiguration({...configuration, dosageFormType: e.target.value})}
-                placeholder="e.g., CREAM"
-                required
-              />
-              <small className="form-hint">Dosage form (e.g., TABLET, CREAM, INJECTION)</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="strengthDescription">Strength Description:</label>
-              <input
-                type="text"
-                id="strengthDescription"
-                value={configuration.strengthDescription}
-                onChange={(e) => setConfiguration({...configuration, strengthDescription: e.target.value})}
-                placeholder="e.g., 10 mg/g"
-                required
-              />
-              <small className="form-hint">Active ingredient strength</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="netContentDescription">Net Content Description:</label>
-              <input
-                type="text"
-                id="netContentDescription"
-                value={configuration.netContentDescription}
-                onChange={(e) => setConfiguration({...configuration, netContentDescription: e.target.value})}
-                placeholder="e.g., 85GM     Wgt"
-                required
-              />
-              <small className="form-hint">Package size and weight</small>
-            </div>
-          </div>
         </div>
         
         <div className="hierarchy-section">
