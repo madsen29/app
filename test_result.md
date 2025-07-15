@@ -173,6 +173,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "FULLY TESTED AND WORKING: EPCIS XML generation is perfect. ✅ Valid EPCIS 1.2 schema with correct namespace ✅ Proper bulk commissioning events (3 ObjectEvents for Items/Cases/SSCCs) ✅ Correct aggregation events structure ✅ GS1 identifiers with proper indicator digit placement ✅ Handles all scenarios: standard hierarchy, direct SSCC→Items, inner cases ✅ XML validation passes all standards. Fixed test expectations - current implementation follows correct EPCIS patterns."
+      - working: true
+        agent: "testing"
+        comment: "LOT NUMBER AND EXPIRATION DATE ILMD EXTENSION TESTING COMPLETED: ✅ EPCIS XML generation includes proper ILMD extensions when lot_number and expiration_date are provided ✅ ILMD extension structure matches GS1 standards with correct namespace (urn:epcglobal:cbv:mda) ✅ Contains cbvmda:lotNumber and cbvmda:itemExpirationDate elements ✅ ILMD extensions appear in commissioning events for Items, Cases, and Inner Cases ✅ Conditional inclusion - no ILMD when lot/expiry are empty ✅ Complete workflow test passed: Config with lot/expiry → Serial numbers → EPCIS XML with ILMD ✅ XML structure validated against expected format ✅ Fixed namespace prefix issue for proper XML generation"
 
 frontend:
   - task: "Configuration form UI"
