@@ -142,6 +142,15 @@ function App() {
     }
   };
 
+  const handleStepClick = (step) => {
+    if (step < currentStep) {
+      setCurrentStep(step);
+      scrollToTop();
+      setError('');
+      setSuccess('');
+    }
+  };
+
   const handleReset = () => {
     setCurrentStep(1);
     setConfiguration({ 
@@ -165,6 +174,15 @@ function App() {
     setItemSerials('');
     setError('');
     setSuccess('');
+    scrollToTop();
+  };
+
+  const dismissAlert = (type) => {
+    if (type === 'error') {
+      setError('');
+    } else if (type === 'success') {
+      setSuccess('');
+    }
   };
 
   // Barcode scanning functions
