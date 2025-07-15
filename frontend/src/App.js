@@ -285,8 +285,9 @@ function App() {
     setFdaModal({ ...fdaModal, isLoading: true });
     
     try {
-      // Convert to 10-digit NDC format (remove packaging code)
-      const productNdc = ndc.replace(/-/g, '').slice(0, 10);
+      // Convert 11-digit NDC to 10-digit Product NDC format
+      const cleanNdc = ndc.replace(/-/g, '');
+      const productNdc = cleanNdc.slice(0, 10);
       const formattedNdc = productNdc.replace(/(\d{5})(\d{3,4})/, '$1-$2');
       
       const response = await fetch(`https://api.fda.gov/drug/ndc.json?search=product_ndc:"${formattedNdc}"&limit=1`);
@@ -304,7 +305,8 @@ function App() {
               ...product,
               selectedPackaging: pkg,
               packageNdc: pkg.package_ndc,
-              packageDescription: pkg.description
+              packageDescription: pkg.description,
+              productNdc: formattedNdc
             });
           });
         } else {
@@ -313,7 +315,8 @@ function App() {
             ...product,
             selectedPackaging: null,
             packageNdc: product.product_ndc,
-            packageDescription: 'No packaging information available'
+            packageDescription: 'No packaging information available',
+            productNdc: formattedNdc
           });
         }
         
@@ -341,14 +344,22 @@ function App() {
   };
 
   const selectFdaProduct = (productOption) => {
-    // Convert full NDC to 10-digit product NDC
-    const fullNdc = productOption.packageNdc || productOption.product_ndc;
-    const productNdc = fullNdc.replace(/-/g, '').slice(0, 10);
-    const formattedProductNdc = productNdc.replace(/(\d{5})(\d{3,4})/, '$1-$2');
+    // Get the 10-digit Product NDC
+    const productNdc = productOption.productNdc;
+    
+    // Parse the NDC to extract labeler code and product code
+    const cleanNdc = productNdc.replace(/-/g, '');
+    const labelerCode = cleanNdc.slice(0, 5); // First 5 digits
+    const productCode = cleanNdc.slice(5); // Remaining digits
+    
+    // Create GS1 Company Prefix by prepending "03" to labeler code
+    const companyPrefix = "03" + labelerCode;
     
     setConfiguration({
       ...configuration,
-      productNdc: formattedProductNdc,
+      productNdc: productNdc,
+      companyPrefix: companyPrefix,
+      productCode: productCode,
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
       manufacturerName: productOption.labeler_name || '',
       dosageFormType: productOption.dosage_form || '',
@@ -359,7 +370,7 @@ function App() {
     });
     
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
-    setSuccess(`Product information loaded: ${productOption.packageDescription}`);
+    setSuccess(`Product information loaded: ${productOption.packageDescription}. Company Prefix: ${companyPrefix}, Product Code: ${productCode}`);
   };
 
   const closeFdaModal = () => {
