@@ -1024,7 +1024,14 @@ function App() {
         </div>
         
         <div className="button-group">
-          <button type="button" onClick={() => setCurrentStep(2)} className="btn-secondary">
+          <button 
+            type="button" 
+            onClick={() => {
+              setCurrentStep(2);
+              scrollToTop();
+            }} 
+            className="btn-secondary"
+          >
             Back
           </button>
           <button onClick={handleGenerateEPCIS} disabled={isLoading} className="btn-primary">
