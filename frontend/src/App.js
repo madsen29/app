@@ -1283,12 +1283,6 @@ function App() {
             </div>
           </div>
         )}
-
-        <main className="main-content">
-          {currentStep === 1 && renderStep1()}
-          {currentStep === 2 && renderStep2()}
-          {currentStep === 3 && renderStep3()}
-        </main>
       </div>
     </div>
   );
