@@ -1492,26 +1492,44 @@ function App() {
           <div className="modal-overlay">
             <div className="modal-content">
               <div className="modal-header">
-                <h3>Select FDA Product</h3>
+                <h3>Select Product Packaging</h3>
                 <button className="close-button" onClick={closeFdaModal}>×</button>
               </div>
               <div className="modal-body">
                 {fdaModal.searchResults.length > 0 ? (
                   <div className="fda-results">
-                    {fdaModal.searchResults.map((product, index) => (
-                      <div key={index} className="fda-result-item" onClick={() => selectFdaProduct(product)}>
-                        <h4>{product.brand_name || product.generic_name}</h4>
-                        <p><strong>Manufacturer:</strong> {product.labeler_name}</p>
-                        <p><strong>NDC:</strong> {product.product_ndc}</p>
-                        <p><strong>Dosage Form:</strong> {product.dosage_form}</p>
-                        {product.active_ingredients && (
-                          <p><strong>Active Ingredients:</strong> {product.active_ingredients.map(ing => `${ing.name} ${ing.strength}`).join(', ')}</p>
-                        )}
+                    <p className="modal-instruction">Select the packaging option for this product:</p>
+                    {fdaModal.searchResults.map((productOption, index) => (
+                      <div key={index} className="fda-result-item" onClick={() => selectFdaProduct(productOption)}>
+                        <div className="fda-product-header">
+                          <h4>{productOption.brand_name || productOption.generic_name}</h4>
+                          <div className="fda-ndc-badge">
+                            <span className="ndc-label">Product NDC:</span>
+                            <span className="ndc-value">{productOption.product_ndc}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="fda-product-details">
+                          <p><strong>Manufacturer:</strong> {productOption.labeler_name}</p>
+                          <p><strong>Dosage Form:</strong> {productOption.dosage_form}</p>
+                          {productOption.active_ingredients && (
+                            <p><strong>Active Ingredients:</strong> {productOption.active_ingredients.map(ing => `${ing.name} ${ing.strength}`).join(', ')}</p>
+                          )}
+                        </div>
+                        
+                        <div className="fda-packaging-info">
+                          <div className="packaging-header">
+                            <strong>Package NDC:</strong> {productOption.packageNdc}
+                          </div>
+                          <div className="packaging-description">
+                            <strong>Package Description:</strong> {productOption.packageDescription}
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p>No results found</p>
+                  <p>No packaging options found</p>
                 )}
               </div>
             </div>
