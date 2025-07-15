@@ -1048,6 +1048,8 @@ function App() {
             <ul>
               <li>Company Prefix: {configuration.companyPrefix}</li>
               <li>Product Code: {configuration.productCode}</li>
+              <li>Lot Number: {configuration.lotNumber}</li>
+              <li>Expiration Date: {configuration.expirationDate}</li>
               <li>SSCC Extension: {configuration.ssccExtensionDigit}</li>
               <li>Case Indicator: {configuration.caseIndicatorDigit}</li>
               {configuration.useInnerCases && (
