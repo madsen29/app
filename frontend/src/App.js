@@ -948,7 +948,7 @@ function App() {
             <div className="textarea-group">
               <textarea
                 value={ssccSerials}
-                onChange={(e) => setSsccSerials(e.target.value)}
+                onChange={handleSsccSerialsChange}
                 placeholder="Enter SSCC serial numbers, one per line"
                 rows="5"
                 required
