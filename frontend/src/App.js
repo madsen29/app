@@ -862,7 +862,7 @@ function App() {
                   id="productNdc"
                   value={configuration.productNdc}
                   onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
-                  placeholder="e.g., 45802466"
+                  placeholder="e.g., 45802-466"
                   required
                 />
                 <button 
