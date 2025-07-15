@@ -737,7 +737,7 @@ body {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #5a67d8;
+  background: #0041c7;
 }
 
 .btn-primary:disabled {
