@@ -394,6 +394,8 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         
         # Add ILMD extension for cases
         add_ilmd_extension(object_event, lot_number, expiration_date)
+    
+    # 4. Single Commissioning Event for All SSCCs
     if sscc_epcs:
         object_event = ET.SubElement(event_list, "ObjectEvent")
         
