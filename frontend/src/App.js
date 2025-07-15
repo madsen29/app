@@ -120,11 +120,8 @@ function App() {
       
       setConfigurationId(response.data.id);
       
-      // Initialize serial number strings
-      setSsccSerials('');
-      setCaseSerials('');
-      setInnerCaseSerials('');
-      setItemSerials('');
+      // Initialize hierarchical serial collection
+      initializeHierarchicalSerials();
       
       setCurrentStep(2);
       setSuccess('Configuration saved successfully!');
