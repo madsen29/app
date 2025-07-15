@@ -716,11 +716,23 @@ function App() {
                 <div className="hierarchy-level">
                   <strong>Inner Cases:</strong> {calculateTotals().totalInnerCases} total
                 </div>
+                <div className="hierarchy-arrow">↓</div>
+                <div className="hierarchy-level">
+                  <strong>Items per Inner Case:</strong> {configuration.itemsPerInnerCase}
+                </div>
+              </>
+            )}
+            {!configuration.useInnerCases && (
+              <>
+                <div className="hierarchy-arrow">↓</div>
+                <div className="hierarchy-level">
+                  <strong>Items per Case:</strong> {configuration.itemsPerCase}
+                </div>
               </>
             )}
             <div className="hierarchy-arrow">↓</div>
             <div className="hierarchy-level">
-              <strong>Items (Eaches):</strong> {calculateTotals().totalItems} total
+              <strong>Total Items:</strong> {calculateTotals().totalItems}
             </div>
           </div>
         </div>
