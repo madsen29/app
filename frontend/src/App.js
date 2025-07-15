@@ -77,27 +77,25 @@ function App() {
     setIsLoading(true);
     setError('');
     
-    // Validate all serial numbers are filled
-    if (ssccSerials.some(serial => !serial.trim()) || 
-        caseSerials.some(serial => !serial.trim()) || 
-        itemSerials.some(serial => !serial.trim())) {
-      setError('All serial numbers must be filled');
-      setIsLoading(false);
-      return;
-    }
+    // Parse serial numbers from text areas
+    const ssccArray = ssccSerials.split('\n').filter(s => s.trim()).map(s => s.trim());
+    const caseArray = caseSerials.split('\n').filter(s => s.trim()).map(s => s.trim());
+    const innerCaseArray = innerCaseSerials.split('\n').filter(s => s.trim()).map(s => s.trim());
+    const itemArray = itemSerials.split('\n').filter(s => s.trim()).map(s => s.trim());
     
     try {
       await axios.post(`${API}/serial-numbers`, {
         configuration_id: configurationId,
-        sscc_serial_numbers: ssccSerials,
-        case_serial_numbers: caseSerials,
-        item_serial_numbers: itemSerials
+        sscc_serial_numbers: ssccArray,
+        case_serial_numbers: caseArray,
+        inner_case_serial_numbers: innerCaseArray,
+        item_serial_numbers: itemArray
       });
       
       setCurrentStep(3);
       setSuccess('Serial numbers saved successfully!');
     } catch (err) {
-      setError('Failed to save serial numbers');
+      setError(err.response?.data?.detail || 'Failed to save serial numbers');
     } finally {
       setIsLoading(false);
     }
