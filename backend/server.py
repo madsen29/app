@@ -74,6 +74,7 @@ class SerialConfigurationCreate(BaseModel):
     item_indicator_digit: str
     # EPCClass data
     product_ndc: str = Field(default="")
+    package_ndc: str = Field(default="")
     regulated_product_name: str = Field(default="")
     manufacturer_name: str = Field(default="")
     dosage_form_type: str = Field(default="")
