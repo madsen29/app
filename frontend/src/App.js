@@ -170,43 +170,110 @@ function App() {
   };
 
   const closeScanner = () => {
+    setIsScanning(false);
     if (codeReader.current) {
-      codeReader.current.reset();
+      try {
+        codeReader.current.reset();
+      } catch (error) {
+        console.log('Error stopping scanner:', error);
+      }
     }
+    
+    // Stop all video streams
+    if (videoRef.current && videoRef.current.srcObject) {
+      const tracks = videoRef.current.srcObject.getTracks();
+      tracks.forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+    }
+    
     setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
   };
 
   const startScanning = async () => {
     try {
+      setIsScanning(true);
+      
+      // Initialize the code reader
+      codeReader.current = new BrowserMultiFormatReader();
+      
+      // Request camera permissions first
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment' // Try to use back camera
+        } 
+      });
+      
+      // Set the video stream
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      
+      // Start scanning
+      const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
+      
+      if (result) {
+        const scannedData = result.getText();
+        handleBarcodeResult(scannedData);
+      }
+      
+    } catch (err) {
+      console.error('Error starting scanner:', err);
+      setIsScanning(false);
+      
+      if (err.name === 'NotAllowedError') {
+        setError('Camera access denied. Please allow camera permissions and try again.');
+      } else if (err.name === 'NotFoundError') {
+        setError('No camera found on this device');
+      } else {
+        setError('Failed to start camera scanner: ' + err.message);
+      }
+    }
+  };
+
+  const startContinuousScanning = async () => {
+    try {
+      setIsScanning(true);
+      
+      // Initialize the code reader
       codeReader.current = new BrowserMultiFormatReader();
       
       // Get available video devices
-      const videoInputDevices = await codeReader.current.listVideoInputDevices();
+      const videoInputDevices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = videoInputDevices.filter(device => device.kind === 'videoinput');
       
-      if (videoInputDevices.length === 0) {
+      if (cameras.length === 0) {
         setError('No camera found on this device');
         return;
       }
 
       // Use the first available camera (or back camera if available)
-      const selectedDeviceId = videoInputDevices.find(device => 
+      const selectedDevice = cameras.find(device => 
         device.label.toLowerCase().includes('back') || 
         device.label.toLowerCase().includes('rear')
-      )?.deviceId || videoInputDevices[0].deviceId;
+      ) || cameras[0];
 
       // Start continuous scanning
-      codeReader.current.decodeFromVideoDevice(selectedDeviceId, videoRef.current, (result, error) => {
+      await codeReader.current.decodeFromVideoDevice(selectedDevice.deviceId, videoRef.current, (result, error) => {
         if (result) {
           const scannedData = result.getText();
           handleBarcodeResult(scannedData);
         }
-        if (error && !error.message.includes('No MultiFormat Readers were able to detect the code')) {
+        if (error && !error.message.includes('No MultiFormat Readers')) {
           console.log('Scanning error:', error);
         }
       });
+      
     } catch (err) {
-      console.error('Error starting scanner:', err);
-      setError('Failed to start camera scanner');
+      console.error('Error starting continuous scanner:', err);
+      setIsScanning(false);
+      
+      if (err.name === 'NotAllowedError') {
+        setError('Camera access denied. Please allow camera permissions and try again.');
+      } else if (err.name === 'NotFoundError') {
+        setError('No camera found on this device');
+      } else {
+        setError('Failed to start camera scanner: ' + err.message);
+      }
     }
   };
 
