@@ -1128,19 +1128,26 @@ function App() {
               </div>
               
               {configuration.casesPerSscc > 0 && (
-                <div className="hierarchy-item">
-                  <span className="hierarchy-label">Cases</span>
-                  <span className="hierarchy-value">{totals.totalCases}</span>
-                </div>
+                <>
+                  <div className="hierarchy-arrow">→</div>
+                  <div className="hierarchy-item">
+                    <span className="hierarchy-label">Cases</span>
+                    <span className="hierarchy-value">{totals.totalCases}</span>
+                  </div>
+                </>
               )}
               
               {configuration.useInnerCases && (
-                <div className="hierarchy-item">
-                  <span className="hierarchy-label">Inner Cases</span>
-                  <span className="hierarchy-value">{totals.totalInnerCases}</span>
-                </div>
+                <>
+                  <div className="hierarchy-arrow">→</div>
+                  <div className="hierarchy-item">
+                    <span className="hierarchy-label">Inner Cases</span>
+                    <span className="hierarchy-value">{totals.totalInnerCases}</span>
+                  </div>
+                </>
               )}
               
+              <div className="hierarchy-arrow">→</div>
               <div className="hierarchy-item">
                 <span className="hierarchy-label">Items</span>
                 <span className="hierarchy-value">{totals.totalItems}</span>
