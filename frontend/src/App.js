@@ -36,6 +36,7 @@ function App() {
   const [scannerModal, setScannerModal] = useState({ isOpen: false, targetField: '', targetSetter: null });
   const videoRef = useRef(null);
   const codeReader = useRef(null);
+  const [isScanning, setIsScanning] = useState(false);
 
   const handleConfigurationSubmit = async (e) => {
     e.preventDefault();
