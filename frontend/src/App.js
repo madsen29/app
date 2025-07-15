@@ -530,6 +530,18 @@ function App() {
           <h3>Packaging Configuration</h3>
           <div className="form-grid">
             <div className="form-group">
+              <label htmlFor="numberOfSscc">Number of SSCCs:</label>
+              <input
+                type="number"
+                id="numberOfSscc"
+                min="1"
+                max="20"
+                value={configuration.numberOfSscc}
+                onChange={(e) => setConfiguration({...configuration, numberOfSscc: parseInt(e.target.value)})}
+                required
+              />
+            </div>
+            <div className="form-group">
               <label htmlFor="casesPerSscc">Cases per SSCC:</label>
               <input
                 type="number"
@@ -541,18 +553,6 @@ function App() {
                 required
               />
               <small className="form-hint">Enter 0 for direct SSCC → Items aggregation</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="numberOfSscc">Number of SSCCs:</label>
-              <input
-                type="number"
-                id="numberOfSscc"
-                min="1"
-                max="20"
-                value={configuration.numberOfSscc}
-                onChange={(e) => setConfiguration({...configuration, numberOfSscc: parseInt(e.target.value)})}
-                required
-              />
             </div>
           </div>
           
