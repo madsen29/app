@@ -731,8 +731,8 @@ body {
 }
 
 .epcis-card {
-  background: #e6fffa;
-  border: 1px solid #81e6d9;
+  background: white;
+  border: 1px solid #e2e8f0;
 }
 
 .epcis-details {
@@ -746,7 +746,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 0;
-  border-bottom: 1px solid #c6f6d5;
+  border-bottom: 1px solid #f7fafc;
 }
 
 .epcis-row:last-child {
@@ -755,13 +755,13 @@ body {
 
 .epcis-label {
   font-size: 0.9rem;
-  color: #234e52;
+  color: #4a5568;
   font-weight: 500;
 }
 
 .epcis-value {
   font-size: 0.9rem;
-  color: #285e61;
+  color: #2d3748;
   font-weight: 600;
 }
 
