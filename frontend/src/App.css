@@ -33,7 +33,7 @@ body {
 .header {
   background: #000000;
   color: white;
-  padding: 1.5rem 2rem;
+  padding: 1rem 2rem;
 }
 
 .header-content {
@@ -45,7 +45,7 @@ body {
 }
 
 .header-logo {
-  width: 80px;
+  width: 40px;
   height: auto;
 }
 
@@ -63,6 +63,11 @@ body {
   font-size: 0.9rem;
   opacity: 0.9;
   margin: 0;
+}
+
+/* Main Content */
+.main-content {
+  padding: 1rem 2rem;
 }
 
 /* Progress Bar */
