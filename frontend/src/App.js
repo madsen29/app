@@ -877,10 +877,21 @@ function App() {
                 <button className="close-button" onClick={closeScanner}>×</button>
               </div>
               <div className="scanner-body">
-                <video ref={videoRef} className="scanner-video" autoPlay muted playsInline></video>
+                <div className="camera-container">
+                  <video ref={videoRef} className="scanner-video" autoPlay muted playsInline></video>
+                  {isScanning && (
+                    <div className="scanning-overlay">
+                      <div className="scanning-frame"></div>
+                      <p className="scanning-text">Scanning...</p>
+                    </div>
+                  )}
+                </div>
                 <div className="scanner-instructions">
                   <p>Position the barcode within the camera view</p>
                   <p>Supported formats: GS1 Data Matrix, QR codes</p>
+                  {!isScanning && (
+                    <p className="error-text">Camera not started. Please check permissions.</p>
+                  )}
                 </div>
               </div>
               <div className="scanner-footer">
