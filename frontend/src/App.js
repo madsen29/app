@@ -786,6 +786,29 @@ function App() {
         {error && <div className="alert alert-error">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
 
+        {/* Barcode Scanner Modal */}
+        {scannerModal.isOpen && (
+          <div className="scanner-modal">
+            <div className="scanner-overlay" onClick={closeScanner}></div>
+            <div className="scanner-content">
+              <div className="scanner-header">
+                <h3>Scan Barcode</h3>
+                <button className="close-button" onClick={closeScanner}>×</button>
+              </div>
+              <div className="scanner-body">
+                <video ref={videoRef} className="scanner-video" autoPlay muted playsInline></video>
+                <div className="scanner-instructions">
+                  <p>Position the barcode within the camera view</p>
+                  <p>Supported formats: GS1 Data Matrix, QR codes</p>
+                </div>
+              </div>
+              <div className="scanner-footer">
+                <button className="btn-secondary" onClick={closeScanner}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <main className="main-content">
           {currentStep === 1 && renderStep1()}
           {currentStep === 2 && renderStep2()}
