@@ -1571,124 +1571,37 @@ function App() {
   const renderStep2 = () => {
     const totals = calculateTotals();
     
-    // Count entered serial numbers
-    const ssccCount = ssccSerials.split('\n').filter(s => s.trim()).length;
-    const caseCount = caseSerials.split('\n').filter(s => s.trim()).length;
-    const innerCaseCount = innerCaseSerials.split('\n').filter(s => s.trim()).length;
-    const itemCount = itemSerials.split('\n').filter(s => s.trim()).length;
-    
-    return (
-      <div className="step-container">
-        {renderProgressBar()}
-        <h2 className="step-title">Step 2: Serial Numbers</h2>
-        <form onSubmit={handleSerialNumbersSubmit} className="serial-form">
+    if (serialCollectionStep.isComplete) {
+      // Show summary and submit button
+      return (
+        <div className="step-container">
+          {renderProgressBar()}
+          <h2 className="step-title">Step 2: Serial Numbers - Complete</h2>
           
-          <div className="serial-section">
-            <h3>SSCC Serial Numbers 
-              <span className={`counter ${ssccCount === configuration.numberOfSscc ? 'counter-complete' : ''}`}>
-                ({ssccCount}/{configuration.numberOfSscc})
-              </span>
-            </h3>
-            <div className="textarea-group">
-              <textarea
-                value={ssccSerials}
-                onChange={handleSsccSerialsChange}
-                placeholder="Enter SSCC serial numbers, one per line"
-                rows="5"
-                required
-              />
-              <small className="form-hint">Enter {configuration.numberOfSscc} SSCC serial numbers, one per line</small>
+          <div className="completion-summary">
+            <h3>✅ All Serial Numbers Collected</h3>
+            <p>You have successfully entered all {totals.totalItems} item serial numbers and their parent container serial numbers.</p>
+            
+            <div className="summary-stats">
+              <div className="stat">
+                <strong>SSCCs:</strong> {configuration.numberOfSscc}
+              </div>
+              {totals.totalCases > 0 && (
+                <div className="stat">
+                  <strong>Cases:</strong> {totals.totalCases}
+                </div>
+              )}
+              {totals.totalInnerCases > 0 && (
+                <div className="stat">
+                  <strong>Inner Cases:</strong> {totals.totalInnerCases}
+                </div>
+              )}
+              <div className="stat">
+                <strong>Items:</strong> {totals.totalItems}
+              </div>
             </div>
           </div>
-
-          {totals.totalCases > 0 && (
-            <div className="serial-section">
-              <h3>Case Serial Numbers 
-                <span className={`counter ${caseCount === totals.totalCases ? 'counter-complete' : ''}`}>
-                  ({caseCount}/{totals.totalCases})
-                </span>
-              </h3>
-              <div className="textarea-group">
-                <div className="textarea-with-scanner">
-                  <textarea
-                    value={caseSerials}
-                    onChange={handleCaseSerialsChange}
-                    placeholder="Enter case serial numbers, one per line"
-                    rows="8"
-                    required
-                  />
-                  <button 
-                    type="button" 
-                    className="scan-button"
-                    onClick={() => openScanner('case', setCaseSerials)}
-                    title="Scan barcode"
-                  >
-                    <FiCamera size={20} />
-                  </button>
-                </div>
-                <small className="form-hint">Enter {totals.totalCases} case serial numbers, one per line</small>
-              </div>
-            </div>
-          )}
-
-          {configuration.useInnerCases && totals.totalInnerCases > 0 && (
-            <div className="serial-section">
-              <h3>Inner Case Serial Numbers 
-                <span className={`counter ${innerCaseCount === totals.totalInnerCases ? 'counter-complete' : ''}`}>
-                  ({innerCaseCount}/{totals.totalInnerCases})
-                </span>
-              </h3>
-              <div className="textarea-group">
-                <div className="textarea-with-scanner">
-                  <textarea
-                    value={innerCaseSerials}
-                    onChange={handleInnerCaseSerialsChange}
-                    placeholder="Enter inner case serial numbers, one per line"
-                    rows="10"
-                    required
-                  />
-                  <button 
-                    type="button" 
-                    className="scan-button"
-                    onClick={() => openScanner('innerCase', setInnerCaseSerials)}
-                    title="Scan barcode"
-                  >
-                    <FiCamera size={20} />
-                  </button>
-                </div>
-                <small className="form-hint">Enter {totals.totalInnerCases} inner case serial numbers, one per line</small>
-              </div>
-            </div>
-          )}
-
-          <div className="serial-section">
-            <h3>Item Serial Numbers (Eaches)
-              <span className={`counter ${itemCount === totals.totalItems ? 'counter-complete' : ''}`}>
-                ({itemCount}/{totals.totalItems})
-              </span>
-            </h3>
-            <div className="textarea-group">
-              <div className="textarea-with-scanner">
-                <textarea
-                  value={itemSerials}
-                  onChange={handleItemSerialsChange}
-                  placeholder="Enter item serial numbers, one per line"
-                  rows="15"
-                  required
-                />
-                <button 
-                  type="button" 
-                  className="scan-button"
-                  onClick={() => openScanner('item', setItemSerials)}
-                  title="Scan barcode"
-                >
-                  <FiCamera size={20} />
-                </button>
-              </div>
-              <small className="form-hint">Enter {totals.totalItems} item serial numbers, one per line</small>
-            </div>
-          </div>
-
+          
           <div className="button-group">
             <button 
               type="button" 
@@ -1700,11 +1613,99 @@ function App() {
             >
               Back
             </button>
-            <button type="submit" disabled={isLoading} className="btn-primary">
+            <button 
+              type="button" 
+              onClick={handleSerialNumbersSubmit}
+              disabled={isLoading} 
+              className="btn-primary"
+            >
               {isLoading ? 'Saving...' : 'Save Serial Numbers'}
             </button>
           </div>
-        </form>
+        </div>
+      );
+    }
+    
+    // Show current serial input
+    const currentContext = getCurrentContext();
+    
+    return (
+      <div className="step-container">
+        {renderProgressBar()}
+        <h2 className="step-title">Step 2: Serial Numbers</h2>
+        
+        <div className="hierarchical-input">
+          <div className="context-display">
+            <h3>Current Context:</h3>
+            <div className="context-path">
+              {currentContext.path}
+            </div>
+          </div>
+          
+          <div className="current-input">
+            <h4>Enter {currentContext.label}:</h4>
+            <div className="input-group">
+              <input
+                type="text"
+                value={serialCollectionStep.currentSerial}
+                onChange={(e) => handleSerialInput(e.target.value)}
+                placeholder={`Enter ${currentContext.label} serial number`}
+                className="serial-input"
+                autoFocus
+              />
+              <button
+                type="button"
+                className="scan-button"
+                onClick={() => openScanner('current', null)}
+                title="Scan barcode"
+              >
+                <FiCamera size={20} />
+              </button>
+            </div>
+          </div>
+          
+          <div className="progress-info">
+            <div className="progress-stats">
+              <div className="stat">
+                <strong>Current SSCC:</strong> {serialCollectionStep.ssccIndex + 1} of {configuration.numberOfSscc}
+              </div>
+              {configuration.casesPerSscc > 0 && (
+                <div className="stat">
+                  <strong>Current Case:</strong> {serialCollectionStep.caseIndex + 1} of {configuration.casesPerSscc}
+                </div>
+              )}
+              {configuration.useInnerCases && (
+                <div className="stat">
+                  <strong>Current Inner Case:</strong> {serialCollectionStep.innerCaseIndex + 1} of {configuration.innerCasesPerCase}
+                </div>
+              )}
+              <div className="stat">
+                <strong>Current Item:</strong> {serialCollectionStep.itemIndex + 1} of {getCurrentItemCount()}
+              </div>
+            </div>
+          </div>
+          
+          <div className="button-group">
+            <button 
+              type="button" 
+              onClick={() => {
+                setCurrentStep(1);
+                scrollToTop();
+              }} 
+              className="btn-secondary"
+            >
+              Back
+            </button>
+            <button 
+              type="button" 
+              onClick={handleNextSerial}
+              disabled={!serialCollectionStep.currentSerial.trim()}
+              className="btn-primary"
+            >
+              Next
+            </button>
+          </div>
+        </div>
       </div>
     );
   };
