@@ -232,10 +232,17 @@ function App() {
       netContentDescription: ''
     });
     setConfigurationId('');
-    setSsccSerials('');
-    setCaseSerials('');
-    setInnerCaseSerials('');
-    setItemSerials('');
+    // Reset hierarchical serial collection state
+    setHierarchicalSerials([]);
+    setSerialCollectionStep({
+      ssccIndex: 0,
+      caseIndex: 0,
+      innerCaseIndex: 0,
+      itemIndex: 0,
+      currentLevel: 'sscc',
+      currentSerial: '',
+      isComplete: false
+    });
     setError('');
     setSuccess('');
     scrollToTop();
