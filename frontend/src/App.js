@@ -823,7 +823,7 @@ function App() {
                     onClick={() => openScanner('innerCase', setInnerCaseSerials)}
                     title="Scan barcode"
                   >
-                    <Camera size={20} />
+                    <FiCamera size={20} />
                   </button>
                 </div>
                 <small className="form-hint">Enter {totals.totalInnerCases} inner case serial numbers, one per line</small>
