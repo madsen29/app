@@ -183,34 +183,44 @@ body {
 }
 
 .inner-case-section {
-  background: #fff5e6;
-  padding: 1.5rem;
+  background: #f8fafc;
+  padding: 2rem;
   border-radius: 8px;
-  border: 1px solid #fed7aa;
+  border: 1px solid #e2e8f0;
   margin-bottom: 1.5rem;
 }
 
 .inner-case-section h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: #2d3748;
-  border-bottom: 2px solid #f97316;
+  border-bottom: 2px solid #4a5568;
   padding-bottom: 0.5rem;
+}
+
+.packaging-option {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
 }
 
 .checkbox-label {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  color: #4a5568;
+  align-items: flex-start;
+  gap: 0.75rem;
   cursor: pointer;
+  font-weight: 500;
+  color: #2d3748;
 }
 
 .checkbox-label input[type="checkbox"] {
   width: auto;
   margin: 0;
+  margin-top: 0.25rem;
+  flex-shrink: 0;
 }
 
 .textarea-group {
