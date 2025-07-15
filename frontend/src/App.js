@@ -945,29 +945,11 @@ function App() {
       console.log('Parsed GS1 Data:', parsedData); // Debug log
       
       if (parsedData.serialNumber) {
-        // Add the scanned serial number to the current text area with validation
-        const currentValue = scannerModal.targetField === 'sscc' ? ssccSerials :
-                           scannerModal.targetField === 'case' ? caseSerials :
-                           scannerModal.targetField === 'innerCase' ? innerCaseSerials :
-                           itemSerials;
-        
-        const newValue = currentValue ? currentValue + '\n' + parsedData.serialNumber : parsedData.serialNumber;
-        
-        // Use validation functions based on target field
-        let validatedValue;
-        if (scannerModal.targetField === 'sscc') {
-          validatedValue = validateSerialNumbers(newValue, 'SSCC Serial Numbers');
-          setSsccSerials(validatedValue);
-        } else if (scannerModal.targetField === 'case') {
-          validatedValue = validateSerialNumbers(newValue, 'Case Serial Numbers');
-          setCaseSerials(validatedValue);
-        } else if (scannerModal.targetField === 'innerCase') {
-          validatedValue = validateSerialNumbers(newValue, 'Inner Case Serial Numbers');
-          setInnerCaseSerials(validatedValue);
-        } else {
-          validatedValue = validateSerialNumbers(newValue, 'Item Serial Numbers');
-          setItemSerials(validatedValue);
-        }
+        // Set the scanned serial number as current serial
+        setSerialCollectionStep({
+          ...serialCollectionStep,
+          currentSerial: parsedData.serialNumber
+        });
         
         // Show detailed success message
         let successMessage = `Scanned serial number: ${parsedData.serialNumber}`;
