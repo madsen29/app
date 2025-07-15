@@ -134,20 +134,26 @@ function App() {
   const handleReset = () => {
     setCurrentStep(1);
     setConfiguration({ 
-      itemsPerCase: 10, 
+      itemsPerCase: 10,
       casesPerSscc: 5,
       numberOfSscc: 2,
+      useInnerCases: false,
+      innerCasesPerCase: 2,
+      itemsPerInnerCase: 5,
       companyPrefix: '1234567',
       itemProductCode: '000000',
       caseProductCode: '111111',
+      innerCaseProductCode: '222222',
       ssccIndicatorDigit: '0',
       caseIndicatorDigit: '0',
+      innerCaseIndicatorDigit: '0',
       itemIndicatorDigit: '0'
     });
     setConfigurationId('');
-    setSsccSerials([]);
-    setCaseSerials([]);
-    setItemSerials([]);
+    setSsccSerials('');
+    setCaseSerials('');
+    setInnerCaseSerials('');
+    setItemSerials('');
     setError('');
     setSuccess('');
   };
