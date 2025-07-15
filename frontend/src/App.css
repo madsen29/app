@@ -693,7 +693,8 @@ body {
 
 .hierarchy-arrow {
   font-size: 1.5rem;
-  color: #0055fb;
+  color: #000000;
+  opacity: .4;
   font-weight: bold;
   margin: 0 0.5rem;
   display: flex;
