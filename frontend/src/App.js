@@ -794,7 +794,7 @@ function App() {
                   onClick={() => openScanner('case', setCaseSerials)}
                   title="Scan barcode"
                 >
-                  <Camera size={20} />
+                  <FiCamera size={20} />
                 </button>
               </div>
               <small className="form-hint">Enter {totals.totalCases} case serial numbers, one per line</small>
