@@ -214,6 +214,18 @@ frontend:
         agent: "main"
         comment: "MAJOR RESTRUCTURE: Updated summary to show correct hierarchy totals (SSCCs, Cases, Items). Changed EPCIS details to reflect 1.2 schema and commissioning + aggregation events. Shows all GS1 parameters including separate item and case product codes."
 
+  - task: "Step 1 UI/UX improvements"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Completed Step 1 Configuration UI reorganization: Reordered SSCC fields (Number of SSCCs now first), set default value to 1, relocated GS1 Identifier Examples inside Packaging Hierarchy section, repositioned Save Configuration button to the right with chevron icon. Updated CSS styling for new layout."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
