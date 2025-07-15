@@ -11,17 +11,23 @@ function App() {
     itemsPerCase: 10,
     casesPerSscc: 5,
     numberOfSscc: 2,
+    useInnerCases: false,
+    innerCasesPerCase: 2,
+    itemsPerInnerCase: 5,
     companyPrefix: '1234567',
     itemProductCode: '000000',
     caseProductCode: '111111',
+    innerCaseProductCode: '222222',
     ssccIndicatorDigit: '0',
     caseIndicatorDigit: '0',
+    innerCaseIndicatorDigit: '0',
     itemIndicatorDigit: '0'
   });
   const [configurationId, setConfigurationId] = useState('');
-  const [ssccSerials, setSsccSerials] = useState([]);
-  const [caseSerials, setCaseSerials] = useState([]);
-  const [itemSerials, setItemSerials] = useState([]);
+  const [ssccSerials, setSsccSerials] = useState('');
+  const [caseSerials, setCaseSerials] = useState('');
+  const [innerCaseSerials, setInnerCaseSerials] = useState('');
+  const [itemSerials, setItemSerials] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
