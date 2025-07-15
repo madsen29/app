@@ -808,4 +808,13 @@ body {
     width: 100%;
     max-width: 300px;
   }
+  
+  .config-actions {
+    justify-content: center;
+  }
+}
+
+/* Utility Classes */
+.ml-2 {
+  margin-left: 0.5rem;
 }
