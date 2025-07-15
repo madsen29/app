@@ -1089,60 +1089,80 @@ function App() {
     return (
       <div className="step-container">
         <h2 className="step-title">Step 3: Generate EPCIS File</h2>
+        
         <div className="summary-section">
           <h3>Configuration Summary</h3>
-          <div className="summary-grid">
-            <div className="summary-item">
-              <strong>Cases per SSCC:</strong> {configuration.casesPerSscc}
-            </div>
-            <div className="summary-item">
-              <strong>Number of SSCCs:</strong> {configuration.numberOfSscc}
-            </div>
-            <div className="summary-item">
-              <strong>Total Cases:</strong> {totals.totalCases}
-            </div>
-            {configuration.useInnerCases && (
-              <>
-                <div className="summary-item">
-                  <strong>Inner Cases per Case:</strong> {configuration.innerCasesPerCase}
-                </div>
-                <div className="summary-item">
-                  <strong>Total Inner Cases:</strong> {totals.totalInnerCases}
-                </div>
-                <div className="summary-item">
-                  <strong>Items per Inner Case:</strong> {configuration.itemsPerInnerCase}
-                </div>
-              </>
-            )}
-            {!configuration.useInnerCases && (
-              <div className="summary-item">
-                <strong>Items per Case:</strong> {configuration.itemsPerCase}
+          
+          {/* Package Hierarchy */}
+          <div className="summary-card">
+            <h4>Package Hierarchy</h4>
+            <div className="hierarchy-summary">
+              <div className="hierarchy-item">
+                <span className="hierarchy-label">SSCCs</span>
+                <span className="hierarchy-value">{configuration.numberOfSscc}</span>
               </div>
-            )}
-            <div className="summary-item">
-              <strong>Total Items:</strong> {totals.totalItems}
+              
+              {configuration.casesPerSscc > 0 && (
+                <div className="hierarchy-item">
+                  <span className="hierarchy-label">Cases</span>
+                  <span className="hierarchy-value">{totals.totalCases}</span>
+                </div>
+              )}
+              
+              {configuration.useInnerCases && (
+                <div className="hierarchy-item">
+                  <span className="hierarchy-label">Inner Cases</span>
+                  <span className="hierarchy-value">{totals.totalInnerCases}</span>
+                </div>
+              )}
+              
+              <div className="hierarchy-item">
+                <span className="hierarchy-label">Items</span>
+                <span className="hierarchy-value">{totals.totalItems}</span>
+              </div>
             </div>
           </div>
-          
-          <div className="epcis-info">
+
+          {/* GS1 Configuration */}
+          <div className="summary-card">
+            <h4>GS1 Configuration</h4>
+            <div className="config-details">
+              <div className="config-row">
+                <span className="config-label">Company Prefix</span>
+                <span className="config-value">{configuration.companyPrefix}</span>
+              </div>
+              <div className="config-row">
+                <span className="config-label">Product Code</span>
+                <span className="config-value">{configuration.productCode}</span>
+              </div>
+              <div className="config-row">
+                <span className="config-label">Lot Number</span>
+                <span className="config-value">{configuration.lotNumber}</span>
+              </div>
+              <div className="config-row">
+                <span className="config-label">Expiration Date</span>
+                <span className="config-value">{configuration.expirationDate}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* EPCIS Details */}
+          <div className="summary-card epcis-card">
             <h4>EPCIS File Details</h4>
-            <p>The generated file will contain GS1 compliant EPCIS 1.2 XML with commissioning and aggregation events for pharmaceutical serialization.</p>
-            <ul>
-              <li>Company Prefix: {configuration.companyPrefix}</li>
-              <li>Product Code: {configuration.productCode}</li>
-              <li>Lot Number: {configuration.lotNumber}</li>
-              <li>Expiration Date: {configuration.expirationDate}</li>
-              <li>SSCC Extension: {configuration.ssccExtensionDigit}</li>
-              <li>Case Indicator: {configuration.caseIndicatorDigit}</li>
-              {configuration.useInnerCases && (
-                <li>Inner Case Indicator: {configuration.innerCaseIndicatorDigit}</li>
-              )}
-              <li>Item Indicator: {configuration.itemIndicatorDigit}</li>
-              <li>Format: EPCIS 1.2 Standard</li>
-              <li>Event Types: Commissioning + Aggregation Events</li>
-              <li>Hierarchy: {configuration.useInnerCases ? 'SSCC → Cases → Inner Cases → Items' : 'SSCC → Cases → Items'}</li>
-              <li>Business Step: Commissioning + Packing</li>
-            </ul>
+            <div className="epcis-details">
+              <div className="epcis-row">
+                <span className="epcis-label">Format</span>
+                <span className="epcis-value">EPCIS 1.2 Standard</span>
+              </div>
+              <div className="epcis-row">
+                <span className="epcis-label">Event Types</span>
+                <span className="epcis-value">Commissioning + Aggregation</span>
+              </div>
+              <div className="epcis-row">
+                <span className="epcis-label">Business Step</span>
+                <span className="epcis-value">Commissioning + Packing</span>
+              </div>
+            </div>
           </div>
         </div>
         
