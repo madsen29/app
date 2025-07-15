@@ -106,9 +106,15 @@ async def create_serial_numbers(input: SerialNumbersCreate):
     if not config:
         raise HTTPException(status_code=404, detail="Configuration not found")
     
-    # Calculate expected quantities
+    # Calculate expected quantities based on configuration
     total_cases = config["cases_per_sscc"] * config["number_of_sscc"]
-    total_items = config["items_per_case"] * total_cases
+    
+    if config["use_inner_cases"]:
+        total_inner_cases = config["inner_cases_per_case"] * total_cases
+        total_items = config["items_per_inner_case"] * total_inner_cases
+    else:
+        total_inner_cases = 0
+        total_items = config["items_per_case"] * total_cases
     
     # Validate serial numbers count
     if len(input.sscc_serial_numbers) != config["number_of_sscc"]:
@@ -122,6 +128,19 @@ async def create_serial_numbers(input: SerialNumbersCreate):
             status_code=400, 
             detail=f"Expected {total_cases} case serial numbers, got {len(input.case_serial_numbers)}"
         )
+    
+    if config["use_inner_cases"]:
+        if len(input.inner_case_serial_numbers) != total_inner_cases:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Expected {total_inner_cases} inner case serial numbers, got {len(input.inner_case_serial_numbers)}"
+            )
+    else:
+        if len(input.inner_case_serial_numbers) > 0:
+            raise HTTPException(
+                status_code=400, 
+                detail="Inner case serial numbers provided but inner cases are not enabled in configuration"
+            )
     
     if len(input.item_serial_numbers) != total_items:
         raise HTTPException(
