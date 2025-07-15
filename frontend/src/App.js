@@ -571,7 +571,25 @@ function App() {
             </label>
           </div>
           
-          {configuration.useInnerCases ? (
+          {configuration.casesPerSscc === 0 ? (
+            <div className="packaging-config">
+              <div className="config-explanation">
+                <p><strong>2-Level Hierarchy:</strong> SSCC → Items</p>
+              </div>
+              <div className="form-group">
+                <label htmlFor="itemsPerCase">Items per SSCC:</label>
+                <input
+                  type="number"
+                  id="itemsPerCase"
+                  min="1"
+                  max="1000"
+                  value={configuration.itemsPerCase}
+                  onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
+                  required
+                />
+              </div>
+            </div>
+          ) : configuration.useInnerCases ? (
             <div className="packaging-config">
               <div className="config-explanation">
                 <p><strong>4-Level Hierarchy:</strong> SSCC → Cases → Inner Cases → Items</p>
