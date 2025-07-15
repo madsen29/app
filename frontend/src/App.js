@@ -406,22 +406,24 @@ function App() {
       // Small delay to ensure modal is rendered
       setTimeout(() => {
         startContinuousScanning();
-      }, 100);
+      }, 200);
     }
     
     return () => {
-      if (codeReader.current) {
-        try {
-          codeReader.current.reset();
-        } catch (error) {
-          console.log('Cleanup error:', error);
-        }
-      }
-      
-      // Stop all video streams
+      // Cleanup on unmount
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
         tracks.forEach(track => track.stop());
+      }
+      
+      if (codeReader.current) {
+        try {
+          if (typeof codeReader.current.reset === 'function') {
+            codeReader.current.reset();
+          }
+        } catch (error) {
+          console.log('Cleanup error:', error);
+        }
       }
     };
   }, [scannerModal.isOpen]);
