@@ -102,7 +102,7 @@ body {
 
 .progress-step.clickable:hover {
   transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 85, 251, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 85, 251, 0.3);
 }
 
 .progress-step:not(:last-child)::after {
