@@ -413,99 +413,106 @@ function App() {
     </div>
   );
 
-  const renderStep2 = () => (
-    <div className="step-container">
-      <h2 className="step-title">Step 2: Serial Numbers</h2>
-      <form onSubmit={handleSerialNumbersSubmit} className="serial-form">
-        
-        <div className="serial-section">
-          <h3>SSCC Serial Numbers</h3>
-          <div className="serial-grid">
-            {ssccSerials.map((serial, index) => (
-              <div key={index} className="serial-input-group">
-                <label>SSCC {index + 1}:</label>
-                <input
-                  type="text"
-                  value={serial}
-                  onChange={(e) => {
-                    const newSerials = [...ssccSerials];
-                    newSerials[index] = e.target.value;
-                    setSsccSerials(newSerials);
-                  }}
-                  placeholder={`SSCC ${index + 1} serial number`}
+  const renderStep2 = () => {
+    const totals = calculateTotals();
+    
+    // Count entered serial numbers
+    const ssccCount = ssccSerials.split('\n').filter(s => s.trim()).length;
+    const caseCount = caseSerials.split('\n').filter(s => s.trim()).length;
+    const innerCaseCount = innerCaseSerials.split('\n').filter(s => s.trim()).length;
+    const itemCount = itemSerials.split('\n').filter(s => s.trim()).length;
+    
+    return (
+      <div className="step-container">
+        <h2 className="step-title">Step 2: Serial Numbers</h2>
+        <form onSubmit={handleSerialNumbersSubmit} className="serial-form">
+          
+          <div className="serial-section">
+            <h3>SSCC Serial Numbers 
+              <span className="counter {ssccCount === configuration.numberOfSscc ? 'counter-complete' : ''}">
+                ({ssccCount}/{configuration.numberOfSscc})
+              </span>
+            </h3>
+            <div className="textarea-group">
+              <textarea
+                value={ssccSerials}
+                onChange={(e) => setSsccSerials(e.target.value)}
+                placeholder="Enter SSCC serial numbers, one per line"
+                rows="5"
+                required
+              />
+              <small className="form-hint">Enter {configuration.numberOfSscc} SSCC serial numbers, one per line</small>
+            </div>
+          </div>
+
+          <div className="serial-section">
+            <h3>Case Serial Numbers 
+              <span className="counter {caseCount === totals.totalCases ? 'counter-complete' : ''}">
+                ({caseCount}/{totals.totalCases})
+              </span>
+            </h3>
+            <div className="textarea-group">
+              <textarea
+                value={caseSerials}
+                onChange={(e) => setCaseSerials(e.target.value)}
+                placeholder="Enter case serial numbers, one per line"
+                rows="8"
+                required
+              />
+              <small className="form-hint">Enter {totals.totalCases} case serial numbers, one per line</small>
+            </div>
+          </div>
+
+          {configuration.useInnerCases && (
+            <div className="serial-section">
+              <h3>Inner Case Serial Numbers 
+                <span className="counter {innerCaseCount === totals.totalInnerCases ? 'counter-complete' : ''}">
+                  ({innerCaseCount}/{totals.totalInnerCases})
+                </span>
+              </h3>
+              <div className="textarea-group">
+                <textarea
+                  value={innerCaseSerials}
+                  onChange={(e) => setInnerCaseSerials(e.target.value)}
+                  placeholder="Enter inner case serial numbers, one per line"
+                  rows="10"
                   required
                 />
+                <small className="form-hint">Enter {totals.totalInnerCases} inner case serial numbers, one per line</small>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          )}
 
-        <div className="serial-section">
-          <h3>Case Serial Numbers</h3>
-          <div className="serial-grid">
-            {caseSerials.map((serial, index) => {
-              const ssccNumber = Math.floor(index / configuration.casesPerSscc) + 1;
-              const caseNumber = (index % configuration.casesPerSscc) + 1;
-              return (
-                <div key={index} className="serial-input-group">
-                  <label>SSCC {ssccNumber} - Case {caseNumber}:</label>
-                  <input
-                    type="text"
-                    value={serial}
-                    onChange={(e) => {
-                      const newSerials = [...caseSerials];
-                      newSerials[index] = e.target.value;
-                      setCaseSerials(newSerials);
-                    }}
-                    placeholder={`Case ${index + 1} serial number`}
-                    required
-                  />
-                </div>
-              );
-            })}
+          <div className="serial-section">
+            <h3>Item Serial Numbers (Eaches)
+              <span className="counter {itemCount === totals.totalItems ? 'counter-complete' : ''}">
+                ({itemCount}/{totals.totalItems})
+              </span>
+            </h3>
+            <div className="textarea-group">
+              <textarea
+                value={itemSerials}
+                onChange={(e) => setItemSerials(e.target.value)}
+                placeholder="Enter item serial numbers, one per line"
+                rows="15"
+                required
+              />
+              <small className="form-hint">Enter {totals.totalItems} item serial numbers, one per line</small>
+            </div>
           </div>
-        </div>
 
-        <div className="serial-section">
-          <h3>Item Serial Numbers</h3>
-          <div className="serial-grid">
-            {itemSerials.map((serial, index) => {
-              const totalCases = configuration.casesPerSscc * configuration.numberOfSscc;
-              const caseIndex = Math.floor(index / configuration.itemsPerCase);
-              const ssccNumber = Math.floor(caseIndex / configuration.casesPerSscc) + 1;
-              const caseNumber = (caseIndex % configuration.casesPerSscc) + 1;
-              const itemNumber = (index % configuration.itemsPerCase) + 1;
-              return (
-                <div key={index} className="serial-input-group">
-                  <label>SSCC {ssccNumber} - Case {caseNumber} - Item {itemNumber}:</label>
-                  <input
-                    type="text"
-                    value={serial}
-                    onChange={(e) => {
-                      const newSerials = [...itemSerials];
-                      newSerials[index] = e.target.value;
-                      setItemSerials(newSerials);
-                    }}
-                    placeholder={`Item ${index + 1} serial number`}
-                    required
-                  />
-                </div>
-              );
-            })}
+          <div className="button-group">
+            <button type="button" onClick={() => setCurrentStep(1)} className="btn-secondary">
+              Back
+            </button>
+            <button type="submit" disabled={isLoading} className="btn-primary">
+              {isLoading ? 'Saving...' : 'Save Serial Numbers'}
+            </button>
           </div>
-        </div>
-
-        <div className="button-group">
-          <button type="button" onClick={() => setCurrentStep(1)} className="btn-secondary">
-            Back
-          </button>
-          <button type="submit" disabled={isLoading} className="btn-primary">
-            {isLoading ? 'Saving...' : 'Save Serial Numbers'}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+        </form>
+      </div>
+    );
+  };
 
   const renderStep3 = () => (
     <div className="step-container">
