@@ -1090,9 +1090,13 @@ function App() {
     <div className="app">
       <div className="container">
         <header className="header">
-          <img className="header-logo" src="https://cdn.prod.website-files.com/6154ee5ad4b73423326331fd/66a2bd8c5b618c82f5e30699_rxerp-logo-hero-light.svg"></img>
-          <h1>RxERP Aggregator</h1>
-          <p>Generate GS1 compliant EPCIS files for pharmaceutical serialization</p>
+          <div className="header-content">
+            <img className="header-logo" src="https://cdn.prod.website-files.com/6154ee5ad4b73423326331fd/66a2bd8c5b618c82f5e30699_rxerp-logo-hero-light.svg"></img>
+            <div className="header-text">
+              <h1>RxERP Aggregator</h1>
+              <p>Generate GS1 compliant EPCIS files for pharmaceutical serialization</p>
+            </div>
+          </div>
         </header>
 
         <div className="progress-bar">
