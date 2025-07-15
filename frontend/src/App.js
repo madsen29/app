@@ -214,6 +214,7 @@ function App() {
       itemIndicatorDigit: '0',
       // EPCClass data
       productNdc: '',
+      packageNdc: '',
       regulatedProductName: '',
       manufacturerName: '',
       dosageFormType: '',
