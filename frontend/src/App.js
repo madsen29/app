@@ -19,6 +19,8 @@ function App() {
     itemsPerInnerCase: 5,
     companyPrefix: '1234567',
     productCode: '000000',
+    lotNumber: '',
+    expirationDate: '',
     ssccExtensionDigit: '0',
     caseIndicatorDigit: '0',
     innerCaseIndicatorDigit: '0',
