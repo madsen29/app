@@ -1447,6 +1447,37 @@ function App() {
             </div>
           </div>
         )}
+
+        {/* FDA API Search Modal */}
+        {fdaModal.isOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3>Select FDA Product</h3>
+                <button className="close-button" onClick={closeFdaModal}>×</button>
+              </div>
+              <div className="modal-body">
+                {fdaModal.searchResults.length > 0 ? (
+                  <div className="fda-results">
+                    {fdaModal.searchResults.map((product, index) => (
+                      <div key={index} className="fda-result-item" onClick={() => selectFdaProduct(product)}>
+                        <h4>{product.brand_name || product.generic_name}</h4>
+                        <p><strong>Manufacturer:</strong> {product.labeler_name}</p>
+                        <p><strong>NDC:</strong> {product.product_ndc}</p>
+                        <p><strong>Dosage Form:</strong> {product.dosage_form}</p>
+                        {product.active_ingredients && (
+                          <p><strong>Active Ingredients:</strong> {product.active_ingredients.map(ing => `${ing.name} ${ing.strength}`).join(', ')}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No results found</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
