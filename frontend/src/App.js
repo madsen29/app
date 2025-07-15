@@ -101,6 +101,7 @@ function App() {
         item_indicator_digit: configuration.itemIndicatorDigit,
         // EPCClass data
         product_ndc: configuration.productNdc,
+        package_ndc: configuration.packageNdc,
         regulated_product_name: configuration.regulatedProductName,
         manufacturer_name: configuration.manufacturerName,
         dosage_form_type: configuration.dosageFormType,
