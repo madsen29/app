@@ -85,6 +85,84 @@ function App() {
     }, 100);
   };
 
+  // Initialize hierarchical serial collection structure
+  const initializeHierarchicalSerials = () => {
+    const hierarchicalData = [];
+    
+    // Create structure based on configuration
+    for (let ssccIndex = 0; ssccIndex < configuration.numberOfSscc; ssccIndex++) {
+      const ssccData = {
+        ssccIndex: ssccIndex,
+        ssccSerial: '',
+        cases: []
+      };
+      
+      if (configuration.casesPerSscc === 0) {
+        // Direct SSCC → Items
+        ssccData.items = [];
+        for (let itemIndex = 0; itemIndex < configuration.itemsPerCase; itemIndex++) {
+          ssccData.items.push({
+            itemIndex: itemIndex,
+            itemSerial: ''
+          });
+        }
+      } else {
+        // SSCC → Cases → Items or SSCC → Cases → Inner Cases → Items
+        for (let caseIndex = 0; caseIndex < configuration.casesPerSscc; caseIndex++) {
+          const caseData = {
+            caseIndex: caseIndex,
+            caseSerial: '',
+            innerCases: [],
+            items: []
+          };
+          
+          if (configuration.useInnerCases) {
+            // Cases → Inner Cases → Items
+            for (let innerCaseIndex = 0; innerCaseIndex < configuration.innerCasesPerCase; innerCaseIndex++) {
+              const innerCaseData = {
+                innerCaseIndex: innerCaseIndex,
+                innerCaseSerial: '',
+                items: []
+              };
+              
+              for (let itemIndex = 0; itemIndex < configuration.itemsPerInnerCase; itemIndex++) {
+                innerCaseData.items.push({
+                  itemIndex: itemIndex,
+                  itemSerial: ''
+                });
+              }
+              
+              caseData.innerCases.push(innerCaseData);
+            }
+          } else {
+            // Cases → Items
+            for (let itemIndex = 0; itemIndex < configuration.itemsPerCase; itemIndex++) {
+              caseData.items.push({
+                itemIndex: itemIndex,
+                itemSerial: ''
+              });
+            }
+          }
+          
+          ssccData.cases.push(caseData);
+        }
+      }
+      
+      hierarchicalData.push(ssccData);
+    }
+    
+    setHierarchicalSerials(hierarchicalData);
+    setSerialCollectionStep({
+      ssccIndex: 0,
+      caseIndex: 0,
+      innerCaseIndex: 0,
+      itemIndex: 0,
+      currentLevel: 'sscc',
+      currentSerial: '',
+      isComplete: false
+    });
+  };
+
   const handleConfigurationSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
