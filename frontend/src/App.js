@@ -322,18 +322,10 @@ function App() {
     setFdaModal({ ...fdaModal, isLoading: true });
     
     try {
-      // Handle 11-digit NDC input (no hyphens)
-      const cleanNdc = ndc.replace(/-/g, '');
+      // Pass exactly what is entered into the field to the FDA API
+      console.log('Searching FDA API with NDC:', ndc);
       
-      // For 11-digit NDC, take first 10 digits to search FDA API
-      const productNdc = cleanNdc.slice(0, 10);
-      
-      // Format as 5-5 for FDA API search
-      const formattedNdc = `${productNdc.slice(0, 5)}-${productNdc.slice(5)}`;
-      
-      console.log('Searching FDA API with NDC:', formattedNdc);
-      
-      const response = await fetch(`https://api.fda.gov/drug/ndc.json?search=product_ndc:"${formattedNdc}"&limit=1`);
+      const response = await fetch(`https://api.fda.gov/drug/ndc.json?search=product_ndc:"${ndc}"&limit=1`);
       const data = await response.json();
       
       if (data.results && data.results.length > 0) {
@@ -349,7 +341,7 @@ function App() {
               selectedPackaging: pkg,
               packageNdc: pkg.package_ndc,
               packageDescription: pkg.description,
-              productNdc: formattedNdc
+              productNdc: ndc // Store the original input
             });
           });
         } else {
@@ -359,7 +351,7 @@ function App() {
             selectedPackaging: null,
             packageNdc: product.product_ndc,
             packageDescription: 'No packaging information available',
-            productNdc: formattedNdc
+            productNdc: ndc // Store the original input
           });
         }
         
@@ -369,7 +361,7 @@ function App() {
           isLoading: false
         });
       } else {
-        setError(`No products found for NDC: ${formattedNdc}`);
+        setError(`No products found for NDC: ${ndc}`);
         setFdaModal({ ...fdaModal, isLoading: false });
       }
     } catch (error) {
