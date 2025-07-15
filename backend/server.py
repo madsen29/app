@@ -305,6 +305,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
             attr.text = config["net_content_description"]
     
     # Create EPCClass vocabulary elements for each packaging level
+    # Order: Item → Inner Case → Case
     
     # 1. Item Level EPCClass (always present)
     item_epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}.*"
@@ -312,19 +313,19 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     item_vocabulary_element.set("id", item_epc_pattern)
     add_epcclass_attributes(item_vocabulary_element, config)
     
-    # 2. Case Level EPCClass (if cases are used)
-    if cases_per_sscc > 0:
-        case_epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{case_indicator_digit}{case_product_code}.*"
-        case_vocabulary_element = ET.SubElement(vocabulary_element_list, "VocabularyElement")
-        case_vocabulary_element.set("id", case_epc_pattern)
-        add_epcclass_attributes(case_vocabulary_element, config)
-    
-    # 3. Inner Case Level EPCClass (if inner cases are used)
+    # 2. Inner Case Level EPCClass (if inner cases are used)
     if use_inner_cases and inner_case_product_code and inner_case_indicator_digit:
         inner_case_epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{inner_case_indicator_digit}{inner_case_product_code}.*"
         inner_case_vocabulary_element = ET.SubElement(vocabulary_element_list, "VocabularyElement")
         inner_case_vocabulary_element.set("id", inner_case_epc_pattern)
         add_epcclass_attributes(inner_case_vocabulary_element, config)
+    
+    # 3. Case Level EPCClass (if cases are used)
+    if cases_per_sscc > 0:
+        case_epc_pattern = f"urn:epc:idpat:sgtin:{company_prefix}.{case_indicator_digit}{case_product_code}.*"
+        case_vocabulary_element = ET.SubElement(vocabulary_element_list, "VocabularyElement")
+        case_vocabulary_element.set("id", case_epc_pattern)
+        add_epcclass_attributes(case_vocabulary_element, config)
     
     # Create EPCISBody
     epcis_body = ET.SubElement(root, "EPCISBody")
