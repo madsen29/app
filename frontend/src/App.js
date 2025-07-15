@@ -350,12 +350,25 @@ function App() {
 
   useEffect(() => {
     if (scannerModal.isOpen) {
-      startScanning();
+      // Small delay to ensure modal is rendered
+      setTimeout(() => {
+        startContinuousScanning();
+      }, 100);
     }
     
     return () => {
       if (codeReader.current) {
-        codeReader.current.reset();
+        try {
+          codeReader.current.reset();
+        } catch (error) {
+          console.log('Cleanup error:', error);
+        }
+      }
+      
+      // Stop all video streams
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
       }
     };
   }, [scannerModal.isOpen]);
