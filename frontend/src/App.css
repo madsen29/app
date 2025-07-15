@@ -1205,6 +1205,24 @@ body {
   }
 }
 
+/* GS1 Indicator Digits Subsection */
+.gs1-indicators {
+  background: #fef5e7;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #f6e05e;
+  margin-top: 1.5rem;
+}
+
+.gs1-indicators h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #744210;
+  border-bottom: 2px solid #ecc94b;
+  padding-bottom: 0.5rem;
+}
+
 /* Utility Classes */
 .ml-2 {
   margin-left: 0.5rem;
