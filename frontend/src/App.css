@@ -1205,6 +1205,129 @@ body {
   }
 }
 
+/* Hierarchical Serial Collection */
+.hierarchical-input {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.context-display {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.context-display h3 {
+  margin: 0 0 0.5rem 0;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.context-path {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #0055fb;
+  font-family: 'Courier New', monospace;
+}
+
+.current-input {
+  background: #ffffff;
+  border: 2px solid #0055fb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.current-input h4 {
+  margin: 0 0 1rem 0;
+  color: #212529;
+  font-size: 1.2rem;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.serial-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+}
+
+.serial-input:focus {
+  outline: none;
+  border-color: #0055fb;
+  box-shadow: 0 0 0 3px rgba(0, 85, 251, 0.1);
+}
+
+.progress-info {
+  background: #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.progress-stats .stat {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid #0055fb;
+}
+
+.progress-stats .stat strong {
+  color: #495057;
+}
+
+.completion-summary {
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.completion-summary h3 {
+  color: #155724;
+  margin: 0 0 1rem 0;
+  font-size: 1.4rem;
+}
+
+.completion-summary p {
+  color: #155724;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.1rem;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.summary-stats .stat {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid #28a745;
+  text-align: left;
+}
+
 /* FDA Search Components */
 .fda-search-group {
   grid-column: 1 / -1; /* Span full width */
