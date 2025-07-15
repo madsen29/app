@@ -530,6 +530,13 @@ function App() {
     };
   }, [scannerModal.isOpen]);
 
+  // Scroll to top when step changes
+  useEffect(() => {
+    if (currentStep > 1) {
+      scrollToTop();
+    }
+  }, [currentStep]);
+
   const calculateTotals = () => {
     // If no cases, items go directly in SSCC
     if (configuration.casesPerSscc === 0) {
