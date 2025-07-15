@@ -182,10 +182,69 @@ body {
   text-align: center;
 }
 
-.hierarchy-arrow {
-  font-size: 1.5rem;
+.inner-case-section {
+  background: #fff5e6;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #fed7aa;
+  margin-bottom: 1.5rem;
+}
+
+.inner-case-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2d3748;
+  border-bottom: 2px solid #f97316;
+  padding-bottom: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #4a5568;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.textarea-group {
+  margin-bottom: 1rem;
+}
+
+.textarea-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: monospace;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.2s;
+}
+
+.textarea-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.counter {
+  font-size: 0.9rem;
+  color: #718096;
+  font-weight: normal;
+  margin-left: 0.5rem;
+}
+
+.counter-complete {
   color: #38a169;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .form-group {
