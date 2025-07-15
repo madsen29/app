@@ -97,7 +97,14 @@ function App() {
         sscc_indicator_digit: configuration.ssccExtensionDigit,
         case_indicator_digit: configuration.caseIndicatorDigit,
         inner_case_indicator_digit: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.innerCaseIndicatorDigit : '',
-        item_indicator_digit: configuration.itemIndicatorDigit
+        item_indicator_digit: configuration.itemIndicatorDigit,
+        // EPCClass data
+        product_ndc: configuration.productNdc,
+        regulated_product_name: configuration.regulatedProductName,
+        manufacturer_name: configuration.manufacturerName,
+        dosage_form_type: configuration.dosageFormType,
+        strength_description: configuration.strengthDescription,
+        net_content_description: configuration.netContentDescription
       });
       
       setConfigurationId(response.data.id);
