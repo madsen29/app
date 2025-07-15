@@ -504,6 +504,12 @@ function App() {
   }, [scannerModal.isOpen]);
 
   const calculateTotals = () => {
+    // If no cases, items go directly in SSCC
+    if (configuration.casesPerSscc === 0) {
+      const totalItems = configuration.itemsPerCase * configuration.numberOfSscc;
+      return { totalCases: 0, totalInnerCases: 0, totalItems };
+    }
+    
     const totalCases = configuration.casesPerSscc * configuration.numberOfSscc;
     if (configuration.useInnerCases) {
       const totalInnerCases = configuration.innerCasesPerCase * totalCases;
