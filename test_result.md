@@ -125,6 +125,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "COMPREHENSIVE TESTING COMPLETED: All configuration API scenarios working perfectly. ✅ Default configuration (1 SSCC, 5 cases, 10 items/case) ✅ Edge case direct SSCC→Items aggregation (casesPerSscc: 0) ✅ Inner cases enabled with proper hierarchy ✅ All GS1 parameters properly stored and validated ✅ Required field validation working ✅ Configuration ID properly returned ✅ Complete workflow (save config → save serials → generate EPCIS) functional"
+      - working: true
+        agent: "testing"
+        comment: "LOT NUMBER AND EXPIRATION DATE TESTING COMPLETED: ✅ Configuration API properly stores lot_number and expiration_date fields ✅ Fields default to empty strings when not provided ✅ Database persistence working correctly ✅ All existing functionality remains intact ✅ Test data: lot_number='4JT0482', expiration_date='2026-08-31' successfully stored and retrieved"
   
   - task: "Serial numbers API endpoints"
     implemented: true
