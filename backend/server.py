@@ -328,18 +328,10 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     epcis_body = ET.SubElement(root, "EPCISBody")
     event_list = ET.SubElement(epcis_body, "EventList")
     
-    # Get configuration parameters
-    case_product_code = config["case_product_code"]
-    inner_case_product_code = config.get("inner_case_product_code", "")
+    # Get additional configuration parameters
     lot_number = config.get("lot_number", "")
     expiration_date = config.get("expiration_date", "")
     sscc_indicator_digit = config["sscc_indicator_digit"]
-    case_indicator_digit = config["case_indicator_digit"]
-    inner_case_indicator_digit = config.get("inner_case_indicator_digit", "")
-    item_indicator_digit = config["item_indicator_digit"]
-    
-    use_inner_cases = config["use_inner_cases"]
-    cases_per_sscc = config["cases_per_sscc"]
     number_of_sscc = config["number_of_sscc"]
     
     # Check if we have direct SSCC → Items aggregation
