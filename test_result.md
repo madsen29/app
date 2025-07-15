@@ -243,8 +243,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Configuration API endpoints"
-    - "EPCIS XML generation"
     - "Configuration form UI"
   stuck_tasks: []
   test_all: false
