@@ -909,18 +909,6 @@ function App() {
           
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="regulatedProductName">Regulated Product Name:</label>
-              <input
-                type="text"
-                id="regulatedProductName"
-                value={configuration.regulatedProductName}
-                onChange={(e) => setConfiguration({...configuration, regulatedProductName: e.target.value})}
-                placeholder="e.g., RX ECONAZOLE NITRATE 1% CRM 85G"
-                required
-              />
-              <small className="form-hint">Official product name</small>
-            </div>
-            <div className="form-group">
               <label htmlFor="manufacturerName">Manufacturer Name:</label>
               <input
                 type="text"
