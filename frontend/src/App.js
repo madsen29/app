@@ -963,6 +963,94 @@ function App() {
           </div>
         </div>
         
+        <div className="epcclass-section">
+          <h3>Product Information (EPCClass)</h3>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="productNdc">Product NDC:</label>
+              <div className="input-with-button">
+                <input
+                  type="text"
+                  id="productNdc"
+                  value={configuration.productNdc}
+                  onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
+                  placeholder="e.g., 45802-046-85"
+                  required
+                />
+                <button 
+                  type="button" 
+                  className="api-search-button"
+                  onClick={handleFdaSearch}
+                  disabled={fdaModal.isLoading}
+                >
+                  {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
+                </button>
+              </div>
+              <small className="form-hint">Enter NDC number to search FDA database</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="regulatedProductName">Regulated Product Name:</label>
+              <input
+                type="text"
+                id="regulatedProductName"
+                value={configuration.regulatedProductName}
+                onChange={(e) => setConfiguration({...configuration, regulatedProductName: e.target.value})}
+                placeholder="e.g., RX ECONAZOLE NITRATE 1% CRM 85G"
+                required
+              />
+              <small className="form-hint">Official product name</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="manufacturerName">Manufacturer Name:</label>
+              <input
+                type="text"
+                id="manufacturerName"
+                value={configuration.manufacturerName}
+                onChange={(e) => setConfiguration({...configuration, manufacturerName: e.target.value})}
+                placeholder="e.g., Padagis LLC"
+                required
+              />
+              <small className="form-hint">Manufacturer or labeler name</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="dosageFormType">Dosage Form Type:</label>
+              <input
+                type="text"
+                id="dosageFormType"
+                value={configuration.dosageFormType}
+                onChange={(e) => setConfiguration({...configuration, dosageFormType: e.target.value})}
+                placeholder="e.g., CREAM"
+                required
+              />
+              <small className="form-hint">Dosage form (e.g., TABLET, CREAM, INJECTION)</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="strengthDescription">Strength Description:</label>
+              <input
+                type="text"
+                id="strengthDescription"
+                value={configuration.strengthDescription}
+                onChange={(e) => setConfiguration({...configuration, strengthDescription: e.target.value})}
+                placeholder="e.g., 10 mg/g"
+                required
+              />
+              <small className="form-hint">Active ingredient strength</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="netContentDescription">Net Content Description:</label>
+              <input
+                type="text"
+                id="netContentDescription"
+                value={configuration.netContentDescription}
+                onChange={(e) => setConfiguration({...configuration, netContentDescription: e.target.value})}
+                placeholder="e.g., 85GM     Wgt"
+                required
+              />
+              <small className="form-hint">Package size and weight</small>
+            </div>
+          </div>
+        </div>
+        
         <div className="hierarchy-section">
           <h3>Packaging Hierarchy</h3>
           <div className="hierarchy-visual">
