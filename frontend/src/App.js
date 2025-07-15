@@ -203,7 +203,14 @@ function App() {
       ssccExtensionDigit: '0',
       caseIndicatorDigit: '0',
       innerCaseIndicatorDigit: '0',
-      itemIndicatorDigit: '0'
+      itemIndicatorDigit: '0',
+      // EPCClass data
+      productNdc: '',
+      regulatedProductName: '',
+      manufacturerName: '',
+      dosageFormType: '',
+      strengthDescription: '',
+      netContentDescription: ''
     });
     setConfigurationId('');
     setSsccSerials('');
