@@ -38,7 +38,6 @@ function App() {
   
   // New hierarchical serial number collection state
   const [hierarchicalSerials, setHierarchicalSerials] = useState([]);
-  const [currentStep, setCurrentStep] = useState(1);
   const [serialCollectionStep, setSerialCollectionStep] = useState({
     ssccIndex: 0,
     caseIndex: 0,
