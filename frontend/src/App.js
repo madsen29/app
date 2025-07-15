@@ -285,13 +285,41 @@ function App() {
     setFdaModal({ ...fdaModal, isLoading: true });
     
     try {
-      const response = await fetch(`https://api.fda.gov/drug/ndc.json?search=product_ndc:"${ndc}"&limit=10`);
+      // Convert to 10-digit NDC format (remove packaging code)
+      const productNdc = ndc.replace(/-/g, '').slice(0, 10);
+      const formattedNdc = productNdc.replace(/(\d{5})(\d{3,4})/, '$1-$2');
+      
+      const response = await fetch(`https://api.fda.gov/drug/ndc.json?search=product_ndc:"${formattedNdc}"&limit=1`);
       const data = await response.json();
       
       if (data.results && data.results.length > 0) {
+        const product = data.results[0];
+        
+        // Create packaging options from the product data
+        const packagingOptions = [];
+        
+        if (product.packaging && product.packaging.length > 0) {
+          product.packaging.forEach(pkg => {
+            packagingOptions.push({
+              ...product,
+              selectedPackaging: pkg,
+              packageNdc: pkg.package_ndc,
+              packageDescription: pkg.description
+            });
+          });
+        } else {
+          // If no packaging info, add the product itself
+          packagingOptions.push({
+            ...product,
+            selectedPackaging: null,
+            packageNdc: product.product_ndc,
+            packageDescription: 'No packaging information available'
+          });
+        }
+        
         setFdaModal({
           isOpen: true,
-          searchResults: data.results,
+          searchResults: packagingOptions,
           isLoading: false
         });
       } else {
@@ -312,22 +340,26 @@ function App() {
     }
   };
 
-  const selectFdaProduct = (product) => {
+  const selectFdaProduct = (productOption) => {
+    // Convert full NDC to 10-digit product NDC
+    const fullNdc = productOption.packageNdc || productOption.product_ndc;
+    const productNdc = fullNdc.replace(/-/g, '').slice(0, 10);
+    const formattedProductNdc = productNdc.replace(/(\d{5})(\d{3,4})/, '$1-$2');
+    
     setConfiguration({
       ...configuration,
-      regulatedProductName: product.brand_name || product.generic_name || '',
-      manufacturerName: product.labeler_name || '',
-      dosageFormType: product.dosage_form || '',
-      strengthDescription: product.active_ingredients?.map(ing => 
+      productNdc: formattedProductNdc,
+      regulatedProductName: productOption.brand_name || productOption.generic_name || '',
+      manufacturerName: productOption.labeler_name || '',
+      dosageFormType: productOption.dosage_form || '',
+      strengthDescription: productOption.active_ingredients?.map(ing => 
         `${ing.name} ${ing.strength}`
       ).join(', ') || '',
-      netContentDescription: product.packaging?.map(pkg => 
-        `${pkg.package_ndc} ${pkg.description}`
-      ).join(', ') || ''
+      netContentDescription: productOption.packageDescription || ''
     });
     
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
-    setSuccess('Product information loaded from FDA API');
+    setSuccess(`Product information loaded: ${productOption.packageDescription}`);
   };
 
   const closeFdaModal = () => {
