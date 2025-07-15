@@ -1006,14 +1006,14 @@ function App() {
           <h3>Product Information (EPCClass)</h3>
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="productNdc">Product NDC:</label>
+              <label htmlFor="productNdc">Product NDC (10-digit):</label>
               <div className="input-with-button">
                 <input
                   type="text"
                   id="productNdc"
                   value={configuration.productNdc}
                   onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
-                  placeholder="e.g., 45802-046-85"
+                  placeholder="e.g., 45802-466"
                   required
                 />
                 <button 
@@ -1025,7 +1025,7 @@ function App() {
                   {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
                 </button>
               </div>
-              <small className="form-hint">Enter NDC number to search FDA database</small>
+              <small className="form-hint">Enter 10-digit Product NDC (without packaging code) to search FDA database</small>
             </div>
             <div className="form-group">
               <label htmlFor="regulatedProductName">Regulated Product Name:</label>
