@@ -1041,13 +1041,37 @@ function App() {
         </header>
 
         <div className="progress-bar">
-          <div className={`progress-step ${currentStep >= 1 ? 'active' : ''}`}>1</div>
-          <div className={`progress-step ${currentStep >= 2 ? 'active' : ''}`}>2</div>
-          <div className={`progress-step ${currentStep >= 3 ? 'active' : ''}`}>3</div>
+          <div 
+            className={`progress-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'clickable' : ''}`}
+            onClick={() => handleStepClick(1)}
+          >
+            1
+          </div>
+          <div 
+            className={`progress-step ${currentStep >= 2 ? 'active' : ''} ${currentStep > 2 ? 'clickable' : ''}`}
+            onClick={() => handleStepClick(2)}
+          >
+            2
+          </div>
+          <div 
+            className={`progress-step ${currentStep >= 3 ? 'active' : ''}`}
+          >
+            3
+          </div>
         </div>
 
-        {error && <div className="alert alert-error">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
+        {error && (
+          <div className="alert alert-error">
+            {error}
+            <button className="alert-close" onClick={() => dismissAlert('error')}>×</button>
+          </div>
+        )}
+        {success && (
+          <div className="alert alert-success">
+            {success}
+            <button className="alert-close" onClick={() => dismissAlert('success')}>×</button>
+          </div>
+        )}
 
         {/* Barcode Scanner Modal */}
         {scannerModal.isOpen && (
