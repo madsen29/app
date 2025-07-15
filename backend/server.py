@@ -45,6 +45,13 @@ class SerialConfiguration(BaseModel):
     case_indicator_digit: str
     inner_case_indicator_digit: str = Field(default="")
     item_indicator_digit: str
+    # EPCClass data
+    product_ndc: str = Field(default="")
+    regulated_product_name: str = Field(default="")
+    manufacturer_name: str = Field(default="")
+    dosage_form_type: str = Field(default="")
+    strength_description: str = Field(default="")
+    net_content_description: str = Field(default="")
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class SerialConfigurationCreate(BaseModel):
@@ -64,6 +71,13 @@ class SerialConfigurationCreate(BaseModel):
     case_indicator_digit: str
     inner_case_indicator_digit: str = Field(default="")
     item_indicator_digit: str
+    # EPCClass data
+    product_ndc: str = Field(default="")
+    regulated_product_name: str = Field(default="")
+    manufacturer_name: str = Field(default="")
+    dosage_form_type: str = Field(default="")
+    strength_description: str = Field(default="")
+    net_content_description: str = Field(default="")
 
 class SerialNumbers(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
