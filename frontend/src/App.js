@@ -388,8 +388,26 @@ function App() {
   };
 
   const selectFdaProduct = (productOption) => {
-    // Get the selected Package NDC (11-digit)
-    const selectedPackageNdc = productOption.packageNdc.replace(/-/g, '');
+    // Get the selected Package NDC and ensure it's properly formatted as 11 digits
+    const rawPackageNdc = productOption.packageNdc.replace(/-/g, '');
+    
+    // FDA API might return 10-digit NDCs that need to be padded to 11 digits
+    // NDC format should be: 5-digit labeler + 4-digit product + 2-digit package
+    let selectedPackageNdc;
+    if (rawPackageNdc.length === 10) {
+      // Convert 10-digit to 11-digit by adding leading zero to product code
+      // Format: LLLLL-PPP-KK becomes LLLLL-0PPP-KK
+      const labelerCode = rawPackageNdc.slice(0, 5);
+      const productCode = rawPackageNdc.slice(5, 8);
+      const packageCode = rawPackageNdc.slice(8, 10);
+      selectedPackageNdc = labelerCode + '0' + productCode + packageCode;
+    } else if (rawPackageNdc.length === 11) {
+      // Already 11 digits, use as-is
+      selectedPackageNdc = rawPackageNdc;
+    } else {
+      // Invalid length, use as-is but might cause issues
+      selectedPackageNdc = rawPackageNdc;
+    }
     
     // Extract labeler code (first 5 digits) and product code (last 6 digits)
     const labelerCode = selectedPackageNdc.slice(0, 5);
