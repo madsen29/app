@@ -220,6 +220,27 @@ body {
   text-align: center;
 }
 
+.gs1-examples {
+  background: #e6fffa;
+  padding: 1.5rem;
+  border-radius: 6px;
+  border: 1px solid #81e6d9;
+  margin-top: 1.5rem;
+}
+
+.gs1-examples h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #234e52;
+}
+
+.gs1-examples p {
+  margin-bottom: 0.5rem;
+  color: #285e61;
+  font-weight: 500;
+}
+
 .inner-case-section {
   background: #f8fafc;
   padding: 2rem;
