@@ -283,6 +283,40 @@ function App() {
     setItemSerials(validatedValue);
   };
 
+  // Package NDC formatting functions
+  const formatPackageNdc = (ndc) => {
+    if (!ndc) return '';
+    
+    // Remove any existing hyphens
+    const cleanNdc = ndc.replace(/-/g, '');
+    
+    // Format as 5-4-2 if we have enough digits
+    if (cleanNdc.length >= 11) {
+      return `${cleanNdc.slice(0, 5)}-${cleanNdc.slice(5, 9)}-${cleanNdc.slice(9, 11)}`;
+    } else if (cleanNdc.length >= 9) {
+      return `${cleanNdc.slice(0, 5)}-${cleanNdc.slice(5, 9)}-${cleanNdc.slice(9)}`;
+    } else if (cleanNdc.length >= 5) {
+      return `${cleanNdc.slice(0, 5)}-${cleanNdc.slice(5)}`;
+    } else {
+      return cleanNdc;
+    }
+  };
+
+  const handlePackageNdcChange = (e) => {
+    let value = e.target.value;
+    
+    // Remove any non-numeric characters except hyphens
+    value = value.replace(/[^0-9-]/g, '');
+    
+    // Remove hyphens for storage (we'll add them back for display)
+    const cleanValue = value.replace(/-/g, '');
+    
+    // Limit to 11 digits
+    if (cleanValue.length <= 11) {
+      setConfiguration({...configuration, packageNdc: cleanValue});
+    }
+  };
+
   // FDA API functions
   const searchFdaApi = async (ndc) => {
     setFdaModal({ ...fdaModal, isLoading: true });
