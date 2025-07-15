@@ -34,10 +34,31 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isToastExiting, setIsToastExiting] = useState(false);
   const [scannerModal, setScannerModal] = useState({ isOpen: false, targetField: '', targetSetter: null });
   const videoRef = useRef(null);
   const codeReader = useRef(null);
   const [isScanning, setIsScanning] = useState(false);
+
+  // Auto-dismiss toast after 4 seconds
+  useEffect(() => {
+    if (error || success) {
+      const timer = setTimeout(() => {
+        dismissToast();
+      }, 4000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [error, success]);
+
+  const dismissToast = () => {
+    setIsToastExiting(true);
+    setTimeout(() => {
+      setError('');
+      setSuccess('');
+      setIsToastExiting(false);
+    }, 300); // Match animation duration
+  };
 
   const scrollToTop = () => {
     // Small delay to ensure the new step content is rendered
