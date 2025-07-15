@@ -401,7 +401,7 @@ function App() {
     setConfiguration({
       ...configuration,
       productNdc: productOption.productNdc, // Store the 10-digit product NDC
-      packageNdc: productOption.packageNdc, // Store the 11-digit package NDC
+      packageNdc: selectedPackageNdc, // Store the 11-digit package NDC without hyphens
       companyPrefix: companyPrefix,
       productCode: productCode, // Product code from selected Package NDC
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
