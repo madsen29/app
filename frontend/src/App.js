@@ -432,14 +432,29 @@ function App() {
       console.log('Parsed GS1 Data:', parsedData); // Debug log
       
       if (parsedData.serialNumber) {
-        // Add the scanned serial number to the current text area
+        // Add the scanned serial number to the current text area with validation
         const currentValue = scannerModal.targetField === 'sscc' ? ssccSerials :
                            scannerModal.targetField === 'case' ? caseSerials :
                            scannerModal.targetField === 'innerCase' ? innerCaseSerials :
                            itemSerials;
         
         const newValue = currentValue ? currentValue + '\n' + parsedData.serialNumber : parsedData.serialNumber;
-        scannerModal.targetSetter(newValue);
+        
+        // Use validation functions based on target field
+        let validatedValue;
+        if (scannerModal.targetField === 'sscc') {
+          validatedValue = validateSerialNumbers(newValue, 'SSCC Serial Numbers');
+          setSsccSerials(validatedValue);
+        } else if (scannerModal.targetField === 'case') {
+          validatedValue = validateSerialNumbers(newValue, 'Case Serial Numbers');
+          setCaseSerials(validatedValue);
+        } else if (scannerModal.targetField === 'innerCase') {
+          validatedValue = validateSerialNumbers(newValue, 'Inner Case Serial Numbers');
+          setInnerCaseSerials(validatedValue);
+        } else {
+          validatedValue = validateSerialNumbers(newValue, 'Item Serial Numbers');
+          setItemSerials(validatedValue);
+        }
         
         // Show detailed success message
         let successMessage = `Scanned serial number: ${parsedData.serialNumber}`;
@@ -450,16 +465,19 @@ function App() {
           successMessage += `\nBatch/Lot: ${parsedData.batchLot}`;
         }
         if (parsedData.expirationDate) {
-          successMessage += `\nExp Date: ${parsedData.expirationDate}`;
+          successMessage += `\nExpiration: ${parsedData.expirationDate}`;
         }
         
         setSuccess(successMessage);
+        
+        // Close scanner
         closeScanner();
       } else {
         setError('Could not extract serial number from barcode');
       }
-    } catch (err) {
-      console.error('Error parsing barcode:', err);
+      
+    } catch (error) {
+      console.error('Error processing barcode:', error);
       setError('Failed to parse barcode data');
     }
   };
