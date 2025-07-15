@@ -357,39 +357,94 @@ function App() {
   };
 
   const parseGS1Barcode = (barcodeData) => {
-    // GS1 Application Identifiers for common serial number formats
-    const gs1Patterns = {
-      '21': /\(21\)([^\(]+)/, // Serial Number
-      '10': /\(10\)([^\(]+)/, // Batch/Lot Number
-      '17': /\(17\)([^\(]+)/, // Expiration Date
-      '01': /\(01\)([^\(]+)/, // GTIN
-      '00': /\(00\)([^\(]+)/, // SSCC
-    };
-    
+    // GS1 Application Identifiers for raw barcode data (without parentheses)
     let serialNumber = '';
     let gtin = '';
     let sscc = '';
+    let batchLot = '';
+    let expirationDate = '';
     
-    // Try to extract serial number (AI 21)
-    const serialMatch = barcodeData.match(gs1Patterns['21']);
-    if (serialMatch) {
-      serialNumber = serialMatch[1];
+    // Parse raw GS1 data without parentheses
+    let remainingData = barcodeData;
+    
+    while (remainingData.length > 0) {
+      // Check for AI 01 (GTIN) - Fixed length 14 digits
+      if (remainingData.startsWith('01')) {
+        if (remainingData.length >= 16) { // 2 (AI) + 14 (GTIN)
+          gtin = remainingData.substring(2, 16);
+          remainingData = remainingData.substring(16);
+          continue;
+        }
+      }
+      
+      // Check for AI 00 (SSCC) - Fixed length 18 digits
+      if (remainingData.startsWith('00')) {
+        if (remainingData.length >= 20) { // 2 (AI) + 18 (SSCC)
+          sscc = remainingData.substring(2, 20);
+          remainingData = remainingData.substring(20);
+          continue;
+        }
+      }
+      
+      // Check for AI 21 (Serial Number) - Variable length
+      if (remainingData.startsWith('21')) {
+        // Find the next AI or end of string
+        let nextAI = -1;
+        for (let i = 2; i < remainingData.length - 1; i++) {
+          const potentialAI = remainingData.substring(i, i + 2);
+          if (['01', '00', '10', '17', '21', '30', '37'].includes(potentialAI)) {
+            nextAI = i;
+            break;
+          }
+        }
+        
+        if (nextAI === -1) {
+          // Serial number goes to end of string
+          serialNumber = remainingData.substring(2);
+          remainingData = '';
+        } else {
+          serialNumber = remainingData.substring(2, nextAI);
+          remainingData = remainingData.substring(nextAI);
+        }
+        continue;
+      }
+      
+      // Check for AI 10 (Batch/Lot) - Variable length
+      if (remainingData.startsWith('10')) {
+        let nextAI = -1;
+        for (let i = 2; i < remainingData.length - 1; i++) {
+          const potentialAI = remainingData.substring(i, i + 2);
+          if (['01', '00', '17', '21', '30', '37'].includes(potentialAI)) {
+            nextAI = i;
+            break;
+          }
+        }
+        
+        if (nextAI === -1) {
+          batchLot = remainingData.substring(2);
+          remainingData = '';
+        } else {
+          batchLot = remainingData.substring(2, nextAI);
+          remainingData = remainingData.substring(nextAI);
+        }
+        continue;
+      }
+      
+      // Check for AI 17 (Expiration Date) - Fixed length 6 digits (YYMMDD)
+      if (remainingData.startsWith('17')) {
+        if (remainingData.length >= 8) { // 2 (AI) + 6 (Date)
+          expirationDate = remainingData.substring(2, 8);
+          remainingData = remainingData.substring(8);
+          continue;
+        }
+      }
+      
+      // If we can't parse, skip to next character
+      remainingData = remainingData.substring(1);
     }
     
-    // Try to extract GTIN (AI 01)
-    const gtinMatch = barcodeData.match(gs1Patterns['01']);
-    if (gtinMatch) {
-      gtin = gtinMatch[1];
-    }
-    
-    // Try to extract SSCC (AI 00)
-    const ssccMatch = barcodeData.match(gs1Patterns['00']);
-    if (ssccMatch) {
-      sscc = ssccMatch[1];
-    }
-    
-    // If no specific AI found, treat the entire string as a serial number
-    if (!serialNumber && !sscc) {
+    // Fallback: if no specific AI found, treat the entire string as a serial number
+    if (!serialNumber && !sscc && !gtin) {
       serialNumber = barcodeData.trim();
     }
     
@@ -397,6 +452,8 @@ function App() {
       serialNumber: serialNumber || sscc,
       gtin,
       sscc,
+      batchLot,
+      expirationDate,
       rawData: barcodeData
     };
   };
