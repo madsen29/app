@@ -845,28 +845,6 @@ function App() {
           
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="productNdc">Product NDC (11-digit):</label>
-              <div className="input-with-button">
-                <input
-                  type="text"
-                  id="productNdc"
-                  value={configuration.productNdc}
-                  onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
-                  placeholder="e.g., 45802046653"
-                  required
-                />
-                <button 
-                  type="button" 
-                  className="api-search-button"
-                  onClick={handleFdaSearch}
-                  disabled={fdaModal.isLoading}
-                >
-                  {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
-                </button>
-              </div>
-              <small className="form-hint">Enter 11-digit NDC (no hyphens) to search FDA database</small>
-            </div>
-            <div className="form-group">
               <label htmlFor="regulatedProductName">Regulated Product Name:</label>
               <input
                 type="text"
