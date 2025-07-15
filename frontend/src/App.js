@@ -562,10 +562,11 @@ function App() {
                 type="checkbox"
                 checked={configuration.useInnerCases}
                 onChange={(e) => setConfiguration({...configuration, useInnerCases: e.target.checked})}
+                disabled={configuration.casesPerSscc === 0}
               />
               <span className="checkbox-text">
                 <strong>Enable Inner Cases</strong>
-                <small>Add an intermediate packaging level between cases and items</small>
+                <small>{configuration.casesPerSscc === 0 ? 'Not available when Cases per SSCC = 0' : 'Add an intermediate packaging level between cases and items'}</small>
               </span>
             </label>
           </div>
