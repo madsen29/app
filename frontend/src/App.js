@@ -380,13 +380,26 @@ function App() {
   };
 
   const selectFdaProduct = (productOption) => {
-    // Get the selected Package NDC and ensure it's properly formatted as 11 digits
-    const rawPackageNdc = productOption.packageNdc.replace(/-/g, '');
+    // Extract Product Code from Package NDC by combining last 2 sections
+    // Example: "45802-466-35" -> last 2 sections are "466-35" -> "46635"
+    const packageNdc = productOption.packageNdc;
+    const ndcParts = packageNdc.split('-');
     
-    // FDA API might return 10-digit NDCs that need to be padded to 11 digits
-    // NDC format should be: 5-digit labeler + 4-digit product + 2-digit package
+    // Combine the last 2 sections (product code + package code)
+    let productCodeForGS1 = '';
+    if (ndcParts.length >= 3) {
+      // Take the last 2 sections and combine them
+      const productSection = ndcParts[ndcParts.length - 2]; // Second to last section
+      const packageSection = ndcParts[ndcParts.length - 1]; // Last section
+      productCodeForGS1 = productSection + packageSection;
+    } else {
+      // Fallback if NDC format is unexpected
+      productCodeForGS1 = packageNdc.replace(/-/g, '').slice(5);
+    }
+    
+    // For Package NDC storage, ensure it's properly formatted as 11 digits
+    const rawPackageNdc = packageNdc.replace(/-/g, '');
     let selectedPackageNdc;
-    let productCodeForGS1;
     
     if (rawPackageNdc.length === 10) {
       // Convert 10-digit to 11-digit by adding leading zero to product code
@@ -395,18 +408,12 @@ function App() {
       const productCode = rawPackageNdc.slice(5, 8);
       const packageCode = rawPackageNdc.slice(8, 10);
       selectedPackageNdc = labelerCode + '0' + productCode + packageCode;
-      // For GS1 Product Code, use the original product code + package code (without leading 0)
-      productCodeForGS1 = productCode + packageCode;
     } else if (rawPackageNdc.length === 11) {
       // Already 11 digits, use as-is
       selectedPackageNdc = rawPackageNdc;
-      // For GS1 Product Code, use last 6 digits but remove leading 0 if present
-      const last6Digits = rawPackageNdc.slice(5);
-      productCodeForGS1 = last6Digits.startsWith('0') ? last6Digits.slice(1) : last6Digits;
     } else {
       // Invalid length, use as-is but might cause issues
       selectedPackageNdc = rawPackageNdc;
-      productCodeForGS1 = rawPackageNdc.slice(5);
     }
     
     // Extract labeler code (first 5 digits) for company prefix
@@ -420,7 +427,7 @@ function App() {
       productNdc: productOption.productNdc, // Store the 10-digit product NDC
       packageNdc: selectedPackageNdc, // Store the 11-digit package NDC without hyphens
       companyPrefix: companyPrefix,
-      productCode: productCodeForGS1, // Product code without leading 0
+      productCode: productCodeForGS1, // Product code from last 2 sections of Package NDC
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
       manufacturerName: productOption.labeler_name || '',
       dosageFormType: productOption.dosage_form || '',
