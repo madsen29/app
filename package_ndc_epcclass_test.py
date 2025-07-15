@@ -280,19 +280,23 @@ class PackageNDCEPCClassTester:
             
             # Check if EPCISMasterData is wrapped in extension
             extension = None
+            epcis_master_data = None
+            
             for child in epcis_header:
                 if child.tag.endswith("extension"):
                     extension = child
+                    # Look for EPCISMasterData within extension
+                    for grandchild in child:
+                        if grandchild.tag.endswith("EPCISMasterData"):
+                            epcis_master_data = grandchild
+                            break
                     break
+                elif child.tag.endswith("EPCISMasterData"):
+                    # EPCISMasterData found directly (not in extension) - this is wrong
+                    return {"success": False, "message": "EPCISMasterData found directly in EPCISHeader, should be wrapped in extension", "details": None}
             
             if extension is None:
                 return {"success": False, "message": "Extension element not found in EPCISHeader", "details": None}
-            
-            epcis_master_data = None
-            for child in extension:
-                if child.tag.endswith("EPCISMasterData"):
-                    epcis_master_data = child
-                    break
             
             if epcis_master_data is None:
                 return {"success": False, "message": "EPCISMasterData not found within extension", "details": None}
