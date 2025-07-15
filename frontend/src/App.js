@@ -1136,18 +1136,6 @@ function App() {
           </div>
         </div>
 
-        {error && (
-          <div className="alert alert-error">
-            {error}
-            <button className="alert-close" onClick={() => dismissAlert('error')}>×</button>
-          </div>
-        )}
-        {success && (
-          <div className="alert alert-success">
-            {success}
-            <button className="alert-close" onClick={() => dismissAlert('success')}>×</button>
-          </div>
-        )}
 
         {/* Toast Notifications */}
         <div className="toast-container">
