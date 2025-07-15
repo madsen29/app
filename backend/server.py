@@ -39,6 +39,8 @@ class SerialConfiguration(BaseModel):
     item_product_code: str
     case_product_code: str
     inner_case_product_code: str = Field(default="")
+    lot_number: str = Field(default="")
+    expiration_date: str = Field(default="")
     sscc_indicator_digit: str
     case_indicator_digit: str
     inner_case_indicator_digit: str = Field(default="")
@@ -56,6 +58,8 @@ class SerialConfigurationCreate(BaseModel):
     item_product_code: str
     case_product_code: str
     inner_case_product_code: str = Field(default="")
+    lot_number: str = Field(default="")
+    expiration_date: str = Field(default="")
     sscc_indicator_digit: str
     case_indicator_digit: str
     inner_case_indicator_digit: str = Field(default="")
