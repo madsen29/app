@@ -402,11 +402,12 @@ function App() {
       
       // Check for AI 21 (Serial Number) - Variable length
       if (remainingData.startsWith('21')) {
-        // Find the next AI or end of string
+        // Look for the next AI starting from position 2
         let nextAI = -1;
-        for (let i = 2; i < remainingData.length - 1; i++) {
+        for (let i = 3; i < remainingData.length - 1; i++) { // Start from position 3 (after '21')
           const potentialAI = remainingData.substring(i, i + 2);
-          if (['01', '00', '10', '17', '21', '30', '37'].includes(potentialAI)) {
+          // Common GS1 AIs that might follow
+          if (['01', '00', '10', '11', '17', '21', '30', '37', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99'].includes(potentialAI)) {
             nextAI = i;
             break;
           }
@@ -426,9 +427,9 @@ function App() {
       // Check for AI 10 (Batch/Lot) - Variable length
       if (remainingData.startsWith('10')) {
         let nextAI = -1;
-        for (let i = 2; i < remainingData.length - 1; i++) {
+        for (let i = 3; i < remainingData.length - 1; i++) { // Start from position 3 (after '10')
           const potentialAI = remainingData.substring(i, i + 2);
-          if (['01', '00', '17', '21', '30', '37'].includes(potentialAI)) {
+          if (['01', '00', '17', '21', '30', '37', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99'].includes(potentialAI)) {
             nextAI = i;
             break;
           }
@@ -453,9 +454,27 @@ function App() {
         }
       }
       
+      // Check for AI 11 (Production Date) - Fixed length 6 digits (YYMMDD)
+      if (remainingData.startsWith('11')) {
+        if (remainingData.length >= 8) { // 2 (AI) + 6 (Date)
+          // Skip production date for now, but consume it
+          remainingData = remainingData.substring(8);
+          continue;
+        }
+      }
+      
       // If we can't parse, skip to next character
       remainingData = remainingData.substring(1);
     }
+    
+    console.log('GS1 Parsing Debug:', {
+      originalData: barcodeData,
+      gtin,
+      serialNumber,
+      expirationDate,
+      batchLot,
+      sscc
+    });
     
     // Fallback: if no specific AI found, treat the entire string as a serial number
     if (!serialNumber && !sscc && !gtin) {
