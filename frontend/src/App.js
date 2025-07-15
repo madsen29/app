@@ -519,31 +519,101 @@ function App() {
     <div className="step-container">
       <h2 className="step-title">Step 1: Configuration</h2>
       <form onSubmit={handleConfigurationSubmit} className="config-form">
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="casesPerSscc">Cases per SSCC:</label>
-            <input
-              type="number"
-              id="casesPerSscc"
-              min="1"
-              max="50"
-              value={configuration.casesPerSscc}
-              onChange={(e) => setConfiguration({...configuration, casesPerSscc: parseInt(e.target.value)})}
-              required
-            />
+        
+        <div className="inner-case-section">
+          <h3>Packaging Configuration</h3>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="casesPerSscc">Cases per SSCC:</label>
+              <input
+                type="number"
+                id="casesPerSscc"
+                min="1"
+                max="50"
+                value={configuration.casesPerSscc}
+                onChange={(e) => setConfiguration({...configuration, casesPerSscc: parseInt(e.target.value)})}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="numberOfSscc">Number of SSCCs:</label>
+              <input
+                type="number"
+                id="numberOfSscc"
+                min="1"
+                max="20"
+                value={configuration.numberOfSscc}
+                onChange={(e) => setConfiguration({...configuration, numberOfSscc: parseInt(e.target.value)})}
+                required
+              />
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="numberOfSscc">Number of SSCCs:</label>
-            <input
-              type="number"
-              id="numberOfSscc"
-              min="1"
-              max="20"
-              value={configuration.numberOfSscc}
-              onChange={(e) => setConfiguration({...configuration, numberOfSscc: parseInt(e.target.value)})}
-              required
-            />
+          
+          <div className="packaging-option">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={configuration.useInnerCases}
+                onChange={(e) => setConfiguration({...configuration, useInnerCases: e.target.checked})}
+              />
+              <span className="checkbox-text">
+                <strong>Enable Inner Cases</strong>
+                <small>Add an intermediate packaging level between cases and items</small>
+              </span>
+            </label>
           </div>
+          
+          {configuration.useInnerCases ? (
+            <div className="packaging-config">
+              <div className="config-explanation">
+                <p><strong>4-Level Hierarchy:</strong> SSCC → Cases → Inner Cases → Items</p>
+              </div>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label htmlFor="innerCasesPerCase">Inner Cases per Case:</label>
+                  <input
+                    type="number"
+                    id="innerCasesPerCase"
+                    min="1"
+                    max="50"
+                    value={configuration.innerCasesPerCase}
+                    onChange={(e) => setConfiguration({...configuration, innerCasesPerCase: parseInt(e.target.value)})}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="itemsPerInnerCase">Items per Inner Case:</label>
+                  <input
+                    type="number"
+                    id="itemsPerInnerCase"
+                    min="1"
+                    max="100"
+                    value={configuration.itemsPerInnerCase}
+                    onChange={(e) => setConfiguration({...configuration, itemsPerInnerCase: parseInt(e.target.value)})}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="packaging-config">
+              <div className="config-explanation">
+                <p><strong>3-Level Hierarchy:</strong> SSCC → Cases → Items</p>
+              </div>
+              <div className="form-group">
+                <label htmlFor="itemsPerCase">Items per Case:</label>
+                <input
+                  type="number"
+                  id="itemsPerCase"
+                  min="1"
+                  max="100"
+                  value={configuration.itemsPerCase}
+                  onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
+                  required
+                />
+              </div>
+            </div>
+          )}
         </div>
         
         <div className="gs1-section">
@@ -628,75 +698,6 @@ function App() {
               <small className="form-hint">Single digit (0-9) for item SGTINs</small>
             </div>
           </div>
-        </div>
-        
-        <div className="inner-case-section">
-          <h3>Packaging Configuration</h3>
-          <div className="packaging-option">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={configuration.useInnerCases}
-                onChange={(e) => setConfiguration({...configuration, useInnerCases: e.target.checked})}
-              />
-              <span className="checkbox-text">
-                <strong>Enable Inner Cases</strong>
-                <small>Add an intermediate packaging level between cases and items</small>
-              </span>
-            </label>
-          </div>
-          
-          {configuration.useInnerCases ? (
-            <div className="packaging-config">
-              <div className="config-explanation">
-                <p><strong>4-Level Hierarchy:</strong> SSCC → Cases → Inner Cases → Items</p>
-              </div>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label htmlFor="innerCasesPerCase">Inner Cases per Case:</label>
-                  <input
-                    type="number"
-                    id="innerCasesPerCase"
-                    min="1"
-                    max="50"
-                    value={configuration.innerCasesPerCase}
-                    onChange={(e) => setConfiguration({...configuration, innerCasesPerCase: parseInt(e.target.value)})}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="itemsPerInnerCase">Items per Inner Case:</label>
-                  <input
-                    type="number"
-                    id="itemsPerInnerCase"
-                    min="1"
-                    max="100"
-                    value={configuration.itemsPerInnerCase}
-                    onChange={(e) => setConfiguration({...configuration, itemsPerInnerCase: parseInt(e.target.value)})}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="packaging-config">
-              <div className="config-explanation">
-                <p><strong>3-Level Hierarchy:</strong> SSCC → Cases → Items</p>
-              </div>
-              <div className="form-group">
-                <label htmlFor="itemsPerCase">Items per Case:</label>
-                <input
-                  type="number"
-                  id="itemsPerCase"
-                  min="1"
-                  max="100"
-                  value={configuration.itemsPerCase}
-                  onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
-                  required
-                />
-              </div>
-            </div>
-          )}
         </div>
         
         <div className="hierarchy-section">
