@@ -253,8 +253,8 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         item_epc = f"urn:epc:id:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}.{item_serial}"
         item_epcs.append(item_epc)
     
-    # 1. Commissioning Events for Items
-    for item_epc in item_epcs:
+    # 1. Single Commissioning Event for All Items
+    if item_epcs:
         object_event = ET.SubElement(event_list, "ObjectEvent")
         
         event_time = ET.SubElement(object_event, "eventTime")
@@ -264,8 +264,9 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         event_timezone.text = "+00:00"
         
         epc_list = ET.SubElement(object_event, "epcList")
-        epc = ET.SubElement(epc_list, "epc")
-        epc.text = item_epc
+        for item_epc in item_epcs:
+            epc = ET.SubElement(epc_list, "epc")
+            epc.text = item_epc
         
         action = ET.SubElement(object_event, "action")
         action.text = "ADD"
@@ -284,51 +285,20 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         biz_location_id = ET.SubElement(biz_location_elem, "id")
         biz_location_id.text = biz_location
     
-    # 2. Commissioning Events for Inner Cases (if used)
-    if use_inner_cases:
+    # 2. Single Commissioning Event for All Inner Cases (if used)
+    if use_inner_cases and inner_case_epcs:
+        object_event = ET.SubElement(event_list, "ObjectEvent")
+        
+        event_time = ET.SubElement(object_event, "eventTime")
+        event_time.text = datetime.now(timezone.utc).isoformat()
+        
+        event_timezone = ET.SubElement(object_event, "eventTimeZoneOffset")
+        event_timezone.text = "+00:00"
+        
+        epc_list = ET.SubElement(object_event, "epcList")
         for inner_case_epc in inner_case_epcs:
-            object_event = ET.SubElement(event_list, "ObjectEvent")
-            
-            event_time = ET.SubElement(object_event, "eventTime")
-            event_time.text = datetime.now(timezone.utc).isoformat()
-            
-            event_timezone = ET.SubElement(object_event, "eventTimeZoneOffset")
-            event_timezone.text = "+00:00"
-            
-            epc_list = ET.SubElement(object_event, "epcList")
             epc = ET.SubElement(epc_list, "epc")
             epc.text = inner_case_epc
-            
-            action = ET.SubElement(object_event, "action")
-            action.text = "ADD"
-            
-            biz_step = ET.SubElement(object_event, "bizStep")
-            biz_step.text = "urn:epcglobal:cbv:bizstep:commissioning"
-            
-            disposition = ET.SubElement(object_event, "disposition")
-            disposition.text = "urn:epcglobal:cbv:disp:active"
-            
-            read_point_elem = ET.SubElement(object_event, "readPoint")
-            read_point_id = ET.SubElement(read_point_elem, "id")
-            read_point_id.text = read_point
-            
-            biz_location_elem = ET.SubElement(object_event, "bizLocation")
-            biz_location_id = ET.SubElement(biz_location_elem, "id")
-            biz_location_id.text = biz_location
-    
-    # 3. Commissioning Events for Cases
-    for case_epc in case_epcs:
-        object_event = ET.SubElement(event_list, "ObjectEvent")
-        
-        event_time = ET.SubElement(object_event, "eventTime")
-        event_time.text = datetime.now(timezone.utc).isoformat()
-        
-        event_timezone = ET.SubElement(object_event, "eventTimeZoneOffset")
-        event_timezone.text = "+00:00"
-        
-        epc_list = ET.SubElement(object_event, "epcList")
-        epc = ET.SubElement(epc_list, "epc")
-        epc.text = case_epc
         
         action = ET.SubElement(object_event, "action")
         action.text = "ADD"
@@ -347,8 +317,8 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         biz_location_id = ET.SubElement(biz_location_elem, "id")
         biz_location_id.text = biz_location
     
-    # 4. Commissioning Events for SSCCs
-    for sscc_epc in sscc_epcs:
+    # 3. Single Commissioning Event for All Cases
+    if case_epcs:
         object_event = ET.SubElement(event_list, "ObjectEvent")
         
         event_time = ET.SubElement(object_event, "eventTime")
@@ -358,8 +328,41 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         event_timezone.text = "+00:00"
         
         epc_list = ET.SubElement(object_event, "epcList")
-        epc = ET.SubElement(epc_list, "epc")
-        epc.text = sscc_epc
+        for case_epc in case_epcs:
+            epc = ET.SubElement(epc_list, "epc")
+            epc.text = case_epc
+        
+        action = ET.SubElement(object_event, "action")
+        action.text = "ADD"
+        
+        biz_step = ET.SubElement(object_event, "bizStep")
+        biz_step.text = "urn:epcglobal:cbv:bizstep:commissioning"
+        
+        disposition = ET.SubElement(object_event, "disposition")
+        disposition.text = "urn:epcglobal:cbv:disp:active"
+        
+        read_point_elem = ET.SubElement(object_event, "readPoint")
+        read_point_id = ET.SubElement(read_point_elem, "id")
+        read_point_id.text = read_point
+        
+        biz_location_elem = ET.SubElement(object_event, "bizLocation")
+        biz_location_id = ET.SubElement(biz_location_elem, "id")
+        biz_location_id.text = biz_location
+    
+    # 4. Single Commissioning Event for All SSCCs
+    if sscc_epcs:
+        object_event = ET.SubElement(event_list, "ObjectEvent")
+        
+        event_time = ET.SubElement(object_event, "eventTime")
+        event_time.text = datetime.now(timezone.utc).isoformat()
+        
+        event_timezone = ET.SubElement(object_event, "eventTimeZoneOffset")
+        event_timezone.text = "+00:00"
+        
+        epc_list = ET.SubElement(object_event, "epcList")
+        for sscc_epc in sscc_epcs:
+            epc = ET.SubElement(epc_list, "epc")
+            epc.text = sscc_epc
         
         action = ET.SubElement(object_event, "action")
         action.text = "ADD"
