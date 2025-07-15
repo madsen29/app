@@ -211,6 +211,53 @@ function App() {
     dismissToast();
   };
 
+  // Duplicate validation functions
+  const validateSerialNumbers = (value, fieldName) => {
+    const lines = value.split('\n');
+    const serialNumbers = lines.map(line => line.trim()).filter(line => line.length > 0);
+    
+    // Check for duplicates
+    const duplicates = [];
+    const seen = new Set();
+    
+    for (const serial of serialNumbers) {
+      if (seen.has(serial)) {
+        duplicates.push(serial);
+      } else {
+        seen.add(serial);
+      }
+    }
+    
+    if (duplicates.length > 0) {
+      setError(`Duplicate serial numbers found in ${fieldName}: ${duplicates.join(', ')}`);
+      // Remove duplicates and return clean value
+      const uniqueSerials = [...new Set(serialNumbers)];
+      return uniqueSerials.join('\n');
+    }
+    
+    return value;
+  };
+
+  const handleSsccSerialsChange = (e) => {
+    const validatedValue = validateSerialNumbers(e.target.value, 'SSCC Serial Numbers');
+    setSsccSerials(validatedValue);
+  };
+
+  const handleCaseSerialsChange = (e) => {
+    const validatedValue = validateSerialNumbers(e.target.value, 'Case Serial Numbers');
+    setCaseSerials(validatedValue);
+  };
+
+  const handleInnerCaseSerialsChange = (e) => {
+    const validatedValue = validateSerialNumbers(e.target.value, 'Inner Case Serial Numbers');
+    setInnerCaseSerials(validatedValue);
+  };
+
+  const handleItemSerialsChange = (e) => {
+    const validatedValue = validateSerialNumbers(e.target.value, 'Item Serial Numbers');
+    setItemSerials(validatedValue);
+  };
+
   // Barcode scanning functions
   const openScanner = (targetField, targetSetter) => {
     setScannerModal({ isOpen: true, targetField, targetSetter });
