@@ -870,7 +870,7 @@ function App() {
                   id="productNdc"
                   value={configuration.productNdc}
                   onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
-                  placeholder="Enter 11-digit NDC (e.g., 45802046653)"
+                  placeholder="Enter 10-digit Product NDC (e.g., 4580204653)"
                   required
                 />
                 <button 
@@ -882,7 +882,7 @@ function App() {
                   {fdaModal.isLoading ? 'Searching...' : 'Search FDA Database'}
                 </button>
               </div>
-              <small className="form-hint">Enter 11-digit NDC (no hyphens) to search FDA database</small>
+              <small className="form-hint">Enter 10-digit Product NDC (no hyphens) to search FDA database for available package sizes</small>
             </div>
           </div>
           
