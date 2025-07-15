@@ -906,10 +906,10 @@ function App() {
                 id="productCode"
                 value={configuration.productCode}
                 onChange={(e) => setConfiguration({...configuration, productCode: e.target.value})}
-                placeholder="e.g., 046"
+                placeholder="e.g., 46653"
                 required
               />
-              <small className="form-hint">Product code (auto-populated from NDC)</small>
+              <small className="form-hint">Product code from selected Package NDC</small>
             </div>
             <div className="form-group">
               <label htmlFor="lotNumber">Lot Number:</label>
