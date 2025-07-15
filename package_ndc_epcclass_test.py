@@ -110,6 +110,7 @@ class PackageNDCEPCClassTester:
             "item_product_code": "000000",
             "case_product_code": "000000",
             "sscc_indicator_digit": "3",
+            "case_indicator_digit": "2",  # Required field even for 2-level
             "item_indicator_digit": "1",
             "package_ndc": "45802-046-85"
         }
