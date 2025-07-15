@@ -773,6 +773,10 @@ body {
   border-radius: 6px;
   margin-bottom: 1rem;
   font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .alert-error {
@@ -785,6 +789,24 @@ body {
   background: #c6f6d5;
   color: #2f855a;
   border: 1px solid #9ae6b4;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  padding: 0;
+  margin-left: 1rem;
+  line-height: 1;
+  transition: opacity 0.2s;
+}
+
+.alert-close:hover {
+  opacity: 1;
 }
 
 /* Responsive Design */
