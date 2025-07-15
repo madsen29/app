@@ -216,11 +216,42 @@ function App() {
     setIsLoading(true);
     setError('');
     
-    // Parse serial numbers from text areas
-    const ssccArray = ssccSerials.split('\n').filter(s => s.trim()).map(s => s.trim());
-    const caseArray = caseSerials.split('\n').filter(s => s.trim()).map(s => s.trim());
-    const innerCaseArray = innerCaseSerials.split('\n').filter(s => s.trim()).map(s => s.trim());
-    const itemArray = itemSerials.split('\n').filter(s => s.trim()).map(s => s.trim());
+    // Convert hierarchical structure to flat arrays for backend
+    const ssccArray = [];
+    const caseArray = [];
+    const innerCaseArray = [];
+    const itemArray = [];
+    
+    hierarchicalSerials.forEach(ssccData => {
+      ssccArray.push(ssccData.ssccSerial);
+      
+      if (ssccData.cases && ssccData.cases.length > 0) {
+        // Has cases
+        ssccData.cases.forEach(caseData => {
+          caseArray.push(caseData.caseSerial);
+          
+          if (caseData.innerCases && caseData.innerCases.length > 0) {
+            // Has inner cases
+            caseData.innerCases.forEach(innerCaseData => {
+              innerCaseArray.push(innerCaseData.innerCaseSerial);
+              innerCaseData.items.forEach(itemData => {
+                itemArray.push(itemData.itemSerial);
+              });
+            });
+          } else {
+            // Direct case → items
+            caseData.items.forEach(itemData => {
+              itemArray.push(itemData.itemSerial);
+            });
+          }
+        });
+      } else {
+        // Direct SSCC → items
+        ssccData.items.forEach(itemData => {
+          itemArray.push(itemData.itemSerial);
+        });
+      }
+    });
     
     try {
       await axios.post(`${API}/serial-numbers`, {
