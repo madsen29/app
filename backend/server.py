@@ -269,9 +269,11 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     # Helper function to add EPCClass attributes
     def add_epcclass_attributes(vocab_element, config):
         if config.get("package_ndc"):
+            # Strip hyphens from package_ndc for EPCIS XML
+            clean_package_ndc = config["package_ndc"].replace("-", "")
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentification")
-            attr.text = config["package_ndc"]
+            attr.text = clean_package_ndc
             
             attr_type = ET.SubElement(vocab_element, "attribute")
             attr_type.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode")
