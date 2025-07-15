@@ -534,12 +534,13 @@ function App() {
               <input
                 type="number"
                 id="casesPerSscc"
-                min="1"
+                min="0"
                 max="50"
                 value={configuration.casesPerSscc}
                 onChange={(e) => setConfiguration({...configuration, casesPerSscc: parseInt(e.target.value)})}
                 required
               />
+              <small className="form-hint">Enter 0 for direct SSCC → Items aggregation</small>
             </div>
             <div className="form-group">
               <label htmlFor="numberOfSscc">Number of SSCCs:</label>
