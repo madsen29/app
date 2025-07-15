@@ -38,7 +38,10 @@ function App() {
   const [isScanning, setIsScanning] = useState(false);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Small delay to ensure the new step content is rendered
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
   };
 
   const handleConfigurationSubmit = async (e) => {
@@ -73,8 +76,8 @@ function App() {
       setItemSerials('');
       
       setCurrentStep(2);
-      scrollToTop();
       setSuccess('Configuration saved successfully!');
+      scrollToTop();
     } catch (err) {
       setError('Failed to save configuration');
     } finally {
