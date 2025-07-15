@@ -163,6 +163,135 @@ function App() {
     setSuccess('');
   };
 
+  // Barcode scanning functions
+  const openScanner = (targetField, targetSetter) => {
+    setScannerModal({ isOpen: true, targetField, targetSetter });
+  };
+
+  const closeScanner = () => {
+    if (codeReader.current) {
+      codeReader.current.reset();
+    }
+    setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
+  };
+
+  const startScanning = async () => {
+    try {
+      codeReader.current = new BrowserMultiFormatReader();
+      
+      // Get available video devices
+      const videoInputDevices = await codeReader.current.listVideoInputDevices();
+      
+      if (videoInputDevices.length === 0) {
+        setError('No camera found on this device');
+        return;
+      }
+
+      // Use the first available camera (or back camera if available)
+      const selectedDeviceId = videoInputDevices.find(device => 
+        device.label.toLowerCase().includes('back') || 
+        device.label.toLowerCase().includes('rear')
+      )?.deviceId || videoInputDevices[0].deviceId;
+
+      // Start continuous scanning
+      codeReader.current.decodeFromVideoDevice(selectedDeviceId, videoRef.current, (result, error) => {
+        if (result) {
+          const scannedData = result.getText();
+          handleBarcodeResult(scannedData);
+        }
+        if (error && !error.message.includes('No MultiFormat Readers were able to detect the code')) {
+          console.log('Scanning error:', error);
+        }
+      });
+    } catch (err) {
+      console.error('Error starting scanner:', err);
+      setError('Failed to start camera scanner');
+    }
+  };
+
+  const handleBarcodeResult = (scannedData) => {
+    try {
+      // Parse GS1 Data Matrix barcode
+      const parsedData = parseGS1Barcode(scannedData);
+      
+      if (parsedData.serialNumber) {
+        // Add the scanned serial number to the current text area
+        const currentValue = scannerModal.targetField === 'sscc' ? ssccSerials :
+                           scannerModal.targetField === 'case' ? caseSerials :
+                           scannerModal.targetField === 'innerCase' ? innerCaseSerials :
+                           itemSerials;
+        
+        const newValue = currentValue ? currentValue + '\n' + parsedData.serialNumber : parsedData.serialNumber;
+        scannerModal.targetSetter(newValue);
+        
+        setSuccess(`Scanned serial number: ${parsedData.serialNumber}`);
+        closeScanner();
+      } else {
+        setError('Could not extract serial number from barcode');
+      }
+    } catch (err) {
+      console.error('Error parsing barcode:', err);
+      setError('Failed to parse barcode data');
+    }
+  };
+
+  const parseGS1Barcode = (barcodeData) => {
+    // GS1 Application Identifiers for common serial number formats
+    const gs1Patterns = {
+      '21': /\(21\)([^\(]+)/, // Serial Number
+      '10': /\(10\)([^\(]+)/, // Batch/Lot Number
+      '17': /\(17\)([^\(]+)/, // Expiration Date
+      '01': /\(01\)([^\(]+)/, // GTIN
+      '00': /\(00\)([^\(]+)/, // SSCC
+    };
+    
+    let serialNumber = '';
+    let gtin = '';
+    let sscc = '';
+    
+    // Try to extract serial number (AI 21)
+    const serialMatch = barcodeData.match(gs1Patterns['21']);
+    if (serialMatch) {
+      serialNumber = serialMatch[1];
+    }
+    
+    // Try to extract GTIN (AI 01)
+    const gtinMatch = barcodeData.match(gs1Patterns['01']);
+    if (gtinMatch) {
+      gtin = gtinMatch[1];
+    }
+    
+    // Try to extract SSCC (AI 00)
+    const ssccMatch = barcodeData.match(gs1Patterns['00']);
+    if (ssccMatch) {
+      sscc = ssccMatch[1];
+    }
+    
+    // If no specific AI found, treat the entire string as a serial number
+    if (!serialNumber && !sscc) {
+      serialNumber = barcodeData.trim();
+    }
+    
+    return {
+      serialNumber: serialNumber || sscc,
+      gtin,
+      sscc,
+      rawData: barcodeData
+    };
+  };
+
+  useEffect(() => {
+    if (scannerModal.isOpen) {
+      startScanning();
+    }
+    
+    return () => {
+      if (codeReader.current) {
+        codeReader.current.reset();
+      }
+    };
+  }, [scannerModal.isOpen]);
+
   const calculateTotals = () => {
     const totalCases = configuration.casesPerSscc * configuration.numberOfSscc;
     if (configuration.useInnerCases) {
