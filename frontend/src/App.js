@@ -146,10 +146,8 @@ function App() {
       innerCasesPerCase: 2,
       itemsPerInnerCase: 5,
       companyPrefix: '1234567',
-      itemProductCode: '000000',
-      caseProductCode: '111111',
-      innerCaseProductCode: '222222',
-      ssccIndicatorDigit: '0',
+      productCode: '000000',
+      ssccExtensionDigit: '0',
       caseIndicatorDigit: '0',
       innerCaseIndicatorDigit: '0',
       itemIndicatorDigit: '0'
