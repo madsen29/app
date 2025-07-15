@@ -563,36 +563,56 @@ function App() {
           
           <div className="serial-section">
             <h3>SSCC Serial Numbers 
-              <span className="counter {ssccCount === configuration.numberOfSscc ? 'counter-complete' : ''}">
+              <span className={`counter ${ssccCount === configuration.numberOfSscc ? 'counter-complete' : ''}`}>
                 ({ssccCount}/{configuration.numberOfSscc})
               </span>
             </h3>
             <div className="textarea-group">
-              <textarea
-                value={ssccSerials}
-                onChange={(e) => setSsccSerials(e.target.value)}
-                placeholder="Enter SSCC serial numbers, one per line"
-                rows="5"
-                required
-              />
+              <div className="textarea-with-scanner">
+                <textarea
+                  value={ssccSerials}
+                  onChange={(e) => setSsccSerials(e.target.value)}
+                  placeholder="Enter SSCC serial numbers, one per line"
+                  rows="5"
+                  required
+                />
+                <button 
+                  type="button" 
+                  className="scan-button"
+                  onClick={() => openScanner('sscc', setSsccSerials)}
+                  title="Scan barcode"
+                >
+                  📷
+                </button>
+              </div>
               <small className="form-hint">Enter {configuration.numberOfSscc} SSCC serial numbers, one per line</small>
             </div>
           </div>
 
           <div className="serial-section">
             <h3>Case Serial Numbers 
-              <span className="counter {caseCount === totals.totalCases ? 'counter-complete' : ''}">
+              <span className={`counter ${caseCount === totals.totalCases ? 'counter-complete' : ''}`}>
                 ({caseCount}/{totals.totalCases})
               </span>
             </h3>
             <div className="textarea-group">
-              <textarea
-                value={caseSerials}
-                onChange={(e) => setCaseSerials(e.target.value)}
-                placeholder="Enter case serial numbers, one per line"
-                rows="8"
-                required
-              />
+              <div className="textarea-with-scanner">
+                <textarea
+                  value={caseSerials}
+                  onChange={(e) => setCaseSerials(e.target.value)}
+                  placeholder="Enter case serial numbers, one per line"
+                  rows="8"
+                  required
+                />
+                <button 
+                  type="button" 
+                  className="scan-button"
+                  onClick={() => openScanner('case', setCaseSerials)}
+                  title="Scan barcode"
+                >
+                  📷
+                </button>
+              </div>
               <small className="form-hint">Enter {totals.totalCases} case serial numbers, one per line</small>
             </div>
           </div>
@@ -600,18 +620,28 @@ function App() {
           {configuration.useInnerCases && (
             <div className="serial-section">
               <h3>Inner Case Serial Numbers 
-                <span className="counter {innerCaseCount === totals.totalInnerCases ? 'counter-complete' : ''}">
+                <span className={`counter ${innerCaseCount === totals.totalInnerCases ? 'counter-complete' : ''}`}>
                   ({innerCaseCount}/{totals.totalInnerCases})
                 </span>
               </h3>
               <div className="textarea-group">
-                <textarea
-                  value={innerCaseSerials}
-                  onChange={(e) => setInnerCaseSerials(e.target.value)}
-                  placeholder="Enter inner case serial numbers, one per line"
-                  rows="10"
-                  required
-                />
+                <div className="textarea-with-scanner">
+                  <textarea
+                    value={innerCaseSerials}
+                    onChange={(e) => setInnerCaseSerials(e.target.value)}
+                    placeholder="Enter inner case serial numbers, one per line"
+                    rows="10"
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    className="scan-button"
+                    onClick={() => openScanner('innerCase', setInnerCaseSerials)}
+                    title="Scan barcode"
+                  >
+                    📷
+                  </button>
+                </div>
                 <small className="form-hint">Enter {totals.totalInnerCases} inner case serial numbers, one per line</small>
               </div>
             </div>
@@ -619,18 +649,28 @@ function App() {
 
           <div className="serial-section">
             <h3>Item Serial Numbers (Eaches)
-              <span className="counter {itemCount === totals.totalItems ? 'counter-complete' : ''}">
+              <span className={`counter ${itemCount === totals.totalItems ? 'counter-complete' : ''}`}>
                 ({itemCount}/{totals.totalItems})
               </span>
             </h3>
             <div className="textarea-group">
-              <textarea
-                value={itemSerials}
-                onChange={(e) => setItemSerials(e.target.value)}
-                placeholder="Enter item serial numbers, one per line"
-                rows="15"
-                required
-              />
+              <div className="textarea-with-scanner">
+                <textarea
+                  value={itemSerials}
+                  onChange={(e) => setItemSerials(e.target.value)}
+                  placeholder="Enter item serial numbers, one per line"
+                  rows="15"
+                  required
+                />
+                <button 
+                  type="button" 
+                  className="scan-button"
+                  onClick={() => openScanner('item', setItemSerials)}
+                  title="Scan barcode"
+                >
+                  📷
+                </button>
+              </div>
               <small className="form-hint">Enter {totals.totalItems} item serial numbers, one per line</small>
             </div>
           </div>
