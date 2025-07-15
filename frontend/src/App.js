@@ -37,6 +37,10 @@ function App() {
   const codeReader = useRef(null);
   const [isScanning, setIsScanning] = useState(false);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleConfigurationSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -69,6 +73,7 @@ function App() {
       setItemSerials('');
       
       setCurrentStep(2);
+      scrollToTop();
       setSuccess('Configuration saved successfully!');
     } catch (err) {
       setError('Failed to save configuration');
