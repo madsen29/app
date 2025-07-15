@@ -881,12 +881,6 @@ function App() {
               />
               <small className="form-hint">Package size and weight</small>
             </div>
-          </div>
-        </div>
-        
-        <div className="gs1-section">
-          <h3>GS1 Configuration</h3>
-          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="companyPrefix">Company Prefix:</label>
               <input
@@ -933,60 +927,6 @@ function App() {
                 required
               />
               <small className="form-hint">Expiration date applied to Case, Inner Case, and Item levels</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="ssccExtensionDigit">SSCC Extension Digit:</label>
-              <input
-                type="text"
-                id="ssccExtensionDigit"
-                maxLength="1"
-                value={configuration.ssccExtensionDigit}
-                onChange={(e) => setConfiguration({...configuration, ssccExtensionDigit: e.target.value})}
-                placeholder="0"
-                required
-              />
-              <small className="form-hint">Single digit (0-9) for SSCC extension</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="caseIndicatorDigit">Case Indicator Digit:</label>
-              <input
-                type="text"
-                id="caseIndicatorDigit"
-                maxLength="1"
-                value={configuration.caseIndicatorDigit}
-                onChange={(e) => setConfiguration({...configuration, caseIndicatorDigit: e.target.value})}
-                placeholder="0"
-                required
-              />
-              <small className="form-hint">Single digit (0-9) for case SGTINs</small>
-            </div>
-            {configuration.useInnerCases && (
-              <div className="form-group">
-                <label htmlFor="innerCaseIndicatorDigit">Inner Case Indicator Digit:</label>
-                <input
-                  type="text"
-                  id="innerCaseIndicatorDigit"
-                  maxLength="1"
-                  value={configuration.innerCaseIndicatorDigit}
-                  onChange={(e) => setConfiguration({...configuration, innerCaseIndicatorDigit: e.target.value})}
-                  placeholder="0"
-                  required
-                />
-                <small className="form-hint">Single digit (0-9) for inner case SGTINs</small>
-              </div>
-            )}
-            <div className="form-group">
-              <label htmlFor="itemIndicatorDigit">Item Indicator Digit:</label>
-              <input
-                type="text"
-                id="itemIndicatorDigit"
-                maxLength="1"
-                value={configuration.itemIndicatorDigit}
-                onChange={(e) => setConfiguration({...configuration, itemIndicatorDigit: e.target.value})}
-                placeholder="0"
-                required
-              />
-              <small className="form-hint">Single digit (0-9) for item SGTINs</small>
             </div>
           </div>
         </div>
@@ -1105,6 +1045,66 @@ function App() {
               </div>
             </div>
           )}
+          
+          <div className="gs1-indicators">
+            <h4>GS1 Indicator Digits</h4>
+            <div className="form-grid">
+              <div className="form-group">
+                <label htmlFor="ssccExtensionDigit">SSCC Extension Digit:</label>
+                <input
+                  type="text"
+                  id="ssccExtensionDigit"
+                  maxLength="1"
+                  value={configuration.ssccExtensionDigit}
+                  onChange={(e) => setConfiguration({...configuration, ssccExtensionDigit: e.target.value})}
+                  placeholder="0"
+                  required
+                />
+                <small className="form-hint">Single digit (0-9) for SSCC extension</small>
+              </div>
+              <div className="form-group">
+                <label htmlFor="caseIndicatorDigit">Case Indicator Digit:</label>
+                <input
+                  type="text"
+                  id="caseIndicatorDigit"
+                  maxLength="1"
+                  value={configuration.caseIndicatorDigit}
+                  onChange={(e) => setConfiguration({...configuration, caseIndicatorDigit: e.target.value})}
+                  placeholder="0"
+                  required
+                />
+                <small className="form-hint">Single digit (0-9) for case SGTINs</small>
+              </div>
+              {configuration.useInnerCases && (
+                <div className="form-group">
+                  <label htmlFor="innerCaseIndicatorDigit">Inner Case Indicator Digit:</label>
+                  <input
+                    type="text"
+                    id="innerCaseIndicatorDigit"
+                    maxLength="1"
+                    value={configuration.innerCaseIndicatorDigit}
+                    onChange={(e) => setConfiguration({...configuration, innerCaseIndicatorDigit: e.target.value})}
+                    placeholder="0"
+                    required
+                  />
+                  <small className="form-hint">Single digit (0-9) for inner case SGTINs</small>
+                </div>
+              )}
+              <div className="form-group">
+                <label htmlFor="itemIndicatorDigit">Item Indicator Digit:</label>
+                <input
+                  type="text"
+                  id="itemIndicatorDigit"
+                  maxLength="1"
+                  value={configuration.itemIndicatorDigit}
+                  onChange={(e) => setConfiguration({...configuration, itemIndicatorDigit: e.target.value})}
+                  placeholder="0"
+                  required
+                />
+                <small className="form-hint">Single digit (0-9) for item SGTINs</small>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="hierarchy-section">
