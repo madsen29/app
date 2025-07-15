@@ -39,27 +39,29 @@ function App() {
     
     try {
       const response = await axios.post(`${API}/configuration`, {
-        items_per_case: configuration.itemsPerCase,
+        items_per_case: configuration.useInnerCases ? 0 : configuration.itemsPerCase,
         cases_per_sscc: configuration.casesPerSscc,
         number_of_sscc: configuration.numberOfSscc,
+        use_inner_cases: configuration.useInnerCases,
+        inner_cases_per_case: configuration.useInnerCases ? configuration.innerCasesPerCase : 0,
+        items_per_inner_case: configuration.useInnerCases ? configuration.itemsPerInnerCase : 0,
         company_prefix: configuration.companyPrefix,
         item_product_code: configuration.itemProductCode,
         case_product_code: configuration.caseProductCode,
+        inner_case_product_code: configuration.useInnerCases ? configuration.innerCaseProductCode : '',
         sscc_indicator_digit: configuration.ssccIndicatorDigit,
         case_indicator_digit: configuration.caseIndicatorDigit,
+        inner_case_indicator_digit: configuration.useInnerCases ? configuration.innerCaseIndicatorDigit : '',
         item_indicator_digit: configuration.itemIndicatorDigit
       });
       
       setConfigurationId(response.data.id);
       
-      // Calculate totals
-      const totalCases = configuration.casesPerSscc * configuration.numberOfSscc;
-      const totalItems = configuration.itemsPerCase * totalCases;
-      
-      // Initialize serial number arrays
-      setSsccSerials(new Array(configuration.numberOfSscc).fill(''));
-      setCaseSerials(new Array(totalCases).fill(''));
-      setItemSerials(new Array(totalItems).fill(''));
+      // Initialize serial number strings
+      setSsccSerials('');
+      setCaseSerials('');
+      setInnerCaseSerials('');
+      setItemSerials('');
       
       setCurrentStep(2);
       setSuccess('Configuration saved successfully!');
