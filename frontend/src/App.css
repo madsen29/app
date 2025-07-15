@@ -644,7 +644,138 @@ body {
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
-/* Summary Section */
+/* EPCClass Section */
+.epcclass-section {
+  background: #f0f8ff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #bee3f8;
+  margin-bottom: 1.5rem;
+}
+
+.epcclass-section h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #2c5282;
+  border-bottom: 2px solid #3182ce;
+  padding-bottom: 0.5rem;
+}
+
+.input-with-button {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.input-with-button input {
+  flex: 1;
+}
+
+.api-search-button {
+  background: #3182ce;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.api-search-button:hover:not(:disabled) {
+  background: #2c5282;
+}
+
+.api-search-button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+/* FDA Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #2d3748;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #718096;
+}
+
+.close-button:hover {
+  color: #2d3748;
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.fda-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fda-result-item {
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.fda-result-item:hover {
+  background: #edf2f7;
+  border-color: #cbd5e0;
+}
+
+.fda-result-item h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+.fda-result-item p {
+  margin: 0.25rem 0;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
 .summary-section {
   background: #f7fafc;
   padding: 2rem;
