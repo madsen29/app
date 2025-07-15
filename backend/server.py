@@ -320,7 +320,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         biz_location_id = ET.SubElement(biz_location_elem, "id")
         biz_location_id.text = biz_location
         
-        # Add ILMD extension for items
+        # Add ILMD extension for inner cases
         add_ilmd_extension(object_event, lot_number, expiration_date)
     
     # 2. Single Commissioning Event for All Inner Cases (if used)
