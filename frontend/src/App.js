@@ -2391,7 +2391,17 @@ function App() {
                   <input
                     type="text"
                     value={editModal.currentValue}
-                    onChange={(e) => setEditModal({...editModal, currentValue: e.target.value})}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      // Check for duplicates as user types
+                      const duplicates = validateDuplicateSerials(newValue, editModal.path);
+                      if (duplicates && newValue.trim()) {
+                        setError(`Duplicate serial number found! "${newValue}" is already used at: ${duplicates[0].path}`);
+                      } else {
+                        setError('');
+                      }
+                      setEditModal({...editModal, currentValue: newValue});
+                    }}
                     placeholder={`Enter ${editModal.label}`}
                     className="edit-serial-input"
                     autoFocus
