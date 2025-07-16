@@ -633,10 +633,10 @@ class SBDHLocationTester:
                         self.log_test("Existing Features Regression", False, "EPCISHeader not found")
                         return False
                     
-                    # Check EPCISBody and EventList
+                    # Check EPCISBody and EventList (handle namespace)
                     epcis_body = None
                     for child in epcis_document:
-                        if child.tag == "EPCISBody":
+                        if child.tag.endswith("EPCISBody"):
                             epcis_body = child
                             break
                     
