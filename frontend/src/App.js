@@ -821,7 +821,7 @@ function App() {
       };
     } else if (current.currentLevel === 'item') {
       // Move to next item, inner case, case, or SSCC
-      const nextItemIndex = current.itemIndex + 1;
+      const nextItemIndex = current.itemIndex + 1 + itemsToSkip;
       
       if (configuration.useInnerCases) {
         const itemsPerInnerCase = configuration.itemsPerInnerCase;
