@@ -206,10 +206,10 @@ class SBDHLocationTester:
                             self.log_test("SBDH Structure", False, f"Missing or incorrect namespace {ns_prefix}: expected '{ns_uri}', found '{root.get(ns_prefix)}'")
                             return False
                     
-                    # Check for StandardBusinessDocumentHeader
+                    # Check for StandardBusinessDocumentHeader (handle namespace)
                     sbdh_header = None
                     for child in root:
-                        if child.tag == "StandardBusinessDocumentHeader":
+                        if child.tag.endswith("StandardBusinessDocumentHeader"):
                             sbdh_header = child
                             break
                     
