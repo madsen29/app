@@ -194,17 +194,24 @@ class SBDHLocationTester:
                         self.log_test("SBDH Structure", False, f"Root element should be 'StandardBusinessDocument', found '{root.tag}'")
                         return False
                     
-                    # Check required namespaces
-                    expected_namespaces = {
-                        "xmlns": "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader",
-                        "xmlns:epcis": "urn:epcglobal:epcis:xsd:1",
-                        "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
-                    }
+                    # Check required namespaces - they are set as default namespace
+                    # The xmlns attribute becomes the default namespace, not a named attribute
+                    root_ns = root.tag.split('}')[0][1:] if '}' in root.tag else None
                     
-                    for ns_prefix, ns_uri in expected_namespaces.items():
-                        if root.get(ns_prefix) != ns_uri:
-                            self.log_test("SBDH Structure", False, f"Missing or incorrect namespace {ns_prefix}: expected '{ns_uri}', found '{root.get(ns_prefix)}'")
-                            return False
+                    if root_ns != "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader":
+                        self.log_test("SBDH Structure", False, f"Missing or incorrect default namespace: expected 'http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader', found '{root_ns}'")
+                        return False
+                    
+                    # Check for epcis namespace in EPCISDocument
+                    epcis_doc_found = False
+                    for child in root:
+                        if child.tag.endswith("EPCISDocument") and "urn:epcglobal:epcis:xsd:1" in child.tag:
+                            epcis_doc_found = True
+                            break
+                    
+                    if not epcis_doc_found:
+                        self.log_test("SBDH Structure", False, "EPCISDocument with correct namespace not found")
+                        return False
                     
                     # Check for StandardBusinessDocumentHeader (handle namespace)
                     sbdh_header = None
