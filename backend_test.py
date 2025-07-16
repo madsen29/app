@@ -824,8 +824,8 @@ class BackendTester:
         # Test 6: Hierarchical Data Integrity
         data_integrity_success = self.test_hierarchical_data_integrity(config_id)
         
-        # Test 7: Original EPCIS Generation Test (for completeness)
-        self.test_epcis_generation(config_id)
+        # Test 7: Detailed EPCIS Generation Test (for 4-level hierarchy)
+        self.test_epcis_generation_detailed(config_id)
         
         # Summary
         print("\n" + "=" * 80)
