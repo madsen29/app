@@ -289,10 +289,10 @@ class SBDHLocationTester:
                         self.log_test("SBDH Header", False, f"HeaderVersion should be '1.0', found '{header_version.text if header_version else 'None'}'")
                         return False
                     
-                    # Check Sender
+                    # Check Sender (handle namespace)
                     sender = None
                     for child in sbdh_header:
-                        if child.tag == "Sender":
+                        if child.tag.endswith("Sender"):
                             sender = child
                             break
                     
