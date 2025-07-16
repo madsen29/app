@@ -397,15 +397,15 @@ class CriticalIssuesTester:
                     receiver_gln_found = False
                     
                     for elem in root.iter():
-                        if elem.tag == "StandardBusinessDocumentHeader":
+                        if elem.tag.endswith("StandardBusinessDocumentHeader"):
                             sbdh_found = True
-                        elif elem.tag == "Sender":
+                        elif elem.tag.endswith("Sender"):
                             for child in elem:
-                                if child.tag == "Identifier" and child.text == "0345802000014":
+                                if child.tag.endswith("Identifier") and child.text == "0345802000014":
                                     sender_gln_found = True
-                        elif elem.tag == "Receiver":
+                        elif elem.tag.endswith("Receiver"):
                             for child in elem:
-                                if child.tag == "Identifier" and child.text == "0567890000021":
+                                if child.tag.endswith("Identifier") and child.text == "0567890000021":
                                     receiver_gln_found = True
                     
                     if sbdh_found and sender_gln_found and receiver_gln_found:
