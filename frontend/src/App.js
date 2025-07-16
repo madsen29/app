@@ -2080,22 +2080,35 @@ function App() {
           <div className="current-input">
             <h4>Enter {currentContext.label}:</h4>
             <div className="input-group">
-              <input
-                type="text"
-                value={serialCollectionStep.currentSerial}
-                onChange={(e) => handleSerialInput(e.target.value)}
-                placeholder={`Enter ${currentContext.label} serial number`}
-                className="serial-input"
-                autoFocus
-              />
-              <button
-                type="button"
-                className="scan-button"
-                onClick={() => openScanner('current', null)}
-                title="Scan barcode"
-              >
-                <FiCamera size={20} />
-              </button>
+              {serialCollectionStep.currentLevel === 'item' ? (
+                <textarea
+                  value={serialCollectionStep.currentSerial}
+                  onChange={(e) => handleSerialInput(e.target.value)}
+                  placeholder={`Enter ${currentContext.label} serial numbers, one per line`}
+                  className="serial-textarea"
+                  rows="4"
+                  autoFocus
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={serialCollectionStep.currentSerial}
+                  onChange={(e) => handleSerialInput(e.target.value)}
+                  placeholder={`Enter ${currentContext.label} serial number`}
+                  className="serial-input"
+                  autoFocus
+                />
+              )}
+              {serialCollectionStep.currentLevel !== 'sscc' && (
+                <button
+                  type="button"
+                  className="scan-button"
+                  onClick={() => openScanner('current', null)}
+                  title="Scan barcode"
+                >
+                  <FiCamera size={20} />
+                </button>
+              )}
             </div>
           </div>
           
