@@ -141,19 +141,19 @@ class SerialConfigurationCreate(BaseModel):
 
 class SerialNumbers(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    configuration_id: str
-    sscc_serial_numbers: List[str]
-    case_serial_numbers: List[str]
-    inner_case_serial_numbers: List[str] = Field(default_factory=list)
-    item_serial_numbers: List[str]
+    configuration_id: str = Field(alias="configurationId")
+    sscc_serial_numbers: List[str] = Field(alias="ssccSerialNumbers")
+    case_serial_numbers: List[str] = Field(alias="caseSerialNumbers")
+    inner_case_serial_numbers: List[str] = Field(default_factory=list, alias="innerCaseSerialNumbers")
+    item_serial_numbers: List[str] = Field(alias="itemSerialNumbers")
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class SerialNumbersCreate(BaseModel):
-    configuration_id: str
-    sscc_serial_numbers: List[str]
-    case_serial_numbers: List[str]
-    inner_case_serial_numbers: List[str] = Field(default_factory=list)
-    item_serial_numbers: List[str]
+    configuration_id: str = Field(alias="configurationId")
+    sscc_serial_numbers: List[str] = Field(alias="ssccSerialNumbers")
+    case_serial_numbers: List[str] = Field(alias="caseSerialNumbers")
+    inner_case_serial_numbers: List[str] = Field(default_factory=list, alias="innerCaseSerialNumbers")
+    item_serial_numbers: List[str] = Field(alias="itemSerialNumbers")
 
 class EPCISGenerationRequest(BaseModel):
     configuration_id: str
