@@ -106,10 +106,27 @@ function App() {
         ...prev,
         shipperCompanyPrefix: prev.senderCompanyPrefix,
         shipperGln: prev.senderGln,
-        shipperSgln: prev.senderSgln
+        shipperSgln: prev.senderSgln,
+        shipperName: prev.senderName,
+        shipperStreetAddress: prev.senderStreetAddress,
+        shipperCity: prev.senderCity,
+        shipperState: prev.senderState,
+        shipperPostalCode: prev.senderPostalCode,
+        shipperCountryCode: prev.senderCountryCode
       }));
     }
-  }, [configuration.senderCompanyPrefix, configuration.senderGln, configuration.senderSgln, configuration.shipperSameAsSender]);
+  }, [
+    configuration.senderCompanyPrefix, 
+    configuration.senderGln, 
+    configuration.senderSgln,
+    configuration.senderName,
+    configuration.senderStreetAddress,
+    configuration.senderCity,
+    configuration.senderState,
+    configuration.senderPostalCode,
+    configuration.senderCountryCode,
+    configuration.shipperSameAsSender
+  ]);
 
   const dismissToast = () => {
     setIsToastExiting(true);
