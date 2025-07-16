@@ -1205,6 +1205,89 @@ body {
   }
 }
 
+/* Edit Serial Modal */
+.edit-context {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.edit-context h4 {
+  margin: 0 0 0.5rem 0;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.edit-context .context-path {
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  color: #0055fb;
+  font-weight: 600;
+}
+
+.edit-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.edit-serial-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+}
+
+.edit-serial-input:focus {
+  outline: none;
+  border-color: #0055fb;
+  box-shadow: 0 0 0 3px rgba(0, 85, 251, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.tree-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+.tree-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0.25rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
 /* Serial Tree Overview */
 .serial-tree-container {
   background: #f8f9fa;
