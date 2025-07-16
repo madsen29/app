@@ -758,13 +758,17 @@ class BackendTester:
         except Exception as e:
             self.log_test("Error Handling", False, f"Request error: {str(e)}")
     
-    def run_all_tests(self):
-        """Run all backend tests in sequence for restructured EPCIS API"""
+    def run_review_request_tests(self):
+        """Run tests focused on review request requirements"""
         print("=" * 80)
-        print("EPCIS BACKEND API TESTING - RESTRUCTURED GS1 HIERARCHY")
+        print("REVIEW REQUEST FOCUSED TESTING - HIERARCHICAL SERIAL NUMBER COLLECTION")
         print("=" * 80)
-        print("Testing new structure: SSCC→Cases→Items with EPCIS 1.2 schema")
-        print("Expected: 2 SSCCs, 10 Cases (5×2), 100 Items (10×5×2)")
+        print("Testing Configuration: 1 SSCC, 2 Cases, 2 Inner Cases per Case, 3 Items per Inner Case")
+        print("Focus Areas:")
+        print("1. Enhanced Duplicate Detection (Backend Integration)")
+        print("2. Multi-level Navigation Data Preservation (Backend Integration)")
+        print("3. Hierarchical Serial Collection Backend Integration")
+        print("4. EPCIS XML Generation (Package NDC & EPCClass ordering)")
         print("=" * 80)
         
         # Test 1: API Health Check
@@ -772,27 +776,27 @@ class BackendTester:
             print("\n❌ API is not accessible. Stopping tests.")
             return False
         
-        # Test 2: Configuration Creation with new structure
-        config_id = self.test_configuration_creation()
+        # Test 2: Review Request Specific Configuration
+        config_id = self.test_review_request_specific_configuration()
         
-        # Test 3: Configuration Validation
-        self.test_configuration_validation()
+        # Test 3: Review Request Serial Numbers
+        serial_id = self.test_review_request_serial_numbers(config_id)
         
-        # Test 4: Serial Numbers Creation with new hierarchy (requires config_id)
-        serial_id = self.test_serial_numbers_creation(config_id)
+        # Test 4: Package NDC Hyphen Removal (CRITICAL ISSUE)
+        package_ndc_success = self.test_package_ndc_hyphen_removal(config_id)
         
-        # Test 5: Serial Numbers Validation with new counts
-        self.test_serial_numbers_validation(config_id)
+        # Test 5: EPCClass Vocabulary Order (CRITICAL ISSUE)
+        epcclass_order_success = self.test_epcclass_vocabulary_order(config_id)
         
-        # Test 6: EPCIS 1.2 Generation with commissioning + aggregation events
+        # Test 6: Hierarchical Data Integrity
+        data_integrity_success = self.test_hierarchical_data_integrity(config_id)
+        
+        # Test 7: Original EPCIS Generation Test (for completeness)
         self.test_epcis_generation(config_id)
-        
-        # Test 7: Error Handling
-        self.test_error_handling()
         
         # Summary
         print("\n" + "=" * 80)
-        print("TEST SUMMARY - RESTRUCTURED EPCIS API")
+        print("REVIEW REQUEST TEST SUMMARY")
         print("=" * 80)
         
         passed = sum(1 for result in self.test_results if result['success'])
@@ -803,19 +807,25 @@ class BackendTester:
         print(f"Failed: {total - passed}")
         print(f"Success Rate: {(passed/total)*100:.1f}%")
         
+        # Critical Issues Status
+        print("\n" + "=" * 40)
+        print("CRITICAL ISSUES STATUS")
+        print("=" * 40)
+        print(f"Package NDC Hyphen Removal: {'✅ FIXED' if package_ndc_success else '❌ STILL FAILING'}")
+        print(f"EPCClass Vocabulary Order: {'✅ FIXED' if epcclass_order_success else '❌ STILL FAILING'}")
+        
         if total - passed > 0:
             print("\nFailed Tests:")
             for result in self.test_results:
                 if not result['success']:
                     print(f"  - {result['test']}: {result['message']}")
         
-        print("\nKey Features Tested:")
-        print("✓ New GS1 hierarchy: SSCC→Cases→Items")
-        print("✓ Separate product codes for items and cases")
-        print("✓ Indicator digits before product codes")
-        print("✓ EPCIS 1.2 schema with commissioning events")
-        print("✓ Proper aggregation events (Items→Cases, Cases→SSCCs)")
-        print("✓ GS1 identifier format validation")
+        print("\nReview Request Features Tested:")
+        print("✓ 4-level hierarchy: SSCC→Cases→Inner Cases→Items")
+        print("✓ Package NDC field storage and processing")
+        print("✓ EPCClass vocabulary generation and ordering")
+        print("✓ Hierarchical data conversion to flat arrays")
+        print("✓ Backend integration for enhanced serial collection")
         
         return passed == total
 
