@@ -371,10 +371,10 @@ class SBDHLocationTester:
                         self.log_test("SBDH Header", False, f"Standard should be 'EPCISDocument', found '{standard.text if standard else 'None'}'")
                         return False
                     
-                    # Check TypeVersion
+                    # Check TypeVersion (handle namespace)
                     type_version = None
                     for child in doc_identification:
-                        if child.tag == "TypeVersion":
+                        if child.tag.endswith("TypeVersion"):
                             type_version = child
                             break
                     
