@@ -2358,6 +2358,63 @@ function App() {
             </div>
           </div>
         )}
+
+        {/* Edit Serial Modal */}
+        {editModal.isOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3>Edit Serial Number</h3>
+                <button className="close-button" onClick={handleCancelEdit}>
+                  <FiX />
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="edit-context">
+                  <h4>{editModal.label}</h4>
+                  <p className="context-path">{editModal.contextPath}</p>
+                </div>
+                <div className="edit-input-group">
+                  <input
+                    type="text"
+                    value={editModal.currentValue}
+                    onChange={(e) => setEditModal({...editModal, currentValue: e.target.value})}
+                    placeholder={`Enter ${editModal.label}`}
+                    className="edit-serial-input"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    className="scan-button"
+                    onClick={() => {
+                      setScannerModal({ isOpen: true, targetField: 'edit', targetSetter: null });
+                    }}
+                    title="Scan barcode"
+                  >
+                    <FiCamera size={20} />
+                  </button>
+                </div>
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    className="btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSaveEditedSerial}
+                    disabled={!editModal.currentValue.trim()}
+                    className="btn-primary"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
