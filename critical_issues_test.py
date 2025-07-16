@@ -368,8 +368,8 @@ class CriticalIssuesTester:
                 try:
                     root = ET.fromstring(xml_content)
                     
-                    # Check root element is StandardBusinessDocument
-                    if not root.tag == "StandardBusinessDocument":
+                    # Check root element is StandardBusinessDocument (with or without namespace)
+                    if not root.tag.endswith("StandardBusinessDocument"):
                         self.log_test("SBDH Structure", False, f"Root element should be StandardBusinessDocument, found: {root.tag}")
                         return False
                     
