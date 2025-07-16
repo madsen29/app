@@ -267,10 +267,10 @@ class SBDHLocationTester:
                 try:
                     root = ET.fromstring(xml_content)
                     
-                    # Find StandardBusinessDocumentHeader
+                    # Find StandardBusinessDocumentHeader (handle namespace)
                     sbdh_header = None
                     for child in root:
-                        if child.tag == "StandardBusinessDocumentHeader":
+                        if child.tag.endswith("StandardBusinessDocumentHeader"):
                             sbdh_header = child
                             break
                     
