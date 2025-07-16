@@ -1205,6 +1205,70 @@ body {
   }
 }
 
+/* Context Navigation */
+.context-clickable {
+  color: #0055fb;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.context-clickable:hover {
+  color: #0041c7;
+}
+
+.context-current {
+  color: #495057;
+  font-weight: 700;
+}
+
+.context-separator {
+  color: #6c757d;
+  font-weight: normal;
+}
+
+/* Current Container Highlighting */
+.current-container {
+  background: rgba(0, 85, 251, 0.05);
+  border-left: 3px solid #0055fb;
+  padding-left: 0.5rem;
+  margin-left: -0.5rem;
+  border-radius: 4px;
+}
+
+/* Serial Input Components */
+.serial-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+}
+
+.serial-input:focus {
+  outline: none;
+  border-color: #0055fb;
+  box-shadow: 0 0 0 3px rgba(0, 85, 251, 0.1);
+}
+
+.serial-textarea {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.serial-textarea:focus {
+  outline: none;
+  border-color: #0055fb;
+  box-shadow: 0 0 0 3px rgba(0, 85, 251, 0.1);
+}
+
 /* Edit Serial Modal */
 .edit-context {
   background: #f8f9fa;
