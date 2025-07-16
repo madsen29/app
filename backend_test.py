@@ -262,39 +262,134 @@ class BackendTester:
             self.log_test("EPCClass Vocabulary Order", False, f"Request error: {str(e)}")
             return False
 
-    def test_hierarchical_data_integrity(self, config_id):
-        """Test that hierarchical structure is properly converted to flat arrays for backend submission"""
-        if not config_id:
-            self.log_test("Hierarchical Data Integrity", False, "No configuration ID available")
-            return False
-            
-        # Test with duplicate serials to verify backend validation
-        duplicate_test_data = {
-            "configuration_id": config_id,
-            "sscc_serial_numbers": ["SSCC001"],
-            "case_serial_numbers": ["CASE001", "CASE001"],  # Duplicate case serial
-            "inner_case_serial_numbers": ["INNER001", "INNER002", "INNER003", "INNER004"],
-            "item_serial_numbers": [f"ITEM{i+1:03d}" for i in range(12)]
+    def test_multiple_hierarchy_configurations(self):
+        """Test different hierarchy configurations (2-level, 3-level, 4-level)"""
+        
+        # Test 2-level hierarchy: SSCC → Items (no cases)
+        config_2_level = {
+            "items_per_case": 10,  # items per SSCC when no cases
+            "cases_per_sscc": 0,   # No cases
+            "number_of_sscc": 1,
+            "use_inner_cases": False,
+            "company_prefix": "1234567",
+            "item_product_code": "000000",
+            "case_product_code": "000000",
+            "sscc_indicator_digit": "3",
+            "case_indicator_digit": "2",
+            "item_indicator_digit": "1",
+            "package_ndc": "45802-046-85"
         }
         
-        try:
-            response = self.session.post(
-                f"{self.base_url}/serial-numbers",
-                json=duplicate_test_data,
-                headers={"Content-Type": "application/json"}
-            )
-            
-            # Backend should accept this (duplicate detection is frontend responsibility)
-            if response.status_code == 200:
-                self.log_test("Hierarchical Data Integrity", True, "Backend accepts flat arrays from hierarchical frontend data")
-                return True
-            else:
-                self.log_test("Hierarchical Data Integrity", False, f"Backend rejected valid hierarchical data: {response.status_code}")
-                return False
+        # Test 3-level hierarchy: SSCC → Cases → Items
+        config_3_level = {
+            "items_per_case": 5,
+            "cases_per_sscc": 2,
+            "number_of_sscc": 1,
+            "use_inner_cases": False,
+            "company_prefix": "1234567",
+            "item_product_code": "000000",
+            "case_product_code": "000000",
+            "sscc_indicator_digit": "3",
+            "case_indicator_digit": "2",
+            "item_indicator_digit": "1",
+            "package_ndc": "45802-046-85"
+        }
+        
+        # Test 4-level hierarchy: SSCC → Cases → Inner Cases → Items (already tested above)
+        
+        test_configs = [
+            ("2-level (SSCC→Items)", config_2_level, 2, 1),  # 2 ObjectEvents, 1 AggregationEvent
+            ("3-level (SSCC→Cases→Items)", config_3_level, 3, 3)  # 3 ObjectEvents, 3 AggregationEvents
+        ]
+        
+        for config_name, config_data, expected_obj_events, expected_agg_events in test_configs:
+            try:
+                # Create configuration
+                response = self.session.post(
+                    f"{self.base_url}/configuration",
+                    json=config_data,
+                    headers={"Content-Type": "application/json"}
+                )
                 
-        except Exception as e:
-            self.log_test("Hierarchical Data Integrity", False, f"Request error: {str(e)}")
-            return False
+                if response.status_code == 200:
+                    config_id = response.json()["id"]
+                    
+                    # Create appropriate serial numbers
+                    if config_name.startswith("2-level"):
+                        serial_data = {
+                            "configuration_id": config_id,
+                            "sscc_serial_numbers": ["SSCC001"],
+                            "case_serial_numbers": [],
+                            "inner_case_serial_numbers": [],
+                            "item_serial_numbers": [f"ITEM{i+1:03d}" for i in range(10)]
+                        }
+                    else:  # 3-level
+                        serial_data = {
+                            "configuration_id": config_id,
+                            "sscc_serial_numbers": ["SSCC001"],
+                            "case_serial_numbers": ["CASE001", "CASE002"],
+                            "inner_case_serial_numbers": [],
+                            "item_serial_numbers": [f"ITEM{i+1:03d}" for i in range(10)]
+                        }
+                    
+                    # Save serial numbers
+                    serial_response = self.session.post(
+                        f"{self.base_url}/serial-numbers",
+                        json=serial_data,
+                        headers={"Content-Type": "application/json"}
+                    )
+                    
+                    if serial_response.status_code == 200:
+                        # Generate EPCIS and validate
+                        epcis_response = self.session.post(
+                            f"{self.base_url}/generate-epcis",
+                            json={
+                                "configuration_id": config_id,
+                                "read_point": "urn:epc:id:sgln:1234567.00000.0",
+                                "biz_location": "urn:epc:id:sgln:1234567.00001.0"
+                            },
+                            headers={"Content-Type": "application/json"}
+                        )
+                        
+                        if epcis_response.status_code == 200:
+                            xml_content = epcis_response.text
+                            
+                            # Verify package NDC hyphen removal
+                            ndc_clean = "4580204685" in xml_content and "45802-046-85" not in xml_content
+                            
+                            # Parse XML to count events
+                            root = ET.fromstring(xml_content)
+                            object_events = 0
+                            aggregation_events = 0
+                            
+                            for elem in root.iter():
+                                if elem.tag.endswith("ObjectEvent"):
+                                    object_events += 1
+                                elif elem.tag.endswith("AggregationEvent"):
+                                    aggregation_events += 1
+                            
+                            events_correct = (object_events == expected_obj_events and 
+                                            aggregation_events == expected_agg_events)
+                            
+                            if ndc_clean and events_correct:
+                                self.log_test(f"Multiple Hierarchy - {config_name}", True, 
+                                            f"Valid EPCIS XML with clean NDC and correct event counts",
+                                            f"ObjectEvents: {object_events}, AggregationEvents: {aggregation_events}")
+                            else:
+                                self.log_test(f"Multiple Hierarchy - {config_name}", False, 
+                                            f"NDC clean: {ndc_clean}, Events correct: {events_correct}")
+                        else:
+                            self.log_test(f"Multiple Hierarchy - {config_name}", False, 
+                                        f"EPCIS generation failed: {epcis_response.status_code}")
+                    else:
+                        self.log_test(f"Multiple Hierarchy - {config_name}", False, 
+                                    f"Serial numbers creation failed: {serial_response.status_code}")
+                else:
+                    self.log_test(f"Multiple Hierarchy - {config_name}", False, 
+                                f"Configuration creation failed: {response.status_code}")
+                    
+            except Exception as e:
+                self.log_test(f"Multiple Hierarchy - {config_name}", False, f"Test error: {str(e)}")
     
     def test_configuration_validation(self):
         """Test configuration creation with missing required GS1 parameters"""
