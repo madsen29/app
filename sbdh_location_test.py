@@ -654,14 +654,14 @@ class SBDHLocationTester:
                         self.log_test("Existing Features Regression", False, "EventList not found")
                         return False
                     
-                    # Count events
+                    # Count events (handle namespace)
                     object_events = 0
                     aggregation_events = 0
                     
                     for child in event_list:
-                        if child.tag == "ObjectEvent":
+                        if child.tag.endswith("ObjectEvent"):
                             object_events += 1
-                        elif child.tag == "AggregationEvent":
+                        elif child.tag.endswith("AggregationEvent"):
                             aggregation_events += 1
                     
                     # For our test config: 1 SSCC, 2 Cases, 6 Items
