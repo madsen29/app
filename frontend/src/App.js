@@ -612,6 +612,67 @@ function App() {
     setError('');
   };
 
+  const renderClickableContext = (contextPath) => {
+    const pathParts = contextPath.split(' → ');
+    
+    return pathParts.map((part, index) => {
+      const isLast = index === pathParts.length - 1;
+      
+      return (
+        <span key={index}>
+          <span
+            className={`context-level ${isLast ? 'context-current' : 'context-clickable'}`}
+            onClick={() => {
+              if (!isLast) {
+                handleContextNavigation(part, index);
+              }
+            }}
+          >
+            {part}
+          </span>
+          {!isLast && <span className="context-separator"> → </span>}
+        </span>
+      );
+    });
+  };
+
+  const handleContextNavigation = (clickedLevel, levelIndex) => {
+    // Parse the clicked level to determine position
+    const step = serialCollectionStep;
+    
+    if (clickedLevel.includes('SSCC')) {
+      // Navigate to SSCC level
+      setSerialCollectionStep({
+        ...step,
+        currentLevel: 'sscc',
+        caseIndex: 0,
+        innerCaseIndex: 0,
+        itemIndex: 0,
+        currentSerial: '',
+        isComplete: false
+      });
+    } else if (clickedLevel.includes('Case') && !clickedLevel.includes('Inner')) {
+      // Navigate to Case level
+      setSerialCollectionStep({
+        ...step,
+        currentLevel: 'case',
+        innerCaseIndex: 0,
+        itemIndex: 0,
+        currentSerial: '',
+        isComplete: false
+      });
+    } else if (clickedLevel.includes('Inner Case')) {
+      // Navigate to Inner Case level
+      setSerialCollectionStep({
+        ...step,
+        currentLevel: 'innerCase',
+        itemIndex: 0,
+        currentSerial: '',
+        isComplete: false
+      });
+    }
+  };
+
   const handleNextSerial = () => {
     if (!serialCollectionStep.currentSerial.trim()) {
       setError('Please enter a serial number');
