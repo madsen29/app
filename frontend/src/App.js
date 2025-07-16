@@ -467,13 +467,59 @@ function App() {
   // Hierarchical serial number functions
   const handleSerialInput = (value) => {
     // Check for duplicates
-    const currentPath = getCurrentPath();
-    const duplicates = validateDuplicateSerials(value, currentPath);
-    
-    if (duplicates) {
-      setError(`Duplicate serial number found! "${value}" is already used at: ${duplicates[0].path}`);
+    if (serialCollectionStep.currentLevel === 'item' && value.includes('\n')) {
+      // Multi-line item input - check each line
+      const serialLines = value.split('\n').filter(line => line.trim());
+      let hasError = false;
+      
+      for (let i = 0; i < serialLines.length; i++) {
+        const serial = serialLines[i].trim();
+        if (serial) {
+          // Create a temporary path for this specific item index
+          const tempItemIndex = serialCollectionStep.itemIndex + i;
+          let tempPath;
+          if (configuration.useInnerCases) {
+            tempPath = `item-${serialCollectionStep.ssccIndex}-${serialCollectionStep.caseIndex}-${serialCollectionStep.innerCaseIndex}-${tempItemIndex}`;
+          } else if (configuration.casesPerSscc > 0) {
+            tempPath = `item-${serialCollectionStep.ssccIndex}-${serialCollectionStep.caseIndex}-${tempItemIndex}`;
+          } else {
+            tempPath = `item-${serialCollectionStep.ssccIndex}-${tempItemIndex}`;
+          }
+          
+          const duplicates = validateDuplicateSerials(serial, tempPath);
+          if (duplicates) {
+            setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used at: ${duplicates[0].path}`);
+            hasError = true;
+            break;
+          }
+          
+          // Also check for duplicates within the current input
+          for (let j = 0; j < i; j++) {
+            const previousSerial = serialLines[j].trim();
+            if (previousSerial === serial) {
+              setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used on line ${j + 1} in this input.`);
+              hasError = true;
+              break;
+            }
+          }
+          
+          if (hasError) break;
+        }
+      }
+      
+      if (!hasError) {
+        setError('');
+      }
     } else {
-      setError('');
+      // Single line input - check for duplicates
+      const currentPath = getCurrentPath();
+      const duplicates = validateDuplicateSerials(value, currentPath);
+      
+      if (duplicates && value.trim()) {
+        setError(`Duplicate serial number found! "${value}" is already used at: ${duplicates[0].path}`);
+      } else {
+        setError('');
+      }
     }
     
     setSerialCollectionStep({
