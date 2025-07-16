@@ -522,7 +522,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
                 sgln_country_attr.text = country_code
     
     # Create EPCISBody
-    epcis_body = ET.SubElement(root, "EPCISBody")
+    epcis_body = ET.SubElement(epcis_document, "EPCISBody")
     event_list = ET.SubElement(epcis_body, "EventList")
     
     # Get additional configuration parameters
