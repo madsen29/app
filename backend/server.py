@@ -302,6 +302,13 @@ def add_ilmd_extension(event_element, lot_number, expiration_date):
 def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     """Generate GS1 EPCIS 1.2 XML with SBDH for pharmaceutical aggregation"""
     
+    # Debug: Print config keys to see what's actually available
+    print("DEBUG: Config keys:", list(config.keys()))
+    print("DEBUG: Sender GLN:", config.get("sender_gln", "NOT_FOUND"))
+    print("DEBUG: Receiver GLN:", config.get("receiver_gln", "NOT_FOUND"))
+    print("DEBUG: Shipper Company Prefix:", config.get("shipper_company_prefix", "NOT_FOUND"))
+    print("DEBUG: Sender Name:", config.get("sender_name", "NOT_FOUND"))
+    
     # Create root element with SBDH namespace
     root = ET.Element("StandardBusinessDocument")
     root.set("xmlns", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
