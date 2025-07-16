@@ -916,8 +916,8 @@ class BackendTester:
         # Test 5: EPCClass Vocabulary Order (CRITICAL ISSUE)
         epcclass_order_success = self.test_epcclass_vocabulary_order(config_id)
         
-        # Test 6: Hierarchical Data Integrity
-        data_integrity_success = self.test_hierarchical_data_integrity(config_id)
+        # Test 6: Multiple Hierarchy Configurations
+        self.test_multiple_hierarchy_configurations()
         
         # Test 7: Detailed EPCIS Generation Test (for 4-level hierarchy)
         self.test_epcis_generation_detailed(config_id)
