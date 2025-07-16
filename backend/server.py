@@ -164,6 +164,8 @@ class SerialNumbersCreate(BaseModel):
     item_serial_numbers: List[str] = Field(alias="itemSerialNumbers")
 
 class EPCISGenerationRequest(BaseModel):
+    model_config = {"populate_by_name": True}
+    
     configuration_id: str = Field(alias="configurationId")
     read_point: str = Field(default="urn:epc:id:sgln:1234567.00000.0", alias="readPoint")
     biz_location: str = Field(default="urn:epc:id:sgln:1234567.00001.0", alias="bizLocation")
