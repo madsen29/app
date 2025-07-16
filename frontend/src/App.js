@@ -2099,6 +2099,21 @@ function App() {
            (itemIndex === null || step.itemIndex === itemIndex);
   };
 
+  const isCurrentContainer = (level, ssccIndex, caseIndex = null, innerCaseIndex = null) => {
+    const step = serialCollectionStep;
+    // Check if this is the current container being filled
+    if (level === 'sscc' && step.ssccIndex === ssccIndex) {
+      return true;
+    }
+    if (level === 'case' && step.ssccIndex === ssccIndex && step.caseIndex === caseIndex) {
+      return true;
+    }
+    if (level === 'innerCase' && step.ssccIndex === ssccIndex && step.caseIndex === caseIndex && step.innerCaseIndex === innerCaseIndex) {
+      return true;
+    }
+    return false;
+  };
+
   const getCurrentItemCount = () => {
     if (configuration.useInnerCases) {
       return configuration.itemsPerInnerCase;
