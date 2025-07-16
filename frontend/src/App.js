@@ -512,15 +512,104 @@ function App() {
     const innerCaseIndex = pathParts[3] ? parseInt(pathParts[3]) : 0;
     const itemIndex = pathParts[4] ? parseInt(pathParts[4]) : (pathParts[3] ? parseInt(pathParts[3]) : 0);
     
-    setSerialCollectionStep({
-      ssccIndex,
-      caseIndex,
-      innerCaseIndex,
-      itemIndex,
-      currentLevel: level,
-      currentSerial: currentValue,
-      isComplete: false
+    // Generate context path and label
+    const ssccNum = ssccIndex + 1;
+    const caseNum = caseIndex + 1;
+    const innerCaseNum = innerCaseIndex + 1;
+    const itemNum = itemIndex + 1;
+    
+    let contextPath = '';
+    let label = '';
+    
+    switch (level) {
+      case 'sscc':
+        contextPath = `SSCC ${ssccNum}`;
+        label = 'SSCC Serial Number';
+        break;
+      case 'case':
+        contextPath = `SSCC ${ssccNum} → Case ${caseNum}`;
+        label = 'Case Serial Number';
+        break;
+      case 'innerCase':
+        contextPath = `SSCC ${ssccNum} → Case ${caseNum} → Inner Case ${innerCaseNum}`;
+        label = 'Inner Case Serial Number';
+        break;
+      case 'item':
+        if (configuration.useInnerCases) {
+          contextPath = `SSCC ${ssccNum} → Case ${caseNum} → Inner Case ${innerCaseNum} → Item ${itemNum}`;
+        } else if (configuration.casesPerSscc > 0) {
+          contextPath = `SSCC ${ssccNum} → Case ${caseNum} → Item ${itemNum}`;
+        } else {
+          contextPath = `SSCC ${ssccNum} → Item ${itemNum}`;
+        }
+        label = 'Item Serial Number';
+        break;
+    }
+    
+    setEditModal({
+      isOpen: true,
+      path: path,
+      currentValue: currentValue || '',
+      label: label,
+      contextPath: contextPath
     });
+  };
+
+  const handleSaveEditedSerial = () => {
+    if (!editModal.currentValue.trim()) {
+      setError('Please enter a serial number');
+      return;
+    }
+
+    // Check for duplicates
+    const duplicates = validateDuplicateSerials(editModal.currentValue, editModal.path);
+    
+    if (duplicates) {
+      setError(`Duplicate serial number found! "${editModal.currentValue}" is already used at: ${duplicates[0].path}`);
+      return;
+    }
+
+    // Save the edited serial
+    const pathParts = editModal.path.split('-');
+    const level = pathParts[0];
+    const ssccIndex = parseInt(pathParts[1]);
+    const caseIndex = pathParts[2] ? parseInt(pathParts[2]) : 0;
+    const innerCaseIndex = pathParts[3] ? parseInt(pathParts[3]) : 0;
+    const itemIndex = pathParts[4] ? parseInt(pathParts[4]) : (pathParts[3] ? parseInt(pathParts[3]) : 0);
+    
+    const updatedSerials = [...hierarchicalSerials];
+    const currentSSCC = updatedSerials[ssccIndex];
+    
+    switch (level) {
+      case 'sscc':
+        currentSSCC.ssccSerial = editModal.currentValue;
+        break;
+      case 'case':
+        currentSSCC.cases[caseIndex].caseSerial = editModal.currentValue;
+        break;
+      case 'innerCase':
+        currentSSCC.cases[caseIndex].innerCases[innerCaseIndex].innerCaseSerial = editModal.currentValue;
+        break;
+      case 'item':
+        if (configuration.useInnerCases) {
+          currentSSCC.cases[caseIndex].innerCases[innerCaseIndex].items[itemIndex].itemSerial = editModal.currentValue;
+        } else if (configuration.casesPerSscc > 0) {
+          currentSSCC.cases[caseIndex].items[itemIndex].itemSerial = editModal.currentValue;
+        } else {
+          currentSSCC.items[itemIndex].itemSerial = editModal.currentValue;
+        }
+        break;
+    }
+    
+    setHierarchicalSerials(updatedSerials);
+    setEditModal({ isOpen: false, path: '', currentValue: '', label: '', contextPath: '' });
+    setError('');
+    setSuccess('Serial number updated successfully!');
+  };
+
+  const handleCancelEdit = () => {
+    setEditModal({ isOpen: false, path: '', currentValue: '', label: '', contextPath: '' });
+    setError('');
   };
 
   const handleNextSerial = () => {
