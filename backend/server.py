@@ -156,9 +156,9 @@ class SerialNumbersCreate(BaseModel):
     item_serial_numbers: List[str] = Field(alias="itemSerialNumbers")
 
 class EPCISGenerationRequest(BaseModel):
-    configuration_id: str
-    read_point: str = "urn:epc:id:sgln:1234567.00000.0"
-    biz_location: str = "urn:epc:id:sgln:1234567.00001.0"
+    configuration_id: str = Field(alias="configurationId")
+    read_point: str = Field(default="urn:epc:id:sgln:1234567.00000.0", alias="readPoint")
+    biz_location: str = Field(default="urn:epc:id:sgln:1234567.00001.0", alias="bizLocation")
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
