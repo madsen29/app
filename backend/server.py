@@ -167,9 +167,9 @@ async def root():
 
 @api_router.post("/configuration", response_model=SerialConfiguration)
 async def create_configuration(input: SerialConfigurationCreate):
-    config_dict = input.dict()
+    config_dict = input.model_dump(by_alias=False)
     config_obj = SerialConfiguration(**config_dict)
-    await db.configurations.insert_one(config_obj.dict())
+    await db.configurations.insert_one(config_obj.model_dump(by_alias=False))
     return config_obj
 
 @api_router.get("/configuration", response_model=List[SerialConfiguration])
