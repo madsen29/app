@@ -432,26 +432,94 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     for role, prefix in [("sender", "sender"), ("receiver", "receiver"), ("shipper", "shipper")]:
         gln = config.get(f"{prefix}_gln", "")
         sgln = config.get(f"{prefix}_sgln", "")
+        name = config.get(f"{prefix}_name", "")
+        street_address = config.get(f"{prefix}_street_address", "")
+        city = config.get(f"{prefix}_city", "")
+        state = config.get(f"{prefix}_state", "")
+        postal_code = config.get(f"{prefix}_postal_code", "")
+        country_code = config.get(f"{prefix}_country_code", "")
         
         if gln:
             # Add GLN location element
             loc_element = ET.SubElement(location_vocabulary_element_list, "VocabularyElement")
             loc_element.set("id", f"urn:epc:id:sgln:{gln}")
             
-            # Add attributes for location
-            loc_attr = ET.SubElement(loc_element, "attribute")
-            loc_attr.set("id", "urn:epcglobal:cbv:mda#name")
-            loc_attr.text = role.capitalize()
+            # Add name attribute
+            if name:
+                name_attr = ET.SubElement(loc_element, "attribute")
+                name_attr.set("id", "urn:epcglobal:cbv:mda#name")
+                name_attr.text = name
+            
+            # Add street address attribute
+            if street_address:
+                street_attr = ET.SubElement(loc_element, "attribute")
+                street_attr.set("id", "urn:epcglobal:cbv:mda#streetAddressOne")
+                street_attr.text = street_address
+            
+            # Add city attribute
+            if city:
+                city_attr = ET.SubElement(loc_element, "attribute")
+                city_attr.set("id", "urn:epcglobal:cbv:mda#city")
+                city_attr.text = city
+            
+            # Add state attribute
+            if state:
+                state_attr = ET.SubElement(loc_element, "attribute")
+                state_attr.set("id", "urn:epcglobal:cbv:mda#state")
+                state_attr.text = state
+            
+            # Add postal code attribute
+            if postal_code:
+                postal_attr = ET.SubElement(loc_element, "attribute")
+                postal_attr.set("id", "urn:epcglobal:cbv:mda#postalCode")
+                postal_attr.text = postal_code
+            
+            # Add country code attribute
+            if country_code:
+                country_attr = ET.SubElement(loc_element, "attribute")
+                country_attr.set("id", "urn:epcglobal:cbv:mda#countryCode")
+                country_attr.text = country_code
             
         if sgln:
             # Add SGLN location element
             sgln_element = ET.SubElement(location_vocabulary_element_list, "VocabularyElement")
             sgln_element.set("id", f"urn:epc:id:sgln:{sgln}")
             
-            # Add attributes for serialized location
-            sgln_attr = ET.SubElement(sgln_element, "attribute")
-            sgln_attr.set("id", "urn:epcglobal:cbv:mda#name")
-            sgln_attr.text = f"{role.capitalize()} Location"
+            # Add name attribute for serialized location
+            if name:
+                sgln_name_attr = ET.SubElement(sgln_element, "attribute")
+                sgln_name_attr.set("id", "urn:epcglobal:cbv:mda#name")
+                sgln_name_attr.text = f"{name} - {role.capitalize()} Location"
+            
+            # Add street address attribute
+            if street_address:
+                sgln_street_attr = ET.SubElement(sgln_element, "attribute")
+                sgln_street_attr.set("id", "urn:epcglobal:cbv:mda#streetAddressOne")
+                sgln_street_attr.text = street_address
+            
+            # Add city attribute
+            if city:
+                sgln_city_attr = ET.SubElement(sgln_element, "attribute")
+                sgln_city_attr.set("id", "urn:epcglobal:cbv:mda#city")
+                sgln_city_attr.text = city
+            
+            # Add state attribute
+            if state:
+                sgln_state_attr = ET.SubElement(sgln_element, "attribute")
+                sgln_state_attr.set("id", "urn:epcglobal:cbv:mda#state")
+                sgln_state_attr.text = state
+            
+            # Add postal code attribute
+            if postal_code:
+                sgln_postal_attr = ET.SubElement(sgln_element, "attribute")
+                sgln_postal_attr.set("id", "urn:epcglobal:cbv:mda#postalCode")
+                sgln_postal_attr.text = postal_code
+            
+            # Add country code attribute
+            if country_code:
+                sgln_country_attr = ET.SubElement(sgln_element, "attribute")
+                sgln_country_attr.set("id", "urn:epcglobal:cbv:mda#countryCode")
+                sgln_country_attr.text = country_code
     
     # Create EPCISBody
     epcis_body = ET.SubElement(root, "EPCISBody")
