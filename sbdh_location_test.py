@@ -319,10 +319,10 @@ class SBDHLocationTester:
                         self.log_test("SBDH Header", False, f"Sender GLN should be '0345802000014', found '{sender_identifier.text}'")
                         return False
                     
-                    # Check Receiver
+                    # Check Receiver (handle namespace)
                     receiver = None
                     for child in sbdh_header:
-                        if child.tag == "Receiver":
+                        if child.tag.endswith("Receiver"):
                             receiver = child
                             break
                     
