@@ -20,7 +20,7 @@ import sys
 import os
 
 # Get backend URL from environment
-BACKEND_URL = "https://1379817a-9549-4f0e-8757-8e6eaf81b9ac.preview.emergentagent.com/api"
+BACKEND_URL = "https://443af6fc-0d8a-42dd-a86d-aab66f8c129f.preview.emergentagent.com/api"
 
 class BackendTester:
     def __init__(self):
