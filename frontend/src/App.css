@@ -176,10 +176,10 @@ body {
 }
 
 .packaging-config {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  /* background: white; */
+  /* padding: 1.5rem; */
+  /* border-radius: 8px; */
+  /* border: 1px solid #e2e8f0; */
 }
 
 .config-explanation {
@@ -350,7 +350,7 @@ body {
 }
 
 .scan-button {
-  background: #667eea;
+  background: #0055fb;
   color: white;
   border: none;
   border-radius: 6px;
@@ -366,7 +366,7 @@ body {
 }
 
 .scan-button:hover {
-  background: #5a67d8;
+  background: #3370eb;
 }
 
 .scan-button:active {
@@ -786,12 +786,13 @@ body {
   margin: 0;
   color: #2d3748;
   font-size: 1.1rem;
+  font-weight: 600;
   flex: 1;
 }
 
 .fda-ndc-badge {
-  background: #3182ce;
-  color: white;
+  background: rgba(0, 0, 0, 0.08);
+  color: #2d3748;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -1218,13 +1219,16 @@ body {
 }
 
 .context-current {
-  color: #495057;
+  color: #232527;
   font-weight: 700;
 }
 
 .context-separator {
   color: #6c757d;
   font-weight: normal;
+  font-size:2rem;
+  display: inline-block;
+  padding: 0 8px;
 }
 
 /* Current Container Highlighting */
@@ -1539,7 +1543,7 @@ body {
 }
 
 .progress-info {
-  background: #e9ecef;
+  background: #f2f4f5;
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -1557,11 +1561,16 @@ body {
   border-radius: 6px;
   border-left: 4px solid #dee2e6;
   transition: all 0.3s ease;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+.progress-stats .stat strong {
+  display: block;
+  width: 100%;
 }
 
 .progress-stats .stat.stat-current {
   border-left: 4px solid #0055fb;
-  background: rgba(0, 85, 251, 0.05);
+box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
 .progress-stats .stat strong {
@@ -1612,7 +1621,12 @@ body {
 .fda-search-group {
   grid-column: 1 / -1; /* Span full width */
 }
-
+.search-fda-wrapper {
+  padding: 16px 16px 8px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
 .fda-search-container {
   display: flex;
   gap: 0.75rem;
@@ -1646,7 +1660,7 @@ body {
   font-weight: 600;
   transition: background 0.2s;
   white-space: nowrap;
-  min-width: 180px;
+  /* min-width: 180px; */
 }
 
 .fda-search-button:hover:not(:disabled) {

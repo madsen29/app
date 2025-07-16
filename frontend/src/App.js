@@ -1664,7 +1664,7 @@ function App() {
         
         <div className="epcclass-section">
           <h3>Product Information (EPCClass)</h3>
-          <div className="form-grid">
+          <div className="form-grid search-fda-wrapper">
             <div className="form-group fda-search-group">
               <label htmlFor="productNdc">Search FDA by Product NDC:</label>
               <div className="fda-search-container">
@@ -1674,7 +1674,6 @@ function App() {
                   value={configuration.productNdc}
                   onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
                   placeholder="e.g., 45802-466"
-                  required
                 />
                 <button 
                   type="button" 
@@ -1682,7 +1681,7 @@ function App() {
                   onClick={handleFdaSearch}
                   disabled={fdaModal.isLoading}
                 >
-                  {fdaModal.isLoading ? 'Searching...' : 'Search FDA Database'}
+                  {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
                 </button>
               </div>
               <small className="form-hint">Enter 8-digit Product NDC to search FDA database for available package kinds</small>
@@ -1863,9 +1862,6 @@ function App() {
           
           {configuration.casesPerSscc === 0 ? (
             <div className="packaging-config">
-              <div className="config-explanation">
-                <p><strong>2-Level Hierarchy:</strong> SSCC → Items</p>
-              </div>
               <div className="form-group">
                 <label htmlFor="itemsPerCase">Items per SSCC:</label>
                 <input
@@ -1878,13 +1874,13 @@ function App() {
                   required
                 />
               </div>
+              <div className="config-explanation">
+                <p><strong>2-Level Hierarchy:</strong> SSCC → Items</p>
+              </div>
             </div>
           ) : configuration.useInnerCases ? (
             <div className="packaging-config">
-              <div className="config-explanation">
-                <p><strong>4-Level Hierarchy:</strong> SSCC → Cases → Inner Cases → Items</p>
-              </div>
-              <div className="form-grid">
+              <div className="grid grid-cols-2 gap-4 mb-0">
                 <div className="form-group">
                   <label htmlFor="innerCasesPerCase">Inner Cases per Case:</label>
                   <input
@@ -1910,12 +1906,13 @@ function App() {
                   />
                 </div>
               </div>
+              <div className="config-explanation">
+                <p><strong>4-Level Hierarchy:</strong> SSCC → Cases → Inner Cases → Items</p>
+              </div>
             </div>
           ) : (
             <div className="packaging-config">
-              <div className="config-explanation">
-                <p><strong>3-Level Hierarchy:</strong> SSCC → Cases → Items</p>
-              </div>
+              
               <div className="form-group">
                 <label htmlFor="itemsPerCase">Items per Case:</label>
                 <input
@@ -1927,6 +1924,9 @@ function App() {
                   onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
                   required
                 />
+              </div>
+              <div className="config-explanation">
+                <p><strong>3-Level Hierarchy:</strong> SSCC → Cases → Items</p>
               </div>
             </div>
           )}
@@ -2013,13 +2013,13 @@ function App() {
               <>
                 <div className="hierarchy-arrow">↓</div>
                 <div className="hierarchy-level">
-                  <strong>Cases:</strong> {calculateTotals().totalCases} total
+                  <strong>Cases:</strong> {calculateTotals().totalCases}
                 </div>
                 {configuration.useInnerCases && (
                   <>
                     <div className="hierarchy-arrow">↓</div>
                     <div className="hierarchy-level">
-                      <strong>Inner Cases:</strong> {calculateTotals().totalInnerCases} total
+                      <strong>Inner Cases:</strong> {calculateTotals().totalInnerCases}
                     </div>
                     <div className="hierarchy-arrow">↓</div>
                     <div className="hierarchy-level">
@@ -2630,15 +2630,6 @@ function App() {
                             <span className="ndc-value">{productOption.product_ndc}</span>
                           </div>
                         </div>
-                        
-                        <div className="fda-product-details">
-                          <p><strong>Manufacturer:</strong> {productOption.labeler_name}</p>
-                          <p><strong>Dosage Form:</strong> {productOption.dosage_form}</p>
-                          {productOption.active_ingredients && (
-                            <p><strong>Active Ingredients:</strong> {productOption.active_ingredients.map(ing => `${ing.name} ${ing.strength}`).join(', ')}</p>
-                          )}
-                        </div>
-                        
                         <div className="fda-packaging-info">
                           <div className="packaging-header">
                             <strong>Package NDC:</strong> {productOption.packageNdc}
@@ -2647,6 +2638,15 @@ function App() {
                             <strong>Package Description:</strong> {productOption.packageDescription}
                           </div>
                         </div>
+                        <div className="fda-product-details">
+                          <p><strong>Manufacturer:</strong> {productOption.labeler_name}</p>
+                          <p><strong>Dosage Form:</strong> {productOption.dosage_form}</p>
+                          {productOption.active_ingredients && (
+                            <p><strong>Active Ingredients:</strong> {productOption.active_ingredients.map(ing => `${ing.name} ${ing.strength}`).join(', ')}</p>
+                          )}
+                        </div>
+                        
+                        
                       </div>
                     ))}
                   </div>
