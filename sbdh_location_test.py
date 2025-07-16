@@ -646,7 +646,7 @@ class SBDHLocationTester:
                     
                     event_list = None
                     for child in epcis_body:
-                        if child.tag == "EventList":
+                        if child.tag.endswith("EventList"):
                             event_list = child
                             break
                     
