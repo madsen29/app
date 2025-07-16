@@ -28,6 +28,8 @@ api_router = APIRouter(prefix="/api")
 
 # Define Models
 class SerialConfiguration(BaseModel):
+    model_config = {"populate_by_name": True}
+    
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     items_per_case: int = Field(default=0, alias="itemsPerCase")  # Used when no inner cases
     cases_per_sscc: int = Field(alias="casesPerSscc")
