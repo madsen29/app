@@ -382,9 +382,9 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     inner_case_epcs = []
     item_epcs = []
     
-    # Generate SSCC EPCs
+    # Generate SSCC EPCs using shipper's company prefix
     for sscc_serial in sscc_serials:
-        sscc_epc = f"urn:epc:id:sscc:{company_prefix}.{sscc_indicator_digit}{sscc_serial}"
+        sscc_epc = f"urn:epc:id:sscc:{config['shipper_company_prefix']}.{sscc_indicator_digit}{sscc_serial}"
         sscc_epcs.append(sscc_epc)
     
     # Generate Case EPCs (only if cases exist)
