@@ -81,6 +81,18 @@ function App() {
     }
   }, [error, success]);
 
+  // Auto-update shipper fields when sender changes and checkbox is checked
+  useEffect(() => {
+    if (configuration.shipperSameAsSender) {
+      setConfiguration(prev => ({
+        ...prev,
+        shipperCompanyPrefix: prev.senderCompanyPrefix,
+        shipperGln: prev.senderGln,
+        shipperSgln: prev.senderSgln
+      }));
+    }
+  }, [configuration.senderCompanyPrefix, configuration.senderGln, configuration.senderSgln, configuration.shipperSameAsSender]);
+
   const dismissToast = () => {
     setIsToastExiting(true);
     setTimeout(() => {
