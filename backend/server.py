@@ -736,6 +736,45 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
             biz_location_id = ET.SubElement(biz_location_elem, "id")
             biz_location_id.text = biz_location
     
+    # 7. Shipping ObjectEvent (last event per GS1 Rx EPCIS guidelines)
+    shipping_event = ET.SubElement(event_list, "ObjectEvent")
+    
+    event_time = ET.SubElement(shipping_event, "eventTime")
+    event_time.text = datetime.now(timezone.utc).isoformat()
+    
+    event_timezone = ET.SubElement(shipping_event, "eventTimeZoneOffset")
+    event_timezone.text = "+00:00"
+    
+    # Add all SSCCs to the shipping event
+    epc_list = ET.SubElement(shipping_event, "epcList")
+    for sscc_epc in sscc_epcs:
+        epc = ET.SubElement(epc_list, "epc")
+        epc.text = sscc_epc
+    
+    action = ET.SubElement(shipping_event, "action")
+    action.text = "OBSERVE"
+    
+    biz_step = ET.SubElement(shipping_event, "bizStep")
+    biz_step.text = "urn:epcglobal:cbv:bizstep:shipping"
+    
+    disposition = ET.SubElement(shipping_event, "disposition")
+    disposition.text = "urn:epcglobal:cbv:disp:in_transit"
+    
+    read_point_elem = ET.SubElement(shipping_event, "readPoint")
+    read_point_id = ET.SubElement(read_point_elem, "id")
+    read_point_id.text = read_point
+    
+    biz_location_elem = ET.SubElement(shipping_event, "bizLocation")
+    biz_location_id = ET.SubElement(biz_location_elem, "id")
+    biz_location_id.text = biz_location
+    
+    # Add business transaction information if available
+    if config.get("shipper_sgln"):
+        biz_transaction_list = ET.SubElement(shipping_event, "bizTransactionList")
+        biz_transaction = ET.SubElement(biz_transaction_list, "bizTransaction")
+        biz_transaction.set("type", "urn:epcglobal:cbv:btt:po")
+        biz_transaction.text = f"urn:epc:id:sgln:{config['shipper_sgln']}"
+    
     # Convert to string
     ET.indent(root, space="  ")
     return ET.tostring(root, encoding="unicode", xml_declaration=True)
