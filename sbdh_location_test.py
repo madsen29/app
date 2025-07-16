@@ -454,10 +454,10 @@ class SBDHLocationTester:
                         self.log_test("Location Vocabulary", False, "Location vocabulary not found")
                         return False
                     
-                    # Find VocabularyElementList
+                    # Find VocabularyElementList (handle namespace)
                     vocabulary_element_list = None
                     for child in location_vocabulary:
-                        if child.tag == "VocabularyElementList":
+                        if child.tag.endswith("VocabularyElementList"):
                             vocabulary_element_list = child
                             break
                     
