@@ -330,10 +330,10 @@ class SBDHLocationTester:
                         self.log_test("SBDH Header", False, "Receiver element not found in SBDH header")
                         return False
                     
-                    # Check Receiver Identifier
+                    # Check Receiver Identifier (handle namespace)
                     receiver_identifier = None
                     for child in receiver:
-                        if child.tag == "Identifier":
+                        if child.tag.endswith("Identifier"):
                             receiver_identifier = child
                             break
                     
