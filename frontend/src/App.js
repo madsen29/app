@@ -1177,7 +1177,13 @@ function App() {
       if (parsedData.serialNumber) {
         // Handle different scanner target fields
         if (scannerModal.targetField === 'edit') {
-          // Set the scanned serial number in edit modal
+          // Set the scanned serial number in edit modal and validate
+          const duplicates = validateDuplicateSerials(parsedData.serialNumber, editModal.path);
+          if (duplicates) {
+            setError(`Duplicate serial number found! "${parsedData.serialNumber}" is already used at: ${duplicates[0].path}`);
+          } else {
+            setError('');
+          }
           setEditModal({
             ...editModal,
             currentValue: parsedData.serialNumber
