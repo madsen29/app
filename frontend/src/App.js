@@ -778,7 +778,7 @@ function App() {
     setError('');
   };
 
-  const calculateNextStep = () => {
+  const calculateNextStep = (itemsToSkip = 0) => {
     const current = serialCollectionStep;
     const totals = calculateTotals();
     
