@@ -380,10 +380,10 @@ class CriticalIssuesTester:
                         "http://www.w3.org/2001/XMLSchema-instance"
                     ]
                     
-                    root_attribs = root.attrib
+                    # Get the full XML content as string to check namespaces
                     namespace_check = True
                     for ns in expected_namespaces:
-                        if ns not in str(root_attribs):
+                        if ns not in xml_content:
                             namespace_check = False
                             break
                     
