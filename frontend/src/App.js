@@ -679,48 +679,101 @@ function App() {
       return;
     }
 
-    // Check for duplicates before saving
-    const currentPath = getCurrentPath();
-    const duplicates = validateDuplicateSerials(serialCollectionStep.currentSerial, currentPath);
-    
-    if (duplicates) {
-      setError(`Duplicate serial number found! "${serialCollectionStep.currentSerial}" is already used at: ${duplicates[0].path}`);
-      return;
-    }
-
-    // Save current serial and move to next
-    const updatedSerials = [...hierarchicalSerials];
-    const currentSSCC = updatedSerials[serialCollectionStep.ssccIndex];
-    
-    switch (serialCollectionStep.currentLevel) {
-      case 'sscc':
-        currentSSCC.ssccSerial = serialCollectionStep.currentSerial;
-        break;
-      case 'case':
-        currentSSCC.cases[serialCollectionStep.caseIndex].caseSerial = serialCollectionStep.currentSerial;
-        break;
-      case 'innerCase':
-        currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].innerCaseSerial = serialCollectionStep.currentSerial;
-        break;
-      case 'item':
-        if (configuration.useInnerCases) {
-          currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
-        } else if (configuration.casesPerSscc > 0) {
-          currentSSCC.cases[serialCollectionStep.caseIndex].items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
-        } else {
-          currentSSCC.items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+    // Handle multiple serials for items
+    if (serialCollectionStep.currentLevel === 'item') {
+      const serialLines = serialCollectionStep.currentSerial.split('\n').filter(line => line.trim());
+      
+      // Validate all serials for duplicates
+      for (let i = 0; i < serialLines.length; i++) {
+        const serial = serialLines[i].trim();
+        if (serial) {
+          const currentPath = getCurrentPath();
+          const duplicates = validateDuplicateSerials(serial, currentPath);
+          if (duplicates) {
+            setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used at: ${duplicates[0].path}`);
+            return;
+          }
         }
-        break;
+      }
+      
+      // Save multiple serials
+      const updatedSerials = [...hierarchicalSerials];
+      const currentSSCC = updatedSerials[serialCollectionStep.ssccIndex];
+      
+      for (let i = 0; i < serialLines.length; i++) {
+        const serial = serialLines[i].trim();
+        if (serial) {
+          const currentItemIndex = serialCollectionStep.itemIndex + i;
+          
+          // Check if we have enough item slots
+          let totalItemsInContainer;
+          if (configuration.useInnerCases) {
+            totalItemsInContainer = configuration.itemsPerInnerCase;
+          } else if (configuration.casesPerSscc > 0) {
+            totalItemsInContainer = configuration.itemsPerCase;
+          } else {
+            totalItemsInContainer = configuration.itemsPerCase;
+          }
+          
+          if (currentItemIndex >= totalItemsInContainer) {
+            setError(`Too many serial numbers entered. Maximum ${totalItemsInContainer} items allowed for this container.`);
+            return;
+          }
+          
+          // Save the serial
+          if (configuration.useInnerCases) {
+            currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[currentItemIndex].itemSerial = serial;
+          } else if (configuration.casesPerSscc > 0) {
+            currentSSCC.cases[serialCollectionStep.caseIndex].items[currentItemIndex].itemSerial = serial;
+          } else {
+            currentSSCC.items[currentItemIndex].itemSerial = serial;
+          }
+        }
+      }
+      
+      setHierarchicalSerials(updatedSerials);
+      
+      // Move to next step, accounting for multiple serials added
+      const nextStep = calculateNextStep(serialLines.length - 1);
+      setSerialCollectionStep({
+        ...nextStep,
+        currentSerial: ''
+      });
+    } else {
+      // Single serial handling for non-item levels
+      const currentPath = getCurrentPath();
+      const duplicates = validateDuplicateSerials(serialCollectionStep.currentSerial, currentPath);
+      
+      if (duplicates) {
+        setError(`Duplicate serial number found! "${serialCollectionStep.currentSerial}" is already used at: ${duplicates[0].path}`);
+        return;
+      }
+
+      // Save current serial and move to next
+      const updatedSerials = [...hierarchicalSerials];
+      const currentSSCC = updatedSerials[serialCollectionStep.ssccIndex];
+      
+      switch (serialCollectionStep.currentLevel) {
+        case 'sscc':
+          currentSSCC.ssccSerial = serialCollectionStep.currentSerial;
+          break;
+        case 'case':
+          currentSSCC.cases[serialCollectionStep.caseIndex].caseSerial = serialCollectionStep.currentSerial;
+          break;
+        case 'innerCase':
+          currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].innerCaseSerial = serialCollectionStep.currentSerial;
+          break;
+      }
+      
+      setHierarchicalSerials(updatedSerials);
+      
+      // Calculate next step
+      const nextStep = calculateNextStep();
+      setSerialCollectionStep({
+        ...nextStep,
+        currentSerial: ''
+      });
     }
-    
-    setHierarchicalSerials(updatedSerials);
-    
-    // Calculate next step
-    const nextStep = calculateNextStep();
-    setSerialCollectionStep({
-      ...nextStep,
-      currentSerial: ''
-    });
     
     setError('');
   };
