@@ -234,9 +234,9 @@ async def create_serial_numbers(input: SerialNumbersCreate):
             detail=f"Expected {total_items} item serial numbers, got {len(input.item_serial_numbers)}"
         )
     
-    serial_dict = input.dict()
+    serial_dict = input.model_dump(by_alias=False)
     serial_obj = SerialNumbers(**serial_dict)
-    await db.serial_numbers.insert_one(serial_obj.dict())
+    await db.serial_numbers.insert_one(serial_obj.model_dump(by_alias=False))
     return serial_obj
 
 @api_router.get("/serial-numbers/{configuration_id}", response_model=SerialNumbers)
