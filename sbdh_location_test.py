@@ -519,14 +519,14 @@ class SBDHLocationTester:
                     
                     found_locations = {}
                     
-                    # Parse all VocabularyElement entries
+                    # Parse all VocabularyElement entries (handle namespace)
                     for vocab_element in vocabulary_element_list:
-                        if vocab_element.tag == "VocabularyElement":
+                        if vocab_element.tag.endswith("VocabularyElement"):
                             element_id = vocab_element.get("id")
                             if element_id and element_id.startswith("urn:epc:id:sgln:"):
                                 attributes = {}
                                 for attr in vocab_element:
-                                    if attr.tag == "attribute":
+                                    if attr.tag.endswith("attribute"):
                                         attr_id = attr.get("id")
                                         attr_text = attr.text
                                         if attr_id == "urn:epcglobal:cbv:mda#name":
