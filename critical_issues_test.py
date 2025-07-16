@@ -160,11 +160,11 @@ class CriticalIssuesTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if (len(data["sscc_serial_numbers"]) == 1 and 
-                    len(data["case_serial_numbers"]) == 1 and
-                    len(data["item_serial_numbers"]) == 2):
+                if (len(data["ssccSerialNumbers"]) == 1 and 
+                    len(data["caseSerialNumbers"]) == 1 and
+                    len(data["itemSerialNumbers"]) == 2):
                     self.log_test("Review Request Serial Numbers", True, "Serial numbers saved correctly",
-                                f"SSCC: {data['sscc_serial_numbers']}, Case: {data['case_serial_numbers']}, Items: {data['item_serial_numbers']}")
+                                f"SSCC: {data['ssccSerialNumbers']}, Case: {data['caseSerialNumbers']}, Items: {data['itemSerialNumbers']}")
                     return data["id"]
                 else:
                     self.log_test("Review Request Serial Numbers", False, f"Serial count mismatch")
