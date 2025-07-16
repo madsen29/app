@@ -1673,6 +1673,147 @@ function App() {
       <h2 className="step-title">Step 1: Configuration</h2>
       <form onSubmit={handleConfigurationSubmit}>
         
+        <div className="business-document-section">
+          <h3>Business Document Information</h3>
+          <div className="business-entities-grid">
+            
+            {/* Sender Information */}
+            <div className="business-entity-group">
+              <h4>Sender Information</h4>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label htmlFor="senderCompanyPrefix">GS1 Company Prefix:</label>
+                  <input
+                    type="text"
+                    id="senderCompanyPrefix"
+                    value={configuration.senderCompanyPrefix}
+                    onChange={(e) => setConfiguration({...configuration, senderCompanyPrefix: e.target.value})}
+                    placeholder="e.g., 0345802"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="senderGln">GLN (Global Location Number):</label>
+                  <input
+                    type="text"
+                    id="senderGln"
+                    value={configuration.senderGln}
+                    onChange={(e) => setConfiguration({...configuration, senderGln: e.target.value})}
+                    placeholder="e.g., 0345802000014"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="senderSgln">SGLN (Serialized GLN):</label>
+                  <input
+                    type="text"
+                    id="senderSgln"
+                    value={configuration.senderSgln}
+                    onChange={(e) => setConfiguration({...configuration, senderSgln: e.target.value})}
+                    placeholder="e.g., 0345802000014.001"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Receiver Information */}
+            <div className="business-entity-group">
+              <h4>Receiver Information</h4>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label htmlFor="receiverCompanyPrefix">GS1 Company Prefix:</label>
+                  <input
+                    type="text"
+                    id="receiverCompanyPrefix"
+                    value={configuration.receiverCompanyPrefix}
+                    onChange={(e) => setConfiguration({...configuration, receiverCompanyPrefix: e.target.value})}
+                    placeholder="e.g., 0345802"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="receiverGln">GLN (Global Location Number):</label>
+                  <input
+                    type="text"
+                    id="receiverGln"
+                    value={configuration.receiverGln}
+                    onChange={(e) => setConfiguration({...configuration, receiverGln: e.target.value})}
+                    placeholder="e.g., 0345802000021"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="receiverSgln">SGLN (Serialized GLN):</label>
+                  <input
+                    type="text"
+                    id="receiverSgln"
+                    value={configuration.receiverSgln}
+                    onChange={(e) => setConfiguration({...configuration, receiverSgln: e.target.value})}
+                    placeholder="e.g., 0345802000021.001"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Shipper Information */}
+            <div className="business-entity-group">
+              <h4>Shipper Information</h4>
+              <div className="form-group shipper-same-checkbox">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={configuration.shipperSameAsSender}
+                    onChange={(e) => {
+                      const isSame = e.target.checked;
+                      setConfiguration({
+                        ...configuration,
+                        shipperSameAsSender: isSame,
+                        shipperCompanyPrefix: isSame ? configuration.senderCompanyPrefix : configuration.shipperCompanyPrefix,
+                        shipperGln: isSame ? configuration.senderGln : configuration.shipperGln,
+                        shipperSgln: isSame ? configuration.senderSgln : configuration.shipperSgln
+                      });
+                    }}
+                  />
+                  <span className="checkbox-custom"></span>
+                  Shipper is same as Sender
+                </label>
+              </div>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label htmlFor="shipperCompanyPrefix">GS1 Company Prefix:</label>
+                  <input
+                    type="text"
+                    id="shipperCompanyPrefix"
+                    value={configuration.shipperCompanyPrefix}
+                    onChange={(e) => setConfiguration({...configuration, shipperCompanyPrefix: e.target.value})}
+                    placeholder="e.g., 0345802"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="shipperGln">GLN (Global Location Number):</label>
+                  <input
+                    type="text"
+                    id="shipperGln"
+                    value={configuration.shipperGln}
+                    onChange={(e) => setConfiguration({...configuration, shipperGln: e.target.value})}
+                    placeholder="e.g., 0345802000014"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="shipperSgln">SGLN (Serialized GLN):</label>
+                  <input
+                    type="text"
+                    id="shipperSgln"
+                    value={configuration.shipperSgln}
+                    onChange={(e) => setConfiguration({...configuration, shipperSgln: e.target.value})}
+                    placeholder="e.g., 0345802000014.001"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
         <div className="epcclass-section">
           <h3>Product Information (EPCClass)</h3>
           <div className="form-grid search-fda-wrapper">
