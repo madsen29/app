@@ -288,10 +288,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Serial number input UI"
     - "EPCIS generation and download UI"
   stuck_tasks:
-    []
+    - "EPCIS generation and download UI"
   test_all: false
   test_priority: "high_first"
 
