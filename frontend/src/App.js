@@ -385,6 +385,83 @@ function App() {
     return value;
   };
 
+  // Duplicate validation function
+  const validateDuplicateSerials = (newSerial, currentPath) => {
+    const allSerials = [];
+    
+    // Collect all existing serials
+    hierarchicalSerials.forEach((ssccData, ssccIndex) => {
+      if (ssccData.ssccSerial) {
+        allSerials.push({
+          serial: ssccData.ssccSerial,
+          path: `SSCC ${ssccIndex + 1}`,
+          isCurrentPath: currentPath === `sscc-${ssccIndex}`
+        });
+      }
+      
+      if (ssccData.cases) {
+        ssccData.cases.forEach((caseData, caseIndex) => {
+          if (caseData.caseSerial) {
+            allSerials.push({
+              serial: caseData.caseSerial,
+              path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1}`,
+              isCurrentPath: currentPath === `case-${ssccIndex}-${caseIndex}`
+            });
+          }
+          
+          if (caseData.innerCases) {
+            caseData.innerCases.forEach((innerCaseData, innerCaseIndex) => {
+              if (innerCaseData.innerCaseSerial) {
+                allSerials.push({
+                  serial: innerCaseData.innerCaseSerial,
+                  path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Inner Case ${innerCaseIndex + 1}`,
+                  isCurrentPath: currentPath === `innerCase-${ssccIndex}-${caseIndex}-${innerCaseIndex}`
+                });
+              }
+              
+              innerCaseData.items.forEach((itemData, itemIndex) => {
+                if (itemData.itemSerial) {
+                  allSerials.push({
+                    serial: itemData.itemSerial,
+                    path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Inner Case ${innerCaseIndex + 1} → Item ${itemIndex + 1}`,
+                    isCurrentPath: currentPath === `item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`
+                  });
+                }
+              });
+            });
+          } else {
+            caseData.items.forEach((itemData, itemIndex) => {
+              if (itemData.itemSerial) {
+                allSerials.push({
+                  serial: itemData.itemSerial,
+                  path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Item ${itemIndex + 1}`,
+                  isCurrentPath: currentPath === `item-${ssccIndex}-${caseIndex}-${itemIndex}`
+                });
+              }
+            });
+          }
+        });
+      } else if (ssccData.items) {
+        ssccData.items.forEach((itemData, itemIndex) => {
+          if (itemData.itemSerial) {
+            allSerials.push({
+              serial: itemData.itemSerial,
+              path: `SSCC ${ssccIndex + 1} → Item ${itemIndex + 1}`,
+              isCurrentPath: currentPath === `item-${ssccIndex}-${itemIndex}`
+            });
+          }
+        });
+      }
+    });
+    
+    // Check for duplicates
+    const duplicates = allSerials.filter(item => 
+      item.serial === newSerial && !item.isCurrentPath
+    );
+    
+    return duplicates.length > 0 ? duplicates : null;
+  };
+
   // Hierarchical serial number functions
   const handleSerialInput = (value) => {
     setSerialCollectionStep({
