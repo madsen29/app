@@ -689,10 +689,10 @@ class SBDHLocationTester:
                         self.log_test("Existing Features Regression", False, "SSCC with shipper's company prefix not found")
                         return False
                     
-                    # Check EPCClass vocabulary is present
+                    # Check EPCClass vocabulary is present (handle namespace)
                     epcclass_found = False
                     for elem in root.iter():
-                        if elem.tag == "Vocabulary" and elem.get("type") == "urn:epcglobal:epcis:vtype:EPCClass":
+                        if elem.tag.endswith("Vocabulary") and elem.get("type") == "urn:epcglobal:epcis:vtype:EPCClass":
                             epcclass_found = True
                             break
                     
