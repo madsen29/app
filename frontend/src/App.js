@@ -463,16 +463,77 @@ function App() {
   };
 
   // Hierarchical serial number functions
+  // Hierarchical serial number functions
   const handleSerialInput = (value) => {
+    // Check for duplicates
+    const currentPath = getCurrentPath();
+    const duplicates = validateDuplicateSerials(value, currentPath);
+    
+    if (duplicates) {
+      setError(`Duplicate serial number found! "${value}" is already used at: ${duplicates[0].path}`);
+    } else {
+      setError('');
+    }
+    
     setSerialCollectionStep({
       ...serialCollectionStep,
       currentSerial: value
     });
   };
 
+  const getCurrentPath = () => {
+    const step = serialCollectionStep;
+    switch (step.currentLevel) {
+      case 'sscc':
+        return `sscc-${step.ssccIndex}`;
+      case 'case':
+        return `case-${step.ssccIndex}-${step.caseIndex}`;
+      case 'innerCase':
+        return `innerCase-${step.ssccIndex}-${step.caseIndex}-${step.innerCaseIndex}`;
+      case 'item':
+        if (configuration.useInnerCases) {
+          return `item-${step.ssccIndex}-${step.caseIndex}-${step.innerCaseIndex}-${step.itemIndex}`;
+        } else if (configuration.casesPerSscc > 0) {
+          return `item-${step.ssccIndex}-${step.caseIndex}-${step.itemIndex}`;
+        } else {
+          return `item-${step.ssccIndex}-${step.itemIndex}`;
+        }
+      default:
+        return '';
+    }
+  };
+
+  const handleEditSerial = (path, currentValue) => {
+    const pathParts = path.split('-');
+    const level = pathParts[0];
+    const ssccIndex = parseInt(pathParts[1]);
+    const caseIndex = pathParts[2] ? parseInt(pathParts[2]) : 0;
+    const innerCaseIndex = pathParts[3] ? parseInt(pathParts[3]) : 0;
+    const itemIndex = pathParts[4] ? parseInt(pathParts[4]) : (pathParts[3] ? parseInt(pathParts[3]) : 0);
+    
+    setSerialCollectionStep({
+      ssccIndex,
+      caseIndex,
+      innerCaseIndex,
+      itemIndex,
+      currentLevel: level,
+      currentSerial: currentValue,
+      isComplete: false
+    });
+  };
+
   const handleNextSerial = () => {
     if (!serialCollectionStep.currentSerial.trim()) {
       setError('Please enter a serial number');
+      return;
+    }
+
+    // Check for duplicates before saving
+    const currentPath = getCurrentPath();
+    const duplicates = validateDuplicateSerials(serialCollectionStep.currentSerial, currentPath);
+    
+    if (duplicates) {
+      setError(`Duplicate serial number found! "${serialCollectionStep.currentSerial}" is already used at: ${duplicates[0].path}`);
       return;
     }
 
@@ -509,6 +570,8 @@ function App() {
       ...nextStep,
       currentSerial: ''
     });
+    
+    setError('');
   };
 
   const calculateNextStep = () => {
