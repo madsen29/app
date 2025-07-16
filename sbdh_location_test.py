@@ -349,10 +349,10 @@ class SBDHLocationTester:
                         self.log_test("SBDH Header", False, f"Receiver GLN should be '0567890000021', found '{receiver_identifier.text}'")
                         return False
                     
-                    # Check Document Identification
+                    # Check Document Identification (handle namespace)
                     doc_identification = None
                     for child in sbdh_header:
-                        if child.tag == "DocumentIdentification":
+                        if child.tag.endswith("DocumentIdentification"):
                             doc_identification = child
                             break
                     
