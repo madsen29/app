@@ -443,10 +443,10 @@ class SBDHLocationTester:
                         self.log_test("Location Vocabulary", False, "VocabularyList not found")
                         return False
                     
-                    # Find Location vocabulary
+                    # Find Location vocabulary (handle namespace)
                     location_vocabulary = None
                     for child in vocabulary_list:
-                        if child.tag == "Vocabulary" and child.get("type") == "urn:epcglobal:epcis:vtype:Location":
+                        if child.tag.endswith("Vocabulary") and child.get("type") == "urn:epcglobal:epcis:vtype:Location":
                             location_vocabulary = child
                             break
                     
