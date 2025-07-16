@@ -2074,19 +2074,20 @@ function App() {
           label: 'Inner Case Serial Number'
         };
       case 'item':
+        const totalItems = getCurrentItemCount();
         if (configuration.useInnerCases) {
           return {
-            path: `SSCC ${ssccNum} → Case ${caseNum} → Inner Case ${innerCaseNum} → Item ${itemNum}`,
+            path: `SSCC ${ssccNum} → Case ${caseNum} → Inner Case ${innerCaseNum} → Item ${itemNum} of ${totalItems}`,
             label: 'Item Serial Number'
           };
         } else if (configuration.casesPerSscc > 0) {
           return {
-            path: `SSCC ${ssccNum} → Case ${caseNum} → Item ${itemNum}`,
+            path: `SSCC ${ssccNum} → Case ${caseNum} → Item ${itemNum} of ${totalItems}`,
             label: 'Item Serial Number'
           };
         } else {
           return {
-            path: `SSCC ${ssccNum} → Item ${itemNum}`,
+            path: `SSCC ${ssccNum} → Item ${itemNum} of ${totalItems}`,
             label: 'Item Serial Number'
           };
         }
