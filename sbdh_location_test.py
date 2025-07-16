@@ -700,16 +700,16 @@ class SBDHLocationTester:
                         self.log_test("Existing Features Regression", False, "EPCClass vocabulary not found")
                         return False
                     
-                    # Check shipping event is last
+                    # Check shipping event is last (handle namespace)
                     last_event = None
                     for child in event_list:
                         last_event = child
                     
-                    if last_event is not None and last_event.tag == "ObjectEvent":
+                    if last_event is not None and last_event.tag.endswith("ObjectEvent"):
                         # Check if it's a shipping event
                         shipping_event = False
                         for child in last_event:
-                            if child.tag == "bizStep" and "shipping" in child.text:
+                            if child.tag.endswith("bizStep") and "shipping" in child.text:
                                 shipping_event = True
                                 break
                         
