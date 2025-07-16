@@ -54,6 +54,7 @@ function App() {
   const [isToastExiting, setIsToastExiting] = useState(false);
   const [scannerModal, setScannerModal] = useState({ isOpen: false, targetField: '', targetSetter: null });
   const [fdaModal, setFdaModal] = useState({ isOpen: false, searchResults: [], isLoading: false });
+  const [editModal, setEditModal] = useState({ isOpen: false, path: '', currentValue: '', label: '', contextPath: '' });
   const videoRef = useRef(null);
   const codeReader = useRef(null);
   const [isScanning, setIsScanning] = useState(false);
