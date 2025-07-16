@@ -278,10 +278,10 @@ class SBDHLocationTester:
                         self.log_test("SBDH Header", False, "StandardBusinessDocumentHeader not found")
                         return False
                     
-                    # Check HeaderVersion
+                    # Check HeaderVersion (handle namespace)
                     header_version = None
                     for child in sbdh_header:
-                        if child.tag == "HeaderVersion":
+                        if child.tag.endswith("HeaderVersion"):
                             header_version = child
                             break
                     
