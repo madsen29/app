@@ -189,8 +189,8 @@ class SBDHLocationTester:
                 try:
                     root = ET.fromstring(xml_content)
                     
-                    # Check root element is StandardBusinessDocument
-                    if root.tag != "StandardBusinessDocument":
+                    # Check root element is StandardBusinessDocument (handle namespace)
+                    if not root.tag.endswith("StandardBusinessDocument"):
                         self.log_test("SBDH Structure", False, f"Root element should be 'StandardBusinessDocument', found '{root.tag}'")
                         return False
                     
