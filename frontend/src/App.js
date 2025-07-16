@@ -1800,6 +1800,14 @@ function App() {
             </div>
           </div>
           
+          {/* Visual Tree Component */}
+          <div className="serial-tree-container">
+            <h3>Serial Number Overview</h3>
+            <div className="serial-tree">
+              {renderSerialTree()}
+            </div>
+          </div>
+          
           <div className="button-group">
             <button 
               type="button" 
