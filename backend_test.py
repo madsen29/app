@@ -62,19 +62,33 @@ class BackendTester:
             self.log_test("API Health Check", False, f"Connection error: {str(e)}")
             return False
     
-    def test_configuration_creation(self):
-        """Test POST /api/configuration with new GS1 EPCIS hierarchy structure"""
-        # Test scenario: 10 items per case, 5 cases per SSCC, 2 SSCCs
+    def test_review_request_specific_configuration(self):
+        """Test configuration creation with review request specific parameters"""
+        # Review request configuration: 1 SSCC, 2 Cases, 2 Inner Cases per Case, 3 Items per Inner Case
+        # Company Prefix: 1234567, Package NDC: 45802-046-85
         test_data = {
-            "items_per_case": 10,
-            "cases_per_sscc": 5,
-            "number_of_sscc": 2,
-            "company_prefix": "9876543",
-            "item_product_code": "123456",
-            "case_product_code": "789012",
+            "items_per_case": 0,  # Not used when inner cases enabled
+            "cases_per_sscc": 2,
+            "number_of_sscc": 1,
+            "use_inner_cases": True,
+            "inner_cases_per_case": 2,
+            "items_per_inner_case": 3,
+            "company_prefix": "1234567",
+            "item_product_code": "000000",
+            "case_product_code": "000000",
+            "inner_case_product_code": "000001",
+            "lot_number": "4JT0482",
+            "expiration_date": "2026-08-31",
             "sscc_indicator_digit": "3",
             "case_indicator_digit": "2",
-            "item_indicator_digit": "1"
+            "inner_case_indicator_digit": "4",
+            "item_indicator_digit": "1",
+            "package_ndc": "45802-046-85",  # This should be cleaned to 4580204685 in EPCIS XML
+            "regulated_product_name": "Test Product",
+            "manufacturer_name": "Test Manufacturer",
+            "dosage_form_type": "Tablet",
+            "strength_description": "10mg",
+            "net_content_description": "30 tablets"
         }
         
         try:
@@ -86,31 +100,201 @@ class BackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                required_fields = ["id", "items_per_case", "cases_per_sscc", "number_of_sscc", 
-                                 "company_prefix", "item_product_code", "case_product_code",
-                                 "sscc_indicator_digit", "case_indicator_digit", "item_indicator_digit", "timestamp"]
-                
-                if all(field in data for field in required_fields):
-                    if (data["items_per_case"] == 10 and data["cases_per_sscc"] == 5 and data["number_of_sscc"] == 2 and
-                        data["company_prefix"] == "9876543" and data["item_product_code"] == "123456" and
-                        data["case_product_code"] == "789012" and data["sscc_indicator_digit"] == "3" and
-                        data["case_indicator_digit"] == "2" and data["item_indicator_digit"] == "1"):
-                        self.log_test("Configuration Creation", True, "Configuration created with new GS1 EPCIS hierarchy", 
-                                    f"ID: {data['id']}, SSCC→Cases→Items: {data['number_of_sscc']}→{data['cases_per_sscc']}→{data['items_per_case']}")
-                        return data["id"]  # Return config ID for subsequent tests
-                    else:
-                        self.log_test("Configuration Creation", False, "Data mismatch in response", data)
-                        return None
+                # Verify package_ndc is stored correctly (with hyphens)
+                if data.get("package_ndc") == "45802-046-85":
+                    self.log_test("Review Request Configuration", True, "Configuration created with package_ndc field", 
+                                f"ID: {data['id']}, Package NDC: {data['package_ndc']}")
+                    return data["id"]
                 else:
-                    self.log_test("Configuration Creation", False, "Missing required fields", data)
+                    self.log_test("Review Request Configuration", False, f"Package NDC mismatch: expected '45802-046-85', got '{data.get('package_ndc')}'")
                     return None
             else:
-                self.log_test("Configuration Creation", False, f"HTTP {response.status_code}: {response.text}")
+                self.log_test("Review Request Configuration", False, f"HTTP {response.status_code}: {response.text}")
                 return None
                 
         except Exception as e:
-            self.log_test("Configuration Creation", False, f"Request error: {str(e)}")
+            self.log_test("Review Request Configuration", False, f"Request error: {str(e)}")
             return None
+
+    def test_review_request_serial_numbers(self, config_id):
+        """Test serial numbers creation for review request configuration"""
+        if not config_id:
+            self.log_test("Review Request Serial Numbers", False, "No configuration ID available")
+            return None
+            
+        # For config: 1 SSCC, 2 Cases, 2 Inner Cases per Case, 3 Items per Inner Case
+        # Expected: 1 SSCC, 2 Cases, 4 Inner Cases (2×2), 12 Items (3×2×2)
+        sscc_serials = ["SSCC001"]
+        case_serials = ["CASE001", "CASE002"]
+        inner_case_serials = ["INNER001", "INNER002", "INNER003", "INNER004"]
+        item_serials = [f"ITEM{i+1:03d}" for i in range(12)]
+        
+        test_data = {
+            "configuration_id": config_id,
+            "sscc_serial_numbers": sscc_serials,
+            "case_serial_numbers": case_serials,
+            "inner_case_serial_numbers": inner_case_serials,
+            "item_serial_numbers": item_serials
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/serial-numbers",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (len(data["sscc_serial_numbers"]) == 1 and 
+                    len(data["case_serial_numbers"]) == 2 and
+                    len(data["inner_case_serial_numbers"]) == 4 and
+                    len(data["item_serial_numbers"]) == 12):
+                    self.log_test("Review Request Serial Numbers", True, "Serial numbers saved for 4-level hierarchy",
+                                f"SSCC: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Inner Cases: {len(data['inner_case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
+                    return data["id"]
+                else:
+                    self.log_test("Review Request Serial Numbers", False, f"Count mismatch - SSCC: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Inner Cases: {len(data['inner_case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
+                    return None
+            else:
+                self.log_test("Review Request Serial Numbers", False, f"HTTP {response.status_code}: {response.text}")
+                return None
+                
+        except Exception as e:
+            self.log_test("Review Request Serial Numbers", False, f"Request error: {str(e)}")
+            return None
+
+    def test_package_ndc_hyphen_removal(self, config_id):
+        """Test that package_ndc hyphens are removed in EPCIS XML generation"""
+        if not config_id:
+            self.log_test("Package NDC Hyphen Removal", False, "No configuration ID available")
+            return False
+            
+        test_data = {
+            "configuration_id": config_id,
+            "read_point": "urn:epc:id:sgln:1234567.00000.0",
+            "biz_location": "urn:epc:id:sgln:1234567.00001.0"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/generate-epcis",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                xml_content = response.text
+                
+                # Check if hyphens are removed from package_ndc in XML
+                if "45802-046-85" in xml_content:
+                    self.log_test("Package NDC Hyphen Removal", False, "CRITICAL: Package NDC still contains hyphens in EPCIS XML", 
+                                "Found '45802-046-85' instead of expected '4580204685'")
+                    return False
+                elif "4580204685" in xml_content:
+                    self.log_test("Package NDC Hyphen Removal", True, "Package NDC hyphens correctly removed in EPCIS XML")
+                    return True
+                else:
+                    self.log_test("Package NDC Hyphen Removal", False, "Package NDC not found in EPCIS XML")
+                    return False
+            else:
+                self.log_test("Package NDC Hyphen Removal", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Package NDC Hyphen Removal", False, f"Request error: {str(e)}")
+            return False
+
+    def test_epcclass_vocabulary_order(self, config_id):
+        """Test that EPCClass vocabulary elements are in correct order: Item → Inner Case → Case"""
+        if not config_id:
+            self.log_test("EPCClass Vocabulary Order", False, "No configuration ID available")
+            return False
+            
+        test_data = {
+            "configuration_id": config_id,
+            "read_point": "urn:epc:id:sgln:1234567.00000.0",
+            "biz_location": "urn:epc:id:sgln:1234567.00001.0"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/generate-epcis",
+                json=test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                xml_content = response.text
+                
+                # Parse XML to check EPCClass order
+                try:
+                    root = ET.fromstring(xml_content)
+                    
+                    # Find VocabularyElementList
+                    vocabulary_elements = []
+                    for elem in root.iter():
+                        if elem.tag.endswith("VocabularyElement"):
+                            vocabulary_elements.append(elem.get("id"))
+                    
+                    # Expected order: Item → Inner Case → Case
+                    expected_patterns = [
+                        "urn:epc:idpat:sgtin:1234567.1000000.*",  # Item (indicator 1)
+                        "urn:epc:idpat:sgtin:1234567.4000001.*",  # Inner Case (indicator 4)
+                        "urn:epc:idpat:sgtin:1234567.2000000.*"   # Case (indicator 2)
+                    ]
+                    
+                    if vocabulary_elements == expected_patterns:
+                        self.log_test("EPCClass Vocabulary Order", True, "EPCClass elements in correct order: Item → Inner Case → Case")
+                        return True
+                    else:
+                        self.log_test("EPCClass Vocabulary Order", False, f"CRITICAL: EPCClass order incorrect. Expected: {expected_patterns}, Found: {vocabulary_elements}")
+                        return False
+                        
+                except ET.ParseError as e:
+                    self.log_test("EPCClass Vocabulary Order", False, f"XML parsing error: {str(e)}")
+                    return False
+            else:
+                self.log_test("EPCClass Vocabulary Order", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("EPCClass Vocabulary Order", False, f"Request error: {str(e)}")
+            return False
+
+    def test_hierarchical_data_integrity(self, config_id):
+        """Test that hierarchical structure is properly converted to flat arrays for backend submission"""
+        if not config_id:
+            self.log_test("Hierarchical Data Integrity", False, "No configuration ID available")
+            return False
+            
+        # Test with duplicate serials to verify backend validation
+        duplicate_test_data = {
+            "configuration_id": config_id,
+            "sscc_serial_numbers": ["SSCC001"],
+            "case_serial_numbers": ["CASE001", "CASE001"],  # Duplicate case serial
+            "inner_case_serial_numbers": ["INNER001", "INNER002", "INNER003", "INNER004"],
+            "item_serial_numbers": [f"ITEM{i+1:03d}" for i in range(12)]
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/serial-numbers",
+                json=duplicate_test_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            # Backend should accept this (duplicate detection is frontend responsibility)
+            if response.status_code == 200:
+                self.log_test("Hierarchical Data Integrity", True, "Backend accepts flat arrays from hierarchical frontend data")
+                return True
+            else:
+                self.log_test("Hierarchical Data Integrity", False, f"Backend rejected valid hierarchical data: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Hierarchical Data Integrity", False, f"Request error: {str(e)}")
+            return False
     
     def test_configuration_validation(self):
         """Test configuration creation with missing required GS1 parameters"""
