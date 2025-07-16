@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for EPCIS Serial Number Aggregation App - RESTRUCTURED VERSION
-Tests the three main backend endpoints with new GS1 EPCIS hierarchy:
-1. POST /api/configuration (with SSCC→Cases→Items structure)
-2. POST /api/serial-numbers (with SSCC, case, and item serial numbers)
-3. POST /api/generate-epcis (EPCIS 1.2 with commissioning + aggregation events)
+Backend API Testing for EPCIS Serial Number Aggregation App - REVIEW REQUEST FOCUSED TESTING
+Tests the enhanced hierarchical serial number collection system with focus on:
+1. Enhanced Duplicate Detection in Textarea (Backend Integration)
+2. Multi-level Navigation Data Preservation (Backend Integration)
+3. Hierarchical Serial Collection Backend Integration
+4. EPCIS XML Generation (Package NDC hyphen removal and EPCClass ordering)
+
+Specific focus on testing the two critical issues:
+- Package NDC hyphen removal not working
+- EPCClass vocabulary element order incorrect
 """
 
 import requests
