@@ -349,6 +349,37 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         case_vocabulary_element.set("id", case_epc_pattern)
         add_epcclass_attributes(case_vocabulary_element, config)
     
+    # Add Location vocabulary
+    location_vocabulary = ET.SubElement(vocabulary_list, "Vocabulary")
+    location_vocabulary.set("type", "urn:epcglobal:epcis:vtype:Location")
+    
+    location_vocabulary_element_list = ET.SubElement(location_vocabulary, "VocabularyElementList")
+    
+    # Add location vocabulary elements for sender, receiver, and shipper
+    for role, prefix in [("sender", "sender"), ("receiver", "receiver"), ("shipper", "shipper")]:
+        gln = config.get(f"{prefix}_gln", "")
+        sgln = config.get(f"{prefix}_sgln", "")
+        
+        if gln:
+            # Add GLN location element
+            loc_element = ET.SubElement(location_vocabulary_element_list, "VocabularyElement")
+            loc_element.set("id", f"urn:epc:id:sgln:{gln}")
+            
+            # Add attributes for location
+            loc_attr = ET.SubElement(loc_element, "attribute")
+            loc_attr.set("id", "urn:epcglobal:cbv:mda#name")
+            loc_attr.text = role.capitalize()
+            
+        if sgln:
+            # Add SGLN location element
+            sgln_element = ET.SubElement(location_vocabulary_element_list, "VocabularyElement")
+            sgln_element.set("id", f"urn:epc:id:sgln:{sgln}")
+            
+            # Add attributes for serialized location
+            sgln_attr = ET.SubElement(sgln_element, "attribute")
+            sgln_attr.set("id", "urn:epcglobal:cbv:mda#name")
+            sgln_attr.text = f"{role.capitalize()} Location"
+    
     # Create EPCISBody
     epcis_body = ET.SubElement(root, "EPCISBody")
     event_list = ET.SubElement(epcis_body, "EventList")
