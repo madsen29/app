@@ -2104,7 +2104,7 @@ function App() {
     return (
       <div className="tree-view">
         {hierarchicalSerials.map((ssccData, ssccIndex) => (
-          <div key={ssccIndex} className={`tree-level sscc-level ${isCurrentContainer('sscc', ssccIndex) ? 'current-container' : ''}`}>
+          <div key={ssccIndex} className="tree-level sscc-level">
             <div className="tree-item">
               <div className="tree-icon"><FiPackage /></div>
               <div className="tree-label">SSCC {ssccIndex + 1}</div>
@@ -2118,7 +2118,7 @@ function App() {
             
             {/* Cases */}
             {ssccData.cases && ssccData.cases.length > 0 && ssccData.cases.map((caseData, caseIndex) => (
-              <div key={caseIndex} className={`tree-level case-level ${isCurrentContainer('case', ssccIndex, caseIndex) ? 'current-container' : ''}`}>
+              <div key={caseIndex} className="tree-level case-level">
                 <div className="tree-item">
                   <div className="tree-icon"><FiBox /></div>
                   <div className="tree-label">Case {caseIndex + 1}</div>
@@ -2132,7 +2132,7 @@ function App() {
                 
                 {/* Inner Cases */}
                 {caseData.innerCases && caseData.innerCases.length > 0 && caseData.innerCases.map((innerCaseData, innerCaseIndex) => (
-                  <div key={innerCaseIndex} className={`tree-level inner-case-level ${isCurrentContainer('innerCase', ssccIndex, caseIndex, innerCaseIndex) ? 'current-container' : ''}`}>
+                  <div key={innerCaseIndex} className="tree-level inner-case-level">
                     <div className="tree-item">
                       <div className="tree-icon"><FiFolder /></div>
                       <div className="tree-label">Inner Case {innerCaseIndex + 1}</div>
@@ -2151,7 +2151,7 @@ function App() {
                           <div key={itemIndex} className="tree-level item-level">
                             <div className="tree-item">
                               <div className="tree-icon"><FiFile /></div>
-                              <div className="tree-label">Item {itemIndex + 1}</div>
+                              <div className="tree-label">Item {itemIndex + 1} of {innerCaseData.items.length}</div>
                               <div className={`tree-serial ${itemData.itemSerial ? 'completed' : ''} ${isCurrentPosition('item', ssccIndex, caseIndex, innerCaseIndex, itemIndex) ? 'current' : ''}`}
                                    onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`, itemData.itemSerial)}>
                                 {itemData.itemSerial || (
@@ -2173,7 +2173,7 @@ function App() {
                       <div key={itemIndex} className="tree-level item-level">
                         <div className="tree-item">
                           <div className="tree-icon"><FiFile /></div>
-                          <div className="tree-label">Item {itemIndex + 1}</div>
+                          <div className="tree-label">Item {itemIndex + 1} of {caseData.items.length}</div>
                           <div className={`tree-serial ${itemData.itemSerial ? 'completed' : ''} ${isCurrentPosition('item', ssccIndex, caseIndex, null, itemIndex) ? 'current' : ''}`}
                                onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${itemIndex}`, itemData.itemSerial)}>
                             {itemData.itemSerial || (
@@ -2195,7 +2195,7 @@ function App() {
                   <div key={itemIndex} className="tree-level item-level">
                     <div className="tree-item">
                       <div className="tree-icon"><FiFile /></div>
-                      <div className="tree-label">Item {itemIndex + 1}</div>
+                      <div className="tree-label">Item {itemIndex + 1} of {ssccData.items.length}</div>
                       <div className={`tree-serial ${itemData.itemSerial ? 'completed' : ''} ${isCurrentPosition('item', ssccIndex, null, null, itemIndex) ? 'current' : ''}`}
                            onClick={() => handleEditSerial(`item-${ssccIndex}-${itemIndex}`, itemData.itemSerial)}>
                         {itemData.itemSerial || (
