@@ -2073,7 +2073,7 @@ function App() {
           <div className="context-display">
             <h3>Current Context:</h3>
             <div className="context-path">
-              {currentContext.path}
+              {renderClickableContext(currentContext.path)}
             </div>
           </div>
           
