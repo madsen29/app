@@ -83,6 +83,17 @@ class SerialConfigurationCreate(BaseModel):
     case_indicator_digit: str
     inner_case_indicator_digit: str = Field(default="")
     item_indicator_digit: str
+    # Business Document Information
+    sender_company_prefix: str = Field(default="")
+    sender_gln: str = Field(default="")
+    sender_sgln: str = Field(default="")
+    receiver_company_prefix: str = Field(default="")
+    receiver_gln: str = Field(default="")
+    receiver_sgln: str = Field(default="")
+    shipper_company_prefix: str = Field(default="")
+    shipper_gln: str = Field(default="")
+    shipper_sgln: str = Field(default="")
+    shipper_same_as_sender: bool = Field(default=False)
     # EPCClass data
     product_ndc: str = Field(default="")
     package_ndc: str = Field(default="")
