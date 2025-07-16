@@ -432,10 +432,10 @@ class SBDHLocationTester:
                         self.log_test("Location Vocabulary", False, "EPCISMasterData not found")
                         return False
                     
-                    # Find VocabularyList
+                    # Find VocabularyList (handle namespace)
                     vocabulary_list = None
                     for child in epcis_master_data:
-                        if child.tag == "VocabularyList":
+                        if child.tag.endswith("VocabularyList"):
                             vocabulary_list = child
                             break
                     
