@@ -428,10 +428,10 @@ class SBDHLocationTester:
                 try:
                     root = ET.fromstring(xml_content)
                     
-                    # Find EPCISMasterData
+                    # Find EPCISMasterData - it's inside extension element
                     epcis_master_data = None
                     for elem in root.iter():
-                        if elem.tag == "EPCISMasterData":
+                        if elem.tag.endswith("EPCISMasterData"):
                             epcis_master_data = elem
                             break
                     
