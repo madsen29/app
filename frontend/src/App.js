@@ -1758,6 +1758,66 @@ function App() {
                     placeholder="e.g., 0345802000014.001"
                   />
                 </div>
+                <div className="form-group">
+                  <label htmlFor="senderName">Company Name:</label>
+                  <input
+                    type="text"
+                    id="senderName"
+                    value={configuration.senderName}
+                    onChange={(e) => setConfiguration({...configuration, senderName: e.target.value})}
+                    placeholder="e.g., Padagis US LLC"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="senderStreetAddress">Street Address:</label>
+                  <input
+                    type="text"
+                    id="senderStreetAddress"
+                    value={configuration.senderStreetAddress}
+                    onChange={(e) => setConfiguration({...configuration, senderStreetAddress: e.target.value})}
+                    placeholder="e.g., 1251 Lincoln Rd"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="senderCity">City:</label>
+                  <input
+                    type="text"
+                    id="senderCity"
+                    value={configuration.senderCity}
+                    onChange={(e) => setConfiguration({...configuration, senderCity: e.target.value})}
+                    placeholder="e.g., Allegan"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="senderState">State:</label>
+                  <input
+                    type="text"
+                    id="senderState"
+                    value={configuration.senderState}
+                    onChange={(e) => setConfiguration({...configuration, senderState: e.target.value})}
+                    placeholder="e.g., MI"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="senderPostalCode">Postal Code:</label>
+                  <input
+                    type="text"
+                    id="senderPostalCode"
+                    value={configuration.senderPostalCode}
+                    onChange={(e) => setConfiguration({...configuration, senderPostalCode: e.target.value})}
+                    placeholder="e.g., 49010"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="senderCountryCode">Country Code:</label>
+                  <input
+                    type="text"
+                    id="senderCountryCode"
+                    value={configuration.senderCountryCode}
+                    onChange={(e) => setConfiguration({...configuration, senderCountryCode: e.target.value})}
+                    placeholder="e.g., US"
+                  />
+                </div>
               </div>
             </div>
 
