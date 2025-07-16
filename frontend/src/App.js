@@ -684,10 +684,12 @@ function App() {
   };
 
   const handleContextNavigation = (clickedLevel, levelIndex) => {
+    // Get current hierarchical data before making any changes
+    const currentHierarchicalData = [...hierarchicalSerials];
+    
     // Save current serial before navigating
     if (serialCollectionStep.currentSerial.trim()) {
-      const updatedSerials = [...hierarchicalSerials];
-      const currentSSCC = updatedSerials[serialCollectionStep.ssccIndex];
+      const currentSSCC = currentHierarchicalData[serialCollectionStep.ssccIndex];
       
       switch (serialCollectionStep.currentLevel) {
         case 'sscc':
@@ -746,16 +748,16 @@ function App() {
           break;
       }
       
-      setHierarchicalSerials(updatedSerials);
+      // Update the hierarchical data with current changes
+      setHierarchicalSerials(currentHierarchicalData);
     }
     
     // Parse the clicked level to determine position and restore previous value
     const step = serialCollectionStep;
-    const currentUpdatedSerials = hierarchicalSerials;
     
     if (clickedLevel.includes('SSCC')) {
       // Navigate to SSCC level
-      const currentSSCC = currentUpdatedSerials[step.ssccIndex];
+      const currentSSCC = currentHierarchicalData[step.ssccIndex];
       setSerialCollectionStep({
         ...step,
         currentLevel: 'sscc',
@@ -767,7 +769,7 @@ function App() {
       });
     } else if (clickedLevel.includes('Case') && !clickedLevel.includes('Inner')) {
       // Navigate to Case level
-      const currentCase = currentUpdatedSerials[step.ssccIndex].cases && currentUpdatedSerials[step.ssccIndex].cases[step.caseIndex];
+      const currentCase = currentHierarchicalData[step.ssccIndex].cases && currentHierarchicalData[step.ssccIndex].cases[step.caseIndex];
       setSerialCollectionStep({
         ...step,
         currentLevel: 'case',
@@ -778,7 +780,7 @@ function App() {
       });
     } else if (clickedLevel.includes('Inner Case')) {
       // Navigate to Inner Case level
-      const currentInnerCase = currentUpdatedSerials[step.ssccIndex].cases && currentUpdatedSerials[step.ssccIndex].cases[step.caseIndex] && currentUpdatedSerials[step.ssccIndex].cases[step.caseIndex].innerCases && currentUpdatedSerials[step.ssccIndex].cases[step.caseIndex].innerCases[step.innerCaseIndex];
+      const currentInnerCase = currentHierarchicalData[step.ssccIndex].cases && currentHierarchicalData[step.ssccIndex].cases[step.caseIndex] && currentHierarchicalData[step.ssccIndex].cases[step.caseIndex].innerCases && currentHierarchicalData[step.ssccIndex].cases[step.caseIndex].innerCases[step.innerCaseIndex];
       setSerialCollectionStep({
         ...step,
         currentLevel: 'innerCase',
