@@ -25,6 +25,17 @@ function App() {
     caseIndicatorDigit: '0',
     innerCaseIndicatorDigit: '0',
     itemIndicatorDigit: '0',
+    // Business Document Information
+    senderCompanyPrefix: '',
+    senderGln: '',
+    senderSgln: '',
+    receiverCompanyPrefix: '',
+    receiverGln: '',
+    receiverSgln: '',
+    shipperCompanyPrefix: '',
+    shipperGln: '',
+    shipperSgln: '',
+    shipperSameAsSender: false,
     // EPCClass data
     productNdc: '',
     packageNdc: '',
