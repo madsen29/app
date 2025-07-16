@@ -1175,11 +1175,20 @@ function App() {
       console.log('Parsed GS1 Data:', parsedData); // Debug log
       
       if (parsedData.serialNumber) {
-        // Set the scanned serial number as current serial
-        setSerialCollectionStep({
-          ...serialCollectionStep,
-          currentSerial: parsedData.serialNumber
-        });
+        // Handle different scanner target fields
+        if (scannerModal.targetField === 'edit') {
+          // Set the scanned serial number in edit modal
+          setEditModal({
+            ...editModal,
+            currentValue: parsedData.serialNumber
+          });
+        } else {
+          // Set the scanned serial number as current serial
+          setSerialCollectionStep({
+            ...serialCollectionStep,
+            currentSerial: parsedData.serialNumber
+          });
+        }
         
         // Show detailed success message
         let successMessage = `Scanned serial number: ${parsedData.serialNumber}`;
