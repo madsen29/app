@@ -360,10 +360,10 @@ class SBDHLocationTester:
                         self.log_test("SBDH Header", False, "DocumentIdentification not found")
                         return False
                     
-                    # Check Standard
+                    # Check Standard (handle namespace)
                     standard = None
                     for child in doc_identification:
-                        if child.tag == "Standard":
+                        if child.tag.endswith("Standard"):
                             standard = child
                             break
                     
