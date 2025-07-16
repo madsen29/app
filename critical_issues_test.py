@@ -124,7 +124,7 @@ class CriticalIssuesTester:
                     data.get("senderGln") == "0345802000014" and
                     data.get("receiverGln") == "0567890000021"):
                     self.log_test("Review Request Configuration", True, "Configuration created with business document fields", 
-                                f"ID: {data['id']}, Shipper Prefix: {data['shipper_company_prefix']}")
+                                f"ID: {data['id']}, Shipper Prefix: {data['shipperCompanyPrefix']}")
                     return data["id"]
                 else:
                     self.log_test("Review Request Configuration", False, f"Business document fields mismatch")
