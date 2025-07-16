@@ -2381,20 +2381,20 @@ function App() {
           
           <div className="progress-info">
             <div className="progress-stats">
-              <div className="stat">
+              <div className={`stat ${serialCollectionStep.currentLevel === 'sscc' ? 'stat-current' : ''}`}>
                 <strong>Current SSCC:</strong> {serialCollectionStep.ssccIndex + 1} of {configuration.numberOfSscc}
               </div>
               {configuration.casesPerSscc > 0 && (
-                <div className="stat">
+                <div className={`stat ${serialCollectionStep.currentLevel === 'case' ? 'stat-current' : ''}`}>
                   <strong>Current Case:</strong> {serialCollectionStep.caseIndex + 1} of {configuration.casesPerSscc}
                 </div>
               )}
               {configuration.useInnerCases && (
-                <div className="stat">
+                <div className={`stat ${serialCollectionStep.currentLevel === 'innerCase' ? 'stat-current' : ''}`}>
                   <strong>Current Inner Case:</strong> {serialCollectionStep.innerCaseIndex + 1} of {configuration.innerCasesPerCase}
                 </div>
               )}
-              <div className="stat">
+              <div className={`stat ${serialCollectionStep.currentLevel === 'item' ? 'stat-current' : ''}`}>
                 <strong>Current Item:</strong> {serialCollectionStep.itemIndex + 1} of {getCurrentItemCount()}
               </div>
             </div>
