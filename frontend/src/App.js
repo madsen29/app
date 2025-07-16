@@ -1756,6 +1756,111 @@ function App() {
     }
   };
 
+  const renderSerialTree = () => {
+    return (
+      <div className="tree-view">
+        {hierarchicalSerials.map((ssccData, ssccIndex) => (
+          <div key={ssccIndex} className="tree-level sscc-level">
+            <div className="tree-item">
+              <div className="tree-icon">📦</div>
+              <div className="tree-label">SSCC {ssccIndex + 1}</div>
+              <div className="tree-serial" onClick={() => handleEditSerial(`sscc-${ssccIndex}`, ssccData.ssccSerial)}>
+                {ssccData.ssccSerial || (
+                  <span className="empty-serial">Click to add</span>
+                )}
+              </div>
+            </div>
+            
+            {/* Cases */}
+            {ssccData.cases && ssccData.cases.map((caseData, caseIndex) => (
+              <div key={caseIndex} className="tree-level case-level">
+                <div className="tree-item">
+                  <div className="tree-icon">📋</div>
+                  <div className="tree-label">Case {caseIndex + 1}</div>
+                  <div className="tree-serial" onClick={() => handleEditSerial(`case-${ssccIndex}-${caseIndex}`, caseData.caseSerial)}>
+                    {caseData.caseSerial || (
+                      <span className="empty-serial">Click to add</span>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Inner Cases */}
+                {caseData.innerCases && caseData.innerCases.map((innerCaseData, innerCaseIndex) => (
+                  <div key={innerCaseIndex} className="tree-level inner-case-level">
+                    <div className="tree-item">
+                      <div className="tree-icon">📁</div>
+                      <div className="tree-label">Inner Case {innerCaseIndex + 1}</div>
+                      <div className="tree-serial" onClick={() => handleEditSerial(`innerCase-${ssccIndex}-${caseIndex}-${innerCaseIndex}`, innerCaseData.innerCaseSerial)}>
+                        {innerCaseData.innerCaseSerial || (
+                          <span className="empty-serial">Click to add</span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Items in Inner Cases */}
+                    <div className="items-container">
+                      {innerCaseData.items.map((itemData, itemIndex) => (
+                        <div key={itemIndex} className="tree-level item-level">
+                          <div className="tree-item">
+                            <div className="tree-icon">📄</div>
+                            <div className="tree-label">Item {itemIndex + 1}</div>
+                            <div className="tree-serial" onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`, itemData.itemSerial)}>
+                              {itemData.itemSerial || (
+                                <span className="empty-serial">Click to add</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Items in Cases (no inner cases) */}
+                {!caseData.innerCases && (
+                  <div className="items-container">
+                    {caseData.items.map((itemData, itemIndex) => (
+                      <div key={itemIndex} className="tree-level item-level">
+                        <div className="tree-item">
+                          <div className="tree-icon">📄</div>
+                          <div className="tree-label">Item {itemIndex + 1}</div>
+                          <div className="tree-serial" onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${itemIndex}`, itemData.itemSerial)}>
+                            {itemData.itemSerial || (
+                              <span className="empty-serial">Click to add</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            
+            {/* Items directly in SSCC (no cases) */}
+            {ssccData.items && (
+              <div className="items-container">
+                {ssccData.items.map((itemData, itemIndex) => (
+                  <div key={itemIndex} className="tree-level item-level">
+                    <div className="tree-item">
+                      <div className="tree-icon">📄</div>
+                      <div className="tree-label">Item {itemIndex + 1}</div>
+                      <div className="tree-serial" onClick={() => handleEditSerial(`item-${ssccIndex}-${itemIndex}`, itemData.itemSerial)}>
+                        {itemData.itemSerial || (
+                          <span className="empty-serial">Click to add</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const getCurrentItemCount = () => {
     if (configuration.useInnerCases) {
       return configuration.itemsPerInnerCase;
