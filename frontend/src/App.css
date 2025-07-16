@@ -1205,9 +1205,113 @@ body {
   }
 }
 
+/* Serial Tree Overview */
+.serial-tree-container {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.serial-tree-container h3 {
+  margin: 0 0 1rem 0;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.tree-view {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.tree-level {
+  margin-left: 0;
+}
+
+.tree-level.case-level {
+  margin-left: 1.5rem;
+}
+
+.tree-level.inner-case-level {
+  margin-left: 3rem;
+}
+
+.tree-level.item-level {
+  margin-left: 4.5rem;
+}
+
+.tree-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.tree-icon {
+  width: 1.5rem;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.tree-label {
+  min-width: 120px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.tree-serial {
+  flex: 1;
+  padding: 0.25rem 0.5rem;
+  background: white;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.tree-serial:hover {
+  border-color: #0055fb;
+  background: #f8f9ff;
+}
+
+.tree-serial.current {
+  border-color: #0055fb;
+  background: #e3f2fd;
+  box-shadow: 0 0 0 2px rgba(0, 85, 251, 0.1);
+}
+
+.empty-serial {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.items-container {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+/* Visual indicators for completion */
+.tree-serial.completed {
+  background: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.tree-serial.completed:hover {
+  background: #c8e6c9;
+  border-color: #a5d6a7;
+}
+
 /* Hierarchical Serial Collection */
 .hierarchical-input {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
