@@ -677,10 +677,10 @@ class SBDHLocationTester:
                         self.log_test("Existing Features Regression", False, f"Expected {expected_aggregation_events} AggregationEvents, found {aggregation_events}")
                         return False
                     
-                    # Check SSCC uses shipper's company prefix
+                    # Check SSCC uses shipper's company prefix (handle namespace)
                     sscc_found = False
                     for elem in root.iter():
-                        if elem.tag == "epc" and elem.text and "sscc" in elem.text:
+                        if elem.tag.endswith("epc") and elem.text and "sscc" in elem.text:
                             if "urn:epc:id:sscc:0999888" in elem.text:  # Shipper's company prefix
                                 sscc_found = True
                                 break
