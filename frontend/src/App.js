@@ -469,7 +469,7 @@ function App() {
     // Check for duplicates
     if (serialCollectionStep.currentLevel === 'item' && value.includes('\n')) {
       // Multi-line item input - check each line
-      const serialLines = value.split('\n').filter(line => line.trim());
+      const serialLines = value.split('\n');
       let hasError = false;
       
       for (let i = 0; i < serialLines.length; i++) {
@@ -486,6 +486,7 @@ function App() {
             tempPath = `item-${serialCollectionStep.ssccIndex}-${tempItemIndex}`;
           }
           
+          // Check for duplicates against existing serials
           const duplicates = validateDuplicateSerials(serial, tempPath);
           if (duplicates) {
             setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used at: ${duplicates[0].path}`);
@@ -496,7 +497,7 @@ function App() {
           // Also check for duplicates within the current input
           for (let j = 0; j < i; j++) {
             const previousSerial = serialLines[j].trim();
-            if (previousSerial === serial) {
+            if (previousSerial && previousSerial === serial) {
               setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used on line ${j + 1} in this input.`);
               hasError = true;
               break;
