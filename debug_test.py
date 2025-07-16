@@ -322,8 +322,8 @@ class DebugTester:
                 try:
                     root = ET.fromstring(xml_content)
                     
-                    # Check root element
-                    if not root.tag == "StandardBusinessDocument":
+                    # Check root element (handle namespace)
+                    if not root.tag.endswith("StandardBusinessDocument"):
                         self.log_test("Business Document Header Formatting", False, 
                                     f"❌ CRITICAL: Root element is not StandardBusinessDocument, found: {root.tag}")
                         return False
