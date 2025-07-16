@@ -745,11 +745,30 @@ function App() {
       for (let i = 0; i < serialLines.length; i++) {
         const serial = serialLines[i].trim();
         if (serial) {
-          const currentPath = getCurrentPath();
-          const duplicates = validateDuplicateSerials(serial, currentPath);
+          // Create a temporary path for this specific item index
+          const tempItemIndex = serialCollectionStep.itemIndex + i;
+          let tempPath;
+          if (configuration.useInnerCases) {
+            tempPath = `item-${serialCollectionStep.ssccIndex}-${serialCollectionStep.caseIndex}-${serialCollectionStep.innerCaseIndex}-${tempItemIndex}`;
+          } else if (configuration.casesPerSscc > 0) {
+            tempPath = `item-${serialCollectionStep.ssccIndex}-${serialCollectionStep.caseIndex}-${tempItemIndex}`;
+          } else {
+            tempPath = `item-${serialCollectionStep.ssccIndex}-${tempItemIndex}`;
+          }
+          
+          const duplicates = validateDuplicateSerials(serial, tempPath);
           if (duplicates) {
             setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used at: ${duplicates[0].path}`);
             return;
+          }
+          
+          // Also check for duplicates within the current input
+          for (let j = 0; j < i; j++) {
+            const previousSerial = serialLines[j].trim();
+            if (previousSerial === serial) {
+              setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used on line ${j + 1} in this input.`);
+              return;
+            }
           }
         }
       }
