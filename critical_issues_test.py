@@ -120,9 +120,9 @@ class CriticalIssuesTester:
             if response.status_code == 200:
                 data = response.json()
                 # Verify key fields are stored correctly
-                if (data.get("shipper_company_prefix") == "0999888" and 
-                    data.get("sender_gln") == "0345802000014" and
-                    data.get("receiver_gln") == "0567890000021"):
+                if (data.get("shipperCompanyPrefix") == "0999888" and 
+                    data.get("senderGln") == "0345802000014" and
+                    data.get("receiverGln") == "0567890000021"):
                     self.log_test("Review Request Configuration", True, "Configuration created with business document fields", 
                                 f"ID: {data['id']}, Shipper Prefix: {data['shipper_company_prefix']}")
                     return data["id"]
