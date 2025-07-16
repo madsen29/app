@@ -407,16 +407,16 @@ class BackendTester:
         except Exception as e:
             self.log_test("Serial Numbers Validation", False, f"Request error: {str(e)}")
     
-    def test_epcis_generation(self, config_id):
-        """Test POST /api/generate-epcis and validate EPCIS 1.2 XML with commissioning + aggregation events"""
+    def test_epcis_generation_detailed(self, config_id):
+        """Test EPCIS generation with detailed XML analysis for 4-level hierarchy"""
         if not config_id:
-            self.log_test("EPCIS Generation", False, "No configuration ID available")
+            self.log_test("EPCIS Generation Detailed", False, "No configuration ID available")
             return
             
         test_data = {
             "configuration_id": config_id,
-            "read_point": "urn:epc:id:sgln:9876543.00000.0",
-            "biz_location": "urn:epc:id:sgln:9876543.00001.0"
+            "read_point": "urn:epc:id:sgln:1234567.00000.0",
+            "biz_location": "urn:epc:id:sgln:1234567.00001.0"
         }
         
         try:
@@ -427,22 +427,55 @@ class BackendTester:
             )
             
             if response.status_code == 200:
-                # Check if response is XML
-                content_type = response.headers.get('content-type', '')
-                if 'xml' in content_type:
-                    xml_content = response.text
-                    if self.validate_epcis_1_2_xml(xml_content):
-                        self.log_test("EPCIS Generation", True, "Valid EPCIS 1.2 XML generated with commissioning + aggregation events",
-                                    f"XML length: {len(xml_content)} characters")
+                xml_content = response.text
+                
+                # Parse and analyze XML structure
+                try:
+                    root = ET.fromstring(xml_content)
+                    
+                    # Find EventList
+                    event_list = None
+                    for elem in root.iter():
+                        if elem.tag.endswith("EventList"):
+                            event_list = elem
+                            break
+                    
+                    if event_list is not None:
+                        object_events = []
+                        aggregation_events = []
+                        
+                        for child in event_list:
+                            if child.tag.endswith("ObjectEvent"):
+                                object_events.append(child)
+                            elif child.tag.endswith("AggregationEvent"):
+                                aggregation_events.append(child)
+                        
+                        # For 4-level hierarchy (SSCC→Cases→Inner Cases→Items):
+                        # Expected ObjectEvents: Items, Inner Cases, Cases, SSCCs = 4 events
+                        # Expected AggregationEvents: Items→Inner Cases (4) + Inner Cases→Cases (2) + Cases→SSCCs (1) = 7 events
+                        
+                        expected_object_events = 4  # Items, Inner Cases, Cases, SSCCs
+                        expected_aggregation_events = 7  # 4 + 2 + 1
+                        
+                        object_events_ok = len(object_events) == expected_object_events
+                        aggregation_events_ok = len(aggregation_events) == expected_aggregation_events
+                        
+                        if object_events_ok and aggregation_events_ok:
+                            self.log_test("EPCIS Generation Detailed", True, f"Valid 4-level hierarchy EPCIS XML generated",
+                                        f"ObjectEvents: {len(object_events)}, AggregationEvents: {len(aggregation_events)}")
+                        else:
+                            self.log_test("EPCIS Generation Detailed", False, 
+                                        f"Event count mismatch - ObjectEvents: {len(object_events)} (expected {expected_object_events}), AggregationEvents: {len(aggregation_events)} (expected {expected_aggregation_events})")
                     else:
-                        self.log_test("EPCIS Generation", False, "Generated XML does not meet EPCIS 1.2 standards")
-                else:
-                    self.log_test("EPCIS Generation", False, f"Expected XML, got content-type: {content_type}")
+                        self.log_test("EPCIS Generation Detailed", False, "EventList not found in XML")
+                        
+                except ET.ParseError as e:
+                    self.log_test("EPCIS Generation Detailed", False, f"XML parsing error: {str(e)}")
             else:
-                self.log_test("EPCIS Generation", False, f"HTTP {response.status_code}: {response.text}")
+                self.log_test("EPCIS Generation Detailed", False, f"HTTP {response.status_code}: {response.text}")
                 
         except Exception as e:
-            self.log_test("EPCIS Generation", False, f"Request error: {str(e)}")
+            self.log_test("EPCIS Generation Detailed", False, f"Request error: {str(e)}")
     
     def validate_epcis_1_2_xml(self, xml_content):
         """Validate EPCIS 1.2 XML with commissioning events and proper GS1 identifiers"""
