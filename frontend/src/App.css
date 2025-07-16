@@ -644,6 +644,77 @@ body {
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
+/* Business Document Section */
+.business-document-section {
+  background: #f7fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e0;
+  margin-bottom: 1.5rem;
+}
+
+.business-document-section h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #2d3748;
+  border-bottom: 2px solid #4a5568;
+  padding-bottom: 0.5rem;
+}
+
+.business-entities-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.business-entity-group {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.business-entity-group h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.shipper-same-checkbox {
+  margin-bottom: 1rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #3182ce;
+  cursor: pointer;
+}
+
+.checkbox-custom {
+  font-size: 0.9rem;
+}
+
+.form-group input:disabled {
+  background-color: #f7fafc;
+  color: #a0aec0;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+
 /* EPCClass Section */
 .epcclass-section {
   background: #f0f8ff;
