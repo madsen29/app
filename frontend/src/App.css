@@ -1555,11 +1555,21 @@ body {
   background: white;
   padding: 1rem;
   border-radius: 6px;
+  border-left: 4px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.progress-stats .stat.stat-current {
   border-left: 4px solid #0055fb;
+  background: rgba(0, 85, 251, 0.05);
 }
 
 .progress-stats .stat strong {
   color: #495057;
+}
+
+.progress-stats .stat.stat-current strong {
+  color: #0055fb;
 }
 
 .completion-summary {
