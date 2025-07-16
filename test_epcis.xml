@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='utf-8'?>
+<StandardBusinessDocument xmlns:cbvmda="urn:epcglobal:cbv:mda" xmlns="http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader" xmlns:epcis="urn:epcglobal:epcis:xsd:1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <StandardBusinessDocumentHeader>
+    <HeaderVersion>1.0</HeaderVersion>
+    <Sender>
+      <Identifier Authority="GS1">0345802000014</Identifier>
+    </Sender>
+    <Receiver>
+      <Identifier Authority="GS1" />
+    </Receiver>
+    <DocumentIdentification>
+      <Standard>EPCISDocument</Standard>
+      <TypeVersion>1.2</TypeVersion>
+      <InstanceIdentifier>EPCIS_20250716232405</InstanceIdentifier>
+      <Type>EPCISDocument</Type>
+      <CreationDateAndTime>2025-07-16T23:24:05.073137+00:00</CreationDateAndTime>
+    </DocumentIdentification>
+  </StandardBusinessDocumentHeader>
+  <epcis:EPCISDocument schemaVersion="1.2" creationDate="2025-07-16T23:24:05.073147+00:00">
+    <EPCISHeader>
+      <extension>
+        <EPCISMasterData>
+          <VocabularyList>
+            <Vocabulary type="urn:epcglobal:epcis:vtype:EPCClass">
+              <VocabularyElementList>
+                <VocabularyElement id="urn:epc:idpat:sgtin:1234567.1000000.*">
+                  <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentification">4580204685</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode">FDA_NDC_11</attribute>
+                </VocabularyElement>
+                <VocabularyElement id="urn:epc:idpat:sgtin:1234567.2000001.*">
+                  <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentification">4580204685</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode">FDA_NDC_11</attribute>
+                </VocabularyElement>
+              </VocabularyElementList>
+            </Vocabulary>
+            <Vocabulary type="urn:epcglobal:epcis:vtype:Location">
+              <VocabularyElementList>
+                <VocabularyElement id="urn:epc:id:sgln:0345802000014">
+                  <attribute id="urn:epcglobal:cbv:mda#name">Padagis US LLC</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">1251 Lincoln Rd</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#city">Allegan</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#state">MI</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#postalCode">49010</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#countryCode">US</attribute>
+                </VocabularyElement>
+                <VocabularyElement id="urn:epc:id:sgln:0345802000014.001">
+                  <attribute id="urn:epcglobal:cbv:mda#name">Padagis US LLC - Sender Location</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">1251 Lincoln Rd</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#city">Allegan</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#state">MI</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#postalCode">49010</attribute>
+                  <attribute id="urn:epcglobal:cbv:mda#countryCode">US</attribute>
+                </VocabularyElement>
+              </VocabularyElementList>
+            </Vocabulary>
+          </VocabularyList>
+        </EPCISMasterData>
+      </extension>
+    </EPCISHeader>
+    <EPCISBody>
+      <EventList>
+        <ObjectEvent>
+          <eventTime>2025-07-16T23:24:05.073213+00:00</eventTime>
+          <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
+          <epcList>
+            <epc>urn:epc:id:sgtin:1234567.1000000.ITEM001</epc>
+            <epc>urn:epc:id:sgtin:1234567.1000000.ITEM002</epc>
+          </epcList>
+          <action>ADD</action>
+          <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
+          <disposition>urn:epcglobal:cbv:disp:active</disposition>
+          <readPoint>
+            <id>urn:epc:id:sgln:1234567.00000.0</id>
+          </readPoint>
+          <bizLocation>
+            <id>urn:epc:id:sgln:1234567.00001.0</id>
+          </bizLocation>
+          <extension>
+            <ilmd>
+              <cbvmda:lotNumber>LOT123</cbvmda:lotNumber>
+              <cbvmda:itemExpirationDate>2025-12-31</cbvmda:itemExpirationDate>
+            </ilmd>
+          </extension>
+        </ObjectEvent>
+        <ObjectEvent>
+          <eventTime>2025-07-16T23:24:05.073335+00:00</eventTime>
+          <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
+          <epcList>
+            <epc>urn:epc:id:sgtin:1234567.2000001.CASE001</epc>
+          </epcList>
+          <action>ADD</action>
+          <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
+          <disposition>urn:epcglobal:cbv:disp:active</disposition>
+          <readPoint>
+            <id>urn:epc:id:sgln:1234567.00000.0</id>
+          </readPoint>
+          <bizLocation>
+            <id>urn:epc:id:sgln:1234567.00001.0</id>
+          </bizLocation>
+          <extension>
+            <ilmd>
+              <cbvmda:lotNumber>LOT123</cbvmda:lotNumber>
+              <cbvmda:itemExpirationDate>2025-12-31</cbvmda:itemExpirationDate>
+            </ilmd>
+          </extension>
+        </ObjectEvent>
+        <ObjectEvent>
+          <eventTime>2025-07-16T23:24:05.073348+00:00</eventTime>
+          <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
+          <epcList>
+            <epc>urn:epc:id:sscc:0999888.3TEST001</epc>
+          </epcList>
+          <action>ADD</action>
+          <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
+          <disposition>urn:epcglobal:cbv:disp:active</disposition>
+          <readPoint>
+            <id>urn:epc:id:sgln:1234567.00000.0</id>
+          </readPoint>
+          <bizLocation>
+            <id>urn:epc:id:sgln:1234567.00001.0</id>
+          </bizLocation>
+        </ObjectEvent>
+        <AggregationEvent>
+          <eventTime>2025-07-16T23:24:05.073355+00:00</eventTime>
+          <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
+          <parentID>urn:epc:id:sgtin:1234567.2000001.CASE001</parentID>
+          <childEPCs>
+            <epc>urn:epc:id:sgtin:1234567.1000000.ITEM001</epc>
+            <epc>urn:epc:id:sgtin:1234567.1000000.ITEM002</epc>
+          </childEPCs>
+          <action>ADD</action>
+          <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
+          <disposition>urn:epcglobal:cbv:disp:active</disposition>
+          <readPoint>
+            <id>urn:epc:id:sgln:1234567.00000.0</id>
+          </readPoint>
+          <bizLocation>
+            <id>urn:epc:id:sgln:1234567.00001.0</id>
+          </bizLocation>
+        </AggregationEvent>
+        <AggregationEvent>
+          <eventTime>2025-07-16T23:24:05.073363+00:00</eventTime>
+          <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
+          <parentID>urn:epc:id:sscc:0999888.3TEST001</parentID>
+          <childEPCs>
+            <epc>urn:epc:id:sgtin:1234567.2000001.CASE001</epc>
+          </childEPCs>
+          <action>ADD</action>
+          <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
+          <disposition>urn:epcglobal:cbv:disp:active</disposition>
+          <readPoint>
+            <id>urn:epc:id:sgln:1234567.00000.0</id>
+          </readPoint>
+          <bizLocation>
+            <id>urn:epc:id:sgln:1234567.00001.0</id>
+          </bizLocation>
+        </AggregationEvent>
+        <ObjectEvent>
+          <eventTime>2025-07-16T23:24:05.073368+00:00</eventTime>
+          <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
+          <epcList>
+            <epc>urn:epc:id:sscc:0999888.3TEST001</epc>
+          </epcList>
+          <action>OBSERVE</action>
+          <bizStep>urn:epcglobal:cbv:bizstep:shipping</bizStep>
+          <disposition>urn:epcglobal:cbv:disp:in_transit</disposition>
+          <readPoint>
+            <id>urn:epc:id:sgln:1234567.00000.0</id>
+          </readPoint>
+          <bizLocation>
+            <id>urn:epc:id:sgln:1234567.00001.0</id>
+          </bizLocation>
+        </ObjectEvent>
+      </EventList>
+    </EPCISBody>
+  </epcis:EPCISDocument>
+</StandardBusinessDocument>
