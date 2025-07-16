@@ -622,10 +622,10 @@ class SBDHLocationTester:
                         self.log_test("Existing Features Regression", False, f"Schema version should be '1.2', found '{epcis_document.get('schemaVersion')}'")
                         return False
                     
-                    # Check EPCISHeader
+                    # Check EPCISHeader (handle namespace)
                     epcis_header = None
                     for child in epcis_document:
-                        if child.tag == "EPCISHeader":
+                        if child.tag.endswith("EPCISHeader"):
                             epcis_header = child
                             break
                     
