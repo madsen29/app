@@ -1856,6 +1856,8 @@ function App() {
   };
 
   const renderSerialTree = () => {
+    console.log('Rendering tree with hierarchicalSerials:', hierarchicalSerials); // Debug log
+    
     return (
       <div className="tree-view">
         {hierarchicalSerials.map((ssccData, ssccIndex) => (
@@ -1872,7 +1874,7 @@ function App() {
             </div>
             
             {/* Cases */}
-            {ssccData.cases && ssccData.cases.map((caseData, caseIndex) => (
+            {ssccData.cases && ssccData.cases.length > 0 && ssccData.cases.map((caseData, caseIndex) => (
               <div key={caseIndex} className="tree-level case-level">
                 <div className="tree-item">
                   <div className="tree-icon"><FiBox /></div>
@@ -1886,7 +1888,7 @@ function App() {
                 </div>
                 
                 {/* Inner Cases */}
-                {caseData.innerCases && caseData.innerCases.map((innerCaseData, innerCaseIndex) => (
+                {caseData.innerCases && caseData.innerCases.length > 0 && caseData.innerCases.map((innerCaseData, innerCaseIndex) => (
                   <div key={innerCaseIndex} className="tree-level inner-case-level">
                     <div className="tree-item">
                       <div className="tree-icon"><FiFolder /></div>
@@ -1900,27 +1902,29 @@ function App() {
                     </div>
                     
                     {/* Items in Inner Cases */}
-                    <div className="items-container">
-                      {innerCaseData.items.map((itemData, itemIndex) => (
-                        <div key={itemIndex} className="tree-level item-level">
-                          <div className="tree-item">
-                            <div className="tree-icon"><FiFile /></div>
-                            <div className="tree-label">Item {itemIndex + 1}</div>
-                            <div className={`tree-serial ${itemData.itemSerial ? 'completed' : ''} ${isCurrentPosition('item', ssccIndex, caseIndex, innerCaseIndex, itemIndex) ? 'current' : ''}`}
-                                 onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`, itemData.itemSerial)}>
-                              {itemData.itemSerial || (
-                                <span className="empty-serial">Click to add</span>
-                              )}
+                    {innerCaseData.items && innerCaseData.items.length > 0 && (
+                      <div className="items-container">
+                        {innerCaseData.items.map((itemData, itemIndex) => (
+                          <div key={itemIndex} className="tree-level item-level">
+                            <div className="tree-item">
+                              <div className="tree-icon"><FiFile /></div>
+                              <div className="tree-label">Item {itemIndex + 1}</div>
+                              <div className={`tree-serial ${itemData.itemSerial ? 'completed' : ''} ${isCurrentPosition('item', ssccIndex, caseIndex, innerCaseIndex, itemIndex) ? 'current' : ''}`}
+                                   onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`, itemData.itemSerial)}>
+                                {itemData.itemSerial || (
+                                  <span className="empty-serial">Click to add</span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
                 
                 {/* Items in Cases (no inner cases) */}
-                {!caseData.innerCases && (
+                {(!caseData.innerCases || caseData.innerCases.length === 0) && caseData.items && caseData.items.length > 0 && (
                   <div className="items-container">
                     {caseData.items.map((itemData, itemIndex) => (
                       <div key={itemIndex} className="tree-level item-level">
@@ -1942,7 +1946,7 @@ function App() {
             ))}
             
             {/* Items directly in SSCC (no cases) */}
-            {ssccData.items && (
+            {(!ssccData.cases || ssccData.cases.length === 0) && ssccData.items && ssccData.items.length > 0 && (
               <div className="items-container">
                 {ssccData.items.map((itemData, itemIndex) => (
                   <div key={itemIndex} className="tree-level item-level">
