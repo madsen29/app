@@ -1764,7 +1764,8 @@ function App() {
             <div className="tree-item">
               <div className="tree-icon">📦</div>
               <div className="tree-label">SSCC {ssccIndex + 1}</div>
-              <div className="tree-serial" onClick={() => handleEditSerial(`sscc-${ssccIndex}`, ssccData.ssccSerial)}>
+              <div className={`tree-serial ${ssccData.ssccSerial ? 'completed' : ''} ${isCurrentPosition('sscc', ssccIndex) ? 'current' : ''}`} 
+                   onClick={() => handleEditSerial(`sscc-${ssccIndex}`, ssccData.ssccSerial)}>
                 {ssccData.ssccSerial || (
                   <span className="empty-serial">Click to add</span>
                 )}
@@ -1777,7 +1778,8 @@ function App() {
                 <div className="tree-item">
                   <div className="tree-icon">📋</div>
                   <div className="tree-label">Case {caseIndex + 1}</div>
-                  <div className="tree-serial" onClick={() => handleEditSerial(`case-${ssccIndex}-${caseIndex}`, caseData.caseSerial)}>
+                  <div className={`tree-serial ${caseData.caseSerial ? 'completed' : ''} ${isCurrentPosition('case', ssccIndex, caseIndex) ? 'current' : ''}`}
+                       onClick={() => handleEditSerial(`case-${ssccIndex}-${caseIndex}`, caseData.caseSerial)}>
                     {caseData.caseSerial || (
                       <span className="empty-serial">Click to add</span>
                     )}
@@ -1790,7 +1792,8 @@ function App() {
                     <div className="tree-item">
                       <div className="tree-icon">📁</div>
                       <div className="tree-label">Inner Case {innerCaseIndex + 1}</div>
-                      <div className="tree-serial" onClick={() => handleEditSerial(`innerCase-${ssccIndex}-${caseIndex}-${innerCaseIndex}`, innerCaseData.innerCaseSerial)}>
+                      <div className={`tree-serial ${innerCaseData.innerCaseSerial ? 'completed' : ''} ${isCurrentPosition('innerCase', ssccIndex, caseIndex, innerCaseIndex) ? 'current' : ''}`}
+                           onClick={() => handleEditSerial(`innerCase-${ssccIndex}-${caseIndex}-${innerCaseIndex}`, innerCaseData.innerCaseSerial)}>
                         {innerCaseData.innerCaseSerial || (
                           <span className="empty-serial">Click to add</span>
                         )}
@@ -1804,7 +1807,8 @@ function App() {
                           <div className="tree-item">
                             <div className="tree-icon">📄</div>
                             <div className="tree-label">Item {itemIndex + 1}</div>
-                            <div className="tree-serial" onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`, itemData.itemSerial)}>
+                            <div className={`tree-serial ${itemData.itemSerial ? 'completed' : ''} ${isCurrentPosition('item', ssccIndex, caseIndex, innerCaseIndex, itemIndex) ? 'current' : ''}`}
+                                 onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`, itemData.itemSerial)}>
                               {itemData.itemSerial || (
                                 <span className="empty-serial">Click to add</span>
                               )}
@@ -1824,7 +1828,8 @@ function App() {
                         <div className="tree-item">
                           <div className="tree-icon">📄</div>
                           <div className="tree-label">Item {itemIndex + 1}</div>
-                          <div className="tree-serial" onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${itemIndex}`, itemData.itemSerial)}>
+                          <div className={`tree-serial ${itemData.itemSerial ? 'completed' : ''} ${isCurrentPosition('item', ssccIndex, caseIndex, null, itemIndex) ? 'current' : ''}`}
+                               onClick={() => handleEditSerial(`item-${ssccIndex}-${caseIndex}-${itemIndex}`, itemData.itemSerial)}>
                             {itemData.itemSerial || (
                               <span className="empty-serial">Click to add</span>
                             )}
@@ -1845,7 +1850,8 @@ function App() {
                     <div className="tree-item">
                       <div className="tree-icon">📄</div>
                       <div className="tree-label">Item {itemIndex + 1}</div>
-                      <div className="tree-serial" onClick={() => handleEditSerial(`item-${ssccIndex}-${itemIndex}`, itemData.itemSerial)}>
+                      <div className={`tree-serial ${itemData.itemSerial ? 'completed' : ''} ${isCurrentPosition('item', ssccIndex, null, null, itemIndex) ? 'current' : ''}`}
+                           onClick={() => handleEditSerial(`item-${ssccIndex}-${itemIndex}`, itemData.itemSerial)}>
                         {itemData.itemSerial || (
                           <span className="empty-serial">Click to add</span>
                         )}
@@ -1859,6 +1865,15 @@ function App() {
         ))}
       </div>
     );
+  };
+
+  const isCurrentPosition = (level, ssccIndex, caseIndex = null, innerCaseIndex = null, itemIndex = null) => {
+    const step = serialCollectionStep;
+    return step.currentLevel === level && 
+           step.ssccIndex === ssccIndex && 
+           (caseIndex === null || step.caseIndex === caseIndex) &&
+           (innerCaseIndex === null || step.innerCaseIndex === innerCaseIndex) &&
+           (itemIndex === null || step.itemIndex === itemIndex);
   };
 
   const getCurrentItemCount = () => {
