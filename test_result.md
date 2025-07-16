@@ -315,9 +315,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "GS1 Rx EPCIS compliance features"
-  stuck_tasks:
-    - "GS1 Rx EPCIS compliance features"
+    - "EPCIS generation and download UI"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
