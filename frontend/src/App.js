@@ -693,10 +693,14 @@ function App() {
           currentSSCC.ssccSerial = serialCollectionStep.currentSerial;
           break;
         case 'case':
-          currentSSCC.cases[serialCollectionStep.caseIndex].caseSerial = serialCollectionStep.currentSerial;
+          if (currentSSCC.cases && currentSSCC.cases[serialCollectionStep.caseIndex]) {
+            currentSSCC.cases[serialCollectionStep.caseIndex].caseSerial = serialCollectionStep.currentSerial;
+          }
           break;
         case 'innerCase':
-          currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].innerCaseSerial = serialCollectionStep.currentSerial;
+          if (currentSSCC.cases && currentSSCC.cases[serialCollectionStep.caseIndex] && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex]) {
+            currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].innerCaseSerial = serialCollectionStep.currentSerial;
+          }
           break;
         case 'item':
           // For items, handle both single and multi-line
@@ -708,15 +712,15 @@ function App() {
               if (serial) {
                 const currentItemIndex = serialCollectionStep.itemIndex + i;
                 if (configuration.useInnerCases) {
-                  if (currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[currentItemIndex]) {
+                  if (currentSSCC.cases && currentSSCC.cases[serialCollectionStep.caseIndex] && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex] && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[currentItemIndex]) {
                     currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[currentItemIndex].itemSerial = serial;
                   }
                 } else if (configuration.casesPerSscc > 0) {
-                  if (currentSSCC.cases[serialCollectionStep.caseIndex].items[currentItemIndex]) {
+                  if (currentSSCC.cases && currentSSCC.cases[serialCollectionStep.caseIndex] && currentSSCC.cases[serialCollectionStep.caseIndex].items && currentSSCC.cases[serialCollectionStep.caseIndex].items[currentItemIndex]) {
                     currentSSCC.cases[serialCollectionStep.caseIndex].items[currentItemIndex].itemSerial = serial;
                   }
                 } else {
-                  if (currentSSCC.items[currentItemIndex]) {
+                  if (currentSSCC.items && currentSSCC.items[currentItemIndex]) {
                     currentSSCC.items[currentItemIndex].itemSerial = serial;
                   }
                 }
@@ -725,11 +729,17 @@ function App() {
           } else {
             // Single line handling
             if (configuration.useInnerCases) {
-              currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+              if (currentSSCC.cases && currentSSCC.cases[serialCollectionStep.caseIndex] && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex] && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items && currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[serialCollectionStep.itemIndex]) {
+                currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+              }
             } else if (configuration.casesPerSscc > 0) {
-              currentSSCC.cases[serialCollectionStep.caseIndex].items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+              if (currentSSCC.cases && currentSSCC.cases[serialCollectionStep.caseIndex] && currentSSCC.cases[serialCollectionStep.caseIndex].items && currentSSCC.cases[serialCollectionStep.caseIndex].items[serialCollectionStep.itemIndex]) {
+                currentSSCC.cases[serialCollectionStep.caseIndex].items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+              }
             } else {
-              currentSSCC.items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+              if (currentSSCC.items && currentSSCC.items[serialCollectionStep.itemIndex]) {
+                currentSSCC.items[serialCollectionStep.itemIndex].itemSerial = serialCollectionStep.currentSerial;
+              }
             }
           }
           break;
@@ -738,12 +748,13 @@ function App() {
       setHierarchicalSerials(updatedSerials);
     }
     
-    // Parse the clicked level to determine position
+    // Parse the clicked level to determine position and restore previous value
     const step = serialCollectionStep;
+    const currentUpdatedSerials = hierarchicalSerials;
     
     if (clickedLevel.includes('SSCC')) {
       // Navigate to SSCC level
-      const currentSSCC = hierarchicalSerials[step.ssccIndex];
+      const currentSSCC = currentUpdatedSerials[step.ssccIndex];
       setSerialCollectionStep({
         ...step,
         currentLevel: 'sscc',
@@ -755,22 +766,22 @@ function App() {
       });
     } else if (clickedLevel.includes('Case') && !clickedLevel.includes('Inner')) {
       // Navigate to Case level
-      const currentCase = hierarchicalSerials[step.ssccIndex].cases[step.caseIndex];
+      const currentCase = currentUpdatedSerials[step.ssccIndex].cases && currentUpdatedSerials[step.ssccIndex].cases[step.caseIndex];
       setSerialCollectionStep({
         ...step,
         currentLevel: 'case',
-        currentSerial: currentCase.caseSerial || '',
+        currentSerial: currentCase ? (currentCase.caseSerial || '') : '',
         innerCaseIndex: 0,
         itemIndex: 0,
         isComplete: false
       });
     } else if (clickedLevel.includes('Inner Case')) {
       // Navigate to Inner Case level
-      const currentInnerCase = hierarchicalSerials[step.ssccIndex].cases[step.caseIndex].innerCases[step.innerCaseIndex];
+      const currentInnerCase = currentUpdatedSerials[step.ssccIndex].cases && currentUpdatedSerials[step.ssccIndex].cases[step.caseIndex] && currentUpdatedSerials[step.ssccIndex].cases[step.caseIndex].innerCases && currentUpdatedSerials[step.ssccIndex].cases[step.caseIndex].innerCases[step.innerCaseIndex];
       setSerialCollectionStep({
         ...step,
         currentLevel: 'innerCase',
-        currentSerial: currentInnerCase.innerCaseSerial || '',
+        currentSerial: currentInnerCase ? (currentInnerCase.innerCaseSerial || '') : '',
         itemIndex: 0,
         isComplete: false
       });
