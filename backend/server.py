@@ -87,6 +87,8 @@ class SerialConfiguration(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 class SerialConfigurationCreate(BaseModel):
+    model_config = {"populate_by_name": True}
+    
     items_per_case: int = Field(default=0, alias="itemsPerCase")
     cases_per_sscc: int = Field(alias="casesPerSscc")
     number_of_sscc: int = Field(alias="numberOfSscc")
