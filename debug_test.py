@@ -356,18 +356,18 @@ class DebugTester:
                     receiver_gln = None
                     
                     for child in root:
-                        if child.tag == "StandardBusinessDocumentHeader":
+                        if child.tag.endswith("StandardBusinessDocumentHeader"):
                             sbdh_found = True
                             
                             # Check sender
                             for elem in child.iter():
-                                if elem.tag == "Sender":
+                                if elem.tag.endswith("Sender"):
                                     for identifier in elem:
-                                        if identifier.tag == "Identifier":
+                                        if identifier.tag.endswith("Identifier"):
                                             sender_gln = identifier.text
-                                elif elem.tag == "Receiver":
+                                elif elem.tag.endswith("Receiver"):
                                     for identifier in elem:
-                                        if identifier.tag == "Identifier":
+                                        if identifier.tag.endswith("Identifier"):
                                             receiver_gln = identifier.text
                     
                     if not sbdh_found:
