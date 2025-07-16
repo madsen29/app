@@ -1933,7 +1933,13 @@ function App() {
                         shipperSameAsSender: isSame,
                         shipperCompanyPrefix: isSame ? configuration.senderCompanyPrefix : configuration.shipperCompanyPrefix,
                         shipperGln: isSame ? configuration.senderGln : configuration.shipperGln,
-                        shipperSgln: isSame ? configuration.senderSgln : configuration.shipperSgln
+                        shipperSgln: isSame ? configuration.senderSgln : configuration.shipperSgln,
+                        shipperName: isSame ? configuration.senderName : configuration.shipperName,
+                        shipperStreetAddress: isSame ? configuration.senderStreetAddress : configuration.shipperStreetAddress,
+                        shipperCity: isSame ? configuration.senderCity : configuration.shipperCity,
+                        shipperState: isSame ? configuration.senderState : configuration.shipperState,
+                        shipperPostalCode: isSame ? configuration.senderPostalCode : configuration.shipperPostalCode,
+                        shipperCountryCode: isSame ? configuration.senderCountryCode : configuration.shipperCountryCode
                       });
                     }}
                   />
@@ -1972,6 +1978,72 @@ function App() {
                     value={configuration.shipperSgln}
                     onChange={(e) => setConfiguration({...configuration, shipperSgln: e.target.value})}
                     placeholder="e.g., 0345802000014.001"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="shipperName">Company Name:</label>
+                  <input
+                    type="text"
+                    id="shipperName"
+                    value={configuration.shipperName}
+                    onChange={(e) => setConfiguration({...configuration, shipperName: e.target.value})}
+                    placeholder="e.g., Shipping Corp"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="shipperStreetAddress">Street Address:</label>
+                  <input
+                    type="text"
+                    id="shipperStreetAddress"
+                    value={configuration.shipperStreetAddress}
+                    onChange={(e) => setConfiguration({...configuration, shipperStreetAddress: e.target.value})}
+                    placeholder="e.g., 456 Shipping Ave"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="shipperCity">City:</label>
+                  <input
+                    type="text"
+                    id="shipperCity"
+                    value={configuration.shipperCity}
+                    onChange={(e) => setConfiguration({...configuration, shipperCity: e.target.value})}
+                    placeholder="e.g., Chicago"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="shipperState">State:</label>
+                  <input
+                    type="text"
+                    id="shipperState"
+                    value={configuration.shipperState}
+                    onChange={(e) => setConfiguration({...configuration, shipperState: e.target.value})}
+                    placeholder="e.g., IL"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="shipperPostalCode">Postal Code:</label>
+                  <input
+                    type="text"
+                    id="shipperPostalCode"
+                    value={configuration.shipperPostalCode}
+                    onChange={(e) => setConfiguration({...configuration, shipperPostalCode: e.target.value})}
+                    placeholder="e.g., 60007"
+                    disabled={configuration.shipperSameAsSender}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="shipperCountryCode">Country Code:</label>
+                  <input
+                    type="text"
+                    id="shipperCountryCode"
+                    value={configuration.shipperCountryCode}
+                    onChange={(e) => setConfiguration({...configuration, shipperCountryCode: e.target.value})}
+                    placeholder="e.g., US"
                     disabled={configuration.shipperSameAsSender}
                   />
                 </div>
