@@ -1981,7 +1981,7 @@ function App() {
     return (
       <div className="tree-view">
         {hierarchicalSerials.map((ssccData, ssccIndex) => (
-          <div key={ssccIndex} className="tree-level sscc-level">
+          <div key={ssccIndex} className={`tree-level sscc-level ${isCurrentContainer('sscc', ssccIndex) ? 'current-container' : ''}`}>
             <div className="tree-item">
               <div className="tree-icon"><FiPackage /></div>
               <div className="tree-label">SSCC {ssccIndex + 1}</div>
@@ -1995,7 +1995,7 @@ function App() {
             
             {/* Cases */}
             {ssccData.cases && ssccData.cases.length > 0 && ssccData.cases.map((caseData, caseIndex) => (
-              <div key={caseIndex} className="tree-level case-level">
+              <div key={caseIndex} className={`tree-level case-level ${isCurrentContainer('case', ssccIndex, caseIndex) ? 'current-container' : ''}`}>
                 <div className="tree-item">
                   <div className="tree-icon"><FiBox /></div>
                   <div className="tree-label">Case {caseIndex + 1}</div>
@@ -2009,7 +2009,7 @@ function App() {
                 
                 {/* Inner Cases */}
                 {caseData.innerCases && caseData.innerCases.length > 0 && caseData.innerCases.map((innerCaseData, innerCaseIndex) => (
-                  <div key={innerCaseIndex} className="tree-level inner-case-level">
+                  <div key={innerCaseIndex} className={`tree-level inner-case-level ${isCurrentContainer('innerCase', ssccIndex, caseIndex, innerCaseIndex) ? 'current-container' : ''}`}>
                     <div className="tree-item">
                       <div className="tree-icon"><FiFolder /></div>
                       <div className="tree-label">Inner Case {innerCaseIndex + 1}</div>
