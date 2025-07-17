@@ -849,7 +849,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
             aggregation_event = ET.SubElement(event_list, "AggregationEvent")
             
             event_time = ET.SubElement(aggregation_event, "eventTime")
-            event_time.text = format_xml_datetime()
+            event_time.text = get_next_timestamp()
             
             event_timezone = ET.SubElement(aggregation_event, "eventTimeZoneOffset")
             event_timezone.text = "+00:00"
