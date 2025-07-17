@@ -922,10 +922,10 @@ function App() {
             return;
           }
           
-          // Also check for duplicates within the current input
+          // Also check for duplicates within the current input (case-insensitive)
           for (let j = 0; j < i; j++) {
             const previousSerial = serialLines[j].trim();
-            if (previousSerial === serial) {
+            if (previousSerial.toLowerCase() === serial.toLowerCase()) {
               setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used on line ${j + 1} in this input.`);
               return;
             }
