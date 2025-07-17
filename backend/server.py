@@ -541,6 +541,16 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     sscc_indicator_digit = config["sscc_indicator_digit"]
     number_of_sscc = config["number_of_sscc"]
     
+    # Use shipper SGLN for readPoint and bizLocation
+    shipper_sgln = config.get("shipper_sgln", "")
+    if shipper_sgln:
+        read_point = f"urn:epc:id:sgln:{shipper_sgln}"
+        biz_location = f"urn:epc:id:sgln:{shipper_sgln}"
+    else:
+        # Fallback to provided values if no shipper SGLN
+        read_point = read_point
+        biz_location = biz_location
+    
     # Check if we have direct SSCC → Items aggregation
     direct_sscc_items = cases_per_sscc == 0
     
