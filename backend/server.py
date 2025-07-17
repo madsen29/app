@@ -306,6 +306,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     root = ET.Element("EPCISDocument")
     root.set("xmlns", "urn:epcglobal:epcis:xsd:1")
     root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    root.set("xmlns:gs1ushc", "http://epcis.gs1us.org/hc/ns")
     root.set("schemaVersion", "1.2")
     root.set("creationDate", datetime.now(timezone.utc).isoformat())
     
