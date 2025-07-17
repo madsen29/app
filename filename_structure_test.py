@@ -117,12 +117,12 @@ class FilenameStructureTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if data.get("sender_gln") == sender_gln and data.get("receiver_gln") == receiver_gln:
+                if data.get("senderGln") == sender_gln and data.get("receiverGln") == receiver_gln:
                     self.log_test("Configuration Creation", True, f"Configuration created with GLNs: sender={sender_gln}, receiver={receiver_gln}", 
                                 f"ID: {data['id']}")
                     return data["id"]
                 else:
-                    self.log_test("Configuration Creation", False, f"GLN mismatch: expected sender={sender_gln}, receiver={receiver_gln}, got sender={data.get('sender_gln')}, receiver={data.get('receiver_gln')}")
+                    self.log_test("Configuration Creation", False, f"GLN mismatch: expected sender={sender_gln}, receiver={receiver_gln}, got sender={data.get('senderGln')}, receiver={data.get('receiverGln')}")
                     return None
             else:
                 self.log_test("Configuration Creation", False, f"HTTP {response.status_code}: {response.text}")
