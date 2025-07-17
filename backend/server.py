@@ -933,6 +933,25 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     read_point_id = ET.SubElement(read_point_elem, "id")
     read_point_id.text = read_point
     
+    # Add bizTransactionList with PO and Despatch Advice information
+    biz_transaction_list = ET.SubElement(shipping_event, "bizTransactionList")
+    
+    # Purchase Order transaction
+    receiver_gln = config.get("receiver_gln", "")
+    receiver_po_number = config.get("receiver_po_number", "")
+    if receiver_gln and receiver_po_number:
+        po_transaction = ET.SubElement(biz_transaction_list, "bizTransaction")
+        po_transaction.set("type", "urn:epcglobal:cbv:btt:po")
+        po_transaction.text = f"urn:epcglobal:cbv:bt:{receiver_gln}:{receiver_po_number}"
+    
+    # Despatch Advice transaction
+    sender_gln = config.get("sender_gln", "")
+    sender_despatch_advice_number = config.get("sender_despatch_advice_number", "")
+    if sender_gln and sender_despatch_advice_number:
+        desadv_transaction = ET.SubElement(biz_transaction_list, "bizTransaction")
+        desadv_transaction.set("type", "urn:epcglobal:cbv:btt:desadv")
+        desadv_transaction.text = f"urn:epcglobal:cbv:bt:{sender_gln}:{sender_despatch_advice_number}"
+    
     # Add extension with sourceList and destinationList
     extension = ET.SubElement(shipping_event, "extension")
     
