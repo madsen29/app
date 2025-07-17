@@ -1970,6 +1970,16 @@ function App() {
                     placeholder="e.g., US"
                   />
                 </div>
+                <div className="form-group">
+                  <label htmlFor="receiverPoNumber">PO Number:</label>
+                  <input
+                    type="text"
+                    id="receiverPoNumber"
+                    value={configuration.receiverPoNumber}
+                    onChange={(e) => setConfiguration({...configuration, receiverPoNumber: e.target.value})}
+                    placeholder="e.g., PO-2025-001"
+                  />
+                </div>
               </div>
             </div>
 
