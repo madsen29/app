@@ -351,7 +351,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     type_element = ET.SubElement(doc_identification, "sbdh:Type")
     type_element.text = "Events"
     creation_date_time = ET.SubElement(doc_identification, "sbdh:CreationDateAndTime")
-    creation_date_time.text = datetime.now(timezone.utc).isoformat()
+    creation_date_time.text = format_xml_datetime()
     
     # Add extension element containing EPCISMasterData directly under EPCISHeader
     extension = ET.SubElement(epcis_header, "extension")
