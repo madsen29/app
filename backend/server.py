@@ -474,10 +474,10 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         postal_code = config.get(f"{prefix}_postal_code", "")
         country_code = config.get(f"{prefix}_country_code", "")
         
-        if gln:
-            # Add GLN location element
+        if sgln:
+            # Add SGLN location element (using SGLN instead of GLN)
             loc_element = ET.SubElement(location_vocabulary_element_list, "VocabularyElement")
-            loc_element.set("id", f"urn:epc:id:sgln:{gln}")
+            loc_element.set("id", f"urn:epc:id:sgln:{sgln}")
             
             # Add name attribute
             if name:
