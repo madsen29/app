@@ -477,11 +477,19 @@ function App() {
   const validateDuplicateSerials = (newSerial, currentPath) => {
     const allSerials = [];
     
+    // Normalize the serial number (trim whitespace, convert to lowercase for comparison)
+    const normalizedNewSerial = newSerial.trim().toLowerCase();
+    
+    if (!normalizedNewSerial) {
+      return null; // Empty serials are not duplicates
+    }
+    
     // Collect all existing serials
     hierarchicalSerials.forEach((ssccData, ssccIndex) => {
-      if (ssccData.ssccSerial) {
+      if (ssccData.ssccSerial && ssccData.ssccSerial.trim()) {
         allSerials.push({
-          serial: ssccData.ssccSerial,
+          serial: ssccData.ssccSerial.trim(),
+          normalizedSerial: ssccData.ssccSerial.trim().toLowerCase(),
           path: `SSCC ${ssccIndex + 1}`,
           isCurrentPath: currentPath === `sscc-${ssccIndex}`
         });
@@ -489,9 +497,10 @@ function App() {
       
       if (ssccData.cases) {
         ssccData.cases.forEach((caseData, caseIndex) => {
-          if (caseData.caseSerial) {
+          if (caseData.caseSerial && caseData.caseSerial.trim()) {
             allSerials.push({
-              serial: caseData.caseSerial,
+              serial: caseData.caseSerial.trim(),
+              normalizedSerial: caseData.caseSerial.trim().toLowerCase(),
               path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1}`,
               isCurrentPath: currentPath === `case-${ssccIndex}-${caseIndex}`
             });
@@ -499,18 +508,20 @@ function App() {
           
           if (caseData.innerCases) {
             caseData.innerCases.forEach((innerCaseData, innerCaseIndex) => {
-              if (innerCaseData.innerCaseSerial) {
+              if (innerCaseData.innerCaseSerial && innerCaseData.innerCaseSerial.trim()) {
                 allSerials.push({
-                  serial: innerCaseData.innerCaseSerial,
+                  serial: innerCaseData.innerCaseSerial.trim(),
+                  normalizedSerial: innerCaseData.innerCaseSerial.trim().toLowerCase(),
                   path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Inner Case ${innerCaseIndex + 1}`,
                   isCurrentPath: currentPath === `innerCase-${ssccIndex}-${caseIndex}-${innerCaseIndex}`
                 });
               }
               
               innerCaseData.items.forEach((itemData, itemIndex) => {
-                if (itemData.itemSerial) {
+                if (itemData.itemSerial && itemData.itemSerial.trim()) {
                   allSerials.push({
-                    serial: itemData.itemSerial,
+                    serial: itemData.itemSerial.trim(),
+                    normalizedSerial: itemData.itemSerial.trim().toLowerCase(),
                     path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Inner Case ${innerCaseIndex + 1} → Item ${itemIndex + 1}`,
                     isCurrentPath: currentPath === `item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`
                   });
@@ -519,9 +530,10 @@ function App() {
             });
           } else {
             caseData.items.forEach((itemData, itemIndex) => {
-              if (itemData.itemSerial) {
+              if (itemData.itemSerial && itemData.itemSerial.trim()) {
                 allSerials.push({
-                  serial: itemData.itemSerial,
+                  serial: itemData.itemSerial.trim(),
+                  normalizedSerial: itemData.itemSerial.trim().toLowerCase(),
                   path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Item ${itemIndex + 1}`,
                   isCurrentPath: currentPath === `item-${ssccIndex}-${caseIndex}-${itemIndex}`
                 });
@@ -531,9 +543,10 @@ function App() {
         });
       } else if (ssccData.items) {
         ssccData.items.forEach((itemData, itemIndex) => {
-          if (itemData.itemSerial) {
+          if (itemData.itemSerial && itemData.itemSerial.trim()) {
             allSerials.push({
-              serial: itemData.itemSerial,
+              serial: itemData.itemSerial.trim(),
+              normalizedSerial: itemData.itemSerial.trim().toLowerCase(),
               path: `SSCC ${ssccIndex + 1} → Item ${itemIndex + 1}`,
               isCurrentPath: currentPath === `item-${ssccIndex}-${itemIndex}`
             });
@@ -542,9 +555,9 @@ function App() {
       }
     });
     
-    // Check for duplicates
+    // Check for duplicates using normalized comparison
     const duplicates = allSerials.filter(item => 
-      item.serial === newSerial && !item.isCurrentPath
+      item.normalizedSerial === normalizedNewSerial && !item.isCurrentPath
     );
     
     return duplicates.length > 0 ? duplicates : null;
