@@ -303,7 +303,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     """Generate GS1 EPCIS 1.2 XML with SBDH for pharmaceutical aggregation"""
     
     # Create root element as EPCISDocument (not StandardBusinessDocument)
-    root = ET.Element("EPCISDocument")
+    root = ET.Element("epcis:EPCISDocument")
     root.set("xmlns", "urn:epcglobal:epcis:xsd:1")
     root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
     root.set("xmlns:gs1ushc", "http://epcis.gs1us.org/hc/ns")
