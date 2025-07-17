@@ -157,14 +157,14 @@ class FilenameStructureTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if (len(data["sscc_serial_numbers"]) == 1 and 
-                    len(data["case_serial_numbers"]) == 5 and
-                    len(data["item_serial_numbers"]) == 50):
+                if (len(data["ssccSerialNumbers"]) == 1 and 
+                    len(data["caseSerialNumbers"]) == 5 and
+                    len(data["itemSerialNumbers"]) == 50):
                     self.log_test("Serial Numbers Creation", True, "Serial numbers created successfully",
-                                f"SSCC: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
+                                f"SSCC: {len(data['ssccSerialNumbers'])}, Cases: {len(data['caseSerialNumbers'])}, Items: {len(data['itemSerialNumbers'])}")
                     return data["id"]
                 else:
-                    self.log_test("Serial Numbers Creation", False, f"Count mismatch - SSCC: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
+                    self.log_test("Serial Numbers Creation", False, f"Count mismatch - SSCC: {len(data['ssccSerialNumbers'])}, Cases: {len(data['caseSerialNumbers'])}, Items: {len(data['itemSerialNumbers'])}")
                     return None
             else:
                 self.log_test("Serial Numbers Creation", False, f"HTTP {response.status_code}: {response.text}")
