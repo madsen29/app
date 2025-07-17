@@ -354,7 +354,7 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Updated EPCIS filename structure to use new naming convention: 'epcis'-{senderGLN}-{receiverGLN}-{todays date in YYMMDD}. The generate_epcis endpoint now extracts sender_gln and receiver_gln from configuration and generates filename with current date in YYMMDD format. This change needs backend testing to verify the new filename structure is working correctly."
+    message: "FIXED EPCIS filename structure implementation. Updated the GLN extraction to handle both snake_case and camelCase keys from MongoDB configuration. Added debugging logs and fallback handling for missing GLN values. The filename now properly extracts sender_gln and receiver_gln from configuration and generates filename in format: 'epcis-{senderGLN}-{receiverGLN}-{YYMMDD}.xml'. Backend service restarted - ready for user testing."
   - agent: "main"
     message: "Enhanced app with user-configurable GS1 parameters. Users can now specify company prefix, product code, case indicator digit, and item indicator digit. Updated both backend EPCIS generation and frontend UI. Configuration and EPCIS generation endpoints need retesting with new parameters."
   - agent: "main"
