@@ -489,47 +489,6 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
                 country_attr = ET.SubElement(loc_element, "attribute")
                 country_attr.set("id", "urn:epcglobal:cbv:mda#countryCode")
                 country_attr.text = country_code
-            
-        if sgln:
-            # Add SGLN location element
-            sgln_element = ET.SubElement(location_vocabulary_element_list, "VocabularyElement")
-            sgln_element.set("id", f"urn:epc:id:sgln:{sgln}")
-            
-            # Add name attribute for serialized location
-            if name:
-                sgln_name_attr = ET.SubElement(sgln_element, "attribute")
-                sgln_name_attr.set("id", "urn:epcglobal:cbv:mda#name")
-                sgln_name_attr.text = f"{name} - {role.capitalize()} Location"
-            
-            # Add street address attribute
-            if street_address:
-                sgln_street_attr = ET.SubElement(sgln_element, "attribute")
-                sgln_street_attr.set("id", "urn:epcglobal:cbv:mda#streetAddressOne")
-                sgln_street_attr.text = street_address
-            
-            # Add city attribute
-            if city:
-                sgln_city_attr = ET.SubElement(sgln_element, "attribute")
-                sgln_city_attr.set("id", "urn:epcglobal:cbv:mda#city")
-                sgln_city_attr.text = city
-            
-            # Add state attribute
-            if state:
-                sgln_state_attr = ET.SubElement(sgln_element, "attribute")
-                sgln_state_attr.set("id", "urn:epcglobal:cbv:mda#state")
-                sgln_state_attr.text = state
-            
-            # Add postal code attribute
-            if postal_code:
-                sgln_postal_attr = ET.SubElement(sgln_element, "attribute")
-                sgln_postal_attr.set("id", "urn:epcglobal:cbv:mda#postalCode")
-                sgln_postal_attr.text = postal_code
-            
-            # Add country code attribute
-            if country_code:
-                sgln_country_attr = ET.SubElement(sgln_element, "attribute")
-                sgln_country_attr.set("id", "urn:epcglobal:cbv:mda#countryCode")
-                sgln_country_attr.text = country_code
     
     # Create EPCISBody
     epcis_body = ET.SubElement(root, "EPCISBody")
