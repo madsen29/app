@@ -2992,7 +2992,7 @@ function App() {
               </div>
               <div className="epcis-row">
                 <span className="epcis-label">Event Types</span>
-                <span className="epcis-value">Commissioning + Aggregation</span>
+                <span className="epcis-value">Commissioning, Aggregation</span>
               </div>
               <div className="epcis-row">
                 <span className="epcis-label">Business Step</span>
