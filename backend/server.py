@@ -306,6 +306,22 @@ def add_ilmd_extension(event_element, lot_number, expiration_date):
 def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     """Generate GS1 EPCIS 1.2 XML with SBDH for pharmaceutical aggregation"""
     
+    # Initialize base timestamp and counter for incremental timestamps
+    base_timestamp = datetime.now(timezone.utc)
+    timestamp_counter = 0
+    
+    # Helper function to get next incremental timestamp
+    def get_next_timestamp():
+        nonlocal timestamp_counter
+        current_timestamp = base_timestamp + timedelta(seconds=timestamp_counter)
+        timestamp_counter += 1
+        return current_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+    
+    # Helper function to get final timestamp for SBDH (after all events)
+    def get_final_timestamp():
+        final_timestamp = base_timestamp + timedelta(seconds=timestamp_counter)
+        return final_timestamp.strftime('%Y-%m-%dT%H:%M:%SZ')
+    
     # Helper function to format datetime in XML Schema format with Z suffix
     def format_xml_datetime():
         return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -316,7 +332,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
     root.set("xmlns:gs1ushc", "http://epcis.gs1us.org/hc/ns")
     root.set("schemaVersion", "1.2")
-    root.set("creationDate", format_xml_datetime())
+    root.set("creationDate", get_next_timestamp())
     
     # Create EPCISHeader
     epcis_header = ET.SubElement(root, "EPCISHeader")
