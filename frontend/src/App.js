@@ -127,6 +127,7 @@ function App() {
     configuration.senderState,
     configuration.senderPostalCode,
     configuration.senderCountryCode,
+    configuration.senderDespatchAdviceNumber,
     configuration.shipperSameAsSender
   ]);
 
