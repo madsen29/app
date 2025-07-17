@@ -141,11 +141,11 @@ class FilenameStructureTester:
         # For config: 10 items per case, 5 cases per SSCC, 1 SSCC
         # Expected: 1 SSCC, 5 cases, 50 items
         test_data = {
-            "configuration_id": config_id,
-            "sscc_serial_numbers": ["SSCC001"],
-            "case_serial_numbers": [f"CASE{i+1:03d}" for i in range(5)],
-            "inner_case_serial_numbers": [],
-            "item_serial_numbers": [f"ITEM{i+1:03d}" for i in range(50)]
+            "configurationId": config_id,
+            "ssccSerialNumbers": ["SSCC001"],
+            "caseSerialNumbers": [f"CASE{i+1:03d}" for i in range(5)],
+            "innerCaseSerialNumbers": [],
+            "itemSerialNumbers": [f"ITEM{i+1:03d}" for i in range(50)]
         }
         
         try:
