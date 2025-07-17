@@ -2193,13 +2193,13 @@ function App() {
                 id="netContentDescription"
                 value={configuration.netContentDescription}
                 onChange={(e) => setConfiguration({...configuration, netContentDescription: e.target.value})}
-                placeholder="e.g., 85GM     Wgt"
+                placeholder="e.g., 85GM Wgt"
                 required
               />
               <small className="form-hint">Package size and weight</small>
             </div>
             <div className="form-group">
-              <label htmlFor="companyPrefix">Company Prefix:</label>
+              <label htmlFor="companyPrefix">GS1 Company Prefix:</label>
               <input
                 type="text"
                 id="companyPrefix"
@@ -2478,7 +2478,7 @@ function App() {
           
           <div className="gs1-examples">
             <h4>GS1 Identifier Examples</h4>
-            <p><strong>SSCC:</strong> urn:epc:id:sscc:{configuration.companyPrefix}.{configuration.ssccExtensionDigit}[sscc_serial]</p>
+            <p><strong>SSCC:</strong> urn:epc:id:sscc:{configuration.shipperCompanyPrefix}.{configuration.ssccExtensionDigit}[sscc_serial]</p>
             <p><strong>Case SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.caseIndicatorDigit}{configuration.productCode}.[case_serial]</p>
             {configuration.useInnerCases && (
               <p><strong>Inner Case SGTIN:</strong> urn:epc:id:sgtin:{configuration.companyPrefix}.{configuration.innerCaseIndicatorDigit}{configuration.productCode}.[inner_case_serial]</p>
