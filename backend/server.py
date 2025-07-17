@@ -302,13 +302,17 @@ def add_ilmd_extension(event_element, lot_number, expiration_date):
 def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     """Generate GS1 EPCIS 1.2 XML with SBDH for pharmaceutical aggregation"""
     
+    # Helper function to format datetime in XML Schema format with Z suffix
+    def format_xml_datetime():
+        return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    
     # Create root element as EPCISDocument (not StandardBusinessDocument)
     root = ET.Element("epcis:EPCISDocument")
     root.set("xmlns", "urn:epcglobal:epcis:xsd:1")
     root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
     root.set("xmlns:gs1ushc", "http://epcis.gs1us.org/hc/ns")
     root.set("schemaVersion", "1.2")
-    root.set("creationDate", datetime.now(timezone.utc).isoformat())
+    root.set("creationDate", format_xml_datetime())
     
     # Create EPCISHeader
     epcis_header = ET.SubElement(root, "EPCISHeader")
