@@ -1000,6 +1000,9 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         dest_location.set("type", "urn:epcglobal:cbv:sdt:location")
         dest_location.text = f"urn:epc:id:sgln:{receiver_sgln}"
     
+    # Update SBDH CreationDateAndTime to be the final timestamp (after all events)
+    creation_date_time.text = get_final_timestamp()
+    
     # Convert to string
     ET.indent(root, space="  ")
     return ET.tostring(root, encoding="unicode", xml_declaration=True)
