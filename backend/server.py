@@ -962,16 +962,17 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     # Source list (sender information)
     source_list = ET.SubElement(extension, "sourceList")
     sender_sgln = config.get("sender_sgln", "")
+    shipper_sgln = config.get("shipper_sgln", "")
     if sender_sgln:
-        # owning_party source
+        # owning_party source (uses sender SGLN)
         source_owning = ET.SubElement(source_list, "source")
         source_owning.set("type", "urn:epcglobal:cbv:sdt:owning_party")
         source_owning.text = f"urn:epc:id:sgln:{sender_sgln}"
         
-        # location source
+        # location source (uses shipper SGLN)
         source_location = ET.SubElement(source_list, "source")
         source_location.set("type", "urn:epcglobal:cbv:sdt:location")
-        source_location.text = f"urn:epc:id:sgln:{sender_sgln}"
+        source_location.text = f"urn:epc:id:sgln:{shipper_sgln}"
     
     # Destination list (receiver information)
     destination_list = ET.SubElement(extension, "destinationList")
@@ -986,13 +987,6 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         dest_location = ET.SubElement(destination_list, "destination")
         dest_location.set("type", "urn:epcglobal:cbv:sdt:location")
         dest_location.text = f"urn:epc:id:sgln:{receiver_sgln}"
-    
-    # Add business transaction information if available
-    if config.get("shipper_sgln"):
-        biz_transaction_list = ET.SubElement(shipping_event, "bizTransactionList")
-        biz_transaction = ET.SubElement(biz_transaction_list, "bizTransaction")
-        biz_transaction.set("type", "urn:epcglobal:cbv:btt:po")
-        biz_transaction.text = f"urn:epc:id:sgln:{config['shipper_sgln']}"
     
     # Convert to string
     ET.indent(root, space="  ")
