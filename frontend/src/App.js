@@ -1782,7 +1782,8 @@ function App() {
                     id="senderCompanyPrefix"
                     value={configuration.senderCompanyPrefix}
                     onChange={(e) => setConfiguration({...configuration, senderCompanyPrefix: e.target.value})}
-                    placeholder="e.g., 0345802"
+                    placeholder="e.g., 0367891"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1792,7 +1793,8 @@ function App() {
                     id="senderGln"
                     value={configuration.senderGln}
                     onChange={(e) => setConfiguration({...configuration, senderGln: e.target.value})}
-                    placeholder="e.g., 0345802000014"
+                    placeholder="e.g., 0367891000015"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1802,7 +1804,8 @@ function App() {
                     id="senderSgln"
                     value={configuration.senderSgln}
                     onChange={(e) => setConfiguration({...configuration, senderSgln: e.target.value})}
-                    placeholder="e.g., 0345802000014.001"
+                    placeholder="e.g., 0367891.00001.0"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1812,7 +1815,8 @@ function App() {
                     id="senderName"
                     value={configuration.senderName}
                     onChange={(e) => setConfiguration({...configuration, senderName: e.target.value})}
-                    placeholder="e.g., Padagis US LLC"
+                    placeholder="e.g., Pharma US LLC"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1822,7 +1826,8 @@ function App() {
                     id="senderStreetAddress"
                     value={configuration.senderStreetAddress}
                     onChange={(e) => setConfiguration({...configuration, senderStreetAddress: e.target.value})}
-                    placeholder="e.g., 1251 Lincoln Rd"
+                    placeholder="e.g., 1255 Main St"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1832,7 +1837,8 @@ function App() {
                     id="senderCity"
                     value={configuration.senderCity}
                     onChange={(e) => setConfiguration({...configuration, senderCity: e.target.value})}
-                    placeholder="e.g., Allegan"
+                    placeholder="e.g., Salt Lake City"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1842,7 +1848,8 @@ function App() {
                     id="senderState"
                     value={configuration.senderState}
                     onChange={(e) => setConfiguration({...configuration, senderState: e.target.value})}
-                    placeholder="e.g., MI"
+                    placeholder="e.g., UT"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1852,7 +1859,8 @@ function App() {
                     id="senderPostalCode"
                     value={configuration.senderPostalCode}
                     onChange={(e) => setConfiguration({...configuration, senderPostalCode: e.target.value})}
-                    placeholder="e.g., 49010"
+                    placeholder="e.g., 84044"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1863,6 +1871,7 @@ function App() {
                     value={configuration.senderCountryCode}
                     onChange={(e) => setConfiguration({...configuration, senderCountryCode: e.target.value})}
                     placeholder="e.g., US"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1872,7 +1881,8 @@ function App() {
                     id="senderDespatchAdviceNumber"
                     value={configuration.senderDespatchAdviceNumber}
                     onChange={(e) => setConfiguration({...configuration, senderDespatchAdviceNumber: e.target.value})}
-                    placeholder="e.g., DA-2025-001"
+                    placeholder="e.g., 202500221"
+                    required
                   />
                 </div>
               </div>
@@ -1883,7 +1893,7 @@ function App() {
               <h4>Receiver Information</h4>
               <div className="form-grid">
                 <div className="form-group">
-                  <label htmlFor="receiverCompanyPrefix">GS1 Company Prefix:</label>
+                  <label htmlFor="receiverCompanyPrefix">GS1 Company Prefix (optional):</label>
                   <input
                     type="text"
                     id="receiverCompanyPrefix"
@@ -1900,6 +1910,7 @@ function App() {
                     value={configuration.receiverGln}
                     onChange={(e) => setConfiguration({...configuration, receiverGln: e.target.value})}
                     placeholder="e.g., 0345802000021"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1909,7 +1920,8 @@ function App() {
                     id="receiverSgln"
                     value={configuration.receiverSgln}
                     onChange={(e) => setConfiguration({...configuration, receiverSgln: e.target.value})}
-                    placeholder="e.g., 0345802000021.001"
+                    placeholder="e.g., 1034580200021..0"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1920,6 +1932,7 @@ function App() {
                     value={configuration.receiverName}
                     onChange={(e) => setConfiguration({...configuration, receiverName: e.target.value})}
                     placeholder="e.g., Pharmacy Corp"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1930,6 +1943,7 @@ function App() {
                     value={configuration.receiverStreetAddress}
                     onChange={(e) => setConfiguration({...configuration, receiverStreetAddress: e.target.value})}
                     placeholder="e.g., 123 Main St"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1940,6 +1954,7 @@ function App() {
                     value={configuration.receiverCity}
                     onChange={(e) => setConfiguration({...configuration, receiverCity: e.target.value})}
                     placeholder="e.g., New York"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1950,6 +1965,7 @@ function App() {
                     value={configuration.receiverState}
                     onChange={(e) => setConfiguration({...configuration, receiverState: e.target.value})}
                     placeholder="e.g., NY"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1960,6 +1976,7 @@ function App() {
                     value={configuration.receiverPostalCode}
                     onChange={(e) => setConfiguration({...configuration, receiverPostalCode: e.target.value})}
                     placeholder="e.g., 10001"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1970,6 +1987,7 @@ function App() {
                     value={configuration.receiverCountryCode}
                     onChange={(e) => setConfiguration({...configuration, receiverCountryCode: e.target.value})}
                     placeholder="e.g., US"
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -1979,7 +1997,8 @@ function App() {
                     id="receiverPoNumber"
                     value={configuration.receiverPoNumber}
                     onChange={(e) => setConfiguration({...configuration, receiverPoNumber: e.target.value})}
-                    placeholder="e.g., PO-2025-001"
+                    placeholder="e.g., 1002345"
+                    required
                   />
                 </div>
               </div>
@@ -2024,6 +2043,7 @@ function App() {
                     onChange={(e) => setConfiguration({...configuration, shipperCompanyPrefix: e.target.value})}
                     placeholder="e.g., 0345802"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -2035,6 +2055,7 @@ function App() {
                     onChange={(e) => setConfiguration({...configuration, shipperGln: e.target.value})}
                     placeholder="e.g., 0345802000014"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -2044,8 +2065,9 @@ function App() {
                     id="shipperSgln"
                     value={configuration.shipperSgln}
                     onChange={(e) => setConfiguration({...configuration, shipperSgln: e.target.value})}
-                    placeholder="e.g., 0345802000014.001"
+                    placeholder="e.g., 0345802.0000.0"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -2057,6 +2079,7 @@ function App() {
                     onChange={(e) => setConfiguration({...configuration, shipperName: e.target.value})}
                     placeholder="e.g., Shipping Corp"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -2068,6 +2091,7 @@ function App() {
                     onChange={(e) => setConfiguration({...configuration, shipperStreetAddress: e.target.value})}
                     placeholder="e.g., 456 Shipping Ave"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -2079,6 +2103,7 @@ function App() {
                     onChange={(e) => setConfiguration({...configuration, shipperCity: e.target.value})}
                     placeholder="e.g., Chicago"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -2090,6 +2115,7 @@ function App() {
                     onChange={(e) => setConfiguration({...configuration, shipperState: e.target.value})}
                     placeholder="e.g., IL"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -2101,6 +2127,7 @@ function App() {
                     onChange={(e) => setConfiguration({...configuration, shipperPostalCode: e.target.value})}
                     placeholder="e.g., 60007"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -2112,6 +2139,7 @@ function App() {
                     onChange={(e) => setConfiguration({...configuration, shipperCountryCode: e.target.value})}
                     placeholder="e.g., US"
                     disabled={configuration.shipperSameAsSender}
+                    required
                   />
                 </div>
               </div>
