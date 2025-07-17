@@ -284,17 +284,12 @@ async def generate_epcis(request: EPCISGenerationRequest):
     receiver_gln = config.get("receiver_gln", config.get("receiverGln", ""))
     today_date = datetime.now(timezone.utc).strftime("%y%m%d")
     
-    # Debug logging
-    print(f"DEBUG: sender_gln = '{sender_gln}', receiver_gln = '{receiver_gln}', today_date = '{today_date}'")
-    
     # Create filename: "epcis"-{senderGLN}-{receiverGLN}-{YYMMDD}
     # If GLN values are empty, use default fallback
     if not sender_gln or not receiver_gln:
         filename = f"epcis-{today_date}.xml"
-        print(f"DEBUG: Using fallback filename due to missing GLN values: {filename}")
     else:
         filename = f"epcis-{sender_gln}-{receiver_gln}-{today_date}.xml"
-        print(f"DEBUG: Using full filename: {filename}")
     
     # Return as downloadable file
     return Response(
