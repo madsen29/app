@@ -312,16 +312,12 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     # Create EPCISHeader
     epcis_header = ET.SubElement(root, "EPCISHeader")
     
-    # Create StandardBusinessDocument inside EPCISHeader
-    sbdh_doc = ET.SubElement(epcis_header, "StandardBusinessDocument")
-    sbdh_doc.set("xmlns:sbdh", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
-    sbdh_doc.set("xmlns:cbvmda", "urn:epcglobal:cbv:mda")
-    sbdh_doc.set("xmlns", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
-    sbdh_doc.set("xmlns:epcis", "urn:epcglobal:epcis:xsd:1")
-    sbdh_doc.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    # Add SBDH namespaces to the root element
+    root.set("xmlns:sbdh", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
+    root.set("xmlns:cbvmda", "urn:epcglobal:cbv:mda")
     
-    # Create SBDH Header with sbdh: prefix
-    sbdh = ET.SubElement(sbdh_doc, "sbdh:StandardBusinessDocumentHeader")
+    # Create SBDH Header directly under EPCISHeader (no StandardBusinessDocument wrapper)
+    sbdh = ET.SubElement(epcis_header, "sbdh:StandardBusinessDocumentHeader")
     
     # Header Version
     header_version = ET.SubElement(sbdh, "sbdh:HeaderVersion")
@@ -352,8 +348,8 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     creation_date_time = ET.SubElement(doc_identification, "sbdh:CreationDateAndTime")
     creation_date_time.text = datetime.now(timezone.utc).isoformat()
     
-    # Add extension element containing EPCISMasterData inside StandardBusinessDocument
-    extension = ET.SubElement(sbdh_doc, "extension")
+    # Add extension element containing EPCISMasterData directly under EPCISHeader
+    extension = ET.SubElement(epcis_header, "extension")
     epcis_master_data = ET.SubElement(extension, "EPCISMasterData")
     vocabulary_list = ET.SubElement(epcis_master_data, "VocabularyList")
     
