@@ -385,9 +385,6 @@ function App() {
       
       // Extract filename from Content-Disposition header, fallback to default if not present
       const contentDisposition = response.headers['content-disposition'];
-      console.log('Content-Disposition header:', contentDisposition);
-      console.log('All response headers:', response.headers);
-      
       let filename = 'epcis_aggregation.xml'; // fallback
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
@@ -395,8 +392,6 @@ function App() {
           filename = filenameMatch[1].replace(/['"]/g, '');
         }
       }
-      
-      console.log('Final filename:', filename);
       
       link.setAttribute('download', filename);
       document.body.appendChild(link);
