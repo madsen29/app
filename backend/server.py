@@ -495,6 +495,15 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
                 country_attr.set("id", "urn:epcglobal:cbv:mda#countryCode")
                 country_attr.text = country_code
     
+    # Add gs1ushc:dscsaTransactionStatement before EPCISHeader closes
+    dscsa_statement = ET.SubElement(epcis_header, "gs1ushc:dscsaTransactionStatement")
+    
+    affirm_statement = ET.SubElement(dscsa_statement, "gs1ushc:affirmTransactionStatement")
+    affirm_statement.text = "true"
+    
+    legal_notice = ET.SubElement(dscsa_statement, "gs1ushc:legalNotice")
+    legal_notice.text = "Seller has complied with each applicable subsection of FDCA Sec. 581(27)(A)-(G)."
+    
     # Create EPCISBody
     epcis_body = ET.SubElement(root, "EPCISBody")
     event_list = ET.SubElement(epcis_body, "EventList")
