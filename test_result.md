@@ -338,9 +338,21 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "EPCIS filename structure update"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated EPCIS filename structure in generate_epcis endpoint to use naming convention: 'epcis'-{senderGLN}-{receiverGLN}-{todays date in YYMMDD}. The filename now dynamically uses sender_gln and receiver_gln from configuration and current date in YYMMDD format."
+
 agent_communication:
   - agent: "main"
-    message: "Initial implementation complete. Created a 3-step wizard app for EPCIS serial number aggregation. Backend includes configuration, serial number storage, and GS1 compliant XML generation. Frontend provides step-by-step user interface. All high priority tasks need testing to verify functionality."
+    message: "Updated EPCIS filename structure to use new naming convention: 'epcis'-{senderGLN}-{receiverGLN}-{todays date in YYMMDD}. The generate_epcis endpoint now extracts sender_gln and receiver_gln from configuration and generates filename with current date in YYMMDD format. This change needs backend testing to verify the new filename structure is working correctly."
   - agent: "main"
     message: "Enhanced app with user-configurable GS1 parameters. Users can now specify company prefix, product code, case indicator digit, and item indicator digit. Updated both backend EPCIS generation and frontend UI. Configuration and EPCIS generation endpoints need retesting with new parameters."
   - agent: "main"
