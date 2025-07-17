@@ -1863,6 +1863,16 @@ function App() {
                     placeholder="e.g., US"
                   />
                 </div>
+                <div className="form-group">
+                  <label htmlFor="senderDespatchAdviceNumber">Despatch Advice Number:</label>
+                  <input
+                    type="text"
+                    id="senderDespatchAdviceNumber"
+                    value={configuration.senderDespatchAdviceNumber}
+                    onChange={(e) => setConfiguration({...configuration, senderDespatchAdviceNumber: e.target.value})}
+                    placeholder="e.g., DA-2025-001"
+                  />
+                </div>
               </div>
             </div>
 
