@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for EPCIS Serial Number Aggregation App - REVIEW REQUEST FOCUSED TESTING
-Tests the enhanced hierarchical serial number collection system with focus on:
-1. Enhanced Duplicate Detection in Textarea (Backend Integration)
-2. Multi-level Navigation Data Preservation (Backend Integration)
-3. Hierarchical Serial Collection Backend Integration
-4. EPCIS XML Generation (Package NDC hyphen removal and EPCClass ordering)
+Backend API Testing for EPCIS Serial Number Aggregation App - FILENAME STRUCTURE TESTING
+Tests the updated EPCIS filename structure functionality with focus on:
+1. EPCIS filename generation using new naming convention: "epcis"-{senderGLN}-{receiverGLN}-{YYMMDD}
+2. Configuration with sender_gln and receiver_gln values
+3. Serial numbers creation for configurations
+4. Filename verification in response headers
+5. Date format validation (YYMMDD)
+6. Testing with different GLN values
 
-Specific focus on testing the two critical issues:
-- Package NDC hyphen removal not working
-- EPCClass vocabulary element order incorrect
+Test scenarios:
+- Create configurations with different sender_gln and receiver_gln values
+- Verify filename follows pattern: "epcis"-{senderGLN}-{receiverGLN}-{todays date in YYMMDD}
+- Test with realistic GLN values
+- Ensure existing XML generation functionality still works
 """
 
 import requests
