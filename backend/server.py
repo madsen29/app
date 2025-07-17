@@ -280,8 +280,8 @@ async def generate_epcis(request: EPCISGenerationRequest):
     )
     
     # Generate filename based on new naming convention
-    sender_gln = config.get("sender_gln", "")
-    receiver_gln = config.get("receiver_gln", "")
+    sender_gln = config.get("sender_gln", config.get("senderGln", ""))
+    receiver_gln = config.get("receiver_gln", config.get("receiverGln", ""))
     today_date = datetime.now(timezone.utc).strftime("%y%m%d")
     
     # Create filename: "epcis"-{senderGLN}-{receiverGLN}-{YYMMDD}
