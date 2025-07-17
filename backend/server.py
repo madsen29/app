@@ -279,11 +279,19 @@ async def generate_epcis(request: EPCISGenerationRequest):
         request.biz_location
     )
     
+    # Generate filename based on new naming convention
+    sender_gln = config.get("sender_gln", "")
+    receiver_gln = config.get("receiver_gln", "")
+    today_date = datetime.now(timezone.utc).strftime("%y%m%d")
+    
+    # Create filename: "epcis"-{senderGLN}-{receiverGLN}-{YYMMDD}
+    filename = f"epcis-{sender_gln}-{receiver_gln}-{today_date}.xml"
+    
     # Return as downloadable file
     return Response(
         content=xml_content,
         media_type="application/xml",
-        headers={"Content-Disposition": "attachment; filename=epcis_aggregation.xml"}
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
 def add_ilmd_extension(event_element, lot_number, expiration_date):
