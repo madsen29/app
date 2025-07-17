@@ -67,7 +67,7 @@ body {
 
 /* Main Content */
 .main-content {
-  padding: 1rem 2rem;
+  padding: 1.5rem 2rem 3rem;
 }
 
 /* Progress Bar */
@@ -124,10 +124,6 @@ body {
   background: #0055fb;
 }
 
-/* Main Content */
-.main-content {
-  padding: 3rem 2rem;
-}
 
 .step-container {
   max-width: 800px;
@@ -183,7 +179,7 @@ body {
 }
 
 .config-explanation {
-  margin-bottom: 1rem;
+  margin: 1rem 0;
   padding: 1rem;
   background: #edf2f7;
   border-radius: 6px;
@@ -545,13 +541,13 @@ body {
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: .2rem;
 }
 
 .form-group label {
   display: block;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-weight: 400;
+  margin-bottom: 0.2rem;
   color: #4a5568;
 }
 
@@ -1255,7 +1251,7 @@ body {
   }
   
   .main-content {
-    padding: 2rem 1rem;
+    padding: 1rem 1rem 3rem;
   }
   
   .serial-grid {

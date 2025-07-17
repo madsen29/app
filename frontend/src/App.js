@@ -2170,7 +2170,7 @@ function App() {
                   {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
                 </button>
               </div>
-              <small className="form-hint">Enter 8-digit Product NDC to search FDA database for available package kinds</small>
+              <small className="form-hint">Enter 8-digit NDC (with hyphen) to search FDA and fill details below</small>
             </div>
           </div>
           
@@ -2261,7 +2261,7 @@ function App() {
                 placeholder="e.g., 0345802"
                 required
               />
-              <small className="form-hint">Your GS1 Company Prefix (auto-populated from NDC)</small>
+              <small className="form-hint">Manufacturer GS1 Company Prefix</small>
             </div>
             <div className="form-group">
               <label htmlFor="productCode">Product Code:</label>
@@ -2418,7 +2418,7 @@ function App() {
           )}
           
           <div className="gs1-indicators">
-            <h4>GS1 Indicator Digits</h4>
+            <h4>GS1 Indicator/Extension Digits</h4>
             <div className="form-grid">
               <div className="form-group">
                 <label htmlFor="ssccExtensionDigit">SSCC Extension Digit:</label>
