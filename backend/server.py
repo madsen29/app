@@ -956,9 +956,36 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     read_point_id = ET.SubElement(read_point_elem, "id")
     read_point_id.text = read_point
     
-    biz_location_elem = ET.SubElement(shipping_event, "bizLocation")
-    biz_location_id = ET.SubElement(biz_location_elem, "id")
-    biz_location_id.text = biz_location
+    # Add extension with sourceList and destinationList
+    extension = ET.SubElement(shipping_event, "extension")
+    
+    # Source list (sender information)
+    source_list = ET.SubElement(extension, "sourceList")
+    sender_sgln = config.get("sender_sgln", "")
+    if sender_sgln:
+        # owning_party source
+        source_owning = ET.SubElement(source_list, "source")
+        source_owning.set("type", "urn:epcglobal:cbv:sdt:owning_party")
+        source_owning.text = f"urn:epc:id:sgln:{sender_sgln}"
+        
+        # location source
+        source_location = ET.SubElement(source_list, "source")
+        source_location.set("type", "urn:epcglobal:cbv:sdt:location")
+        source_location.text = f"urn:epc:id:sgln:{sender_sgln}"
+    
+    # Destination list (receiver information)
+    destination_list = ET.SubElement(extension, "destinationList")
+    receiver_sgln = config.get("receiver_sgln", "")
+    if receiver_sgln:
+        # owning_party destination
+        dest_owning = ET.SubElement(destination_list, "destination")
+        dest_owning.set("type", "urn:epcglobal:cbv:sdt:owning_party")
+        dest_owning.text = f"urn:epc:id:sgln:{receiver_sgln}"
+        
+        # location destination
+        dest_location = ET.SubElement(destination_list, "destination")
+        dest_location.set("type", "urn:epcglobal:cbv:sdt:location")
+        dest_location.text = f"urn:epc:id:sgln:{receiver_sgln}"
     
     # Add business transaction information if available
     if config.get("shipper_sgln"):
