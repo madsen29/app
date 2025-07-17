@@ -302,54 +302,58 @@ def add_ilmd_extension(event_element, lot_number, expiration_date):
 def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     """Generate GS1 EPCIS 1.2 XML with SBDH for pharmaceutical aggregation"""
     
-    # Create root element with SBDH namespace
-    root = ET.Element("StandardBusinessDocument")
-    root.set("xmlns", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
-    root.set("xmlns:epcis", "urn:epcglobal:epcis:xsd:1")
+    # Create root element as EPCISDocument (not StandardBusinessDocument)
+    root = ET.Element("EPCISDocument")
+    root.set("xmlns", "urn:epcglobal:epcis:xsd:1")
     root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    root.set("schemaVersion", "1.2")
+    root.set("creationDate", datetime.now(timezone.utc).isoformat())
     
-    # Create SBDH Header
-    sbdh = ET.SubElement(root, "StandardBusinessDocumentHeader")
+    # Create EPCISHeader
+    epcis_header = ET.SubElement(root, "EPCISHeader")
+    
+    # Create StandardBusinessDocument inside EPCISHeader
+    sbdh_doc = ET.SubElement(epcis_header, "StandardBusinessDocument")
+    sbdh_doc.set("xmlns:sbdh", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
+    sbdh_doc.set("xmlns:cbvmda", "urn:epcglobal:cbv:mda")
+    sbdh_doc.set("xmlns", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
+    sbdh_doc.set("xmlns:epcis", "urn:epcglobal:epcis:xsd:1")
+    sbdh_doc.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    
+    # Create SBDH Header with sbdh: prefix
+    sbdh = ET.SubElement(sbdh_doc, "sbdh:StandardBusinessDocumentHeader")
     
     # Header Version
-    header_version = ET.SubElement(sbdh, "HeaderVersion")
+    header_version = ET.SubElement(sbdh, "sbdh:HeaderVersion")
     header_version.text = "1.0"
     
     # Sender
-    sender = ET.SubElement(sbdh, "Sender")
-    sender_identifier = ET.SubElement(sender, "Identifier")
+    sender = ET.SubElement(sbdh, "sbdh:Sender")
+    sender_identifier = ET.SubElement(sender, "sbdh:Identifier")
     sender_identifier.set("Authority", "GS1")
     sender_identifier.text = config.get("sender_gln", "")
     
     # Receiver
-    receiver = ET.SubElement(sbdh, "Receiver")
-    receiver_identifier = ET.SubElement(receiver, "Identifier")
+    receiver = ET.SubElement(sbdh, "sbdh:Receiver")
+    receiver_identifier = ET.SubElement(receiver, "sbdh:Identifier")
     receiver_identifier.set("Authority", "GS1")
     receiver_identifier.text = config.get("receiver_gln", "")
     
     # Document Identification
-    doc_identification = ET.SubElement(sbdh, "DocumentIdentification")
-    standard = ET.SubElement(doc_identification, "Standard")
-    standard.text = "EPCISDocument"
-    type_version = ET.SubElement(doc_identification, "TypeVersion")
-    type_version.text = "1.2"
-    instance_identifier = ET.SubElement(doc_identification, "InstanceIdentifier")
+    doc_identification = ET.SubElement(sbdh, "sbdh:DocumentIdentification")
+    standard = ET.SubElement(doc_identification, "sbdh:Standard")
+    standard.text = "EPCglobal"
+    type_version = ET.SubElement(doc_identification, "sbdh:TypeVersion")
+    type_version.text = "1.0"
+    instance_identifier = ET.SubElement(doc_identification, "sbdh:InstanceIdentifier")
     instance_identifier.text = f"EPCIS_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
-    type_element = ET.SubElement(doc_identification, "Type")
-    type_element.text = "EPCISDocument"
-    creation_date_time = ET.SubElement(doc_identification, "CreationDateAndTime")
+    type_element = ET.SubElement(doc_identification, "sbdh:Type")
+    type_element.text = "Events"
+    creation_date_time = ET.SubElement(doc_identification, "sbdh:CreationDateAndTime")
     creation_date_time.text = datetime.now(timezone.utc).isoformat()
     
-    # Create EPCIS Document
-    epcis_document = ET.SubElement(root, "epcis:EPCISDocument")
-    epcis_document.set("schemaVersion", "1.2")
-    epcis_document.set("creationDate", datetime.now(timezone.utc).isoformat())
-    
-    # Create EPCISHeader with extension containing EPCISMasterData
-    epcis_header = ET.SubElement(epcis_document, "EPCISHeader")
-    
-    # Add extension element containing EPCISMasterData
-    extension = ET.SubElement(epcis_header, "extension")
+    # Add extension element containing EPCISMasterData inside StandardBusinessDocument
+    extension = ET.SubElement(sbdh_doc, "extension")
     epcis_master_data = ET.SubElement(extension, "EPCISMasterData")
     vocabulary_list = ET.SubElement(epcis_master_data, "VocabularyList")
     
