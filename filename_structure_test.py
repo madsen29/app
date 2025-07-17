@@ -251,9 +251,9 @@ class FilenameStructureTester:
             return False
             
         test_data = {
-            "configuration_id": config_id,
-            "read_point": "urn:epc:id:sgln:1234567.00000.0",
-            "biz_location": "urn:epc:id:sgln:1234567.00001.0"
+            "configurationId": config_id,
+            "readPoint": "urn:epc:id:sgln:1234567.00000.0",
+            "bizLocation": "urn:epc:id:sgln:1234567.00001.0"
         }
         
         try:
