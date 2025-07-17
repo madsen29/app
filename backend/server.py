@@ -896,7 +896,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     shipping_event = ET.SubElement(event_list, "ObjectEvent")
     
     event_time = ET.SubElement(shipping_event, "eventTime")
-    event_time.text = datetime.now(timezone.utc).isoformat()
+    event_time.text = format_xml_datetime()
     
     event_timezone = ET.SubElement(shipping_event, "eventTimeZoneOffset")
     event_timezone.text = "+00:00"
