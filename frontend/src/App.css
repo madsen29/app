@@ -304,6 +304,7 @@ body {
   margin-top: 0.25rem;
   margin-right: .25rem;
   flex-shrink: 0;
+  font-weight: 600;
 }
 
 .textarea-group {
