@@ -2996,7 +2996,7 @@ function App() {
               </div>
               <div className="epcis-row">
                 <span className="epcis-label">Business Step</span>
-                <span className="epcis-value">Commissioning + Packing</span>
+                <span className="epcis-value">Commissioning, Packing, Shipping</span>
               </div>
             </div>
           </div>
