@@ -27,7 +27,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   // Rename project state
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [renameProject, setRenameProject] = useState(null);
-  const [newProjectName, setNewProjectName] = useState('');
+  const [renameProjectName, setRenameProjectName] = useState('');
   const [renameLoading, setRenameLoading] = useState(false);
   
   const { token, user } = useAuth();
