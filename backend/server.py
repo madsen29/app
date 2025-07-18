@@ -52,14 +52,14 @@ class UserLogin(BaseModel):
 class User(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: EmailStr
-    first_name: str
-    last_name: str
-    company_name: str
-    street_address: str
-    city: str
-    state: str
-    postal_code: str
-    country_code: str
+    first_name: str = ""
+    last_name: str = ""
+    company_name: str = ""
+    street_address: str = ""
+    city: str = ""
+    state: str = ""
+    postal_code: str = ""
+    country_code: str = ""
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
