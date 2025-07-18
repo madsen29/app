@@ -368,6 +368,17 @@ class EPCISCriticalIssuesTester:
                 correct_case_sgtin = "sgtin:1234567.2000000." in xml_content
                 correct_inner_case_sgtin = "sgtin:1234567.4000000." in xml_content
                 
+                # Debug: Print actual SGTIN patterns found
+                print(f"DEBUG: Checking for product codes in XML...")
+                print(f"DEBUG: XML contains 'sgtin:1234567.1': {'sgtin:1234567.1' in xml_content}")
+                print(f"DEBUG: XML contains 'sgtin:1234567.2': {'sgtin:1234567.2' in xml_content}")
+                print(f"DEBUG: XML contains 'sgtin:1234567.4': {'sgtin:1234567.4' in xml_content}")
+                
+                # Let's also check what the actual patterns are
+                import re
+                sgtin_patterns = re.findall(r'sgtin:1234567\.[^.]*\.', xml_content)
+                print(f"DEBUG: Found SGTIN patterns: {set(sgtin_patterns)}")
+                
                 if none_found or dot_found:
                     self.log_test("Product Code None Values", False, 
                                 "CRITICAL: Product code showing 'None' or '.' in SGTINs",
