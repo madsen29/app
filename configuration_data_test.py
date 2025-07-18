@@ -270,9 +270,8 @@ class ConfigurationDataTester:
             
             if response.status_code == 200:
                 serials = response.json()
-                print(f"   Debug - Response received: {serials}")
                 self.log_test("Serial Numbers Creation", True, "Serial numbers created successfully", 
-                            f"SSCC: {len(serials.get('sscc_serial_numbers', []))}, Cases: {len(serials.get('case_serial_numbers', []))}, Items: {len(serials.get('item_serial_numbers', []))}")
+                            f"SSCC: {len(serials.get('ssccSerialNumbers', []))}, Cases: {len(serials.get('caseSerialNumbers', []))}, Items: {len(serials.get('itemSerialNumbers', []))}")
                 return serials
             else:
                 self.log_test("Serial Numbers Creation", False, f"HTTP {response.status_code}: {response.text}")
