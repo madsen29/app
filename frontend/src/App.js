@@ -772,18 +772,35 @@ function App() {
   const initializeHierarchicalSerials = (config = configuration) => {
     const hierarchicalData = [];
     
+    // Parse configuration values to ensure they are numbers
+    const numberOfSscc = parseInt(config.numberOfSscc) || 0;
+    const casesPerSscc = parseInt(config.casesPerSscc) || 0;
+    const itemsPerCase = parseInt(config.itemsPerCase) || 0;
+    const innerCasesPerCase = parseInt(config.innerCasesPerCase) || 0;
+    const itemsPerInnerCase = parseInt(config.itemsPerInnerCase) || 0;
+    const useInnerCases = config.useInnerCases;
+    
+    console.log('initializeHierarchicalSerials - Configuration values:', {
+      numberOfSscc,
+      casesPerSscc,
+      itemsPerCase,
+      innerCasesPerCase,
+      itemsPerInnerCase,
+      useInnerCases
+    });
+    
     // Create structure based on configuration
-    for (let ssccIndex = 0; ssccIndex < config.numberOfSscc; ssccIndex++) {
+    for (let ssccIndex = 0; ssccIndex < numberOfSscc; ssccIndex++) {
       const ssccData = {
         ssccIndex: ssccIndex,
         ssccSerial: '',
         cases: []
       };
       
-      if (config.casesPerSscc === 0) {
+      if (casesPerSscc === 0) {
         // Direct SSCC → Items
         ssccData.items = [];
-        for (let itemIndex = 0; itemIndex < config.itemsPerCase; itemIndex++) {
+        for (let itemIndex = 0; itemIndex < itemsPerCase; itemIndex++) {
           ssccData.items.push({
             itemIndex: itemIndex,
             itemSerial: ''
@@ -791,7 +808,7 @@ function App() {
         }
       } else {
         // SSCC → Cases → Items or SSCC → Cases → Inner Cases → Items
-        for (let caseIndex = 0; caseIndex < config.casesPerSscc; caseIndex++) {
+        for (let caseIndex = 0; caseIndex < casesPerSscc; caseIndex++) {
           const caseData = {
             caseIndex: caseIndex,
             caseSerial: '',
@@ -799,16 +816,16 @@ function App() {
             items: []
           };
           
-          if (config.useInnerCases) {
+          if (useInnerCases) {
             // Cases → Inner Cases → Items
-            for (let innerCaseIndex = 0; innerCaseIndex < config.innerCasesPerCase; innerCaseIndex++) {
+            for (let innerCaseIndex = 0; innerCaseIndex < innerCasesPerCase; innerCaseIndex++) {
               const innerCaseData = {
                 innerCaseIndex: innerCaseIndex,
                 innerCaseSerial: '',
                 items: []
               };
               
-              for (let itemIndex = 0; itemIndex < config.itemsPerInnerCase; itemIndex++) {
+              for (let itemIndex = 0; itemIndex < itemsPerInnerCase; itemIndex++) {
                 innerCaseData.items.push({
                   itemIndex: itemIndex,
                   itemSerial: ''
@@ -819,7 +836,7 @@ function App() {
             }
           } else {
             // Cases → Items
-            for (let itemIndex = 0; itemIndex < config.itemsPerCase; itemIndex++) {
+            for (let itemIndex = 0; itemIndex < itemsPerCase; itemIndex++) {
               caseData.items.push({
                 itemIndex: itemIndex,
                 itemSerial: ''
@@ -833,6 +850,8 @@ function App() {
       
       hierarchicalData.push(ssccData);
     }
+    
+    console.log('initializeHierarchicalSerials - Generated structure:', hierarchicalData);
     
     setHierarchicalSerials(hierarchicalData);
     setSerialCollectionStep({
