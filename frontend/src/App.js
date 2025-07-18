@@ -433,12 +433,12 @@ function App() {
     if (project.configuration) {
       const config = project.configuration;
       setOriginalPackagingConfig({
-        itemsPerCase: getConfigValue(config, 'itemsPerCase', 'items_per_case', ''),
-        casesPerSscc: getConfigValue(config, 'casesPerSscc', 'cases_per_sscc', ''),
-        numberOfSscc: getConfigValue(config, 'numberOfSscc', 'number_of_sscc', ''),
+        itemsPerCase: getNumericConfigValue(config, 'itemsPerCase', 'items_per_case', ''),
+        casesPerSscc: getNumericConfigValue(config, 'casesPerSscc', 'cases_per_sscc', ''),
+        numberOfSscc: getNumericConfigValue(config, 'numberOfSscc', 'number_of_sscc', ''),
         useInnerCases: getConfigValue(config, 'useInnerCases', 'use_inner_cases', false),
-        innerCasesPerCase: getConfigValue(config, 'innerCasesPerCase', 'inner_cases_per_case', ''),
-        itemsPerInnerCase: getConfigValue(config, 'itemsPerInnerCase', 'items_per_inner_case', '')
+        innerCasesPerCase: getNumericConfigValue(config, 'innerCasesPerCase', 'inner_cases_per_case', ''),
+        itemsPerInnerCase: getNumericConfigValue(config, 'itemsPerInnerCase', 'items_per_inner_case', '')
       });
     }
     
