@@ -521,7 +521,7 @@ function App() {
   };
 
   // Save Progress functionality
-  const handleSaveProgress = async () => {
+  const handleSaveProgress = async (showToast = true) => {
     if (!currentProject) return;
     
     setIsLoading(true);
