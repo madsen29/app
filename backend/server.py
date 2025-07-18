@@ -70,6 +70,30 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
 
+# Project Management Models
+class Project(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    user_id: str
+    status: str = "In Progress"  # "In Progress", "Completed"
+    current_step: int = 1
+    configuration: Optional[dict] = None
+    serial_numbers: Optional[dict] = None
+    epcis_file_content: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class ProjectCreate(BaseModel):
+    name: str
+
+class ProjectUpdate(BaseModel):
+    name: Optional[str] = None
+    status: Optional[str] = None
+    current_step: Optional[int] = None
+    configuration: Optional[dict] = None
+    serial_numbers: Optional[dict] = None
+    epcis_file_content: Optional[str] = None
+
 # Authentication functions
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
