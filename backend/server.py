@@ -91,7 +91,7 @@ class ProjectUpdate(BaseModel):
     status: Optional[str] = None
     current_step: Optional[int] = None
     configuration: Optional[dict] = None
-    serial_numbers: Optional[dict] = None
+    serial_numbers: Optional[list] = None  # Allow list for hierarchical structure
     epcis_file_content: Optional[str] = None
 
 # Authentication functions
