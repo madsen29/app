@@ -746,7 +746,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                       {project.status !== 'Completed' && (
                         <button
                           onClick={() => onSelectProject(project)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm font-medium"
+                          className="btn-resume text-white px-3 py-2 rounded text-sm font-medium"
                         >
                           Resume
                         </button>
@@ -754,16 +754,16 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                       {project.status === 'Completed' && (
                         <button
                           onClick={() => handleDownloadEPCIS(project.id)}
-                          className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm font-medium"
+                          className="btn-download text-white px-3 py-2 rounded text-sm font-medium"
                         >
                           Download
                         </button>
                       )}
                       <button
                         onClick={() => handleDeleteProject(project.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-medium"
+                        className="btn-delete text-white px-3 py-2 rounded text-sm font-medium"
                       >
-                        Delete
+                        <FiTrash2 size={16} />
                       </button>
                     </div>
                   </div>
