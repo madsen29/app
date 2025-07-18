@@ -187,6 +187,54 @@ class EPCISGenerationRequest(BaseModel):
 async def root():
     return {"message": "EPCIS Serial Number Aggregation API"}
 
+# Authentication middleware
+security = HTTPBearer()
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get current authenticated user"""
+    token = credentials.credentials
+    token_data = verify_token(token)
+    user = await get_user_by_email(token_data.email)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
+
+# Authentication endpoints
+@api_router.post("/auth/register", response_model=User)
+async def register(user: UserCreate):
+    """Register a new user"""
+    return await create_user(user)
+
+@api_router.post("/auth/login", response_model=Token)
+async def login(user: UserLogin):
+    """Login user"""
+    authenticated_user = await authenticate_user(user.email, user.password)
+    if not authenticated_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": authenticated_user.email}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@api_router.get("/auth/me", response_model=User)
+async def get_current_user_info(current_user: User = Depends(get_current_user)):
+    """Get current user information"""
+    return current_user
+
+@api_router.post("/auth/logout")
+async def logout():
+    """Logout user (client-side token removal)"""
+    return {"message": "Successfully logged out"}
+
 @api_router.post("/configuration", response_model=SerialConfiguration)
 async def create_configuration(input: SerialConfigurationCreate):
     config_dict = input.model_dump(by_alias=False)  # This gives us snake_case
