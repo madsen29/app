@@ -431,6 +431,13 @@ async def get_project(project_id: str, current_user: User = Depends(get_current_
     project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Handle serial_numbers format migration (dict -> list)
+    if project.get("serial_numbers") is not None:
+        if isinstance(project["serial_numbers"], dict):
+            # Convert old format to new format or set to None
+            project["serial_numbers"] = None
+    
     return Project(**project)
 
 @api_router.put("/projects/{project_id}", response_model=Project)
