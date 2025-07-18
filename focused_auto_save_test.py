@@ -162,7 +162,7 @@ class FocusedAutoSaveTester:
         
         serials = response.json()
         self.log_test("Complete Workflow - Serial Numbers Creation", True, 
-                     f"Serial numbers created: {len(serials['sscc_serial_numbers'])} SSCC, {len(serials['case_serial_numbers'])} Cases, {len(serials['item_serial_numbers'])} Items")
+                     f"Serial numbers created: {len(serials['ssccSerialNumbers'])} SSCC, {len(serials['caseSerialNumbers'])} Cases, {len(serials['itemSerialNumbers'])} Items")
         
         # 4. Generate EPCIS
         epcis_data = {
