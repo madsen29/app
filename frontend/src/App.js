@@ -590,6 +590,44 @@ function App() {
   };
 
   // Initialize hierarchical serial collection structure
+  // Smart initialization that preserves existing serial numbers when possible
+  const initializeOrPreserveHierarchicalSerials = (config = configuration) => {
+    const existingSerials = hierarchicalSerials;
+    
+    // If there are no existing serials, just initialize fresh
+    if (!existingSerials || existingSerials.length === 0) {
+      initializeHierarchicalSerials(config);
+      return;
+    }
+    
+    // Check if the configuration has changed in a way that requires reset
+    const configChanged = 
+      config.numberOfSscc !== configuration.numberOfSscc ||
+      config.casesPerSscc !== configuration.casesPerSscc ||
+      config.useInnerCases !== configuration.useInnerCases ||
+      config.innerCasesPerCase !== configuration.innerCasesPerCase ||
+      config.itemsPerCase !== configuration.itemsPerCase ||
+      config.itemsPerInnerCase !== configuration.itemsPerInnerCase;
+    
+    if (configChanged) {
+      // Configuration changed significantly - warn user and reset
+      const confirmReset = window.confirm(
+        'The configuration changes you made will reset all previously entered serial numbers. ' +
+        'Are you sure you want to continue? This action cannot be undone.'
+      );
+      
+      if (confirmReset) {
+        initializeHierarchicalSerials(config);
+      } else {
+        // User cancelled, don't proceed with the configuration change
+        return false;
+      }
+    }
+    
+    // Configuration didn't change structurally, keep existing serials
+    return true;
+  };
+
   const initializeHierarchicalSerials = (config = configuration) => {
     const hierarchicalData = [];
     
