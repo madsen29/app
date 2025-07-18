@@ -1435,6 +1435,9 @@ function App() {
       
       setHierarchicalSerials(updatedSerials);
       
+      // Auto-save serial numbers
+      autoSaveSerialNumbers(updatedSerials);
+      
       // Move to next step, accounting for multiple serials added
       const nextStep = calculateNextStep(serialLines.length - 1);
       setSerialCollectionStep({
@@ -1468,6 +1471,9 @@ function App() {
       }
       
       setHierarchicalSerials(updatedSerials);
+      
+      // Auto-save serial numbers
+      autoSaveSerialNumbers(updatedSerials);
       
       // Calculate next step
       const nextStep = calculateNextStep();
