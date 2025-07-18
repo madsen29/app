@@ -227,6 +227,13 @@ class EPCISCriticalIssuesTester:
             
             if response.status_code == 200:
                 config = response.json()
+                
+                # Debug: Check what fields are actually saved
+                print(f"DEBUG: Configuration fields saved:")
+                for key in ['productCode', 'product_code', 'itemProductCode', 'item_product_code', 'caseProductCode', 'case_product_code']:
+                    if key in config:
+                        print(f"  {key}: {config[key]}")
+                
                 self.log_test("Critical Issues Configuration", True, 
                             "Configuration created with productCode field and ssccExtensionDigit",
                             f"Project: {project_id}, Product Code: {config_data['productCode']}, SSCC Extension: {config_data['ssccExtensionDigit']}")
