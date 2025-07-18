@@ -866,7 +866,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     
     # Add SBDH namespaces to the root element
     root.set("xmlns:sbdh", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
-    root.set("xmlns:cbvmda", "urn:epcglobal:cbv:mda")
+    # Note: cbvmda namespace is already registered globally via ET.register_namespace
     
     # Create SBDH Header directly under EPCISHeader (no StandardBusinessDocument wrapper)
     sbdh = ET.SubElement(epcis_header, "sbdh:StandardBusinessDocumentHeader")
