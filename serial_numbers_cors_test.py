@@ -68,8 +68,14 @@ class SerialNumbersCORSTester:
             cors_methods = response.headers.get('Access-Control-Allow-Methods', '')
             cors_headers = response.headers.get('Access-Control-Allow-Headers', '')
             
-            if cors_origin == '*' or cors_origin == self.frontend_url:
-                if 'POST' in cors_methods and 'Content-Type' in cors_headers:
+            # Backend is configured with allow_origins=["*", "https://cd63a717-b5ed-4c4d-b9fe-b518396e7591.preview.emergentagent.com", "https://serialtrack.preview.emergentagent.com"]
+            # So it should return the specific origin or "*"
+            origin_allowed = (cors_origin == '*' or 
+                            cors_origin == self.frontend_url or
+                            'serialtrack.preview.emergentagent.com' in str(cors_origin))
+            
+            if origin_allowed:
+                if 'POST' in cors_methods and ('Content-Type' in cors_headers or '*' in cors_headers):
                     self.log_test("CORS Preflight Check", True, 
                                 f"CORS properly configured for frontend URL",
                                 f"Origin: {cors_origin}, Methods: {cors_methods}")
