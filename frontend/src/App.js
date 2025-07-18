@@ -3728,6 +3728,12 @@ function App() {
                   type="text"
                   value={serialCollectionStep.currentSerial}
                   onChange={(e) => handleSerialInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleNextSerial();
+                    }
+                  }}
                   placeholder={`Enter ${currentContext.label} serial number`}
                   className="serial-input"
                   autoFocus
