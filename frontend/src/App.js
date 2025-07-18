@@ -3654,7 +3654,6 @@ function App() {
     
     return (
       <div className="step-container">
-        {renderProgressBar()}
         <h2 className="step-title">Step 3: Generate EPCIS File</h2>
         
         <div className="summary-section">
