@@ -269,6 +269,11 @@ class UserSettingsTester:
                 self.log_test("Email Uniqueness Validation", False, "Failed to create second user for testing")
                 return False
             
+            # Refresh token if needed
+            if not self.refresh_auth_token():
+                self.log_test("Email Uniqueness Validation", False, "Failed to refresh authentication token")
+                return False
+            
             # Now try to update our test user's email to the same email
             update_data = {
                 "email": another_user_email
