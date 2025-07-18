@@ -395,26 +395,51 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
               </button>
             </div>
           ) : (
-            <ul className="divide-y divide-gray-200">
-              {sortedProjects.map((project) => {
-                const totals = calculateProjectTotals(project.configuration);
-                
-                return (
-                  <li key={project.id} className="px-4 py-4 hover:bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center">
-                          <h4 className="text-lg font-medium text-gray-900 truncate">
-                            {project.name}
-                          </h4>
-                          <span className={`ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            project.status === 'Completed' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {project.status}
-                          </span>
-                        </div>
+            <>
+              {/* Select All Header */}
+              {projects.length > 0 && (
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={isAllSelected}
+                      onChange={handleSelectAll}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label className="ml-3 text-sm font-medium text-gray-700">
+                      Select all on this page
+                    </label>
+                  </div>
+                </div>
+              )}
+              
+              <ul className="divide-y divide-gray-200">
+                {getCurrentPageProjects().map((project) => {
+                  const totals = calculateProjectTotals(project.configuration);
+                  
+                  return (
+                    <li key={project.id} className="px-4 py-4 hover:bg-gray-50">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedProjects.has(project.id)}
+                            onChange={() => handleSelectProject(project.id)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center">
+                              <h4 className="text-lg font-medium text-gray-900 truncate">
+                                {project.name}
+                              </h4>
+                              <span className={`ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                project.status === 'Completed' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-yellow-100 text-yellow-800'
+                              }`}>
+                                {project.status}
+                              </span>
+                            </div>
                         <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                           <span>Step {project.current_step} of 3</span>
                           <span>•</span>
