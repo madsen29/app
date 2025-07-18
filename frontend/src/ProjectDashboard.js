@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
+import UserSettings from './UserSettings';
 
 const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const [projects, setProjects] = useState([]);
@@ -9,6 +10,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const [sortBy, setSortBy] = useState('updated_at');
   const [sortOrder, setSortOrder] = useState('desc');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showUserSettings, setShowUserSettings] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
   const [createLoading, setCreateLoading] = useState(false);
   const { token, user } = useAuth();
