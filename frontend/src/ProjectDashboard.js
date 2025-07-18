@@ -62,7 +62,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     if (!window.confirm('Are you sure you want to delete this project?')) return;
 
     try {
-      await axios.delete(`${API}/api/projects/${projectId}`, {
+      await axios.delete(`${API}/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProjects(projects.filter(p => p.id !== projectId));
