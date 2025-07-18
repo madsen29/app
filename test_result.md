@@ -173,11 +173,11 @@ backend:
   
   - task: "EPCIS XML generation"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
@@ -209,6 +209,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "USER REPORTED CRITICAL ISSUE RESOLVED: ✅ COMPREHENSIVE TESTING COMPLETED: Configuration data is now properly populating in generated EPCIS files ✅ ROOT CAUSE IDENTIFIED: Backend XML generation bug causing duplicate XML namespace attribute (xmlns:cbvmda declared twice), resulting in malformed XML that couldn't be parsed or validated ✅ CRITICAL BUG FIXED: Removed duplicate xmlns:cbvmda namespace declaration and added missing xmlns:epcis namespace declaration ✅ ALL CONFIGURATION FIELDS VERIFIED: Business Document Information (sender/receiver/shipper GLNs), Product Information (company prefix, lot number, expiration date), GS1 Indicator Digits, EPCClass data (package NDC, regulated product name, manufacturer), Packaging Configuration, Location Vocabulary (complete address information), ILMD Extensions - ALL POPULATED CORRECTLY ✅ Test Results: 7/7 tests passed (100% success rate) ✅ Generated EPCIS XML contains all expected configuration data with proper structure ✅ The critical user-reported issue has been completely resolved"
+      - working: false
+        agent: "user"
+        comment: "USER FOLLOW-UP ISSUE: Despite previous testing claiming the issue was resolved, configuration data is still NOT populating correctly. Specific problems identified: 1) Location vocabulary not showing up 2) GLNs on Authority not showing up 3) Indicator digits not showing up 4) Product Code showing 'None' when there should be a value. User suspects there may be a casing disconnect (camelCase vs snake_case). The issue is NOT resolved and needs deeper investigation."
       - working: true
         agent: "testing"
         comment: "USER REPORTED CONFIGURATION DATA ISSUE RESOLVED: ✅ COMPREHENSIVE CONFIGURATION DATA POPULATION TESTING COMPLETED: All configuration data is properly populated in generated EPCIS XML ✅ CRITICAL BACKEND BUG FIXED: Resolved duplicate XML namespace attribute issue (xmlns:cbvmda was being set twice) that was preventing XML parsing ✅ COMPLETE WORKFLOW VERIFIED: User → Project → Configuration → Serial Numbers → EPCIS Generation working perfectly ✅ ALL CONFIGURATION FIELD CATEGORIES VERIFIED: 1) Business Document Information (SBDH): Sender GLN (0345802000014), Receiver GLN (0567890000021) properly populated in StandardBusinessDocumentHeader 2) Location Vocabulary: All 3 location elements (sender, receiver, shipper) with complete address information (18 attributes total) 3) EPCClass Vocabulary: 2 elements with all product information (Package NDC: 4580204685 correctly cleaned, Regulated Product Name: Metformin Hydrochloride Tablets, Manufacturer: Padagis US LLC, Dosage Form: Tablet, Strength: 500 mg, Net Content: 100 tablets) 4) GS1 Identifiers: All identifiers use correct company prefixes and indicator digits (SSCC uses shipper prefix 0999888, SGTINs use regular prefix 1234567) 5) ILMD Extensions: Lot number (LOT123456) and expiration date (2026-12-31) found in commissioning events 6) Event Structure: Correct 4 ObjectEvents (including 1 shipping event) and 2 AggregationEvents 7) Configuration Field Mapping: All camelCase/snake_case field mappings working correctly ✅ Test Results: 7/7 tests passed (100% success rate) ✅ CRITICAL ISSUE STATUS: RESOLVED - All configuration data is now properly populating in EPCIS XML files"
