@@ -2099,6 +2099,8 @@ input:disabled {
   /* Mobile Project Cards */
   .project-cards {
     display: block;
+    background-color: transparent;
+    box-shadow: none;
     gap: 1rem;
   }
 
@@ -2108,6 +2110,7 @@ input:disabled {
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1rem;
+    border-radius: 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
@@ -2185,10 +2188,12 @@ input:disabled {
   }
 
   .progress-steps {
-    flex-direction: column;
     gap: 0.5rem;
   }
 
+  .step .step-label {
+    font-size: .7rem;
+  }
   .progress-step {
     flex-direction: row;
     align-items: center;
@@ -2238,7 +2243,7 @@ input:disabled {
   }
 
   .context-path {
-    font-size: 0.875rem;
+    font-size: 1.2rem;
     margin-bottom: 1rem;
     padding: 0.75rem;
     background: #f8fafc;
@@ -2255,6 +2260,7 @@ input:disabled {
   .serial-textarea {
     font-size: 16px; /* Prevent zoom on iOS */
     padding: 0.75rem;
+    width: 100%;
     border: 2px solid #e2e8f0;
     border-radius: 8px;
   }
@@ -2547,7 +2553,7 @@ input:disabled {
 /* Small Mobile Styles */
 @media (max-width: 480px) {
   .app {
-    padding: 0.5rem;
+    padding: 0rem;
   }
 
   .container {

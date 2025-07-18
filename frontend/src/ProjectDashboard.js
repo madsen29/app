@@ -368,11 +368,11 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col items-left justify-between md:flex-row">
+            <div className="flex flex-col gap-5 sm:flex-row">
               <img className="logo" src="https://rxerp.com/wp-content/uploads/2025/01/rxerp-logo-hero-tagline.svg"></img>
-              <p className="mt-2 text-gray-900 text-lg font-medium">
-                👋 Welcome back, {user?.first_name || user?.email}. Manage your Rx EPCIS projects.
+              <p className="mt-2 sm:mt-0 text-gray-900 text-lg font-medium mb-2">
+                👋 Welcome back, {user?.first_name || user?.email}
               </p>
             </div>
             <div className="flex items-center space-x-4">
