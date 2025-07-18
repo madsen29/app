@@ -370,6 +370,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
+              <img className="logo" src="https://rxerp.com/wp-content/uploads/2025/01/rxerp-logo-hero-tagline.svg"></img>
               <h1 className="text-3xl font-bold text-gray-900">EPCIS Projects</h1>
               <p className="mt-2 text-gray-600">
                 Welcome back, {user?.first_name || user?.email}. Manage your EPCIS aggregation projects.
