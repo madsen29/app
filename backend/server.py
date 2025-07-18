@@ -7,18 +7,13 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
 import xml.etree.ElementTree as ET
-
-# Authentication imports
-from .auth import (
-    UserCreate, UserLogin, User, Token, TokenData,
-    authenticate_user, create_user, create_access_token, verify_token,
-    get_user_by_email, ACCESS_TOKEN_EXPIRE_MINUTES
-)
+import jwt
+from passlib.context import CryptContext
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -27,6 +22,120 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Authentication configuration
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Authentication models
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+    full_name: Optional[str] = None
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class User(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: EmailStr
+    full_name: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+
+# Authentication functions
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify a password against its hash"""
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password: str) -> str:
+    """Hash a password"""
+    return pwd_context.hash(password)
+
+async def get_user_by_email(email: str) -> Optional[User]:
+    """Get user by email from database"""
+    user_data = await db.users.find_one({"email": email})
+    if user_data:
+        return User(**user_data)
+    return None
+
+async def authenticate_user(email: str, password: str) -> Optional[User]:
+    """Authenticate user with email and password"""
+    user_data = await db.users.find_one({"email": email})
+    if not user_data:
+        return None
+    if not verify_password(password, user_data["hashed_password"]):
+        return None
+    return User(**user_data)
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    """Create JWT access token"""
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+def verify_token(token: str) -> TokenData:
+    """Verify JWT token and return token data"""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        token_data = TokenData(email=email)
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return token_data
+
+async def create_user(user: UserCreate) -> User:
+    """Create a new user"""
+    # Check if user already exists
+    existing_user = await get_user_by_email(user.email)
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+    
+    # Create new user
+    hashed_password = get_password_hash(user.password)
+    user_data = {
+        "id": str(uuid.uuid4()),
+        "email": user.email,
+        "full_name": user.full_name,
+        "hashed_password": hashed_password,
+        "is_active": True,
+        "created_at": datetime.utcnow()
+    }
+    
+    await db.users.insert_one(user_data)
+    
+    # Return user without password
+    return User(**{k: v for k, v in user_data.items() if k != "hashed_password"})
 
 # Create the main app without a prefix
 app = FastAPI()
