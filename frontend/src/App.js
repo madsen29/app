@@ -3712,7 +3712,7 @@ function App() {
             <div className="context-path">
               {renderClickableContext(currentContext.path)}
             </div>
-            <h4>Enter {currentContext.label}:</h4>
+            <h5>Enter {currentContext.label}:</h5>
             <div className="input-group">
               {serialCollectionStep.currentLevel === 'item' ? (
                 <textarea
@@ -3747,7 +3747,7 @@ function App() {
           </div>
           
           <div className="progress-info">
-              <span>Current S</span>
+              <p className="mb-2">Current position in the process:</p>
             <div className="progress-stats">
               <div className={`stat ${serialCollectionStep.currentLevel === 'sscc' ? 'stat-current' : ''}`}>
                 <strong>SSCC:</strong> {serialCollectionStep.ssccIndex + 1} of {configuration.numberOfSscc}
@@ -3972,14 +3972,8 @@ function App() {
               <div className="header-content">
               {currentProject && (
                 <div className="progress-bar">
-                  <div><button 
-            type="button" 
-            onClick={handleSaveAndExit} 
-            disabled={isLoading} 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium"
-          >
-            Save & Exit
-          </button>
+                  <div>
+                    
                   <div className="project-progress-header">
                     <h2 className="project-name">{currentProject.name}</h2>
                     {isAutoSaving && (
@@ -3988,6 +3982,14 @@ function App() {
                       </div>
                     )}
                   </div>
+                  <button 
+                    type="button" 
+                    onClick={handleSaveAndExit} 
+                    disabled={isLoading} 
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium"
+                    >
+                    Save & Exit
+                    </button>
                   </div>
                   <div className="progress-steps">
                     <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}>
