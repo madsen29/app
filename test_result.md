@@ -365,8 +365,10 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
-  stuck_tasks: []
+  current_focus:
+    - "Serial number input UI"
+  stuck_tasks:
+    - "Serial number input UI"
   test_all: false
   test_priority: "high_first"
 
