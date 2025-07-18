@@ -1625,6 +1625,9 @@ input:disabled {
   font-weight: 600;
   color: #0055fb;
   font-family: 'Courier New', monospace;
+  padding-bottom: .5rem;
+  border-bottom: .5px solid #cbd1d6;
+  margin-bottom: 1rem;
 }
 
 .current-input {

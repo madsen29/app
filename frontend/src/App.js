@@ -3712,7 +3712,7 @@ function App() {
             <div className="context-path">
               {renderClickableContext(currentContext.path)}
             </div>
-            <h5>Enter {currentContext.label}:</h5>
+            {/* <h5>Enter {currentContext.label}:</h5> */}
             <div className="input-group">
               {serialCollectionStep.currentLevel === 'item' ? (
                 <textarea
