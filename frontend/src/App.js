@@ -775,8 +775,14 @@ function App() {
       
       setConfigurationId(response.data.id);
       
-      // Initialize hierarchical serial collection
-      initializeHierarchicalSerials();
+      // Initialize hierarchical serial collection (preserve existing if possible)
+      const shouldContinue = initializeOrPreserveHierarchicalSerials();
+      
+      if (shouldContinue === false) {
+        // User cancelled due to configuration changes
+        setIsLoading(false);
+        return;
+      }
       
       setCurrentStep(2);
       setSuccess('Configuration saved successfully!');
