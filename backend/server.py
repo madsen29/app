@@ -574,7 +574,7 @@ async def create_serial_numbers(project_id: str, input: SerialNumbersCreate, cur
             detail=f"Expected {total_cases} case serial numbers, got {len(input.case_serial_numbers)}"
         )
     
-    if config["use_inner_cases"] and cases_per_sscc > 0:
+    if get_config_value("use_inner_cases", "useInnerCases") and cases_per_sscc > 0:
         if len(input.inner_case_serial_numbers) != total_inner_cases:
             raise HTTPException(
                 status_code=400, 
