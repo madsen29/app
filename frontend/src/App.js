@@ -1125,8 +1125,13 @@ function App() {
     }
   };
 
-  const handleStepClick = (step) => {
+  const handleStepClick = async (step) => {
     if (step < currentStep) {
+      // Auto-save before navigation
+      if (hasUnsavedChanges) {
+        await autoSave();
+      }
+      
       setCurrentStep(step);
       scrollToTop();
       setError('');
