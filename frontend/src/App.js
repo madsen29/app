@@ -2414,7 +2414,6 @@ function App() {
 
   const renderStep1 = () => (
     <div className="step-container">
-      {renderProgressBar()}
       <h2 className="step-title">Step 1: Configuration</h2>
       <form onSubmit={handleConfigurationSubmit}>
         
