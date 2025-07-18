@@ -568,7 +568,17 @@ async def create_serial_numbers(project_id: str, input: SerialNumbersCreate, cur
     
     serial_dict = input.model_dump(by_alias=False)
     serial_obj = SerialNumbers(**serial_dict)
-    await db.serial_numbers.insert_one(serial_obj.model_dump(by_alias=False))
+    
+    # Save serial numbers to project
+    await db.projects.update_one(
+        {"id": project_id, "user_id": current_user.id},
+        {"$set": {
+            "serial_numbers": serial_obj.model_dump(by_alias=False),
+            "current_step": 3,
+            "updated_at": datetime.utcnow()
+        }}
+    )
+    
     return serial_obj
 
 @api_router.get("/serial-numbers/{configuration_id}", response_model=SerialNumbers)
