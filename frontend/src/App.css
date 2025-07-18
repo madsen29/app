@@ -2021,3 +2021,595 @@ input:disabled {
   background-color: #6b7280;
   color: white;
 }
+
+/* =============================================================================
+   MOBILE RESPONSIVE STYLES
+   ============================================================================= */
+
+/* Base Mobile Styles */
+@media (max-width: 768px) {
+  /* App Container */
+  .app {
+    padding: 1rem;
+  }
+
+  .container {
+    margin: 0;
+    border-radius: 8px;
+  }
+
+  /* Header Styles */
+  .header {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .header-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Project Dashboard Mobile */
+  .dashboard-container {
+    padding: 1rem;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .dashboard-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Project List Mobile */
+  .project-list {
+    margin-top: 1rem;
+  }
+
+  .project-table {
+    display: none; /* Hide table on mobile */
+  }
+
+  /* Mobile Project Cards */
+  .project-cards {
+    display: block;
+    gap: 1rem;
+  }
+
+  .project-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-card-title {
+    font-weight: 600;
+    color: #1a202c;
+    flex: 1;
+    margin-right: 1rem;
+  }
+
+  .project-card-status {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .project-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-card-info-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+  }
+
+  .project-card-info-label {
+    color: #6b7280;
+  }
+
+  .project-card-info-value {
+    color: #1a202c;
+    font-weight: 500;
+  }
+
+  .project-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .project-card-actions button {
+    flex: 1;
+    min-width: 80px;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  /* Step Container Mobile */
+  .step-container {
+    padding: 1rem;
+  }
+
+  .step-title {
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  /* Progress Bar Mobile */
+  .progress-bar {
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-steps {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .progress-step {
+    flex-direction: row;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .progress-step-number {
+    margin-right: 0.75rem;
+    margin-bottom: 0;
+  }
+
+  .progress-step-text {
+    text-align: left;
+  }
+
+  /* Form Groups Mobile */
+  .form-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 0.75rem;
+  }
+
+  /* Serial Number Entry Mobile */
+  .hierarchical-input {
+    padding: 0;
+  }
+
+  .current-input {
+    margin-bottom: 1.5rem;
+  }
+
+  .context-path {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .input-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .serial-input,
+  .serial-textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+  }
+
+  .serial-input:focus,
+  .serial-textarea:focus {
+    border-color: #0055fb;
+    box-shadow: 0 0 0 3px rgba(0, 85, 251, 0.1);
+  }
+
+  .scan-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  /* Progress Info Mobile */
+  .progress-info {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .progress-info p {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .progress-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .progress-item strong {
+    font-size: 0.875rem;
+  }
+
+  /* Button Groups Mobile */
+  .button-group {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline {
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 1rem;
+    justify-content: center;
+  }
+
+  /* Modal Mobile */
+  .modal-overlay {
+    padding: 1rem;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border-radius: 8px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    padding: 1rem;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .modal-header h3 {
+    font-size: 1.125rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modal-actions button {
+    width: 100%;
+    order: 1;
+  }
+
+  .modal-actions .btn-secondary {
+    order: 2;
+  }
+
+  /* Checkbox Mobile */
+  .checkbox-label {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    margin-top: 0.125rem;
+  }
+
+  .checkbox-text {
+    flex: 1;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* Toast Mobile */
+  .toast-container {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 1000;
+  }
+
+  .toast {
+    width: 100%;
+    border-radius: 8px;
+    padding: 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* User Settings Mobile */
+  .user-settings-modal .modal-content {
+    max-height: 85vh;
+  }
+
+  .user-settings-tabs {
+    flex-direction: row;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  .user-settings-tab {
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Completion Summary Mobile */
+  .completion-summary {
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .completion-summary h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .summary-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  .stat {
+    background: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .stat strong {
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Serial Tree Mobile */
+  .serial-tree-container {
+    padding: 1rem;
+  }
+
+  .tree-view {
+    font-size: 0.875rem;
+  }
+
+  .tree-item {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .tree-item-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .tree-item-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .tree-item-actions button {
+    padding: 0.5rem;
+  }
+
+  /* Pagination Mobile */
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .pagination-controls button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    min-width: 44px; /* Touch target size */
+  }
+
+  /* Batch Actions Mobile */
+  .batch-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .batch-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .batch-actions .select-all-container {
+    justify-content: center;
+  }
+
+  /* Package Hierarchy Mobile */
+  .package-hierarchy {
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .hierarchy-level {
+    margin-bottom: 0.5rem;
+  }
+
+  .hierarchy-arrow {
+    margin: 0.25rem 0;
+    text-align: center;
+  }
+
+  /* Auto Save Indicator Mobile */
+  .auto-save-indicator {
+    position: fixed;
+    top: 4rem;
+    right: 1rem;
+    left: 1rem;
+    text-align: center;
+    z-index: 999;
+  }
+
+  .auto-save-indicator .toast {
+    display: inline-block;
+    width: auto;
+    min-width: 120px;
+  }
+}
+
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+  .app {
+    padding: 0.5rem;
+  }
+
+  .container {
+    border-radius: 0;
+  }
+
+  .step-container {
+    padding: 0.75rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.625rem;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .modal-content {
+    border-radius: 0;
+    min-height: 100vh;
+  }
+
+  .progress-steps {
+    gap: 0.25rem;
+  }
+
+  .progress-step {
+    padding: 0.5rem;
+  }
+
+  .serial-input,
+  .serial-textarea {
+    padding: 0.625rem;
+  }
+}
+
+/* Hide desktop-only elements on mobile */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* Show mobile-only elements */
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .project-cards {
+    display: none;
+  }
+}
