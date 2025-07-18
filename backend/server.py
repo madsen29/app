@@ -915,12 +915,18 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     # Get configuration parameters
     company_prefix = get_config_value("company_prefix", "companyPrefix")
     shipper_company_prefix = get_config_value("shipper_company_prefix", "shipperCompanyPrefix") or company_prefix  # Use shipper's company prefix for SSCCs
-    item_product_code = get_config_value("item_product_code", "itemProductCode")
-    case_product_code = get_config_value("case_product_code", "caseProductCode")
-    inner_case_product_code = get_config_value("inner_case_product_code", "innerCaseProductCode", "")
-    item_indicator_digit = get_config_value("item_indicator_digit", "itemIndicatorDigit")
-    case_indicator_digit = get_config_value("case_indicator_digit", "caseIndicatorDigit")
+    
+    # Get product code - use the same productCode for all packaging levels
+    base_product_code = get_config_value("product_code", "productCode", "")
+    item_product_code = base_product_code
+    case_product_code = base_product_code
+    inner_case_product_code = base_product_code
+    
+    # Get indicator digits
+    item_indicator_digit = get_config_value("item_indicator_digit", "itemIndicatorDigit", "")
+    case_indicator_digit = get_config_value("case_indicator_digit", "caseIndicatorDigit", "")
     inner_case_indicator_digit = get_config_value("inner_case_indicator_digit", "innerCaseIndicatorDigit", "")
+    
     use_inner_cases = get_config_value("use_inner_cases", "useInnerCases")
     cases_per_sscc = get_config_value("cases_per_sscc", "casesPerSscc")
     
