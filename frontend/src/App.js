@@ -3100,6 +3100,24 @@ function App() {
             >
               {isLoading ? 'Saving...' : 'Save Serial Numbers'}
             </button>
+            <button 
+              type="button" 
+              onClick={handleSaveProgress} 
+              disabled={isLoading} 
+              className="btn-secondary"
+              style={{ marginLeft: '10px' }}
+            >
+              Save Progress
+            </button>
+            <button 
+              type="button" 
+              onClick={handleSaveAndExit} 
+              disabled={isLoading} 
+              className="btn-outline"
+              style={{ marginLeft: '10px' }}
+            >
+              Save & Exit
+            </button>
           </div>
         </div>
       );
