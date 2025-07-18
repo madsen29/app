@@ -603,10 +603,14 @@ function App() {
         }
       });
 
-      setSuccess('Progress saved successfully!');
+      if (showToast) {
+        setSuccess('Progress saved successfully!');
+      }
       setHasUnsavedChanges(false);
     } catch (err) {
-      setError('Failed to save progress');
+      if (showToast) {
+        setError('Failed to save progress');
+      }
       console.error('Error saving progress:', err);
     } finally {
       setIsLoading(false);
