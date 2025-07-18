@@ -263,9 +263,18 @@ class EPCISCriticalIssuesTester:
             
             if response.status_code == 200:
                 serials = response.json()
+                # Check the actual response structure
+                print(f"DEBUG: Serial numbers response keys: {list(serials.keys())}")
+                
+                # Handle both possible response formats
+                sscc_count = len(serials.get('sscc_serial_numbers', serials.get('ssccSerialNumbers', [])))
+                case_count = len(serials.get('case_serial_numbers', serials.get('caseSerialNumbers', [])))
+                inner_case_count = len(serials.get('inner_case_serial_numbers', serials.get('innerCaseSerialNumbers', [])))
+                item_count = len(serials.get('item_serial_numbers', serials.get('itemSerialNumbers', [])))
+                
                 self.log_test("Critical Issues Serial Numbers", True, 
                             "Serial numbers created for 4-level hierarchy",
-                            f"SSCC: {len(serials['sscc_serial_numbers'])}, Cases: {len(serials['case_serial_numbers'])}, Inner Cases: {len(serials['inner_case_serial_numbers'])}, Items: {len(serials['item_serial_numbers'])}")
+                            f"SSCC: {sscc_count}, Cases: {case_count}, Inner Cases: {inner_case_count}, Items: {item_count}")
                 return serials
             else:
                 self.log_test("Critical Issues Serial Numbers", False, f"HTTP {response.status_code}: {response.text}")
