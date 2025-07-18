@@ -1413,7 +1413,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*", "https://serial-aggregator.preview.emergentagent.com", "https://c8e3fe45-251a-4359-a250-c028fb05fe98.preview.emergentagent.com"],
+    allow_origins=["*", "https://cd63a717-b5ed-4c4d-b9fe-b518396e7591.preview.emergentagent.com"],
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["Content-Disposition"],

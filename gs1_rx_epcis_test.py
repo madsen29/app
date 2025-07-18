@@ -43,7 +43,7 @@ import sys
 import os
 
 # Get backend URL from environment
-BACKEND_URL = "https://c8e3fe45-251a-4359-a250-c028fb05fe98.preview.emergentagent.com/api"
+BACKEND_URL = "https://cd63a717-b5ed-4c4d-b9fe-b518396e7591.preview.emergentagent.com/api"
 
 class GS1RxEPCISTester:
     def __init__(self):
