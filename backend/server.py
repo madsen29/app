@@ -503,12 +503,18 @@ async def get_configurations():
     configurations = await db.configurations.find().to_list(1000)
     return [SerialConfiguration(**config) for config in configurations]
 
-@api_router.post("/serial-numbers", response_model=SerialNumbers)
-async def create_serial_numbers(input: SerialNumbersCreate):
-    # Validate configuration exists
-    config = await db.configurations.find_one({"id": input.configuration_id})
+@api_router.post("/projects/{project_id}/serial-numbers", response_model=SerialNumbers)
+async def create_serial_numbers(project_id: str, input: SerialNumbersCreate, current_user: User = Depends(get_current_user)):
+    """Create serial numbers for a project"""
+    # Verify project exists and belongs to user
+    project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Get configuration from project
+    config = project.get("configuration")
     if not config:
-        raise HTTPException(status_code=404, detail="Configuration not found")
+        raise HTTPException(status_code=400, detail="Project configuration not found")
     
     # Calculate expected quantities based on configuration
     cases_per_sscc = config["cases_per_sscc"]
