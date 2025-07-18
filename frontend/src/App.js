@@ -18,6 +18,8 @@ function App() {
   const [currentProject, setCurrentProject] = useState(null);
   const [showDashboard, setShowDashboard] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [isPackagingConfigLocked, setIsPackagingConfigLocked] = useState(false);
+  const [originalPackagingConfig, setOriginalPackagingConfig] = useState(null);
   
   // Existing state
   const [currentStep, setCurrentStep] = useState(1);
