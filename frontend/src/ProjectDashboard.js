@@ -409,6 +409,11 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
           </div>
         </div>
       )}
+
+      {/* User Settings Modal */}
+      {showUserSettings && (
+        <UserSettings onClose={() => setShowUserSettings(false)} />
+      )}
     </div>
   );
 };
