@@ -142,6 +142,26 @@ function App() {
     configuration.shipperSameAsSender
   ]);
 
+  // Track unsaved changes
+  useEffect(() => {
+    if (currentProject) {
+      setHasUnsavedChanges(true);
+    }
+  }, [configuration, hierarchicalSerials]);
+
+  // Handle browser refresh/close warning
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
   const dismissToast = () => {
     setIsToastExiting(true);
     setTimeout(() => {
