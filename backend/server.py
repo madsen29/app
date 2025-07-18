@@ -916,11 +916,18 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     company_prefix = get_config_value("company_prefix", "companyPrefix")
     shipper_company_prefix = get_config_value("shipper_company_prefix", "shipperCompanyPrefix") or company_prefix  # Use shipper's company prefix for SSCCs
     
-    # Get product code - use the same productCode for all packaging levels
+    # Get product code - use single productCode field if available, otherwise fall back to separate fields
     base_product_code = get_config_value("product_code", "productCode", "")
-    item_product_code = base_product_code
-    case_product_code = base_product_code
-    inner_case_product_code = base_product_code
+    if not base_product_code:
+        # Fall back to separate product code fields for backward compatibility
+        item_product_code = get_config_value("item_product_code", "itemProductCode", "")
+        case_product_code = get_config_value("case_product_code", "caseProductCode", "")
+        inner_case_product_code = get_config_value("inner_case_product_code", "innerCaseProductCode", "")
+    else:
+        # Use single product code for all packaging levels
+        item_product_code = base_product_code
+        case_product_code = base_product_code
+        inner_case_product_code = base_product_code
     
     # Get indicator digits
     item_indicator_digit = get_config_value("item_indicator_digit", "itemIndicatorDigit", "")
