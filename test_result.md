@@ -246,11 +246,11 @@ frontend:
   
   - task: "Serial number input UI"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
@@ -264,6 +264,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "COMPREHENSIVE HIERARCHICAL SERIAL COLLECTION TESTING COMPLETED: ✅ ALL REVIEW REQUEST FEATURES SUCCESSFULLY TESTED AND WORKING: 1) ✅ MULTI-LINE ITEM INPUT FUNCTIONALITY: Item input uses textarea element supporting multi-line input (ITEM001\\nITEM002\\nITEM003) 2) ✅ DUPLICATE DETECTION IN MULTI-LINE TEXTAREA: Working perfectly - detects duplicates within multi-line input with specific error message 'Duplicate serial number found on line 3! \"ITEM001\" is already used on line 1 in this input.' 3) ✅ NAVIGATION DATA PRESERVATION: SSCC and Case serial numbers preserved during back navigation through context breadcrumbs 4) ✅ PROGRESS DISPLAY: 'Item X of Y' progress indicators working correctly showing 'Current SSCC: 1 of 1', 'Current Case: 1 of 2', 'Current Inner Case: 1 of 2', 'Current Item: 1 of 3' 5) ✅ CURRENT LEVEL HIGHLIGHTING: Current packaging level properly highlighted in progress display section 6) ✅ HIERARCHICAL NAVIGATION: Successfully navigated through complete 4-level hierarchy (SSCC → Case → Inner Case → Items) 7) ✅ SERIAL COLLECTION COMPLETION: Successfully completed entire serial collection process showing 'All Serial Numbers Collected' with hierarchical overview displaying all 12 items across 4 inner cases, 2 cases, and 1 SSCC. Test configuration: Company Prefix: 1234567, Product Code: 000000, 1 SSCC → 2 Cases → 4 Inner Cases → 12 Items total. All specific review request features are fully functional and working correctly."
+      - working: false
+        agent: "user"
+        comment: "USER REPORTED ISSUE: Two problems identified: 1) Serial number calculation issue - User configured 1 SSCC, 2 cases, 3 inner cases, and 4 items, but Step 2 only asked for 1 item instead of the expected 24 items (1×2×3×4=24). 2) Package Configuration Lock issue - When going back from Step 2 to Step 1, the Package Configuration should be locked (read-only) but it's not showing as locked."
   
   - task: "EPCIS generation and download UI"
     implemented: true
