@@ -328,7 +328,7 @@ function App() {
     setError('');
     
     try {
-      const response = await axios.post(`${API}/api/projects/${currentProject.id}/configuration`, {
+      const response = await axios.post(`${API}/projects/${currentProject.id}/configuration`, {
         items_per_case: configuration.casesPerSscc === 0 ? configuration.itemsPerCase : (configuration.useInnerCases ? 0 : configuration.itemsPerCase),
         cases_per_sscc: configuration.casesPerSscc,
         number_of_sscc: configuration.numberOfSscc,
