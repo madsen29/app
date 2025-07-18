@@ -432,10 +432,10 @@ function App() {
     }
   };
 
-  const handleBackToDashboard = () => {
+  const handleBackToDashboard = async () => {
+    // Auto-save before exiting if there are unsaved changes
     if (hasUnsavedChanges) {
-      const confirmed = window.confirm('You have unsaved changes. Are you sure you want to go back to the dashboard without saving?');
-      if (!confirmed) return;
+      await autoSaveBeforeExit();
     }
     
     setShowDashboard(true);
@@ -444,6 +444,12 @@ function App() {
     setHasUnsavedChanges(false);
     setIsPackagingConfigLocked(false);
     setOriginalPackagingConfig(null);
+    
+    // Clear any existing auto-save timer
+    if (autoSaveTimer) {
+      clearTimeout(autoSaveTimer);
+      setAutoSaveTimer(null);
+    }
     
     // Reset configuration to defaults
     setConfiguration({
