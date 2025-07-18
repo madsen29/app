@@ -977,13 +977,13 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     event_list = ET.SubElement(epcis_body, "EventList")
     
     # Get additional configuration parameters
-    lot_number = config.get("lot_number", "")
-    expiration_date = config.get("expiration_date", "")
-    sscc_indicator_digit = config["sscc_indicator_digit"]
-    number_of_sscc = config["number_of_sscc"]
+    lot_number = get_config_value("lot_number", "lotNumber", "")
+    expiration_date = get_config_value("expiration_date", "expirationDate", "")
+    sscc_indicator_digit = get_config_value("sscc_indicator_digit", "ssccIndicatorDigit")
+    number_of_sscc = get_config_value("number_of_sscc", "numberOfSscc")
     
     # Use shipper SGLN for readPoint and bizLocation
-    shipper_sgln = config.get("shipper_sgln", "")
+    shipper_sgln = get_config_value("shipper_sgln", "shipperSgln", "")
     if shipper_sgln:
         read_point = f"urn:epc:id:sgln:{shipper_sgln}"
         biz_location = f"urn:epc:id:sgln:{shipper_sgln}"
@@ -996,12 +996,12 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     direct_sscc_items = cases_per_sscc == 0
     
     if direct_sscc_items:
-        items_per_sscc = config["items_per_case"]  # In this case, items_per_case means items_per_sscc
+        items_per_sscc = get_config_value("items_per_case", "itemsPerCase")  # In this case, items_per_case means items_per_sscc
     elif use_inner_cases:
-        inner_cases_per_case = config["inner_cases_per_case"]
-        items_per_inner_case = config["items_per_inner_case"]
+        inner_cases_per_case = get_config_value("inner_cases_per_case", "innerCasesPerCase")
+        items_per_inner_case = get_config_value("items_per_inner_case", "itemsPerInnerCase")
     else:
-        items_per_case = config["items_per_case"]
+        items_per_case = get_config_value("items_per_case", "itemsPerCase")
     
     # Get serial numbers from the new list format
     sscc_serials = []
