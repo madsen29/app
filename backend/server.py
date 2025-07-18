@@ -642,6 +642,37 @@ async def generate_epcis(project_id: str, request: EPCISGenerationRequest, curre
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
+@api_router.get("/projects/{project_id}/download-epcis")
+async def download_epcis(project_id: str, current_user: User = Depends(get_current_user)):
+    """Download completed EPCIS file for a project"""
+    project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    if project.get("status") != "Completed":
+        raise HTTPException(status_code=400, detail="Project is not completed")
+    
+    epcis_content = project.get("epcis_file_content")
+    if not epcis_content:
+        raise HTTPException(status_code=404, detail="EPCIS file not found")
+    
+    # Generate filename
+    config = project.get("configuration", {})
+    sender_gln = config.get("sender_gln", config.get("senderGln", ""))
+    receiver_gln = config.get("receiver_gln", config.get("receiverGln", ""))
+    today_date = datetime.now(timezone.utc).strftime("%y%m%d")
+    
+    if not sender_gln or not receiver_gln:
+        filename = f"epcis-{today_date}.xml"
+    else:
+        filename = f"epcis-{sender_gln}-{receiver_gln}-{today_date}.xml"
+    
+    return Response(
+        content=epcis_content,
+        media_type="application/xml",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
 def add_ilmd_extension(event_element, lot_number, expiration_date):
     """Add ILMD extension with lot number and expiration date to an event"""
     if lot_number or expiration_date:
