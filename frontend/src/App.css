@@ -1274,6 +1274,11 @@ input:disabled {
     width: 0%;
   }
 }
+.project-progress-header .project-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -1283,6 +1288,10 @@ input:disabled {
   
   .header {
     padding: 1.5rem;
+  }
+  .project-progress-header .project-name {
+    font-size: 1rem;
+    line-height: normal;
   }
   
   .header-content {
@@ -1884,11 +1893,7 @@ input:disabled {
   margin-bottom: 6px;
 }
 
-.project-progress-header .project-name {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin: 0;
-}
+
 
 .auto-save-indicator {
   display: flex;
@@ -2034,15 +2039,12 @@ input:disabled {
 }
 
 .btn-download {
-  background-color: #374151;
-  border-color: #374151;
-  color: white;
+  background-color: #e3e5e9;
+  color: #1a202c;
 }
 
 .btn-download:hover {
-  background-color: #1f2937;
-  border-color: #1f2937;
-  color: white;
+  background-color: #cbced4;
 }
 
 .btn-delete {
@@ -2705,7 +2707,7 @@ input:disabled {
   }
 
   .step-container {
-    padding: 0.75rem;
+    padding: 0rem;
   }
 
   .form-group input,

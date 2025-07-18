@@ -438,8 +438,8 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex flex-col items-left justify-between md:flex-row">
-            <div className="flex flex-col items-left gap-5 sm:flex-row">
+          <div className="flex flex-row items-start items-left justify-between">
+            <div className="flex flex-col items-left gap-0 sm:gap-5 sm:flex-row">
               <img className="logo" src="https://rxerp.com/wp-content/uploads/2025/01/rxerp-logo-hero-tagline.svg"></img>
               <p className="mt-2 sm:mt-0 text-gray-900 text-lg font-medium mb-2">
                 👋 Welcome back, {user?.first_name || user?.email}
@@ -543,7 +543,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                 </select>
                 <button
                   onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="text-lg text-blue-600 hover:text-blue-800"
                 >
                   {sortOrder === 'asc' ? '↑' : '↓'}
                 </button>
