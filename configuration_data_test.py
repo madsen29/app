@@ -279,6 +279,7 @@ class ConfigurationDataTester:
                 
         except Exception as e:
             self.log_test("Serial Numbers Creation", False, f"Request error: {str(e)}")
+            print(f"   Debug - Serial data sent: {serial_data}")
             return None
     
     def test_epcis_generation_configuration_population(self, project_id):
