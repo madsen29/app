@@ -1190,7 +1190,7 @@ input:disabled {
 
 @keyframes toastSlideIn {
   from {
-    transform: translateY(100px);
+    transform: translateY(-100px);
     opacity: 0;
   }
   to {
@@ -1205,7 +1205,7 @@ input:disabled {
     opacity: 1;
   }
   to {
-    transform: translateY(100px);
+    transform: translateY(-100px);
     opacity: 0;
   }
 }
