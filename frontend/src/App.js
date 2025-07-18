@@ -383,6 +383,22 @@ function App() {
     // Set current step based on project state
     setCurrentStep(project.current_step);
     
+    // Check if packaging configuration should be locked
+    const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
+    setIsPackagingConfigLocked(hasSerialNumbers);
+    
+    // Store original packaging configuration for comparison
+    if (project.configuration) {
+      setOriginalPackagingConfig({
+        itemsPerCase: project.configuration.itemsPerCase || 10,
+        casesPerSscc: project.configuration.casesPerSscc || 5,
+        numberOfSscc: project.configuration.numberOfSscc || 1,
+        useInnerCases: project.configuration.useInnerCases || false,
+        innerCasesPerCase: project.configuration.innerCasesPerCase || 2,
+        itemsPerInnerCase: project.configuration.itemsPerInnerCase || 5
+      });
+    }
+    
     // Load existing serial numbers if available
     if (project.serial_numbers) {
       setHierarchicalSerials(project.serial_numbers);
