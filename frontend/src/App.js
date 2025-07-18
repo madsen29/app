@@ -2942,8 +2942,9 @@ function App() {
                 min="1"
                 max="20"
                 value={configuration.numberOfSscc}
-                onChange={(e) => setConfiguration({...configuration, numberOfSscc: parseInt(e.target.value)})}
+                onChange={(e) => setConfiguration({...configuration, numberOfSscc: e.target.value ? parseInt(e.target.value) : ''})}
                 disabled={isPackagingConfigLocked}
+                placeholder="e.g., 1"
                 required
               />
             </div>
@@ -2955,8 +2956,9 @@ function App() {
                 min="0"
                 max="50"
                 value={configuration.casesPerSscc}
-                onChange={(e) => setConfiguration({...configuration, casesPerSscc: parseInt(e.target.value)})}
+                onChange={(e) => setConfiguration({...configuration, casesPerSscc: e.target.value ? parseInt(e.target.value) : ''})}
                 disabled={isPackagingConfigLocked}
+                placeholder="e.g., 5 (or 0 for direct SSCC → Items)"
                 required
               />
               <small className="form-hint">Enter 0 for direct SSCC → Items aggregation</small>
