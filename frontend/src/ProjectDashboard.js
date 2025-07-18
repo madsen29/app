@@ -80,6 +80,77 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     return packagingSet && hasSerialNumbers;
   };
 
+  // Pagination helper functions
+  const getTotalPages = () => Math.ceil(projects.length / projectsPerPage);
+  const getCurrentPageProjects = () => {
+    const startIndex = (currentPage - 1) * projectsPerPage;
+    const endIndex = startIndex + projectsPerPage;
+    return sortedProjects.slice(startIndex, endIndex);
+  };
+
+  // Batch delete helper functions
+  const handleSelectProject = (projectId) => {
+    const newSelected = new Set(selectedProjects);
+    if (newSelected.has(projectId)) {
+      newSelected.delete(projectId);
+    } else {
+      newSelected.add(projectId);
+    }
+    setSelectedProjects(newSelected);
+    setIsAllSelected(newSelected.size === getCurrentPageProjects().length);
+  };
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedProjects(new Set());
+      setIsAllSelected(false);
+    } else {
+      const currentPageProjectIds = getCurrentPageProjects().map(p => p.id);
+      setSelectedProjects(new Set(currentPageProjectIds));
+      setIsAllSelected(true);
+    }
+  };
+
+  const handleBatchDelete = async () => {
+    if (selectedProjects.size === 0) return;
+    
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${selectedProjects.size} project${selectedProjects.size > 1 ? 's' : ''}? This action cannot be undone.`
+    );
+    
+    if (!confirmDelete) return;
+    
+    setBatchDeleteLoading(true);
+    setError('');
+    
+    try {
+      const deletePromises = Array.from(selectedProjects).map(projectId =>
+        axios.delete(`${API}/projects/${projectId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      );
+      
+      await Promise.all(deletePromises);
+      
+      // Remove deleted projects from state
+      setProjects(projects.filter(p => !selectedProjects.has(p.id)));
+      setSelectedProjects(new Set());
+      setIsAllSelected(false);
+      
+      // Adjust current page if necessary
+      const newTotalPages = Math.ceil((projects.length - selectedProjects.size) / projectsPerPage);
+      if (currentPage > newTotalPages && newTotalPages > 0) {
+        setCurrentPage(newTotalPages);
+      }
+      
+    } catch (err) {
+      setError('Failed to delete some projects. Please try again.');
+      console.error('Error deleting projects:', err);
+    } finally {
+      setBatchDeleteLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
   }, []);
