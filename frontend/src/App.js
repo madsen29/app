@@ -891,7 +891,7 @@ function App() {
         inner_case_product_code: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.productCode : '',
         lot_number: configuration.lotNumber,
         expiration_date: configuration.expirationDate,
-        sscc_indicator_digit: configuration.ssccExtensionDigit,
+        sscc_extension_digit: configuration.ssccExtensionDigit,
         case_indicator_digit: configuration.caseIndicatorDigit,
         inner_case_indicator_digit: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.innerCaseIndicatorDigit : '',
         item_indicator_digit: configuration.itemIndicatorDigit,
