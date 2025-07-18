@@ -388,7 +388,7 @@ function App() {
       // Also restore the serial collection step state if we're on step 2
       if (project.current_step === 2) {
         // Find the current position in the serial collection
-        const currentPosition = findCurrentSerialPosition(project.serial_numbers);
+        const currentPosition = findCurrentSerialPosition(project.serial_numbers, configuration);
         if (currentPosition.isComplete) {
           setSerialCollectionStep({
             ...currentPosition,
