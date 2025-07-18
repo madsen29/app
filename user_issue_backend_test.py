@@ -406,11 +406,12 @@ class UserIssueBackendTester:
                 data = response.json()
                 
                 # Verify the response contains correct counts
+                # Backend returns camelCase field names in response
                 actual_counts = {
-                    "sscc": len(data.get("sscc_serial_numbers", [])),
-                    "case": len(data.get("case_serial_numbers", [])),
-                    "inner_case": len(data.get("inner_case_serial_numbers", [])),
-                    "item": len(data.get("item_serial_numbers", []))
+                    "sscc": len(data.get("ssccSerialNumbers", data.get("sscc_serial_numbers", []))),
+                    "case": len(data.get("caseSerialNumbers", data.get("case_serial_numbers", []))),
+                    "inner_case": len(data.get("innerCaseSerialNumbers", data.get("inner_case_serial_numbers", []))),
+                    "item": len(data.get("itemSerialNumbers", data.get("item_serial_numbers", [])))
                 }
                 
                 expected_counts_dict = {
