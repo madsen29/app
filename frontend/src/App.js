@@ -321,6 +321,10 @@ function App() {
     setShowDashboard(false);
     setHasUnsavedChanges(false); // Reset unsaved changes flag
     
+    // Reset packaging configuration lock state for new project selection
+    setIsPackagingConfigLocked(false);
+    setOriginalPackagingConfig(null);
+    
     // Load project configuration
     if (project.configuration) {
       setConfiguration({
