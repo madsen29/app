@@ -3143,23 +3143,69 @@ function App() {
 
   return (
     <AuthWrapper>
-      <div className="app">
-        <div className="container">
-          <header className="header">
-            <div className="header-content">
-              <img className="header-logo" src="https://cdn.prod.website-files.com/6154ee5ad4b73423326331fd/66a2bd8c5b618c82f5e30699_rxerp-logo-hero-light.svg"></img>
-              <div className="header-text">
-                <h1>RxERP Aggregator</h1>
-                <p>Generate GS1 compliant EPCIS files for pharmaceutical serialization</p>
+      {showDashboard ? (
+        <ProjectDashboard 
+          onSelectProject={handleSelectProject}
+          onLogout={handleLogout}
+        />
+      ) : (
+        <div className="app">
+          <div className="container">
+            <header className="header">
+              <div className="header-content">
+                <img className="header-logo" src="https://cdn.prod.website-files.com/6154ee5ad4b73423326331fd/66a2bd8c5b618c82f5e30699_rxerp-logo-hero-light.svg"></img>
+                <div className="header-text">
+                  <h1>RxERP Aggregator</h1>
+                  <p>Generate GS1 compliant EPCIS files for pharmaceutical serialization</p>
+                </div>
+                <div className="header-actions">
+                  <button
+                    onClick={handleBackToDashboard}
+                    className="btn-secondary"
+                    style={{ marginRight: '10px' }}
+                  >
+                    <FiArrowLeft style={{ marginRight: '5px' }} />
+                    Back to Dashboard
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="btn-outline"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
-            </div>
-        </header>
+              {currentProject && (
+                <div className="project-header">
+                  <h2 className="project-name">{currentProject.name}</h2>
+                  <span className={`project-status ${currentProject.status.toLowerCase().replace(' ', '-')}`}>
+                    {currentProject.status}
+                  </span>
+                </div>
+              )}
+              <div className="progress-bar">
+                <div className="progress-steps">
+                  <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}>
+                    <span className="step-number">1</span>
+                    <span className="step-label">Configuration</span>
+                  </div>
+                  <div className={`step ${currentStep === 2 ? 'active' : currentStep > 2 ? 'completed' : ''}`}>
+                    <span className="step-number">2</span>
+                    <span className="step-label">Serial Numbers</span>
+                  </div>
+                  <div className={`step ${currentStep === 3 ? 'active' : ''}`}>
+                    <span className="step-number">3</span>
+                    <span className="step-label">Generate EPCIS</span>
+                  </div>
+                </div>
+              </div>
+            </header>
 
-        <main className="main-content">
-          {currentStep === 1 && renderStep1()}
-          {currentStep === 2 && renderStep2()}
-          {currentStep === 3 && renderStep3()}
-        </main>
+            <main className="main-content">
+              {currentStep === 1 && renderStep1()}
+              {currentStep === 2 && renderStep2()}
+              {currentStep === 3 && renderStep3()}
+            </main>
 
         {/* Toast Notifications */}
         <div className="toast-container">
