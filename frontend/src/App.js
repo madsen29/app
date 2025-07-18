@@ -3343,8 +3343,23 @@ function App() {
           <button onClick={handleGenerateEPCIS} disabled={isLoading} className="btn-primary">
             {isLoading ? 'Generating...' : 'Generate & Download EPCIS'}
           </button>
-          <button onClick={handleReset} className="btn-outline">
-            Start Over
+          <button 
+            type="button" 
+            onClick={handleSaveProgress} 
+            disabled={isLoading} 
+            className="btn-secondary"
+            style={{ marginLeft: '10px' }}
+          >
+            Save Progress
+          </button>
+          <button 
+            type="button" 
+            onClick={handleSaveAndExit} 
+            disabled={isLoading} 
+            className="btn-outline"
+            style={{ marginLeft: '10px' }}
+          >
+            Save & Exit
           </button>
         </div>
       </div>
