@@ -155,17 +155,74 @@ function App() {
     setCurrentProject(project);
     setShowDashboard(false);
     
-    // Load project data
+    // Load project configuration
     if (project.configuration) {
-      setConfiguration(project.configuration);
+      setConfiguration({
+        itemsPerCase: project.configuration.itemsPerCase || 10,
+        casesPerSscc: project.configuration.casesPerSscc || 5,
+        numberOfSscc: project.configuration.numberOfSscc || 1,
+        useInnerCases: project.configuration.useInnerCases || false,
+        innerCasesPerCase: project.configuration.innerCasesPerCase || 2,
+        itemsPerInnerCase: project.configuration.itemsPerInnerCase || 5,
+        companyPrefix: project.configuration.companyPrefix || '0345802',
+        productCode: project.configuration.productCode || '46653',
+        lotNumber: project.configuration.lotNumber || '',
+        expirationDate: project.configuration.expirationDate || '',
+        ssccExtensionDigit: project.configuration.ssccExtensionDigit || '0',
+        caseIndicatorDigit: project.configuration.caseIndicatorDigit || '0',
+        innerCaseIndicatorDigit: project.configuration.innerCaseIndicatorDigit || '0',
+        itemIndicatorDigit: project.configuration.itemIndicatorDigit || '0',
+        // Business Document Information
+        senderCompanyPrefix: project.configuration.senderCompanyPrefix || '',
+        senderGln: project.configuration.senderGln || '',
+        senderSgln: project.configuration.senderSgln || '',
+        senderName: project.configuration.senderName || '',
+        senderStreetAddress: project.configuration.senderStreetAddress || '',
+        senderCity: project.configuration.senderCity || '',
+        senderState: project.configuration.senderState || '',
+        senderPostalCode: project.configuration.senderPostalCode || '',
+        senderCountryCode: project.configuration.senderCountryCode || '',
+        senderDespatchAdviceNumber: project.configuration.senderDespatchAdviceNumber || '',
+        receiverCompanyPrefix: project.configuration.receiverCompanyPrefix || '',
+        receiverGln: project.configuration.receiverGln || '',
+        receiverSgln: project.configuration.receiverSgln || '',
+        receiverName: project.configuration.receiverName || '',
+        receiverStreetAddress: project.configuration.receiverStreetAddress || '',
+        receiverCity: project.configuration.receiverCity || '',
+        receiverState: project.configuration.receiverState || '',
+        receiverPostalCode: project.configuration.receiverPostalCode || '',
+        receiverCountryCode: project.configuration.receiverCountryCode || '',
+        receiverPoNumber: project.configuration.receiverPoNumber || '',
+        shipperCompanyPrefix: project.configuration.shipperCompanyPrefix || '',
+        shipperGln: project.configuration.shipperGln || '',
+        shipperSgln: project.configuration.shipperSgln || '',
+        shipperName: project.configuration.shipperName || '',
+        shipperStreetAddress: project.configuration.shipperStreetAddress || '',
+        shipperCity: project.configuration.shipperCity || '',
+        shipperState: project.configuration.shipperState || '',
+        shipperPostalCode: project.configuration.shipperPostalCode || '',
+        shipperCountryCode: project.configuration.shipperCountryCode || '',
+        shipperSameAsSender: project.configuration.shipperSameAsSender || false,
+        // EPCClass data
+        productNdc: project.configuration.productNdc || '',
+        packageNdc: project.configuration.packageNdc || '',
+        regulatedProductName: project.configuration.regulatedProductName || '',
+        manufacturerName: project.configuration.manufacturerName || '',
+        dosageFormType: project.configuration.dosageFormType || '',
+        strengthDescription: project.configuration.strengthDescription || '',
+        netContentDescription: project.configuration.netContentDescription || ''
+      });
     }
     
     // Set current step based on project state
     setCurrentStep(project.current_step);
     
-    // Load existing data if available
+    // Load existing serial numbers if available
     if (project.serial_numbers) {
       setHierarchicalSerials(project.serial_numbers);
+    } else if (project.configuration && project.current_step >= 2) {
+      // Initialize hierarchical serials if we're on step 2 or beyond but don't have saved serial numbers
+      initializeHierarchicalSerials(project.configuration);
     }
   };
 
