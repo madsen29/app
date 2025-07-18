@@ -281,7 +281,7 @@ class SerialConfigurationCreate(BaseModel):
     inner_case_product_code: str = Field(default="", alias="innerCaseProductCode")
     lot_number: str = Field(default="", alias="lotNumber")
     expiration_date: str = Field(default="", alias="expirationDate")
-    sscc_indicator_digit: str = Field(alias="ssccIndicatorDigit")
+    sscc_extension_digit: str = Field(alias="ssccExtensionDigit")
     case_indicator_digit: str = Field(alias="caseIndicatorDigit")
     inner_case_indicator_digit: str = Field(default="", alias="innerCaseIndicatorDigit")
     item_indicator_digit: str = Field(alias="itemIndicatorDigit")
