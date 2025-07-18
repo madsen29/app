@@ -1550,7 +1550,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*", "https://cd63a717-b5ed-4c4d-b9fe-b518396e7591.preview.emergentagent.com", "https://serialtrack.preview.emergentagent.com"],
+    allow_origins=["*", "https://72fab16c-c7e1-4095-8101-1dff788bbfa2.preview.emergentagent.com"],
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["Content-Disposition"],
