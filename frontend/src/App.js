@@ -3649,14 +3649,6 @@ function App() {
                   (sscc.items && sscc.items.some(i => i.itemSerial))
                 );
                 
-                if (hasSerialNumbers) {
-                  const confirmBack = window.confirm(
-                    'Going back to Step 1 may reset your serial numbers if you change the configuration. ' +
-                    'Are you sure you want to go back?'
-                  );
-                  if (!confirmBack) return;
-                }
-                
                 // Set packaging configuration lock if there are serial numbers
                 if (hasSerialNumbers) {
                   setIsPackagingConfigLocked(true);
