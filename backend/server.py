@@ -525,23 +525,27 @@ async def create_serial_numbers(project_id: str, input: SerialNumbersCreate, cur
     if not config:
         raise HTTPException(status_code=400, detail="Project configuration not found")
     
+    # Handle both camelCase and snake_case keys
+    def get_config_value(key_snake, key_camel):
+        return config.get(key_snake, config.get(key_camel, 0))
+    
     # Calculate expected quantities based on configuration
-    cases_per_sscc = config["cases_per_sscc"]
+    cases_per_sscc = get_config_value("cases_per_sscc", "casesPerSscc")
     
     # If no cases, items go directly in SSCC
     if cases_per_sscc == 0:
         total_cases = 0
         total_inner_cases = 0
-        total_items = config["items_per_case"] * config["number_of_sscc"]
+        total_items = get_config_value("items_per_case", "itemsPerCase") * get_config_value("number_of_sscc", "numberOfSscc")
     else:
-        total_cases = cases_per_sscc * config["number_of_sscc"]
+        total_cases = cases_per_sscc * get_config_value("number_of_sscc", "numberOfSscc")
         
-        if config["use_inner_cases"]:
-            total_inner_cases = config["inner_cases_per_case"] * total_cases
-            total_items = config["items_per_inner_case"] * total_inner_cases
+        if get_config_value("use_inner_cases", "useInnerCases"):
+            total_inner_cases = get_config_value("inner_cases_per_case", "innerCasesPerCase") * total_cases
+            total_items = get_config_value("items_per_inner_case", "itemsPerInnerCase") * total_inner_cases
         else:
             total_inner_cases = 0
-            total_items = config["items_per_case"] * total_cases
+            total_items = get_config_value("items_per_case", "itemsPerCase") * total_cases
     
     # Validate serial numbers count
     if len(input.sscc_serial_numbers) != config["number_of_sscc"]:
