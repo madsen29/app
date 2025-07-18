@@ -173,7 +173,7 @@ backend:
   
   - task: "EPCIS XML generation"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 4
     priority: "high"
