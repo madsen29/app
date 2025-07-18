@@ -1491,16 +1491,16 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     biz_transaction_list = ET.SubElement(shipping_event, "bizTransactionList")
     
     # Purchase Order transaction
-    receiver_gln = config.get("receiver_gln", "")
-    receiver_po_number = config.get("receiver_po_number", "")
+    receiver_gln = get_config_value("receiver_gln", "receiverGln", "")
+    receiver_po_number = get_config_value("receiver_po_number", "receiverPoNumber", "")
     if receiver_gln and receiver_po_number:
         po_transaction = ET.SubElement(biz_transaction_list, "bizTransaction")
         po_transaction.set("type", "urn:epcglobal:cbv:btt:po")
         po_transaction.text = f"urn:epcglobal:cbv:bt:{receiver_gln}:{receiver_po_number}"
     
     # Despatch Advice transaction
-    sender_gln = config.get("sender_gln", "")
-    sender_despatch_advice_number = config.get("sender_despatch_advice_number", "")
+    sender_gln = get_config_value("sender_gln", "senderGln", "")
+    sender_despatch_advice_number = get_config_value("sender_despatch_advice_number", "senderDespatchAdviceNumber", "")
     if sender_gln and sender_despatch_advice_number:
         desadv_transaction = ET.SubElement(biz_transaction_list, "bizTransaction")
         desadv_transaction.set("type", "urn:epcglobal:cbv:btt:desadv")
@@ -1511,8 +1511,8 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     
     # Source list (sender information)
     source_list = ET.SubElement(extension, "sourceList")
-    sender_sgln = config.get("sender_sgln", "")
-    shipper_sgln = config.get("shipper_sgln", "")
+    sender_sgln = get_config_value("sender_sgln", "senderSgln", "")
+    shipper_sgln = get_config_value("shipper_sgln", "shipperSgln", "")
     if sender_sgln:
         # owning_party source (uses sender SGLN)
         source_owning = ET.SubElement(source_list, "source")
@@ -1526,7 +1526,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     
     # Destination list (receiver information)
     destination_list = ET.SubElement(extension, "destinationList")
-    receiver_sgln = config.get("receiver_sgln", "")
+    receiver_sgln = get_config_value("receiver_sgln", "receiverSgln", "")
     if receiver_sgln:
         # owning_party destination
         dest_owning = ET.SubElement(destination_list, "destination")
