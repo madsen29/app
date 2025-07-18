@@ -166,6 +166,29 @@ function App() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnsavedChanges]);
 
+  // Auto-save configuration changes
+  useEffect(() => {
+    if (currentProject && hasUnsavedChanges) {
+      debouncedAutoSave();
+    }
+  }, [configuration]);
+
+  // Auto-save serial numbers changes
+  useEffect(() => {
+    if (currentProject && hasUnsavedChanges && hierarchicalSerials.length > 0) {
+      debouncedAutoSave();
+    }
+  }, [hierarchicalSerials]);
+
+  // Cleanup auto-save timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimer) {
+        clearTimeout(autoSaveTimer);
+      }
+    };
+  }, [autoSaveTimer]);
+
   const dismissToast = () => {
     setIsToastExiting(true);
     setTimeout(() => {
