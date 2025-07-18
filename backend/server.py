@@ -392,7 +392,19 @@ async def logout():
 async def get_user_projects(current_user: User = Depends(get_current_user)):
     """Get all projects for the current user"""
     projects = await db.projects.find({"user_id": current_user.id}).to_list(1000)
-    return [Project(**project) for project in projects]
+    
+    # Convert projects and handle data format migration
+    converted_projects = []
+    for project in projects:
+        # Handle serial_numbers format migration (dict -> list)
+        if project.get("serial_numbers") is not None:
+            if isinstance(project["serial_numbers"], dict):
+                # Convert old format to new format or set to None
+                project["serial_numbers"] = None
+        
+        converted_projects.append(Project(**project))
+    
+    return converted_projects
 
 @api_router.post("/projects", response_model=Project)
 async def create_project(project: ProjectCreate, current_user: User = Depends(get_current_user)):
