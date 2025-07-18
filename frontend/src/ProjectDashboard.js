@@ -24,6 +24,12 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const [isAllSelected, setIsAllSelected] = useState(false);
   const [batchDeleteLoading, setBatchDeleteLoading] = useState(false);
   
+  // Rename project state
+  const [showRenameModal, setShowRenameModal] = useState(false);
+  const [renameProject, setRenameProject] = useState(null);
+  const [newProjectName, setNewProjectName] = useState('');
+  const [renameLoading, setRenameLoading] = useState(false);
+  
   const { token, user } = useAuth();
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
