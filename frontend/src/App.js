@@ -175,6 +175,7 @@ function App() {
   const handleSelectProject = (project) => {
     setCurrentProject(project);
     setShowDashboard(false);
+    setHasUnsavedChanges(false); // Reset unsaved changes flag
     
     // Load project configuration
     if (project.configuration) {
