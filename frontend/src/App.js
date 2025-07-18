@@ -614,6 +614,8 @@ function App() {
   const handleSaveAndExit = async () => {
     await handleSaveProgress();
     if (!error) {
+      // Clear unsaved changes flag since we just saved
+      setHasUnsavedChanges(false);
       handleBackToDashboard();
     }
   };
