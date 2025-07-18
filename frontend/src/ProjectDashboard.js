@@ -489,7 +489,8 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                 </div>
               )}
               
-              <ul className="divide-y divide-gray-200">
+              {/* Desktop Table View */}
+              <ul className="divide-y divide-gray-200 project-table">
                 {getCurrentPageProjects().map((project) => {
                   const totals = calculateProjectTotals(project.configuration);
                   
@@ -596,6 +597,120 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                 );
               })}
             </ul>
+            
+            {/* Mobile Card View */}
+            <div className="project-cards">
+              {getCurrentPageProjects().map((project) => {
+                const totals = calculateProjectTotals(project.configuration);
+                
+                return (
+                  <div key={project.id} className="project-card">
+                    <div className="project-card-header">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedProjects.has(project.id)}
+                          onChange={() => handleSelectProject(project.id)}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <h4 className="project-card-title">
+                          {project.name}
+                        </h4>
+                        <button
+                          onClick={() => handleRenameClick(project)}
+                          className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                          title="Rename project"
+                        >
+                          <FiEdit2 size={14} />
+                        </button>
+                      </div>
+                      <span className={`project-card-status ${
+                        project.status === 'Completed' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {project.status}
+                      </span>
+                    </div>
+                    
+                    <div className="project-card-info">
+                      <div className="project-card-info-item">
+                        <span className="project-card-info-label">Progress:</span>
+                        <span className="project-card-info-value">Step {project.current_step} of 3</span>
+                      </div>
+                      <div className="project-card-info-item">
+                        <span className="project-card-info-label">Modified:</span>
+                        <span className="project-card-info-value">{new Date(project.updated_at).toLocaleDateString()}</span>
+                      </div>
+                      <div className="project-card-info-item">
+                        <span className="project-card-info-label">Created:</span>
+                        <span className="project-card-info-value">{new Date(project.created_at).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Mobile Package Hierarchy */}
+                    {isPackagingConfigSetAndLocked(project) && (
+                      <div className="package-hierarchy">
+                        <div className="font-medium text-gray-700 mb-2">Package Hierarchy:</div>
+                        <div className="flex flex-col space-y-1">
+                          <div className="bg-gray-100 px-2 py-1 rounded text-xs">
+                            {project.configuration.numberOfSscc || 0} SSCC{(project.configuration.numberOfSscc || 0) !== 1 ? 's' : ''}
+                          </div>
+                          
+                          {project.configuration.casesPerSscc > 0 && (
+                            <>
+                              <div className="hierarchy-arrow">↓</div>
+                              <div className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                {totals.totalCases} Case{totals.totalCases !== 1 ? 's' : ''}
+                              </div>
+                            </>
+                          )}
+                          
+                          {project.configuration.useInnerCases && (
+                            <>
+                              <div className="hierarchy-arrow">↓</div>
+                              <div className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                {totals.totalInnerCases} Inner Case{totals.totalInnerCases !== 1 ? 's' : ''}
+                              </div>
+                            </>
+                          )}
+                          
+                          <div className="hierarchy-arrow">↓</div>
+                          <div className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">
+                            {totals.totalItems} Item{totals.totalItems !== 1 ? 's' : ''}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="project-card-actions">
+                      {project.status !== 'Completed' && (
+                        <button
+                          onClick={() => onSelectProject(project)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm font-medium"
+                        >
+                          Resume
+                        </button>
+                      )}
+                      {project.status === 'Completed' && (
+                        <button
+                          onClick={() => handleDownloadEPCIS(project.id)}
+                          className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm font-medium"
+                        >
+                          Download
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteProject(project.id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-medium"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             
             {/* Pagination */}
             {projects.length > projectsPerPage && (
