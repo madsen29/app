@@ -402,6 +402,70 @@ async def logout():
     """Logout user (client-side token removal)"""
     return {"message": "Successfully logged out"}
 
+@api_router.put("/auth/profile", response_model=User)
+async def update_user_profile(user_update: UserUpdate, current_user: User = Depends(get_current_user)):
+    """Update user profile information"""
+    # Create update dictionary with only non-None values
+    update_data = {}
+    if user_update.first_name is not None:
+        update_data["first_name"] = user_update.first_name
+    if user_update.last_name is not None:
+        update_data["last_name"] = user_update.last_name
+    if user_update.email is not None:
+        # Check if email is already taken by another user
+        existing_user = await db.users.find_one({"email": user_update.email, "id": {"$ne": current_user.id}})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        update_data["email"] = user_update.email
+    if user_update.company_name is not None:
+        update_data["company_name"] = user_update.company_name
+    if user_update.street_address is not None:
+        update_data["street_address"] = user_update.street_address
+    if user_update.city is not None:
+        update_data["city"] = user_update.city
+    if user_update.state is not None:
+        update_data["state"] = user_update.state
+    if user_update.postal_code is not None:
+        update_data["postal_code"] = user_update.postal_code
+    if user_update.country_code is not None:
+        update_data["country_code"] = user_update.country_code
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No valid fields to update")
+    
+    # Update user in database
+    await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": update_data}
+    )
+    
+    # Return updated user
+    updated_user = await db.users.find_one({"id": current_user.id})
+    return User(**updated_user)
+
+@api_router.put("/auth/password")
+async def update_user_password(password_update: PasswordUpdate, current_user: User = Depends(get_current_user)):
+    """Update user password"""
+    # Get current user with password
+    user_doc = await db.users.find_one({"id": current_user.id})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Verify current password
+    if not verify_password(password_update.current_password, user_doc["hashed_password"]):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    # Hash new password
+    hashed_password = get_password_hash(password_update.new_password)
+    
+    # Update password in database
+    await db.users.update_one(
+        {"id": current_user.id},
+        {"$set": {"hashed_password": hashed_password}}
+    )
+    
+    return {"message": "Password updated successfully"}
+
 # Project Management endpoints
 @api_router.get("/projects", response_model=List[Project])
 async def get_user_projects(current_user: User = Depends(get_current_user)):
