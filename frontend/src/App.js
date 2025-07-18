@@ -3518,12 +3518,27 @@ function App() {
   };
 
   const getCurrentItemCount = () => {
-    if (configuration.useInnerCases) {
-      return configuration.itemsPerInnerCase;
-    } else if (configuration.casesPerSscc > 0) {
-      return configuration.itemsPerCase;
+    const casesPerSscc = parseInt(configuration.casesPerSscc) || 0;
+    const itemsPerCase = parseInt(configuration.itemsPerCase) || 0;
+    const itemsPerInnerCase = parseInt(configuration.itemsPerInnerCase) || 0;
+    const useInnerCases = configuration.useInnerCases;
+    
+    console.log('getCurrentItemCount - Configuration values:', {
+      casesPerSscc,
+      itemsPerCase,
+      itemsPerInnerCase,
+      useInnerCases
+    });
+    
+    if (useInnerCases) {
+      console.log('getCurrentItemCount - Using inner cases, returning:', itemsPerInnerCase);
+      return itemsPerInnerCase;
+    } else if (casesPerSscc > 0) {
+      console.log('getCurrentItemCount - Using cases, returning:', itemsPerCase);
+      return itemsPerCase;
     } else {
-      return configuration.itemsPerCase;
+      console.log('getCurrentItemCount - Direct SSCC->Items, returning:', itemsPerCase);
+      return itemsPerCase;
     }
   };
 
