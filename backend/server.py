@@ -770,6 +770,10 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     def format_xml_datetime():
         return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
     
+    # Helper function to handle both camelCase and snake_case keys
+    def get_config_value(key_snake, key_camel, default=None):
+        return config.get(key_snake, config.get(key_camel, default))
+    
     # Create root element as EPCISDocument (not StandardBusinessDocument)
     root = ET.Element("epcis:EPCISDocument")
     root.set("xmlns", "urn:epcglobal:epcis:xsd:1")
