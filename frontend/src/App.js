@@ -195,11 +195,20 @@ function App() {
 
   // Helper function to find the current position in serial collection
   const findCurrentSerialPosition = (hierarchicalData) => {
-    for (let ssccIndex = 0; ssccIndex < hierarchicalData.length; ssccIndex++) {
+    // We need to check against the expected configuration structure
+    // Get the current configuration to know how many items are expected
+    const expectedSSCCs = configuration.numberOfSscc || 1;
+    const expectedCasesPerSSCC = configuration.casesPerSscc || 0;
+    const expectedInnerCasesPerCase = configuration.innerCasesPerCase || 0;
+    const expectedItemsPerCase = configuration.itemsPerCase || 10;
+    const expectedItemsPerInnerCase = configuration.itemsPerInnerCase || 5;
+    const useInnerCases = configuration.useInnerCases || false;
+    
+    for (let ssccIndex = 0; ssccIndex < expectedSSCCs; ssccIndex++) {
       const ssccData = hierarchicalData[ssccIndex];
       
-      // Check if SSCC serial is missing
-      if (!ssccData.ssccSerial) {
+      // Check if this SSCC doesn't exist or has no serial
+      if (!ssccData || !ssccData.ssccSerial) {
         return {
           ssccIndex,
           caseIndex: 0,
@@ -211,12 +220,12 @@ function App() {
       }
       
       // Check cases
-      if (ssccData.cases && ssccData.cases.length > 0) {
-        for (let caseIndex = 0; caseIndex < ssccData.cases.length; caseIndex++) {
-          const caseData = ssccData.cases[caseIndex];
+      if (expectedCasesPerSSCC > 0) {
+        for (let caseIndex = 0; caseIndex < expectedCasesPerSSCC; caseIndex++) {
+          const caseData = ssccData.cases && ssccData.cases[caseIndex];
           
-          // Check if case serial is missing
-          if (!caseData.caseSerial) {
+          // Check if case doesn't exist or has no serial
+          if (!caseData || !caseData.caseSerial) {
             return {
               ssccIndex,
               caseIndex,
@@ -228,12 +237,12 @@ function App() {
           }
           
           // Check inner cases
-          if (caseData.innerCases && caseData.innerCases.length > 0) {
-            for (let innerCaseIndex = 0; innerCaseIndex < caseData.innerCases.length; innerCaseIndex++) {
-              const innerCaseData = caseData.innerCases[innerCaseIndex];
+          if (useInnerCases) {
+            for (let innerCaseIndex = 0; innerCaseIndex < expectedInnerCasesPerCase; innerCaseIndex++) {
+              const innerCaseData = caseData.innerCases && caseData.innerCases[innerCaseIndex];
               
-              // Check if inner case serial is missing
-              if (!innerCaseData.innerCaseSerial) {
+              // Check if inner case doesn't exist or has no serial
+              if (!innerCaseData || !innerCaseData.innerCaseSerial) {
                 return {
                   ssccIndex,
                   caseIndex,
@@ -245,32 +254,13 @@ function App() {
               }
               
               // Check items in inner case
-              if (innerCaseData.items && innerCaseData.items.length > 0) {
-                for (let itemIndex = 0; itemIndex < innerCaseData.items.length; itemIndex++) {
-                  const itemData = innerCaseData.items[itemIndex];
-                  if (!itemData.itemSerial) {
-                    return {
-                      ssccIndex,
-                      caseIndex,
-                      innerCaseIndex,
-                      itemIndex,
-                      currentLevel: 'item',
-                      isComplete: false
-                    };
-                  }
-                }
-              }
-            }
-          } else {
-            // Check items in case (no inner cases)
-            if (caseData.items && caseData.items.length > 0) {
-              for (let itemIndex = 0; itemIndex < caseData.items.length; itemIndex++) {
-                const itemData = caseData.items[itemIndex];
-                if (!itemData.itemSerial) {
+              for (let itemIndex = 0; itemIndex < expectedItemsPerInnerCase; itemIndex++) {
+                const itemData = innerCaseData.items && innerCaseData.items[itemIndex];
+                if (!itemData || !itemData.itemSerial) {
                   return {
                     ssccIndex,
                     caseIndex,
-                    innerCaseIndex: 0,
+                    innerCaseIndex,
                     itemIndex,
                     currentLevel: 'item',
                     isComplete: false
@@ -278,23 +268,36 @@ function App() {
                 }
               }
             }
+          } else {
+            // Check items in case (no inner cases)
+            for (let itemIndex = 0; itemIndex < expectedItemsPerCase; itemIndex++) {
+              const itemData = caseData.items && caseData.items[itemIndex];
+              if (!itemData || !itemData.itemSerial) {
+                return {
+                  ssccIndex,
+                  caseIndex,
+                  innerCaseIndex: 0,
+                  itemIndex,
+                  currentLevel: 'item',
+                  isComplete: false
+                };
+              }
+            }
           }
         }
       } else {
         // Direct SSCC → Items
-        if (ssccData.items && ssccData.items.length > 0) {
-          for (let itemIndex = 0; itemIndex < ssccData.items.length; itemIndex++) {
-            const itemData = ssccData.items[itemIndex];
-            if (!itemData.itemSerial) {
-              return {
-                ssccIndex,
-                caseIndex: 0,
-                innerCaseIndex: 0,
-                itemIndex,
-                currentLevel: 'item',
-                isComplete: false
-              };
-            }
+        for (let itemIndex = 0; itemIndex < expectedItemsPerCase; itemIndex++) {
+          const itemData = ssccData.items && ssccData.items[itemIndex];
+          if (!itemData || !itemData.itemSerial) {
+            return {
+              ssccIndex,
+              caseIndex: 0,
+              innerCaseIndex: 0,
+              itemIndex,
+              currentLevel: 'item',
+              isComplete: false
+            };
           }
         }
       }
@@ -302,7 +305,7 @@ function App() {
     
     // All serials are complete
     return {
-      ssccIndex: hierarchicalData.length - 1,
+      ssccIndex: expectedSSCCs - 1,
       caseIndex: 0,
       innerCaseIndex: 0,
       itemIndex: 0,
