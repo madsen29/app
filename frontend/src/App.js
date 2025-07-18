@@ -242,6 +242,24 @@ function App() {
     // Load existing serial numbers if available
     if (project.serial_numbers) {
       setHierarchicalSerials(project.serial_numbers);
+      
+      // Also restore the serial collection step state if we're on step 2
+      if (project.current_step === 2) {
+        // Find the current position in the serial collection
+        const currentPosition = findCurrentSerialPosition(project.serial_numbers);
+        if (currentPosition.isComplete) {
+          setSerialCollectionStep({
+            ...currentPosition,
+            isComplete: true
+          });
+        } else {
+          setSerialCollectionStep({
+            ...currentPosition,
+            currentSerial: '',
+            isComplete: false
+          });
+        }
+      }
     } else if (project.configuration && project.current_step >= 2) {
       // Initialize hierarchical serials if we're on step 2 or beyond but don't have saved serial numbers
       initializeHierarchicalSerials(project.configuration);
