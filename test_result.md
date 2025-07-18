@@ -221,6 +221,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "CONFIGURATION DATA POPULATION ISSUES COMPLETELY RESOLVED: ✅ ROOT CAUSE IDENTIFIED AND FIXED: The issue was that many parts of the EPCIS generation function were not using the get_config_value helper function which handles both camelCase and snake_case field names ✅ CRITICAL FIXES APPLIED: Updated all config.get() calls to use get_config_value throughout generate_epcis_xml function ✅ ALL SPECIFIC ISSUES RESOLVED: 1) GLNs on Authority: FIXED - Sender GLN (0345802000014) and Receiver GLN (0567890000021) appear correctly in SBDH with Authority='GS1' 2) Location Vocabulary: FIXED - All 3 location vocabulary elements found with complete address information 3) Indicator Digits: FIXED - All indicator digits appear correctly in EPC identifiers (SSCC: 3, Case: 2, Item: 1) 4) Product Code 'None' Values: FIXED - No 'None' values found, all product codes populated correctly (Item: 000000, Case: 000001) ✅ COMPREHENSIVE TESTING: EPCClass data, ILMD extensions, event structure all working correctly ✅ Test Results: 13/13 tests passed (100% success rate) ✅ ALL CONFIGURATION DATA POPULATION ISSUES COMPLETELY RESOLVED"
+      - working: false
+        agent: "user"
+        comment: "USER REPORTED NEW EPCIS ISSUES: Three specific problems with the EPCIS generation: 1) Inner case is not getting defined in the EPCClass vocabulary like other packaging levels 2) Product code is showing 'None' instead of the actual value in SGTINs throughout, and on inner packaging level it shows a '.' 3) Extension digit on SSCC is showing 'None' instead of the actual value in <epc>urn:epc:id:sscc:shipperPrefix.None{serialNumber}</epc>"
 
 frontend:
   - task: "Configuration form UI"
