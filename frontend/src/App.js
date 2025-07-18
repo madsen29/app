@@ -355,16 +355,23 @@ function App() {
       return config[camelKey] || config[snakeKey] || defaultValue;
     };
     
+    // Helper function to get numeric configuration value
+    const getNumericConfigValue = (config, camelKey, snakeKey, defaultValue) => {
+      const value = config[camelKey] || config[snakeKey] || defaultValue;
+      return parseInt(value) || defaultValue;
+    };
+    
     // Load project configuration
     if (project.configuration) {
       const config = project.configuration;
+      console.log('Loading project configuration:', config);
       setConfiguration({
-        itemsPerCase: getConfigValue(config, 'itemsPerCase', 'items_per_case', 10),
-        casesPerSscc: getConfigValue(config, 'casesPerSscc', 'cases_per_sscc', 5),
-        numberOfSscc: getConfigValue(config, 'numberOfSscc', 'number_of_sscc', 1),
+        itemsPerCase: getNumericConfigValue(config, 'itemsPerCase', 'items_per_case', 10),
+        casesPerSscc: getNumericConfigValue(config, 'casesPerSscc', 'cases_per_sscc', 5),
+        numberOfSscc: getNumericConfigValue(config, 'numberOfSscc', 'number_of_sscc', 1),
         useInnerCases: getConfigValue(config, 'useInnerCases', 'use_inner_cases', false),
-        innerCasesPerCase: getConfigValue(config, 'innerCasesPerCase', 'inner_cases_per_case', 2),
-        itemsPerInnerCase: getConfigValue(config, 'itemsPerInnerCase', 'items_per_inner_case', 5),
+        innerCasesPerCase: getNumericConfigValue(config, 'innerCasesPerCase', 'inner_cases_per_case', 2),
+        itemsPerInnerCase: getNumericConfigValue(config, 'itemsPerInnerCase', 'items_per_inner_case', 5),
         companyPrefix: getConfigValue(config, 'companyPrefix', 'company_prefix', '0345802'),
         productCode: getConfigValue(config, 'productCode', 'product_code', '46653'),
         lotNumber: getConfigValue(config, 'lotNumber', 'lot_number', ''),
