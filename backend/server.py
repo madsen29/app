@@ -588,16 +588,22 @@ async def get_serial_numbers(configuration_id: str):
         raise HTTPException(status_code=404, detail="Serial numbers not found")
     return SerialNumbers(**serial_numbers)
 
-@api_router.post("/generate-epcis")
-async def generate_epcis(request: EPCISGenerationRequest):
-    # Get configuration and serial numbers
-    config = await db.configurations.find_one({"id": request.configuration_id})
-    if not config:
-        raise HTTPException(status_code=404, detail="Configuration not found")
+@api_router.post("/projects/{project_id}/generate-epcis")
+async def generate_epcis(project_id: str, request: EPCISGenerationRequest, current_user: User = Depends(get_current_user)):
+    """Generate EPCIS file for a project"""
+    # Verify project exists and belongs to user
+    project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
     
-    serial_numbers = await db.serial_numbers.find_one({"configuration_id": request.configuration_id})
+    # Get configuration and serial numbers from project
+    config = project.get("configuration")
+    if not config:
+        raise HTTPException(status_code=400, detail="Project configuration not found")
+    
+    serial_numbers = project.get("serial_numbers")
     if not serial_numbers:
-        raise HTTPException(status_code=404, detail="Serial numbers not found")
+        raise HTTPException(status_code=400, detail="Project serial numbers not found")
     
     # Generate EPCIS XML
     xml_content = generate_epcis_xml(
