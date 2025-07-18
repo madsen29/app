@@ -3006,6 +3006,7 @@ function App() {
                   max="1000"
                   value={configuration.itemsPerCase}
                   onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
+                  disabled={isPackagingConfigLocked}
                   required
                 />
               </div>
@@ -3025,6 +3026,7 @@ function App() {
                     max="50"
                     value={configuration.innerCasesPerCase}
                     onChange={(e) => setConfiguration({...configuration, innerCasesPerCase: parseInt(e.target.value)})}
+                    disabled={isPackagingConfigLocked}
                     required
                   />
                 </div>
@@ -3037,6 +3039,7 @@ function App() {
                     max="100"
                     value={configuration.itemsPerInnerCase}
                     onChange={(e) => setConfiguration({...configuration, itemsPerInnerCase: parseInt(e.target.value)})}
+                    disabled={isPackagingConfigLocked}
                     required
                   />
                 </div>
@@ -3057,6 +3060,7 @@ function App() {
                   max="100"
                   value={configuration.itemsPerCase}
                   onChange={(e) => setConfiguration({...configuration, itemsPerCase: parseInt(e.target.value)})}
+                  disabled={isPackagingConfigLocked}
                   required
                 />
               </div>
