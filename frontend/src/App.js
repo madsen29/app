@@ -2949,7 +2949,7 @@ function App() {
         </div>
 
         <div className="inner-case-section">
-          <h3>Packaging Configuration</h3>
+          <h3>Packaging Configuration {isPackagingConfigLocked && <span className="locked-indicator">(Locked - Serial Numbers Entered)</span>}</h3>
           <div className="form-grid">
             <div className="form-group">
               <label htmlFor="numberOfSscc">Number of SSCCs:</label>
@@ -2960,6 +2960,7 @@ function App() {
                 max="20"
                 value={configuration.numberOfSscc}
                 onChange={(e) => setConfiguration({...configuration, numberOfSscc: parseInt(e.target.value)})}
+                disabled={isPackagingConfigLocked}
                 required
               />
             </div>
@@ -2972,6 +2973,7 @@ function App() {
                 max="50"
                 value={configuration.casesPerSscc}
                 onChange={(e) => setConfiguration({...configuration, casesPerSscc: parseInt(e.target.value)})}
+                disabled={isPackagingConfigLocked}
                 required
               />
               <small className="form-hint">Enter 0 for direct SSCC → Items aggregation</small>
@@ -2984,7 +2986,7 @@ function App() {
                 type="checkbox"
                 checked={configuration.useInnerCases}
                 onChange={(e) => setConfiguration({...configuration, useInnerCases: e.target.checked})}
-                disabled={configuration.casesPerSscc === 0}
+                disabled={configuration.casesPerSscc === 0 || isPackagingConfigLocked}
               />
               <span className="checkbox-text">
                 <strong>Enable Inner Cases</strong>
