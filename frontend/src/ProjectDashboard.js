@@ -326,8 +326,8 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                           <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
                         </div>
                         
-                        {/* Package Hierarchy */}
-                        {project.configuration && (
+                        {/* Package Hierarchy - Only show if packaging configuration is set and locked */}
+                        {isPackagingConfigSetAndLocked(project) && (
                           <div className="mt-2 flex items-center space-x-2 text-sm text-gray-600">
                             <span className="font-medium">Package Hierarchy:</span>
                             <div className="flex items-center space-x-1">
