@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await axios.post(`${API}/auth/register`, userData);
+      const response = await axios.post(`${API}/api/auth/register`, userData);
       
       // Auto-login after registration
       const loginResult = await login(userData.email, userData.password);
