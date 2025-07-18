@@ -321,7 +321,25 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
       day: 'numeric', 
       year: 'numeric' 
     });
-    return `EPCIS Project - ${dateStr}`;
+    
+    // Base name pattern for today
+    const baseNamePattern = `EPCIS Project - ${dateStr}`;
+    
+    // Find all projects created today with the same base pattern
+    const todayProjects = projects.filter(project => {
+      return project.name.startsWith(baseNamePattern);
+    });
+    
+    // Extract numbers from existing project names
+    const existingNumbers = todayProjects.map(project => {
+      const match = project.name.match(/\((\d+)\)$/);
+      return match ? parseInt(match[1]) : 0;
+    }).filter(num => num > 0);
+    
+    // Find the next available number
+    const nextNumber = existingNumbers.length > 0 ? Math.max(...existingNumbers) + 1 : 1;
+    
+    return `${baseNamePattern} (${nextNumber})`;
   };
 
   const handleCreateProjectClick = () => {
