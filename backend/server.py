@@ -880,13 +880,13 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     sender = ET.SubElement(sbdh, "sbdh:Sender")
     sender_identifier = ET.SubElement(sender, "sbdh:Identifier")
     sender_identifier.set("Authority", "GS1")
-    sender_identifier.text = config.get("sender_gln", "")
+    sender_identifier.text = get_config_value("sender_gln", "senderGln", "")
     
     # Receiver
     receiver = ET.SubElement(sbdh, "sbdh:Receiver")
     receiver_identifier = ET.SubElement(receiver, "sbdh:Identifier")
     receiver_identifier.set("Authority", "GS1")
-    receiver_identifier.text = config.get("receiver_gln", "")
+    receiver_identifier.text = get_config_value("receiver_gln", "receiverGln", "")
     
     # Document Identification
     doc_identification = ET.SubElement(sbdh, "sbdh:DocumentIdentification")
