@@ -562,10 +562,10 @@ async def create_serial_numbers(project_id: str, input: SerialNumbersCreate, cur
             total_items = get_config_value("items_per_case", "itemsPerCase") * total_cases
     
     # Validate serial numbers count
-    if len(input.sscc_serial_numbers) != config["number_of_sscc"]:
+    if len(input.sscc_serial_numbers) != get_config_value("number_of_sscc", "numberOfSscc"):
         raise HTTPException(
             status_code=400, 
-            detail=f"Expected {config['number_of_sscc']} SSCC serial numbers, got {len(input.sscc_serial_numbers)}"
+            detail=f"Expected {get_config_value('number_of_sscc', 'numberOfSscc')} SSCC serial numbers, got {len(input.sscc_serial_numbers)}"
         )
     
     if len(input.case_serial_numbers) != total_cases:
