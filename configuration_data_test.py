@@ -270,8 +270,9 @@ class ConfigurationDataTester:
             
             if response.status_code == 200:
                 serials = response.json()
+                print(f"   Debug - Response received: {serials}")
                 self.log_test("Serial Numbers Creation", True, "Serial numbers created successfully", 
-                            f"SSCC: {len(serials['sscc_serial_numbers'])}, Cases: {len(serials['case_serial_numbers'])}, Items: {len(serials['item_serial_numbers'])}")
+                            f"SSCC: {len(serials.get('sscc_serial_numbers', []))}, Cases: {len(serials.get('case_serial_numbers', []))}, Items: {len(serials.get('item_serial_numbers', []))}")
                 return serials
             else:
                 self.log_test("Serial Numbers Creation", False, f"HTTP {response.status_code}: {response.text}")
@@ -280,6 +281,9 @@ class ConfigurationDataTester:
         except Exception as e:
             self.log_test("Serial Numbers Creation", False, f"Request error: {str(e)}")
             print(f"   Debug - Serial data sent: {serial_data}")
+            print(f"   Debug - Exception type: {type(e)}")
+            import traceback
+            print(f"   Debug - Traceback: {traceback.format_exc()}")
             return None
     
     def test_epcis_generation_configuration_population(self, project_id):
