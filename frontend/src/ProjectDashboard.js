@@ -22,7 +22,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get(`${API}/api/projects`, {
+      const response = await axios.get(`${API}/projects`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProjects(response.data);
