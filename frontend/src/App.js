@@ -2168,6 +2168,12 @@ function App() {
 
   // Barcode scanning functions
   const openScanner = (targetField, targetSetter) => {
+    // Determine if this is multi-item scanning for Items level
+    const isItemsLevel = serialCollectionStep.currentLevel === 'item';
+    const itemCount = isItemsLevel ? getCurrentItemCount() : 1;
+    
+    setScannedItems([]);
+    setRequiredItemCount(itemCount);
     setScannerModal({ isOpen: true, targetField, targetSetter });
   };
 
