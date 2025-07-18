@@ -926,7 +926,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     
     # Helper function to add EPCClass attributes
     def add_epcclass_attributes(vocab_element, config):
-        if config.get("package_ndc"):
+        if get_config_value("package_ndc", "packageNdc"):
             # Strip hyphens from package_ndc for EPCIS XML
             clean_package_ndc = get_config_value("package_ndc", "packageNdc").replace("-", "")
             attr = ET.SubElement(vocab_element, "attribute")
@@ -937,27 +937,27 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
             attr_type.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode")
             attr_type.text = "FDA_NDC_11"
         
-        if config.get("regulated_product_name"):
+        if get_config_value("regulated_product_name", "regulatedProductName"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#regulatedProductName")
             attr.text = get_config_value("regulated_product_name", "regulatedProductName")
         
-        if config.get("manufacturer_name"):
+        if get_config_value("manufacturer_name", "manufacturerName"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName")
             attr.text = get_config_value("manufacturer_name", "manufacturerName")
         
-        if config.get("dosage_form_type"):
+        if get_config_value("dosage_form_type", "dosageFormType"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#dosageFormType")
             attr.text = get_config_value("dosage_form_type", "dosageFormType")
         
-        if config.get("strength_description"):
+        if get_config_value("strength_description", "strengthDescription"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#strengthDescription")
             attr.text = get_config_value("strength_description", "strengthDescription")
         
-        if config.get("net_content_description"):
+        if get_config_value("net_content_description", "netContentDescription"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#netContentDescription")
             attr.text = get_config_value("net_content_description", "netContentDescription")
