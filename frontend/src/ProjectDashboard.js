@@ -440,7 +440,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                                 {project.status}
                               </span>
                             </div>
-                            <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                        <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                           <span>Step {project.current_step} of 3</span>
                           <span>•</span>
                           <span>Modified {new Date(project.updated_at).toLocaleDateString()}</span>
