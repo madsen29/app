@@ -314,7 +314,6 @@ class SerialNumbers(BaseModel):
     model_config = {"populate_by_name": True}
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    configuration_id: str = Field(alias="configurationId")
     sscc_serial_numbers: List[str] = Field(alias="ssccSerialNumbers")
     case_serial_numbers: List[str] = Field(alias="caseSerialNumbers")
     inner_case_serial_numbers: List[str] = Field(default_factory=list, alias="innerCaseSerialNumbers")
