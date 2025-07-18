@@ -993,14 +993,14 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     
     # Add location vocabulary elements for sender, receiver, and shipper
     for role, prefix in [("sender", "sender"), ("receiver", "receiver"), ("shipper", "shipper")]:
-        gln = config.get(f"{prefix}_gln", "")
-        sgln = config.get(f"{prefix}_sgln", "")
-        name = config.get(f"{prefix}_name", "")
-        street_address = config.get(f"{prefix}_street_address", "")
-        city = config.get(f"{prefix}_city", "")
-        state = config.get(f"{prefix}_state", "")
-        postal_code = config.get(f"{prefix}_postal_code", "")
-        country_code = config.get(f"{prefix}_country_code", "")
+        gln = get_config_value(f"{prefix}_gln", f"{prefix}Gln", "")
+        sgln = get_config_value(f"{prefix}_sgln", f"{prefix}Sgln", "")
+        name = get_config_value(f"{prefix}_name", f"{prefix}Name", "")
+        street_address = get_config_value(f"{prefix}_street_address", f"{prefix}StreetAddress", "")
+        city = get_config_value(f"{prefix}_city", f"{prefix}City", "")
+        state = get_config_value(f"{prefix}_state", f"{prefix}State", "")
+        postal_code = get_config_value(f"{prefix}_postal_code", f"{prefix}PostalCode", "")
+        country_code = get_config_value(f"{prefix}_country_code", f"{prefix}CountryCode", "")
         
         if sgln:
             # Add SGLN location element (using SGLN instead of GLN)
