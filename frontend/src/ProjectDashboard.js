@@ -50,6 +50,11 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
       setProjects([response.data, ...projects]);
       setNewProjectName('');
       setShowCreateModal(false);
+      
+      // Automatically select the new project
+      if (onSelectProject) {
+        onSelectProject(response.data);
+      }
     } catch (err) {
       setError('Failed to create project');
       console.error('Error creating project:', err);
