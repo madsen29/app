@@ -474,11 +474,28 @@ async def duplicate_project(project_id: str, current_user: User = Depends(get_cu
     await db.projects.insert_one(new_project_data)
     return Project(**new_project_data)
 
-@api_router.post("/configuration", response_model=SerialConfiguration)
-async def create_configuration(input: SerialConfigurationCreate):
+@api_router.post("/projects/{project_id}/configuration", response_model=SerialConfiguration)
+async def create_configuration(project_id: str, input: SerialConfigurationCreate, current_user: User = Depends(get_current_user)):
+    """Create configuration for a project"""
+    # Verify project exists and belongs to user
+    project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
     config_dict = input.model_dump(by_alias=False)  # This gives us snake_case
     config_obj = SerialConfiguration(**config_dict)
-    await db.configurations.insert_one(config_obj.model_dump(by_alias=False))
+    config_data = config_obj.model_dump(by_alias=False)
+    
+    # Save configuration to project
+    await db.projects.update_one(
+        {"id": project_id, "user_id": current_user.id},
+        {"$set": {
+            "configuration": config_data,
+            "current_step": 2,
+            "updated_at": datetime.utcnow()
+        }}
+    )
+    
     return config_obj
 
 @api_router.get("/configuration", response_model=List[SerialConfiguration])
