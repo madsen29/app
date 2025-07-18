@@ -440,50 +440,51 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                                 {project.status}
                               </span>
                             </div>
-                        <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                          <span>Step {project.current_step} of 3</span>
-                          <span>•</span>
-                          <span>Modified {new Date(project.updated_at).toLocaleDateString()}</span>
-                          <span>•</span>
-                          <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
-                        </div>
-                        
-                        {/* Package Hierarchy - Only show if packaging configuration is set and locked */}
-                        {isPackagingConfigSetAndLocked(project) && (
-                          <div className="mt-2 flex items-center space-x-2 text-sm text-gray-600">
-                            <span className="font-medium">Package Hierarchy:</span>
-                            <div className="flex items-center space-x-1">
-                              <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-                                {project.configuration.numberOfSscc || 0} SSCC{(project.configuration.numberOfSscc || 0) !== 1 ? 's' : ''}
-                              </span>
-                              
-                              {project.configuration.casesPerSscc > 0 && (
-                                <>
-                                  <span className="text-gray-400">→</span>
-                                  <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-                                    {totals.totalCases} Case{totals.totalCases !== 1 ? 's' : ''}
-                                  </span>
-                                </>
-                              )}
-                              
-                              {project.configuration.useInnerCases && (
-                                <>
-                                  <span className="text-gray-400">→</span>
-                                  <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-                                    {totals.totalInnerCases} Inner Case{totals.totalInnerCases !== 1 ? 's' : ''}
-                                  </span>
-                                </>
-                              )}
-                              
-                              <span className="text-gray-400">→</span>
-                              <span className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">
-                                {totals.totalItems} Item{totals.totalItems !== 1 ? 's' : ''}
-                              </span>
+                            <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                              <span>Step {project.current_step} of 3</span>
+                              <span>•</span>
+                              <span>Modified {new Date(project.updated_at).toLocaleDateString()}</span>
+                              <span>•</span>
+                              <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
                             </div>
+                            
+                            {/* Package Hierarchy - Only show if packaging configuration is set and locked */}
+                            {isPackagingConfigSetAndLocked(project) && (
+                              <div className="mt-2 flex items-center space-x-2 text-sm text-gray-600">
+                                <span className="font-medium">Package Hierarchy:</span>
+                                <div className="flex items-center space-x-1">
+                                  <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                    {project.configuration.numberOfSscc || 0} SSCC{(project.configuration.numberOfSscc || 0) !== 1 ? 's' : ''}
+                                  </span>
+                                  
+                                  {project.configuration.casesPerSscc > 0 && (
+                                    <>
+                                      <span className="text-gray-400">→</span>
+                                      <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                        {totals.totalCases} Case{totals.totalCases !== 1 ? 's' : ''}
+                                      </span>
+                                    </>
+                                  )}
+                                  
+                                  {project.configuration.useInnerCases && (
+                                    <>
+                                      <span className="text-gray-400">→</span>
+                                      <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                        {totals.totalInnerCases} Inner Case{totals.totalInnerCases !== 1 ? 's' : ''}
+                                      </span>
+                                    </>
+                                  )}
+                                  
+                                  <span className="text-gray-400">→</span>
+                                  <span className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">
+                                    {totals.totalItems} Item{totals.totalItems !== 1 ? 's' : ''}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      <div className="flex items-center space-x-2">
+                        </div>
+                        <div className="flex items-center space-x-2">
                         {project.status !== 'Completed' && (
                           <button
                             onClick={() => onSelectProject(project)}
