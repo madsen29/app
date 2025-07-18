@@ -70,6 +70,21 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
 
+class UserUpdate(BaseModel):
+    first_name: Optional[str] = Field(None, alias="firstName")
+    last_name: Optional[str] = Field(None, alias="lastName")
+    email: Optional[EmailStr] = None
+    company_name: Optional[str] = Field(None, alias="companyName")
+    street_address: Optional[str] = Field(None, alias="streetAddress")
+    city: Optional[str] = Field(None, alias="city")
+    state: Optional[str] = Field(None, alias="state")
+    postal_code: Optional[str] = Field(None, alias="postalCode")
+    country_code: Optional[str] = Field(None, alias="countryCode")
+
+class PasswordUpdate(BaseModel):
+    current_password: str = Field(alias="currentPassword")
+    new_password: str = Field(alias="newPassword")
+
 # Project Management Models
 class Project(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
