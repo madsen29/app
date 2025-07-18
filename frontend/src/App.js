@@ -3226,6 +3226,7 @@ function App() {
         )}
       </div>
     </div>
+    </AuthWrapper>
   );
 }
 
