@@ -445,12 +445,12 @@ function App() {
     
     // Reset configuration to defaults
     setConfiguration({
-      itemsPerCase: 10,
-      casesPerSscc: 5,
-      numberOfSscc: 1,
+      itemsPerCase: '',
+      casesPerSscc: '',
+      numberOfSscc: '',
       useInnerCases: false,
-      innerCasesPerCase: 2,
-      itemsPerInnerCase: 5,
+      innerCasesPerCase: '',
+      itemsPerInnerCase: '',
       companyPrefix: '0345802',
       productCode: '46653',
       lotNumber: '',
