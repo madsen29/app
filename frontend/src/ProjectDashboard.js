@@ -369,19 +369,13 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col items-left justify-between md:flex-row">
-            <div className="flex flex-col gap-5 sm:flex-row">
+            <div className="flex flex-col items-left gap-5 sm:flex-row">
               <img className="logo" src="https://rxerp.com/wp-content/uploads/2025/01/rxerp-logo-hero-tagline.svg"></img>
               <p className="mt-2 sm:mt-0 text-gray-900 text-lg font-medium mb-2">
                 👋 Welcome back, {user?.first_name || user?.email}
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={handleCreateProjectClick}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                New Project
-              </button>
               <button
                 onClick={() => setShowUserSettings(true)}
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-gray-500 border border-gray-300"
@@ -412,8 +406,8 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
         {/* Projects Table */}
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+
+              <div className="flex items-center space-x-4 justify-between flex-1">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">
                   Projects ({projects.length})
                 </h3>
@@ -431,27 +425,15 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                     </button>
                   </div>
                 )}
-              </div>
-              <div className="flex items-center space-x-4">
-                <label className="text-sm font-medium text-gray-700">Sort by:</label>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="updated_at">Last Modified</option>
-                  <option value="created_at">Created Date</option>
-                  <option value="name">Name</option>
-                  <option value="status">Status</option>
-                </select>
                 <button
-                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                  className="text-sm text-blue-600 hover:text-blue-800"
-                >
-                  {sortOrder === 'asc' ? '↑' : '↓'}
-                </button>
+                onClick={handleCreateProjectClick}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                New Project
+              </button>
               </div>
-            </div>
+              
+
           </div>
           
           {sortedProjects.length === 0 ? (
@@ -474,9 +456,9 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
             <>
               {/* Select All Header */}
               {projects.length > 0 && (
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                  <div className="flex items-center">
-                    <input
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 ">
+                  <div className="flex items-center justify-between">
+                    <div className='flex items-center'><input
                       type="checkbox"
                       checked={isAllSelected}
                       onChange={handleSelectAll}
@@ -485,6 +467,26 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                     <label className="ml-3 text-sm font-medium text-gray-700">
                       Select all on this page
                     </label>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                <label className="text-sm font-medium text-gray-700">Sort by:</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="updated_at">Last Modified</option>
+                  <option value="created_at">Created Date</option>
+                  <option value="name">Name</option>
+                  <option value="status">Status</option>
+                </select>
+                <button
+                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  {sortOrder === 'asc' ? '↑' : '↓'}
+                </button>
+              </div>
                   </div>
                 </div>
               )}

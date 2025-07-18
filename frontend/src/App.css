@@ -2022,6 +2022,138 @@ input:disabled {
   color: white;
 }
 
+/* Project Dashboard Button Styles */
+.btn-resume {
+  background-color: #fbbf24;
+  border-color: #fbbf24;
+  color: #1f2937;
+}
+
+.btn-resume:hover {
+  background-color: #f59e0b;
+  border-color: #f59e0b;
+  color: #1f2937;
+}
+
+.btn-download {
+  background-color: #374151;
+  border-color: #374151;
+  color: white;
+}
+
+.btn-download:hover {
+  background-color: #1f2937;
+  border-color: #1f2937;
+  color: white;
+}
+
+.btn-delete {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: white;
+}
+
+.btn-new-project {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-new-project:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+/* Avatar Dropdown Styles */
+.avatar-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.avatar-button:hover {
+  background-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.avatar-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  min-width: 10rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.avatar-dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #374151;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 0.5rem;
+}
+
+.avatar-dropdown-item:hover {
+  background-color: #f9fafb;
+}
+
+.avatar-dropdown-item:first-child {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.avatar-dropdown-item:last-child {
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.avatar-dropdown-divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 0.25rem 0;
+}
+
 /* =============================================================================
    MOBILE RESPONSIVE STYLES
    ============================================================================= */
