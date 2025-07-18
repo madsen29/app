@@ -833,16 +833,16 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     vocabulary_element_list = ET.SubElement(vocabulary, "VocabularyElementList")
     
     # Get configuration parameters
-    company_prefix = config["company_prefix"]
-    shipper_company_prefix = config.get("shipper_company_prefix", company_prefix)  # Use shipper's company prefix for SSCCs
-    item_product_code = config["item_product_code"]
-    case_product_code = config["case_product_code"]
-    inner_case_product_code = config.get("inner_case_product_code", "")
-    item_indicator_digit = config["item_indicator_digit"]
-    case_indicator_digit = config["case_indicator_digit"]
-    inner_case_indicator_digit = config.get("inner_case_indicator_digit", "")
-    use_inner_cases = config["use_inner_cases"]
-    cases_per_sscc = config["cases_per_sscc"]
+    company_prefix = get_config_value("company_prefix", "companyPrefix")
+    shipper_company_prefix = get_config_value("shipper_company_prefix", "shipperCompanyPrefix") or company_prefix  # Use shipper's company prefix for SSCCs
+    item_product_code = get_config_value("item_product_code", "itemProductCode")
+    case_product_code = get_config_value("case_product_code", "caseProductCode")
+    inner_case_product_code = get_config_value("inner_case_product_code", "innerCaseProductCode", "")
+    item_indicator_digit = get_config_value("item_indicator_digit", "itemIndicatorDigit")
+    case_indicator_digit = get_config_value("case_indicator_digit", "caseIndicatorDigit")
+    inner_case_indicator_digit = get_config_value("inner_case_indicator_digit", "innerCaseIndicatorDigit", "")
+    use_inner_cases = get_config_value("use_inner_cases", "useInnerCases")
+    cases_per_sscc = get_config_value("cases_per_sscc", "casesPerSscc")
     
     # Helper function to add EPCClass attributes
     def add_epcclass_attributes(vocab_element, config):
