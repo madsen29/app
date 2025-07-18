@@ -267,55 +267,96 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
             </div>
           ) : (
             <ul className="divide-y divide-gray-200">
-              {sortedProjects.map((project) => (
-                <li key={project.id} className="px-4 py-4 hover:bg-gray-50">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center">
-                        <h4 className="text-lg font-medium text-gray-900 truncate">
-                          {project.name}
-                        </h4>
-                        <span className={`ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          project.status === 'Completed' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {project.status}
-                        </span>
+              {sortedProjects.map((project) => {
+                const totals = calculateProjectTotals(project.configuration);
+                
+                return (
+                  <li key={project.id} className="px-4 py-4 hover:bg-gray-50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center">
+                          <h4 className="text-lg font-medium text-gray-900 truncate">
+                            {project.name}
+                          </h4>
+                          <span className={`ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            project.status === 'Completed' 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {project.status}
+                          </span>
+                        </div>
+                        <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                          <span>Step {project.current_step} of 3</span>
+                          <span>•</span>
+                          <span>Modified {new Date(project.updated_at).toLocaleDateString()}</span>
+                          <span>•</span>
+                          <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
+                        </div>
+                        
+                        {/* Package Hierarchy */}
+                        {project.configuration && (
+                          <div className="mt-2 flex items-center space-x-2 text-sm text-gray-600">
+                            <span className="font-medium">Package Hierarchy:</span>
+                            <div className="flex items-center space-x-1">
+                              <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                {project.configuration.numberOfSscc || 0} SSCC{(project.configuration.numberOfSscc || 0) !== 1 ? 's' : ''}
+                              </span>
+                              
+                              {project.configuration.casesPerSscc > 0 && (
+                                <>
+                                  <span className="text-gray-400">→</span>
+                                  <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                    {totals.totalCases} Case{totals.totalCases !== 1 ? 's' : ''}
+                                  </span>
+                                </>
+                              )}
+                              
+                              {project.configuration.useInnerCases && (
+                                <>
+                                  <span className="text-gray-400">→</span>
+                                  <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                                    {totals.totalInnerCases} Inner Case{totals.totalInnerCases !== 1 ? 's' : ''}
+                                  </span>
+                                </>
+                              )}
+                              
+                              <span className="text-gray-400">→</span>
+                              <span className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">
+                                {totals.totalItems} Item{totals.totalItems !== 1 ? 's' : ''}
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                        <span>Step {project.current_step} of 3</span>
-                        <span>•</span>
-                        <span>Modified {new Date(project.updated_at).toLocaleDateString()}</span>
-                        <span>•</span>
-                        <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => onSelectProject(project)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium"
-                      >
-                        {project.status === 'Completed' ? 'View' : 'Resume'}
-                      </button>
-                      {project.status === 'Completed' && (
+                      <div className="flex items-center space-x-2">
+                        {project.status !== 'Completed' && (
+                          <button
+                            onClick={() => onSelectProject(project)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium"
+                          >
+                            Resume
+                          </button>
+                        )}
+                        {project.status === 'Completed' && (
+                          <button
+                            onClick={() => handleDownloadEPCIS(project.id)}
+                            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-medium"
+                          >
+                            Download
+                          </button>
+                        )}
                         <button
-                          onClick={() => handleDownloadEPCIS(project.id)}
-                          className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-medium"
+                          onClick={() => handleDeleteProject(project.id)}
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium"
                         >
-                          Download
+                          Delete
                         </button>
-                      )}
-                      <button
-                        onClick={() => handleDeleteProject(project.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium"
-                      >
-                        Delete
-                      </button>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
