@@ -386,9 +386,9 @@ function App() {
       setHierarchicalSerials(project.serial_numbers);
       
       // Also restore the serial collection step state if we're on step 2
-      if (project.current_step === 2) {
+      if (project.current_step === 2 && project.configuration) {
         // Find the current position in the serial collection
-        const currentPosition = findCurrentSerialPosition(project.serial_numbers, configuration);
+        const currentPosition = findCurrentSerialPosition(project.serial_numbers, project.configuration);
         if (currentPosition.isComplete) {
           setSerialCollectionStep({
             ...currentPosition,
