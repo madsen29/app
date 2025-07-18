@@ -295,9 +295,38 @@ class UserSettingsTester:
             self.log_test("Email Uniqueness Validation", False, f"Exception testing email uniqueness: {str(e)}")
             return False
     
+    def refresh_auth_token(self):
+        """Refresh authentication token if needed"""
+        try:
+            login_data = {
+                "email": self.test_user_email,
+                "password": self.test_user_password
+            }
+            
+            # Use a temporary session without auth header
+            temp_session = requests.Session()
+            response = temp_session.post(f"{self.base_url}/auth/login", json=login_data)
+            
+            if response.status_code == 200:
+                token_data = response.json()
+                self.test_user_token = token_data.get('access_token')
+                # Update authorization header
+                self.session.headers.update({'Authorization': f'Bearer {self.test_user_token}'})
+                return True
+            else:
+                return False
+                
+        except Exception as e:
+            return False
+    
     def test_update_profile_empty_request(self):
         """Test updating profile with empty request (should fail)"""
         try:
+            # Refresh token if needed
+            if not self.refresh_auth_token():
+                self.log_test("Empty Profile Update", False, "Failed to refresh authentication token")
+                return False
+                
             update_data = {}
             
             response = self.session.put(f"{self.base_url}/auth/profile", json=update_data)
@@ -310,8 +339,11 @@ class UserSettingsTester:
                 else:
                     self.log_test("Empty Profile Update", False, f"Wrong error message: {response_data.get('detail')}")
                     return False
+            elif response.status_code == 401:
+                self.log_test("Empty Profile Update", False, f"Authentication failed: {response.text}")
+                return False
             else:
-                self.log_test("Empty Profile Update", False, f"Expected 400 error, got {response.status_code}")
+                self.log_test("Empty Profile Update", False, f"Expected 400 error, got {response.status_code}: {response.text}")
                 return False
                 
         except Exception as e:
@@ -321,6 +353,11 @@ class UserSettingsTester:
     def test_update_password_success(self):
         """Test successful password update"""
         try:
+            # Refresh token if needed
+            if not self.refresh_auth_token():
+                self.log_test("Password Update Success", False, "Failed to refresh authentication token")
+                return False
+                
             new_password = "NewTestPassword456!"
             update_data = {
                 "currentPassword": self.test_user_password,
@@ -339,6 +376,9 @@ class UserSettingsTester:
                 else:
                     self.log_test("Password Update Success", False, f"Unexpected response message: {response_data.get('message')}")
                     return False
+            elif response.status_code == 401:
+                self.log_test("Password Update Success", False, f"Authentication failed: {response.text}")
+                return False
             else:
                 self.log_test("Password Update Success", False, f"Failed to update password: {response.status_code} - {response.text}")
                 return False
@@ -350,6 +390,11 @@ class UserSettingsTester:
     def test_update_password_wrong_current(self):
         """Test password update with wrong current password"""
         try:
+            # Refresh token if needed
+            if not self.refresh_auth_token():
+                self.log_test("Wrong Current Password", False, "Failed to refresh authentication token")
+                return False
+                
             update_data = {
                 "currentPassword": "WrongPassword123!",
                 "newPassword": "AnotherNewPassword789!"
@@ -365,8 +410,11 @@ class UserSettingsTester:
                 else:
                     self.log_test("Wrong Current Password", False, f"Wrong error message: {response_data.get('detail')}")
                     return False
+            elif response.status_code == 401:
+                self.log_test("Wrong Current Password", False, f"Authentication failed: {response.text}")
+                return False
             else:
-                self.log_test("Wrong Current Password", False, f"Expected 400 error, got {response.status_code}")
+                self.log_test("Wrong Current Password", False, f"Expected 400 error, got {response.status_code}: {response.text}")
                 return False
                 
         except Exception as e:
