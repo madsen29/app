@@ -790,7 +790,14 @@ function App() {
       }
       
       setCurrentStep(2);
-      setSuccess('Configuration saved successfully!');
+      
+      // Set appropriate success message
+      if (hierarchicalSerials && hierarchicalSerials.length > 0) {
+        setSuccess('Configuration saved successfully! Your previously entered serial numbers have been preserved.');
+      } else {
+        setSuccess('Configuration saved successfully!');
+      }
+      
       scrollToTop();
     } catch (err) {
       setError('Failed to save configuration');
