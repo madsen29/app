@@ -999,11 +999,21 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     else:
         items_per_case = config["items_per_case"]
     
-    # Get serial numbers
-    sscc_serials = serial_numbers["sscc_serial_numbers"]
-    case_serials = serial_numbers["case_serial_numbers"]
-    inner_case_serials = serial_numbers.get("inner_case_serial_numbers", [])
-    item_serials = serial_numbers["item_serial_numbers"]
+    # Get serial numbers from the new list format
+    sscc_serials = []
+    case_serials = []
+    inner_case_serials = []
+    item_serials = []
+    
+    for serial_entry in serial_numbers:
+        if serial_entry["type"] == "sscc":
+            sscc_serials.append(serial_entry["serial"])
+        elif serial_entry["type"] == "case":
+            case_serials.append(serial_entry["serial"])
+        elif serial_entry["type"] == "inner_case":
+            inner_case_serials.append(serial_entry["serial"])
+        elif serial_entry["type"] == "item":
+            item_serials.append(serial_entry["serial"])
     
     # Generate proper EPC identifiers
     sscc_epcs = []
