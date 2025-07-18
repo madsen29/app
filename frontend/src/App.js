@@ -394,12 +394,12 @@ function App() {
     // Store original packaging configuration for comparison
     if (project.configuration) {
       setOriginalPackagingConfig({
-        itemsPerCase: project.configuration.itemsPerCase || 10,
-        casesPerSscc: project.configuration.casesPerSscc || 5,
-        numberOfSscc: project.configuration.numberOfSscc || 1,
+        itemsPerCase: project.configuration.itemsPerCase || '',
+        casesPerSscc: project.configuration.casesPerSscc || '',
+        numberOfSscc: project.configuration.numberOfSscc || '',
         useInnerCases: project.configuration.useInnerCases || false,
-        innerCasesPerCase: project.configuration.innerCasesPerCase || 2,
-        itemsPerInnerCase: project.configuration.itemsPerInnerCase || 5
+        innerCasesPerCase: project.configuration.innerCasesPerCase || '',
+        itemsPerInnerCase: project.configuration.itemsPerInnerCase || ''
       });
     }
     
