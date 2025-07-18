@@ -257,8 +257,13 @@ class ConfigurationDataTester:
             
             if response.status_code == 200:
                 serials = response.json()
+                # Check for both possible field name formats
+                sscc_count = len(serials.get('sscc_serial_numbers', serials.get('ssccSerialNumbers', [])))
+                case_count = len(serials.get('case_serial_numbers', serials.get('caseSerialNumbers', [])))
+                item_count = len(serials.get('item_serial_numbers', serials.get('itemSerialNumbers', [])))
+                
                 self.log_test("Serial Numbers Creation", True, "Serial numbers created successfully",
-                            f"SSCCs: {len(serials['sscc_serial_numbers'])}, Cases: {len(serials['case_serial_numbers'])}, Items: {len(serials['item_serial_numbers'])}")
+                            f"SSCCs: {sscc_count}, Cases: {case_count}, Items: {item_count}")
                 return True
             else:
                 self.log_test("Serial Numbers Creation", False, f"Serial numbers creation failed: {response.status_code} - {response.text}")
