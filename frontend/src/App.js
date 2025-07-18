@@ -2474,19 +2474,40 @@ function App() {
   }, [currentStep]);
 
   const calculateTotals = () => {
+    // Parse values to ensure they are numbers
+    const numberOfSscc = parseInt(configuration.numberOfSscc) || 0;
+    const casesPerSscc = parseInt(configuration.casesPerSscc) || 0;
+    const itemsPerCase = parseInt(configuration.itemsPerCase) || 0;
+    const useInnerCases = configuration.useInnerCases;
+    const innerCasesPerCase = parseInt(configuration.innerCasesPerCase) || 0;
+    const itemsPerInnerCase = parseInt(configuration.itemsPerInnerCase) || 0;
+    
+    // Debug logging
+    console.log('calculateTotals - Configuration values:', {
+      numberOfSscc,
+      casesPerSscc,
+      itemsPerCase,
+      useInnerCases,
+      innerCasesPerCase,
+      itemsPerInnerCase
+    });
+    
     // If no cases, items go directly in SSCC
-    if (configuration.casesPerSscc === 0) {
-      const totalItems = configuration.itemsPerCase * configuration.numberOfSscc;
+    if (casesPerSscc === 0) {
+      const totalItems = itemsPerCase * numberOfSscc;
+      console.log('calculateTotals - Direct SSCC->Items:', { totalItems });
       return { totalCases: 0, totalInnerCases: 0, totalItems };
     }
     
-    const totalCases = configuration.casesPerSscc * configuration.numberOfSscc;
-    if (configuration.useInnerCases) {
-      const totalInnerCases = configuration.innerCasesPerCase * totalCases;
-      const totalItems = configuration.itemsPerInnerCase * totalInnerCases;
+    const totalCases = casesPerSscc * numberOfSscc;
+    if (useInnerCases) {
+      const totalInnerCases = innerCasesPerCase * totalCases;
+      const totalItems = itemsPerInnerCase * totalInnerCases;
+      console.log('calculateTotals - With Inner Cases:', { totalCases, totalInnerCases, totalItems });
       return { totalCases, totalInnerCases, totalItems };
     } else {
-      const totalItems = configuration.itemsPerCase * totalCases;
+      const totalItems = itemsPerCase * totalCases;
+      console.log('calculateTotals - Without Inner Cases:', { totalCases, totalItems });
       return { totalCases, totalInnerCases: 0, totalItems };
     }
   };
