@@ -343,6 +343,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   };
 
   const handleCreateProjectClick = () => {
+    // Generate a fresh suggested name each time the modal opens
     setNewProjectName(generateSuggestedName());
     setShowCreateModal(true);
   };
