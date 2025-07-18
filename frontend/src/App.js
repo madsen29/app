@@ -629,6 +629,58 @@ function App() {
     }, 100);
   };
 
+  // Auto-save functionality with debouncing
+  const autoSave = async (showToast = false) => {
+    if (!currentProject || isAutoSaving) return;
+
+    try {
+      setIsAutoSaving(true);
+      await handleSaveProgress(false); // Pass false to prevent showing toast
+      
+      if (showToast) {
+        setSuccess('Progress auto-saved');
+      }
+    } catch (err) {
+      console.error('Auto-save failed:', err);
+      // Don't show error toast for auto-save failures to avoid spam
+    } finally {
+      setIsAutoSaving(false);
+    }
+  };
+
+  // Debounced auto-save function
+  const debouncedAutoSave = (delay = 2000) => {
+    // Clear existing timer
+    if (autoSaveTimer) {
+      clearTimeout(autoSaveTimer);
+    }
+
+    // Set new timer
+    const newTimer = setTimeout(() => {
+      autoSave();
+    }, delay);
+
+    setAutoSaveTimer(newTimer);
+  };
+
+  // Auto-save before exit to dashboard
+  const autoSaveBeforeExit = async () => {
+    if (!currentProject || !hasUnsavedChanges) return;
+
+    try {
+      setIsAutoSaving(true);
+      await handleSaveProgress(false); // Save without showing toast
+      setHasUnsavedChanges(false);
+      setSuccess('Progress saved before exit');
+    } catch (err) {
+      console.error('Auto-save before exit failed:', err);
+      // Still proceed with exit, but show error
+      setError('Failed to save progress before exit');
+    } finally {
+      setIsAutoSaving(false);
+    }
+  };
+
   // Initialize hierarchical serial collection structure
   // Smart initialization that preserves existing serial numbers when possible
   const initializeOrPreserveHierarchicalSerials = (config = configuration) => {
