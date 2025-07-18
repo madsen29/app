@@ -632,31 +632,40 @@ function App() {
       return;
     }
     
-    // Check if the configuration has changed in a way that requires reset
-    const configChanged = 
-      config.numberOfSscc !== configuration.numberOfSscc ||
-      config.casesPerSscc !== configuration.casesPerSscc ||
-      config.useInnerCases !== configuration.useInnerCases ||
-      config.innerCasesPerCase !== configuration.innerCasesPerCase ||
-      config.itemsPerCase !== configuration.itemsPerCase ||
-      config.itemsPerInnerCase !== configuration.itemsPerInnerCase;
-    
-    if (configChanged) {
-      // Configuration changed significantly - warn user and reset
-      const confirmReset = window.confirm(
-        'The configuration changes you made will reset all previously entered serial numbers. ' +
-        'Are you sure you want to continue? This action cannot be undone.'
-      );
+    // If packaging configuration is locked, don't allow structural changes
+    if (isPackagingConfigLocked && originalPackagingConfig) {
+      // Check if structural packaging configuration has changed
+      const structuralChangeDetected = 
+        config.numberOfSscc !== originalPackagingConfig.numberOfSscc ||
+        config.casesPerSscc !== originalPackagingConfig.casesPerSscc ||
+        config.useInnerCases !== originalPackagingConfig.useInnerCases ||
+        config.innerCasesPerCase !== originalPackagingConfig.innerCasesPerCase ||
+        config.itemsPerCase !== originalPackagingConfig.itemsPerCase ||
+        config.itemsPerInnerCase !== originalPackagingConfig.itemsPerInnerCase;
       
-      if (confirmReset) {
-        initializeHierarchicalSerials(config);
-      } else {
-        // User cancelled, don't proceed with the configuration change
+      if (structuralChangeDetected) {
+        // Show error message and prevent changes
+        setError(
+          'Cannot modify Packaging Configuration after serial numbers have been entered. ' +
+          'The current configuration has been restored. To make packaging changes, start a new project.'
+        );
+        
+        // Restore original packaging configuration
+        setConfiguration(prevConfig => ({
+          ...prevConfig,
+          itemsPerCase: originalPackagingConfig.itemsPerCase,
+          casesPerSscc: originalPackagingConfig.casesPerSscc,
+          numberOfSscc: originalPackagingConfig.numberOfSscc,
+          useInnerCases: originalPackagingConfig.useInnerCases,
+          innerCasesPerCase: originalPackagingConfig.innerCasesPerCase,
+          itemsPerInnerCase: originalPackagingConfig.itemsPerInnerCase
+        }));
+        
         return false;
       }
     }
     
-    // Configuration didn't change structurally, keep existing serials
+    // Configuration is allowed to change (either no lock or non-structural changes)
     return true;
   };
 
