@@ -78,7 +78,7 @@ class Project(BaseModel):
     status: str = "In Progress"  # "In Progress", "Completed"
     current_step: int = 1
     configuration: Optional[dict] = None
-    serial_numbers: Optional[dict] = None
+    serial_numbers: Optional[list] = None  # Allow list for hierarchical structure
     epcis_file_content: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
