@@ -14,7 +14,7 @@ from datetime import datetime, timezone, timedelta
 import xml.etree.ElementTree as ET
 
 # Authentication imports
-from auth import (
+from .auth import (
     UserCreate, UserLogin, User, Token, TokenData,
     authenticate_user, create_user, create_access_token, verify_token,
     get_user_by_email, ACCESS_TOKEN_EXPIRE_MINUTES
