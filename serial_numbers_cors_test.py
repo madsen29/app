@@ -295,19 +295,22 @@ class SerialNumbersCORSTester:
             
             if response.status_code == 200:
                 result = response.json()
+                print(f"DEBUG: Serial numbers response keys: {list(result.keys())}")
+                
+                # Check for both camelCase and snake_case response formats
+                sscc_count = len(result.get("ssccSerialNumbers", result.get("sscc_serial_numbers", [])))
+                case_count = len(result.get("caseSerialNumbers", result.get("case_serial_numbers", [])))
+                item_count = len(result.get("itemSerialNumbers", result.get("item_serial_numbers", [])))
                 
                 # Verify serial numbers were saved correctly
-                if (len(result["sscc_serial_numbers"]) == 1 and 
-                    len(result["case_serial_numbers"]) == 2 and
-                    len(result["item_serial_numbers"]) == 20):
-                    
+                if sscc_count == 1 and case_count == 2 and item_count == 20:
                     self.log_test("Serial Numbers Creation", True, 
                                 "Serial numbers created and validated correctly",
-                                f"SSCC: {len(result['sscc_serial_numbers'])}, Cases: {len(result['case_serial_numbers'])}, Items: {len(result['item_serial_numbers'])}")
+                                f"SSCC: {sscc_count}, Cases: {case_count}, Items: {item_count}")
                     return True
                 else:
                     self.log_test("Serial Numbers Creation", False, 
-                                f"Count validation failed - SSCC: {len(result['sscc_serial_numbers'])}, Cases: {len(result['case_serial_numbers'])}, Items: {len(result['item_serial_numbers'])}")
+                                f"Count validation failed - SSCC: {sscc_count}, Cases: {case_count}, Items: {item_count}")
                     return False
             else:
                 self.log_test("Serial Numbers Creation", False, 
