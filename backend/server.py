@@ -456,6 +456,13 @@ async def update_project(project_id: str, project_update: ProjectUpdate, current
     )
     
     updated_project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    
+    # Handle serial_numbers format migration (dict -> list)
+    if updated_project.get("serial_numbers") is not None:
+        if isinstance(updated_project["serial_numbers"], dict):
+            # Convert old format to new format or set to None
+            updated_project["serial_numbers"] = None
+    
     return Project(**updated_project)
 
 @api_router.delete("/projects/{project_id}")
