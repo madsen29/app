@@ -160,7 +160,7 @@ class EPCISCriticalIssuesTester:
             self.log_test("Critical Issues Configuration", False, "No project ID available")
             return None
             
-        # Exact configuration from review request
+        # Configuration using current backend API structure but testing the fixes
         config_data = {
             "itemsPerCase": 0,  # Not used when inner cases enabled
             "casesPerSscc": 2,
@@ -169,7 +169,11 @@ class EPCISCriticalIssuesTester:
             "innerCasesPerCase": 3,
             "itemsPerInnerCase": 4,
             "companyPrefix": "1234567",
-            "productCode": "000000",  # Single product code field (CRITICAL FIX)
+            # Backend still expects separate product codes, but EPCIS generation should use single productCode
+            "itemProductCode": "000000",
+            "caseProductCode": "000000", 
+            "innerCaseProductCode": "000000",
+            "productCode": "000000",  # This should be used in EPCIS generation (CRITICAL FIX)
             "lotNumber": "LOT123456",
             "expirationDate": "2026-12-31",
             "ssccExtensionDigit": "3",  # Changed from ssccIndicatorDigit (CRITICAL FIX)
