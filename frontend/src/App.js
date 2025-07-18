@@ -3340,6 +3340,21 @@ function App() {
             <button 
               type="button" 
               onClick={() => {
+                // Check if there are any serial numbers entered
+                const hasSerialNumbers = hierarchicalSerials && hierarchicalSerials.some(sscc => 
+                  sscc.ssccSerial || 
+                  (sscc.cases && sscc.cases.some(c => c.caseSerial || (c.items && c.items.some(i => i.itemSerial)))) ||
+                  (sscc.items && sscc.items.some(i => i.itemSerial))
+                );
+                
+                if (hasSerialNumbers) {
+                  const confirmBack = window.confirm(
+                    'Going back to Step 1 may reset your serial numbers if you change the configuration. ' +
+                    'Are you sure you want to go back?'
+                  );
+                  if (!confirmBack) return;
+                }
+                
                 setCurrentStep(1);
                 scrollToTop();
               }} 
