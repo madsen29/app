@@ -237,6 +237,105 @@ function App() {
     handleBackToDashboard();
   };
 
+  // Save Progress functionality
+  const handleSaveProgress = async () => {
+    if (!currentProject) return;
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const updateData = {
+        current_step: currentStep,
+        updated_at: new Date().toISOString()
+      };
+
+      // Save configuration if we're on step 1 or beyond
+      if (currentStep >= 1) {
+        updateData.configuration = {
+          itemsPerCase: configuration.itemsPerCase,
+          casesPerSscc: configuration.casesPerSscc,
+          numberOfSscc: configuration.numberOfSscc,
+          useInnerCases: configuration.useInnerCases,
+          innerCasesPerCase: configuration.innerCasesPerCase,
+          itemsPerInnerCase: configuration.itemsPerInnerCase,
+          companyPrefix: configuration.companyPrefix,
+          productCode: configuration.productCode,
+          lotNumber: configuration.lotNumber,
+          expirationDate: configuration.expirationDate,
+          ssccExtensionDigit: configuration.ssccExtensionDigit,
+          caseIndicatorDigit: configuration.caseIndicatorDigit,
+          innerCaseIndicatorDigit: configuration.innerCaseIndicatorDigit,
+          itemIndicatorDigit: configuration.itemIndicatorDigit,
+          // Business Document Information
+          senderCompanyPrefix: configuration.senderCompanyPrefix,
+          senderGln: configuration.senderGln,
+          senderSgln: configuration.senderSgln,
+          senderName: configuration.senderName,
+          senderStreetAddress: configuration.senderStreetAddress,
+          senderCity: configuration.senderCity,
+          senderState: configuration.senderState,
+          senderPostalCode: configuration.senderPostalCode,
+          senderCountryCode: configuration.senderCountryCode,
+          senderDespatchAdviceNumber: configuration.senderDespatchAdviceNumber,
+          receiverCompanyPrefix: configuration.receiverCompanyPrefix,
+          receiverGln: configuration.receiverGln,
+          receiverSgln: configuration.receiverSgln,
+          receiverName: configuration.receiverName,
+          receiverStreetAddress: configuration.receiverStreetAddress,
+          receiverCity: configuration.receiverCity,
+          receiverState: configuration.receiverState,
+          receiverPostalCode: configuration.receiverPostalCode,
+          receiverCountryCode: configuration.receiverCountryCode,
+          receiverPoNumber: configuration.receiverPoNumber,
+          shipperCompanyPrefix: configuration.shipperCompanyPrefix,
+          shipperGln: configuration.shipperGln,
+          shipperSgln: configuration.shipperSgln,
+          shipperName: configuration.shipperName,
+          shipperStreetAddress: configuration.shipperStreetAddress,
+          shipperCity: configuration.shipperCity,
+          shipperState: configuration.shipperState,
+          shipperPostalCode: configuration.shipperPostalCode,
+          shipperCountryCode: configuration.shipperCountryCode,
+          shipperSameAsSender: configuration.shipperSameAsSender,
+          // EPCClass data
+          productNdc: configuration.productNdc,
+          packageNdc: configuration.packageNdc,
+          regulatedProductName: configuration.regulatedProductName,
+          manufacturerName: configuration.manufacturerName,
+          dosageFormType: configuration.dosageFormType,
+          strengthDescription: configuration.strengthDescription,
+          netContentDescription: configuration.netContentDescription
+        };
+      }
+
+      // Save serial numbers if we're on step 2 or beyond
+      if (currentStep >= 2 && hierarchicalSerials) {
+        updateData.serial_numbers = hierarchicalSerials;
+      }
+
+      await axios.put(`${API}/projects/${currentProject.id}`, updateData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      setSuccess('Progress saved successfully!');
+    } catch (err) {
+      setError('Failed to save progress');
+      console.error('Error saving progress:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSaveAndExit = async () => {
+    await handleSaveProgress();
+    if (!error) {
+      handleBackToDashboard();
+    }
+  };
+
   const scrollToTop = () => {
     // Small delay to ensure the new step content is rendered
     setTimeout(() => {
