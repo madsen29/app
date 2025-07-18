@@ -3429,7 +3429,6 @@ function App() {
       // Show summary and submit button
       return (
         <div className="step-container">
-          {renderProgressBar()}
           <h2 className="step-title">Step 2: Serial Numbers - Complete</h2>
           
           <div className="completion-summary">
