@@ -173,11 +173,11 @@ backend:
   
   - task: "EPCIS XML generation"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
@@ -206,6 +206,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "REVIEW REQUEST CRITICAL ISSUES RESOLVED: ✅ COMPREHENSIVE TESTING COMPLETED: Both critical issues have been successfully fixed by the main agent ✅ Package NDC Hyphen Removal: WORKING - EPCIS XML now contains clean NDC '4580204685' instead of '45802-046-85' in additionalTradeItemIdentification attributes ✅ EPCClass Vocabulary Element Order: CORRECT - Elements now appear in required order: Item → Inner Case → Case ✅ Multiple Hierarchy Testing: All configurations working perfectly: 2-level (SSCC→Items), 3-level (SSCC→Cases→Items), 4-level (SSCC→Cases→Inner Cases→Items) ✅ Enhanced Hierarchical Serial Collection: Backend properly handles flat arrays from hierarchical frontend data ✅ EPCIS XML Generation: Valid EPCIS 1.2 XML with correct event counts for all hierarchy levels ✅ Test Results: 8/8 tests passed (100% success rate) ✅ Configuration: 1 SSCC, 2 Cases, 2 Inner Cases per Case, 3 Items per Inner Case successfully tested ✅ All review request requirements fully satisfied and working correctly"
+      - working: false
+        agent: "user"
+        comment: "USER REPORTED ISSUE: Configuration data isn't populating correctly in the generated EPCIS file. This is a new issue that needs investigation and testing to identify what specific configuration fields are not being populated correctly."
 
 frontend:
   - task: "Configuration form UI"
