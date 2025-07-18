@@ -13,6 +13,16 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const [showUserSettings, setShowUserSettings] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
   const [createLoading, setCreateLoading] = useState(false);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [projectsPerPage] = useState(10);
+  
+  // Batch delete state
+  const [selectedProjects, setSelectedProjects] = useState(new Set());
+  const [isAllSelected, setIsAllSelected] = useState(false);
+  const [batchDeleteLoading, setBatchDeleteLoading] = useState(false);
+  
   const { token, user } = useAuth();
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
