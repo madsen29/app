@@ -1670,7 +1670,7 @@ input:disabled {
 
 .progress-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 1rem;
 }
 
@@ -1685,6 +1685,8 @@ input:disabled {
 .progress-stats .stat strong {
   display: block;
   width: 100%;
+  line-height: normal;
+
 }
 
 .progress-stats .stat.stat-current {

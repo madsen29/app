@@ -3708,14 +3708,10 @@ function App() {
         <h2 className="step-title">Step 2: Serial Numbers</h2>
         
         <div className="hierarchical-input">
-          <div className="context-display">
-            <h3>Current Context:</h3>
+          <div className="current-input">
             <div className="context-path">
               {renderClickableContext(currentContext.path)}
             </div>
-          </div>
-          
-          <div className="current-input">
             <h4>Enter {currentContext.label}:</h4>
             <div className="input-group">
               {serialCollectionStep.currentLevel === 'item' ? (
@@ -3751,22 +3747,23 @@ function App() {
           </div>
           
           <div className="progress-info">
+              <span>Current S</span>
             <div className="progress-stats">
               <div className={`stat ${serialCollectionStep.currentLevel === 'sscc' ? 'stat-current' : ''}`}>
-                <strong>Current SSCC:</strong> {serialCollectionStep.ssccIndex + 1} of {configuration.numberOfSscc}
+                <strong>SSCC:</strong> {serialCollectionStep.ssccIndex + 1} of {configuration.numberOfSscc}
               </div>
               {configuration.casesPerSscc > 0 && (
                 <div className={`stat ${serialCollectionStep.currentLevel === 'case' ? 'stat-current' : ''}`}>
-                  <strong>Current Case:</strong> {serialCollectionStep.caseIndex + 1} of {configuration.casesPerSscc}
+                  <strong>Case:</strong> {serialCollectionStep.caseIndex + 1} of {configuration.casesPerSscc}
                 </div>
               )}
               {configuration.useInnerCases && (
                 <div className={`stat ${serialCollectionStep.currentLevel === 'innerCase' ? 'stat-current' : ''}`}>
-                  <strong>Current Inner Case:</strong> {serialCollectionStep.innerCaseIndex + 1} of {configuration.innerCasesPerCase}
+                  <strong>Inner Case:</strong> {serialCollectionStep.innerCaseIndex + 1} of {configuration.innerCasesPerCase}
                 </div>
               )}
               <div className={`stat ${serialCollectionStep.currentLevel === 'item' ? 'stat-current' : ''}`}>
-                <strong>Current Item:</strong> {serialCollectionStep.itemIndex + 1} of {getCurrentItemCount()}
+                <strong>Item:</strong> {serialCollectionStep.itemIndex + 1} of {getCurrentItemCount()}
               </div>
             </div>
           </div>
