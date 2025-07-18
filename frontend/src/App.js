@@ -885,9 +885,22 @@ function App() {
       const shouldContinue = initializeOrPreserveHierarchicalSerials();
       
       if (shouldContinue === false) {
-        // User cancelled due to configuration changes
+        // Configuration change was blocked or user cancelled
         setIsLoading(false);
         return;
+      }
+      
+      // Lock packaging configuration if we have serial numbers
+      if (hierarchicalSerials && hierarchicalSerials.length > 0) {
+        setIsPackagingConfigLocked(true);
+        setOriginalPackagingConfig({
+          itemsPerCase: configuration.itemsPerCase,
+          casesPerSscc: configuration.casesPerSscc,
+          numberOfSscc: configuration.numberOfSscc,
+          useInnerCases: configuration.useInnerCases,
+          innerCasesPerCase: configuration.innerCasesPerCase,
+          itemsPerInnerCase: configuration.itemsPerInnerCase
+        });
       }
       
       // If we have existing serial numbers, auto-save them with the new configuration
