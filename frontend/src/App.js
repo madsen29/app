@@ -3811,29 +3811,26 @@ function App() {
                 </div>
               </div>
               {currentProject && (
-                <div className="project-header">
-                  <h2 className="project-name">{currentProject.name}</h2>
-                  <span className={`project-status ${currentProject.status.toLowerCase().replace(' ', '-')}`}>
-                    {currentProject.status}
-                  </span>
+                <div className="progress-bar">
+                  <div className="project-progress-header">
+                    <h2 className="project-name">{currentProject.name}</h2>
+                  </div>
+                  <div className="progress-steps">
+                    <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}>
+                      <span className="step-number">1</span>
+                      <span className="step-label">Configuration</span>
+                    </div>
+                    <div className={`step ${currentStep === 2 ? 'active' : currentStep > 2 ? 'completed' : ''}`}>
+                      <span className="step-number">2</span>
+                      <span className="step-label">Serial Numbers</span>
+                    </div>
+                    <div className={`step ${currentStep === 3 ? 'active' : ''}`}>
+                      <span className="step-number">3</span>
+                      <span className="step-label">Generate EPCIS</span>
+                    </div>
+                  </div>
                 </div>
               )}
-              <div className="progress-bar">
-                <div className="progress-steps">
-                  <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}>
-                    <span className="step-number">1</span>
-                    <span className="step-label">Configuration</span>
-                  </div>
-                  <div className={`step ${currentStep === 2 ? 'active' : currentStep > 2 ? 'completed' : ''}`}>
-                    <span className="step-number">2</span>
-                    <span className="step-label">Serial Numbers</span>
-                  </div>
-                  <div className={`step ${currentStep === 3 ? 'active' : ''}`}>
-                    <span className="step-number">3</span>
-                    <span className="step-label">Generate EPCIS</span>
-                  </div>
-                </div>
-              </div>
             </header>
 
             <main className="main-content">
