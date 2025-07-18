@@ -13,7 +13,8 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const [createLoading, setCreateLoading] = useState(false);
   const { token, user } = useAuth();
 
-  const API = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+  const API = `${BACKEND_URL}/api`;
 
   useEffect(() => {
     fetchProjects();
