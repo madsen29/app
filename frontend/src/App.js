@@ -1214,6 +1214,10 @@ function App() {
     }
     
     setHierarchicalSerials(updatedSerials);
+    
+    // Auto-save serial numbers
+    autoSaveSerialNumbers(updatedSerials);
+    
     setEditModal({ isOpen: false, path: '', currentValue: '', label: '', contextPath: '' });
     setError('');
     setSuccess('Serial number updated successfully!');
