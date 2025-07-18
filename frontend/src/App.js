@@ -3887,6 +3887,12 @@ function App() {
                 <div className="progress-bar">
                   <div className="project-progress-header">
                     <h2 className="project-name">{currentProject.name}</h2>
+                    {isAutoSaving && (
+                      <div className="auto-save-indicator">
+                        <span className="auto-save-spinner"></span>
+                        <span className="auto-save-text">Auto-saving...</span>
+                      </div>
+                    )}
                   </div>
                   <div className="progress-steps">
                     <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}>
