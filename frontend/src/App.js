@@ -171,6 +171,124 @@ function App() {
     }, 300); // Match animation duration
   };
 
+  // Helper function to find the current position in serial collection
+  const findCurrentSerialPosition = (hierarchicalData) => {
+    for (let ssccIndex = 0; ssccIndex < hierarchicalData.length; ssccIndex++) {
+      const ssccData = hierarchicalData[ssccIndex];
+      
+      // Check if SSCC serial is missing
+      if (!ssccData.ssccSerial) {
+        return {
+          ssccIndex,
+          caseIndex: 0,
+          innerCaseIndex: 0,
+          itemIndex: 0,
+          currentLevel: 'sscc',
+          isComplete: false
+        };
+      }
+      
+      // Check cases
+      if (ssccData.cases && ssccData.cases.length > 0) {
+        for (let caseIndex = 0; caseIndex < ssccData.cases.length; caseIndex++) {
+          const caseData = ssccData.cases[caseIndex];
+          
+          // Check if case serial is missing
+          if (!caseData.caseSerial) {
+            return {
+              ssccIndex,
+              caseIndex,
+              innerCaseIndex: 0,
+              itemIndex: 0,
+              currentLevel: 'case',
+              isComplete: false
+            };
+          }
+          
+          // Check inner cases
+          if (caseData.innerCases && caseData.innerCases.length > 0) {
+            for (let innerCaseIndex = 0; innerCaseIndex < caseData.innerCases.length; innerCaseIndex++) {
+              const innerCaseData = caseData.innerCases[innerCaseIndex];
+              
+              // Check if inner case serial is missing
+              if (!innerCaseData.innerCaseSerial) {
+                return {
+                  ssccIndex,
+                  caseIndex,
+                  innerCaseIndex,
+                  itemIndex: 0,
+                  currentLevel: 'innerCase',
+                  isComplete: false
+                };
+              }
+              
+              // Check items in inner case
+              if (innerCaseData.items && innerCaseData.items.length > 0) {
+                for (let itemIndex = 0; itemIndex < innerCaseData.items.length; itemIndex++) {
+                  const itemData = innerCaseData.items[itemIndex];
+                  if (!itemData.itemSerial) {
+                    return {
+                      ssccIndex,
+                      caseIndex,
+                      innerCaseIndex,
+                      itemIndex,
+                      currentLevel: 'item',
+                      isComplete: false
+                    };
+                  }
+                }
+              }
+            }
+          } else {
+            // Check items in case (no inner cases)
+            if (caseData.items && caseData.items.length > 0) {
+              for (let itemIndex = 0; itemIndex < caseData.items.length; itemIndex++) {
+                const itemData = caseData.items[itemIndex];
+                if (!itemData.itemSerial) {
+                  return {
+                    ssccIndex,
+                    caseIndex,
+                    innerCaseIndex: 0,
+                    itemIndex,
+                    currentLevel: 'item',
+                    isComplete: false
+                  };
+                }
+              }
+            }
+          }
+        }
+      } else {
+        // Direct SSCC → Items
+        if (ssccData.items && ssccData.items.length > 0) {
+          for (let itemIndex = 0; itemIndex < ssccData.items.length; itemIndex++) {
+            const itemData = ssccData.items[itemIndex];
+            if (!itemData.itemSerial) {
+              return {
+                ssccIndex,
+                caseIndex: 0,
+                innerCaseIndex: 0,
+                itemIndex,
+                currentLevel: 'item',
+                isComplete: false
+              };
+            }
+          }
+        }
+      }
+    }
+    
+    // All serials are complete
+    return {
+      ssccIndex: hierarchicalData.length - 1,
+      caseIndex: 0,
+      innerCaseIndex: 0,
+      itemIndex: 0,
+      currentLevel: 'item',
+      isComplete: true
+    };
+  };
+
   // Project management functions
   const handleSelectProject = (project) => {
     setCurrentProject(project);
