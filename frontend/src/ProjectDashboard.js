@@ -355,6 +355,73 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     setShowCreateModal(true);
   };
 
+  // Avatar dropdown functions
+  const getAvatarColor = (name) => {
+    if (!name) return '#3b82f6';
+    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#f97316', '#06b6d4', '#84cc16'];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
+
+  const getInitials = (name) => {
+    if (!name) return '?';
+    return name.charAt(0).toUpperCase();
+  };
+
+  const handleAvatarClick = () => {
+    setShowAvatarDropdown(!showAvatarDropdown);
+  };
+
+  const handleClickOutside = (event) => {
+    if (showAvatarDropdown && !event.target.closest('.avatar-dropdown')) {
+      setShowAvatarDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [showAvatarDropdown]);
+
+  const AvatarDropdown = () => (
+    <div className="avatar-dropdown">
+      <button
+        onClick={handleAvatarClick}
+        className="avatar-button"
+        style={{ backgroundColor: getAvatarColor(user?.first_name || user?.email) }}
+      >
+        {getInitials(user?.first_name || user?.email)}
+      </button>
+      {showAvatarDropdown && (
+        <div className="avatar-dropdown-menu">
+          <button
+            onClick={() => {
+              setShowUserSettings(true);
+              setShowAvatarDropdown(false);
+            }}
+            className="avatar-dropdown-item"
+          >
+            <FiSettings size={16} />
+            Settings
+          </button>
+          <div className="avatar-dropdown-divider"></div>
+          <button
+            onClick={() => {
+              onLogout();
+              setShowAvatarDropdown(false);
+            }}
+            className="avatar-dropdown-item"
+          >
+            <FiLogOut size={16} />
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
