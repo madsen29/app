@@ -877,6 +877,35 @@ function App() {
     setIsLoading(true);
     setError('');
     
+    // Validate required fields
+    const requiredFields = [
+      { field: 'numberOfSscc', value: configuration.numberOfSscc, name: 'Number of SSCC' },
+      { field: 'casesPerSscc', value: configuration.casesPerSscc, name: 'Cases per SSCC' },
+      { field: 'companyPrefix', value: configuration.companyPrefix, name: 'Company Prefix' },
+      { field: 'productCode', value: configuration.productCode, name: 'Product Code' },
+      { field: 'ssccExtensionDigit', value: configuration.ssccExtensionDigit, name: 'SSCC Extension Digit' },
+      { field: 'caseIndicatorDigit', value: configuration.caseIndicatorDigit, name: 'Case Indicator Digit' },
+      { field: 'itemIndicatorDigit', value: configuration.itemIndicatorDigit, name: 'Item Indicator Digit' }
+    ];
+    
+    const emptyFields = requiredFields.filter(field => !field.value || field.value === '');
+    
+    if (emptyFields.length > 0) {
+      const fieldNames = emptyFields.map(field => field.name).join(', ');
+      setError(`Please fill in the following required fields: ${fieldNames}`);
+      setIsLoading(false);
+      return;
+    }
+    
+    // Additional validation for inner cases
+    if (configuration.useInnerCases && configuration.casesPerSscc > 0) {
+      if (!configuration.innerCaseIndicatorDigit || configuration.innerCaseIndicatorDigit === '') {
+        setError('Please fill in the Inner Case Indicator Digit when using inner cases.');
+        setIsLoading(false);
+        return;
+      }
+    }
+    
     try {
       const response = await axios.post(`${API}/projects/${currentProject.id}/configuration`, {
         items_per_case: configuration.casesPerSscc === 0 ? configuration.itemsPerCase : (configuration.useInnerCases ? 0 : configuration.itemsPerCase),
