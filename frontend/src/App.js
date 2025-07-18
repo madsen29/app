@@ -4,6 +4,8 @@ import axios from "axios";
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { BarcodeFormat } from '@zxing/library';
 import { FiCamera, FiChevronRight, FiPackage, FiBox, FiFolder, FiFile, FiX } from 'react-icons/fi';
+import { useAuth } from './AuthContext';
+import AuthWrapper from './AuthWrapper';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
