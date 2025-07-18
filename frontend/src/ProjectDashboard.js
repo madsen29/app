@@ -235,7 +235,11 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      setProjects([response.data, ...projects]);
+      // Update projects list first so generateSuggestedName can see the new project
+      const updatedProjects = [response.data, ...projects];
+      setProjects(updatedProjects);
+      
+      // Clear the form and close modal
       setNewProjectName('');
       setShowCreateModal(false);
       
