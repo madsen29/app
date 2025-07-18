@@ -650,8 +650,6 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         >
                           <FiTrash2 size={16} />
                         </button>
-                          Delete
-                        </button>
                       </div>
                     </div>
                   </li>
