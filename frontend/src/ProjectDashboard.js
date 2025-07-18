@@ -485,6 +485,13 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                               <h4 className="text-lg font-medium text-gray-900 truncate">
                                 {project.name}
                               </h4>
+                              <button
+                                onClick={() => handleRenameClick(project)}
+                                className="ml-2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                                title="Rename project"
+                              >
+                                <FiEdit2 size={14} />
+                              </button>
                               <span className={`ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                 project.status === 'Completed' 
                                   ? 'bg-green-100 text-green-800' 
