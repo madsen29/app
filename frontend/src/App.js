@@ -474,7 +474,7 @@ function App() {
     setError('');
     
     try {
-      const response = await axios.post(`${API}/api/projects/${currentProject.id}/generate-epcis`, {
+      const response = await axios.post(`${API}/projects/${currentProject.id}/generate-epcis`, {
         read_point: "urn:epc:id:sgln:1234567.00000.0",
         biz_location: "urn:epc:id:sgln:1234567.00001.0"
       }, {
