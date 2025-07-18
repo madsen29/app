@@ -1,259 +1,208 @@
 <?xml version='1.0' encoding='utf-8'?>
-<EPCISDocument xmlns="urn:epcglobal:epcis:xsd:1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" creationDate="2025-07-15T03:56:33.484839+00:00">
+<epcis:EPCISDocument xmlns:cbvmda="urn:epcglobal:cbv:mda" xmlns="urn:epcglobal:epcis:xsd:1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gs1ushc="http://epcis.gs1us.org/hc/ns" schemaVersion="1.2" creationDate="2025-07-18T18:30:15Z" xmlns:sbdh="http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader" xmlns:cbvmda="urn:epcglobal:cbv:mda">
+  <EPCISHeader>
+    <sbdh:StandardBusinessDocumentHeader>
+      <sbdh:HeaderVersion>1.0</sbdh:HeaderVersion>
+      <sbdh:Sender>
+        <sbdh:Identifier Authority="GS1">0345802000014</sbdh:Identifier>
+      </sbdh:Sender>
+      <sbdh:Receiver>
+        <sbdh:Identifier Authority="GS1">0567890000021</sbdh:Identifier>
+      </sbdh:Receiver>
+      <sbdh:DocumentIdentification>
+        <sbdh:Standard>EPCglobal</sbdh:Standard>
+        <sbdh:TypeVersion>1.0</sbdh:TypeVersion>
+        <sbdh:InstanceIdentifier>EPCIS_20250718183015</sbdh:InstanceIdentifier>
+        <sbdh:Type>Events</sbdh:Type>
+        <sbdh:CreationDateAndTime>2025-07-18T18:30:22Z</sbdh:CreationDateAndTime>
+      </sbdh:DocumentIdentification>
+    </sbdh:StandardBusinessDocumentHeader>
+    <extension>
+      <EPCISMasterData>
+        <VocabularyList>
+          <Vocabulary type="urn:epcglobal:epcis:vtype:EPCClass">
+            <VocabularyElementList>
+              <VocabularyElement id="urn:epc:idpat:sgtin:1234567.1000000.*">
+                <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentification">4580204685</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode">FDA_NDC_11</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#regulatedProductName">Metformin Hydrochloride Tablets</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName">Padagis US LLC</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#dosageFormType">Tablet</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#strengthDescription">500 mg</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#netContentDescription">100 tablets</attribute>
+              </VocabularyElement>
+              <VocabularyElement id="urn:epc:idpat:sgtin:1234567.2000001.*">
+                <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentification">4580204685</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#additionalTradeItemIdentificationTypeCode">FDA_NDC_11</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#regulatedProductName">Metformin Hydrochloride Tablets</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName">Padagis US LLC</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#dosageFormType">Tablet</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#strengthDescription">500 mg</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#netContentDescription">100 tablets</attribute>
+              </VocabularyElement>
+            </VocabularyElementList>
+          </Vocabulary>
+          <Vocabulary type="urn:epcglobal:epcis:vtype:Location">
+            <VocabularyElementList>
+              <VocabularyElement id="urn:epc:id:sgln:0345802000014.001">
+                <attribute id="urn:epcglobal:cbv:mda#name">Padagis US LLC</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">420 Saw Mill River Road</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#city">Ardsley</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#state">NY</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#postalCode">10502</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#countryCode">US</attribute>
+              </VocabularyElement>
+              <VocabularyElement id="urn:epc:id:sgln:0567890000021.001">
+                <attribute id="urn:epcglobal:cbv:mda#name">Pharmacy Corp</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">789 Main Street</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#city">Anytown</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#state">CA</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#postalCode">90210</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#countryCode">US</attribute>
+              </VocabularyElement>
+              <VocabularyElement id="urn:epc:id:sgln:0999888000028.001">
+                <attribute id="urn:epcglobal:cbv:mda#name">Shipping Corp</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#streetAddressOne">456 Logistics Ave</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#city">Distribution Center</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#state">TX</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#postalCode">75001</attribute>
+                <attribute id="urn:epcglobal:cbv:mda#countryCode">US</attribute>
+              </VocabularyElement>
+            </VocabularyElementList>
+          </Vocabulary>
+        </VocabularyList>
+      </EPCISMasterData>
+    </extension>
+    <gs1ushc:dscsaTransactionStatement>
+      <gs1ushc:affirmTransactionStatement>true</gs1ushc:affirmTransactionStatement>
+      <gs1ushc:legalNotice>Seller has complied with each applicable subsection of FDCA Sec. 581(27)(A)-(G).</gs1ushc:legalNotice>
+    </gs1ushc:dscsaTransactionStatement>
+  </EPCISHeader>
   <EPCISBody>
     <EventList>
       <ObjectEvent>
-        <eventTime>2025-07-15T03:56:33.484888+00:00</eventTime>
+        <eventTime>2025-07-18T18:30:16Z</eventTime>
         <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
         <epcList>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM001</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM002</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM003</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM004</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM005</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM006</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM007</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM008</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM009</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM010</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM011</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM012</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM013</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM014</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM015</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM016</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM017</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM018</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM019</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM020</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM021</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM022</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM023</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM024</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM025</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM026</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM027</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM028</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM029</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM030</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM031</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM032</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM033</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM034</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM035</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM036</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM037</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM038</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM039</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM040</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM041</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM042</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM043</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM044</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM045</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM046</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM047</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM048</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM049</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM050</epc>
+          <epc>urn:epc:id:sgtin:1234567.1000000.ITEM001</epc>
+          <epc>urn:epc:id:sgtin:1234567.1000000.ITEM002</epc>
         </epcList>
         <action>ADD</action>
         <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
         <disposition>urn:epcglobal:cbv:disp:active</disposition>
         <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </readPoint>
         <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </bizLocation>
+        <extension>
+          <ilmd>
+            <cbvmda:lotNumber>LOT123456</cbvmda:lotNumber>
+            <cbvmda:itemExpirationDate>2026-12-31</cbvmda:itemExpirationDate>
+          </ilmd>
+        </extension>
       </ObjectEvent>
       <ObjectEvent>
-        <eventTime>2025-07-15T03:56:33.484911+00:00</eventTime>
+        <eventTime>2025-07-18T18:30:17Z</eventTime>
         <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
         <epcList>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE001</epc>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE002</epc>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE003</epc>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE004</epc>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE005</epc>
+          <epc>urn:epc:id:sgtin:1234567.2000001.CASE001</epc>
         </epcList>
         <action>ADD</action>
         <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
         <disposition>urn:epcglobal:cbv:disp:active</disposition>
         <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </readPoint>
         <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </bizLocation>
+        <extension>
+          <ilmd>
+            <cbvmda:lotNumber>LOT123456</cbvmda:lotNumber>
+            <cbvmda:itemExpirationDate>2026-12-31</cbvmda:itemExpirationDate>
+          </ilmd>
+        </extension>
       </ObjectEvent>
       <ObjectEvent>
-        <eventTime>2025-07-15T03:56:33.484917+00:00</eventTime>
+        <eventTime>2025-07-18T18:30:18Z</eventTime>
         <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
         <epcList>
-          <epc>urn:epc:id:sscc:1234567.0SSCC001</epc>
+          <epc>urn:epc:id:sscc:0999888.3TEST001</epc>
         </epcList>
         <action>ADD</action>
         <bizStep>urn:epcglobal:cbv:bizstep:commissioning</bizStep>
         <disposition>urn:epcglobal:cbv:disp:active</disposition>
         <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </readPoint>
         <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </bizLocation>
       </ObjectEvent>
       <AggregationEvent>
-        <eventTime>2025-07-15T03:56:33.484924+00:00</eventTime>
+        <eventTime>2025-07-18T18:30:19Z</eventTime>
         <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
-        <parentID>urn:epc:id:sgtin:1234567.0111111.CASE001</parentID>
+        <parentID>urn:epc:id:sgtin:1234567.2000001.CASE001</parentID>
         <childEPCs>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM001</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM002</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM003</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM004</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM005</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM006</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM007</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM008</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM009</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM010</epc>
+          <epc>urn:epc:id:sgtin:1234567.1000000.ITEM001</epc>
+          <epc>urn:epc:id:sgtin:1234567.1000000.ITEM002</epc>
         </childEPCs>
         <action>ADD</action>
         <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
         <disposition>urn:epcglobal:cbv:disp:active</disposition>
         <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </readPoint>
         <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </bizLocation>
       </AggregationEvent>
       <AggregationEvent>
-        <eventTime>2025-07-15T03:56:33.484934+00:00</eventTime>
+        <eventTime>2025-07-18T18:30:20Z</eventTime>
         <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
-        <parentID>urn:epc:id:sgtin:1234567.0111111.CASE002</parentID>
+        <parentID>urn:epc:id:sscc:0999888.3TEST001</parentID>
         <childEPCs>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM011</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM012</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM013</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM014</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM015</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM016</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM017</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM018</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM019</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM020</epc>
+          <epc>urn:epc:id:sgtin:1234567.2000001.CASE001</epc>
         </childEPCs>
         <action>ADD</action>
         <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
         <disposition>urn:epcglobal:cbv:disp:active</disposition>
         <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </readPoint>
         <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </bizLocation>
       </AggregationEvent>
-      <AggregationEvent>
-        <eventTime>2025-07-15T03:56:33.484942+00:00</eventTime>
+      <ObjectEvent>
+        <eventTime>2025-07-18T18:30:21Z</eventTime>
         <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
-        <parentID>urn:epc:id:sgtin:1234567.0111111.CASE003</parentID>
-        <childEPCs>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM021</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM022</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM023</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM024</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM025</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM026</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM027</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM028</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM029</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM030</epc>
-        </childEPCs>
-        <action>ADD</action>
-        <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
-        <disposition>urn:epcglobal:cbv:disp:active</disposition>
+        <epcList>
+          <epc>urn:epc:id:sscc:0999888.3TEST001</epc>
+        </epcList>
+        <action>OBSERVE</action>
+        <bizStep>urn:epcglobal:cbv:bizstep:shipping</bizStep>
+        <disposition>urn:epcglobal:cbv:disp:in_transit</disposition>
         <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
+          <id>urn:epc:id:sgln:0999888000028.001</id>
         </readPoint>
-        <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
-        </bizLocation>
-      </AggregationEvent>
-      <AggregationEvent>
-        <eventTime>2025-07-15T03:56:33.484950+00:00</eventTime>
-        <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
-        <parentID>urn:epc:id:sgtin:1234567.0111111.CASE004</parentID>
-        <childEPCs>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM031</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM032</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM033</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM034</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM035</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM036</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM037</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM038</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM039</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM040</epc>
-        </childEPCs>
-        <action>ADD</action>
-        <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
-        <disposition>urn:epcglobal:cbv:disp:active</disposition>
-        <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
-        </readPoint>
-        <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
-        </bizLocation>
-      </AggregationEvent>
-      <AggregationEvent>
-        <eventTime>2025-07-15T03:56:33.484957+00:00</eventTime>
-        <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
-        <parentID>urn:epc:id:sgtin:1234567.0111111.CASE005</parentID>
-        <childEPCs>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM041</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM042</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM043</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM044</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM045</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM046</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM047</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM048</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM049</epc>
-          <epc>urn:epc:id:sgtin:1234567.0000000.ITEM050</epc>
-        </childEPCs>
-        <action>ADD</action>
-        <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
-        <disposition>urn:epcglobal:cbv:disp:active</disposition>
-        <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
-        </readPoint>
-        <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
-        </bizLocation>
-      </AggregationEvent>
-      <AggregationEvent>
-        <eventTime>2025-07-15T03:56:33.484966+00:00</eventTime>
-        <eventTimeZoneOffset>+00:00</eventTimeZoneOffset>
-        <parentID>urn:epc:id:sscc:1234567.0SSCC001</parentID>
-        <childEPCs>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE001</epc>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE002</epc>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE003</epc>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE004</epc>
-          <epc>urn:epc:id:sgtin:1234567.0111111.CASE005</epc>
-        </childEPCs>
-        <action>ADD</action>
-        <bizStep>urn:epcglobal:cbv:bizstep:packing</bizStep>
-        <disposition>urn:epcglobal:cbv:disp:active</disposition>
-        <readPoint>
-          <id>urn:epc:id:sgln:1234567.00000.0</id>
-        </readPoint>
-        <bizLocation>
-          <id>urn:epc:id:sgln:1234567.00001.0</id>
-        </bizLocation>
-      </AggregationEvent>
+        <bizTransactionList>
+          <bizTransaction type="urn:epcglobal:cbv:btt:po">urn:epcglobal:cbv:bt:0567890000021:PO789012</bizTransaction>
+          <bizTransaction type="urn:epcglobal:cbv:btt:desadv">urn:epcglobal:cbv:bt:0345802000014:DA123456</bizTransaction>
+        </bizTransactionList>
+        <extension>
+          <sourceList>
+            <source type="urn:epcglobal:cbv:sdt:owning_party">urn:epc:id:sgln:0345802000014.001</source>
+            <source type="urn:epcglobal:cbv:sdt:location">urn:epc:id:sgln:0999888000028.001</source>
+          </sourceList>
+          <destinationList>
+            <destination type="urn:epcglobal:cbv:sdt:owning_party">urn:epc:id:sgln:0567890000021.001</destination>
+            <destination type="urn:epcglobal:cbv:sdt:location">urn:epc:id:sgln:0567890000021.001</destination>
+          </destinationList>
+        </extension>
+      </ObjectEvent>
     </EventList>
   </EPCISBody>
-</EPCISDocument>
+</epcis:EPCISDocument>
