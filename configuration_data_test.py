@@ -306,6 +306,11 @@ class ConfigurationDataTester:
             if response.status_code == 200:
                 xml_content = response.text
                 
+                # Debug: Save XML content to file for inspection
+                with open('/app/debug_epcis.xml', 'w') as f:
+                    f.write(xml_content)
+                print(f"   Debug - XML content saved to /app/debug_epcis.xml")
+                
                 # Parse XML for detailed analysis
                 try:
                     root = ET.fromstring(xml_content)
