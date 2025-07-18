@@ -704,7 +704,7 @@ function App() {
       setIsAutoSaving(true);
       await handleSaveProgress(false); // Save without showing toast
       setHasUnsavedChanges(false);
-      setSuccess('Progress saved before exit');
+      setSuccess('Progress restored');
     } catch (err) {
       console.error('Auto-save before exit failed:', err);
       // Still proceed with exit, but show error
@@ -3275,27 +3275,26 @@ function App() {
         </div>
         
         <div className="config-actions">
-          <button type="submit" disabled={isLoading} className="btn-primary">
-            {isLoading ? 'Saving...' : 'Save Configuration'}
-            <FiChevronRight className="ml-2" />
-          </button>
-          <button 
+          
+          {/* <button 
             type="button" 
             onClick={handleSaveProgress} 
             disabled={isLoading} 
             className="btn-secondary"
-            style={{ marginLeft: '10px' }}
           >
             Save Progress
-          </button>
+          </button> */}
           <button 
             type="button" 
             onClick={handleSaveAndExit} 
             disabled={isLoading} 
             className="btn-outline"
-            style={{ marginLeft: '10px' }}
           >
             Save & Exit
+          </button>
+          <button type="submit" disabled={isLoading} className="btn-primary">
+            {isLoading ? 'Saving...' : 'Continue'}
+            <FiChevronRight className="ml-2" />
           </button>
         </div>
       </form>
@@ -3569,13 +3568,21 @@ function App() {
             </button>
             <button 
               type="button" 
+              onClick={handleSaveAndExit} 
+              disabled={isLoading} 
+              className="btn-outline"
+            >
+              Save & Exit
+            </button>
+            <button 
+              type="button" 
               onClick={handleSerialNumbersSubmit}
               disabled={isLoading} 
               className="btn-primary"
             >
               {isLoading ? 'Saving...' : 'Save Serial Numbers'}
             </button>
-            <button 
+            {/* <button 
               type="button" 
               onClick={handleSaveProgress} 
               disabled={isLoading} 
@@ -3583,16 +3590,8 @@ function App() {
               style={{ marginLeft: '10px' }}
             >
               Save Progress
-            </button>
-            <button 
-              type="button" 
-              onClick={handleSaveAndExit} 
-              disabled={isLoading} 
-              className="btn-outline"
-              style={{ marginLeft: '10px' }}
-            >
-              Save & Exit
-            </button>
+            </button> */}
+            
           </div>
         </div>
       );
@@ -3697,13 +3696,21 @@ function App() {
             </button>
             <button 
               type="button" 
+              onClick={handleSaveAndExit} 
+              disabled={isLoading} 
+              className="btn-outline"
+            >
+              Save & Exit
+            </button>
+            <button 
+              type="button" 
               onClick={handleNextSerial}
               disabled={!serialCollectionStep.currentSerial.trim()}
               className="btn-primary"
             >
               Next
             </button>
-            <button 
+            {/* <button 
               type="button" 
               onClick={handleSaveProgress} 
               disabled={isLoading} 
@@ -3711,16 +3718,8 @@ function App() {
               style={{ marginLeft: '10px' }}
             >
               Save Progress
-            </button>
-            <button 
-              type="button" 
-              onClick={handleSaveAndExit} 
-              disabled={isLoading} 
-              className="btn-outline"
-              style={{ marginLeft: '10px' }}
-            >
-              Save & Exit
-            </button>
+            </button> */}
+            
           </div>
         </div>
       </div>
@@ -3828,10 +3827,18 @@ function App() {
           >
             Back
           </button>
+          <button 
+            type="button" 
+            onClick={handleSaveAndExit} 
+            disabled={isLoading} 
+            className="btn-outline"
+          >
+            Save & Exit
+          </button>
           <button onClick={handleGenerateEPCIS} disabled={isLoading} className="btn-primary">
             {isLoading ? 'Generating...' : 'Generate & Download EPCIS'}
           </button>
-          <button 
+          {/* <button 
             type="button" 
             onClick={handleSaveProgress} 
             disabled={isLoading} 
@@ -3839,16 +3846,8 @@ function App() {
             style={{ marginLeft: '10px' }}
           >
             Save Progress
-          </button>
-          <button 
-            type="button" 
-            onClick={handleSaveAndExit} 
-            disabled={isLoading} 
-            className="btn-outline"
-            style={{ marginLeft: '10px' }}
-          >
-            Save & Exit
-          </button>
+          </button> */}
+          
         </div>
       </div>
     );
@@ -3866,38 +3865,24 @@ function App() {
           <div className="container">
             <header className="header">
               <div className="header-content">
-                <img className="header-logo" src="https://cdn.prod.website-files.com/6154ee5ad4b73423326331fd/66a2bd8c5b618c82f5e30699_rxerp-logo-hero-light.svg"></img>
-                <div className="header-text">
-                  <h1>RxERP Aggregator</h1>
-                  <p>Generate GS1 compliant EPCIS files for pharmaceutical serialization</p>
-                </div>
-                <div className="header-actions">
-                  <button
-                    onClick={handleBackToDashboard}
-                    className="btn-secondary"
-                    style={{ marginRight: '10px' }}
-                  >
-                    <FiArrowLeft style={{ marginRight: '5px' }} />
-                    Back to Dashboard
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="btn-outline"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
               {currentProject && (
                 <div className="progress-bar">
+                  <div><button 
+            type="button" 
+            onClick={handleSaveAndExit} 
+            disabled={isLoading} 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium"
+          >
+            Save & Exit
+          </button>
                   <div className="project-progress-header">
                     <h2 className="project-name">{currentProject.name}</h2>
                     {isAutoSaving && (
                       <div className="auto-save-indicator">
                         <span className="auto-save-spinner"></span>
-                        <span className="auto-save-text">Auto-saving...</span>
                       </div>
                     )}
+                  </div>
                   </div>
                   <div className="progress-steps">
                     <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}>
@@ -3915,6 +3900,7 @@ function App() {
                   </div>
                 </div>
               )}
+              </div>
             </header>
 
             <main className="main-content">
@@ -3974,6 +3960,7 @@ function App() {
             </div>
           </div>
         )}
+        
 
         {/* FDA API Search Modal */}
         {fdaModal.isOpen && (
@@ -4091,6 +4078,7 @@ function App() {
           </div>
         )}
           </div>
+          <div className="footer-wrapper"><img className="logo" src="https://rxerp.com/wp-content/uploads/2025/01/rxerp-logo-hero-tagline.svg"></img></div>
         </div>
       )}
     </AuthWrapper>
