@@ -2392,28 +2392,6 @@ function App() {
     }
   };
 
-  const renderProgressBar = () => (
-    <div className="progress-bar">
-      <div 
-        className={`progress-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'clickable' : ''}`}
-        onClick={() => handleStepClick(1)}
-      >
-        1
-      </div>
-      <div 
-        className={`progress-step ${currentStep >= 2 ? 'active' : ''} ${currentStep > 2 ? 'clickable' : ''}`}
-        onClick={() => handleStepClick(2)}
-      >
-        2
-      </div>
-      <div 
-        className={`progress-step ${currentStep >= 3 ? 'active' : ''}`}
-      >
-        3
-      </div>
-    </div>
-  );
-
   const renderStep1 = () => (
     <div className="step-container">
       <h2 className="step-title">Step 1: Configuration</h2>
