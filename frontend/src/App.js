@@ -171,6 +171,28 @@ function App() {
     }, 300); // Match animation duration
   };
 
+  // Auto-save functionality for serial numbers
+  const autoSaveSerialNumbers = async (updatedSerials) => {
+    if (!currentProject) return;
+    
+    try {
+      await axios.put(`${API}/projects/${currentProject.id}`, {
+        serial_numbers: updatedSerials,
+        updated_at: new Date().toISOString()
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      setHasUnsavedChanges(false);
+      console.log('Serial numbers auto-saved');
+    } catch (err) {
+      console.error('Auto-save failed:', err);
+      // Don't show error to user for auto-save failures
+    }
+  };
+
   // Helper function to find the current position in serial collection
   const findCurrentSerialPosition = (hierarchicalData) => {
     for (let ssccIndex = 0; ssccIndex < hierarchicalData.length; ssccIndex++) {
