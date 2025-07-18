@@ -71,7 +71,7 @@ const UserSettings = ({ onClose }) => {
       
       setSuccess('Profile updated successfully!');
       // Update the user context with new data
-      // This would require updating the AuthContext to have an updateUser function
+      updateUser(response.data);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to update profile');
     } finally {
