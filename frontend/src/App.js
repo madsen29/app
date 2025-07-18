@@ -194,15 +194,14 @@ function App() {
   };
 
   // Helper function to find the current position in serial collection
-  const findCurrentSerialPosition = (hierarchicalData) => {
+  const findCurrentSerialPosition = (hierarchicalData, config) => {
     // We need to check against the expected configuration structure
-    // Get the current configuration to know how many items are expected
-    const expectedSSCCs = configuration.numberOfSscc || 1;
-    const expectedCasesPerSSCC = configuration.casesPerSscc || 0;
-    const expectedInnerCasesPerCase = configuration.innerCasesPerCase || 0;
-    const expectedItemsPerCase = configuration.itemsPerCase || 10;
-    const expectedItemsPerInnerCase = configuration.itemsPerInnerCase || 5;
-    const useInnerCases = configuration.useInnerCases || false;
+    const expectedSSCCs = config.numberOfSscc || 1;
+    const expectedCasesPerSSCC = config.casesPerSscc || 0;
+    const expectedInnerCasesPerCase = config.innerCasesPerCase || 0;
+    const expectedItemsPerCase = config.itemsPerCase || 10;
+    const expectedItemsPerInnerCase = config.itemsPerInnerCase || 5;
+    const useInnerCases = config.useInnerCases || false;
     
     for (let ssccIndex = 0; ssccIndex < expectedSSCCs; ssccIndex++) {
       const ssccData = hierarchicalData[ssccIndex];
