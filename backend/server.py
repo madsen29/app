@@ -390,6 +390,90 @@ async def logout():
     """Logout user (client-side token removal)"""
     return {"message": "Successfully logged out"}
 
+# Project Management endpoints
+@api_router.get("/projects", response_model=List[Project])
+async def get_user_projects(current_user: User = Depends(get_current_user)):
+    """Get all projects for the current user"""
+    projects = await db.projects.find({"user_id": current_user.id}).to_list(1000)
+    return [Project(**project) for project in projects]
+
+@api_router.post("/projects", response_model=Project)
+async def create_project(project: ProjectCreate, current_user: User = Depends(get_current_user)):
+    """Create a new project"""
+    project_data = {
+        "id": str(uuid.uuid4()),
+        "name": project.name,
+        "user_id": current_user.id,
+        "status": "In Progress",
+        "current_step": 1,
+        "configuration": None,
+        "serial_numbers": None,
+        "epcis_file_content": None,
+        "created_at": datetime.utcnow(),
+        "updated_at": datetime.utcnow()
+    }
+    
+    await db.projects.insert_one(project_data)
+    return Project(**project_data)
+
+@api_router.get("/projects/{project_id}", response_model=Project)
+async def get_project(project_id: str, current_user: User = Depends(get_current_user)):
+    """Get a specific project"""
+    project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return Project(**project)
+
+@api_router.put("/projects/{project_id}", response_model=Project)
+async def update_project(project_id: str, project_update: ProjectUpdate, current_user: User = Depends(get_current_user)):
+    """Update a project"""
+    project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    update_data = project_update.model_dump(exclude_unset=True)
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.projects.update_one(
+        {"id": project_id, "user_id": current_user.id},
+        {"$set": update_data}
+    )
+    
+    updated_project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    return Project(**updated_project)
+
+@api_router.delete("/projects/{project_id}")
+async def delete_project(project_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a project"""
+    result = await db.projects.delete_one({"id": project_id, "user_id": current_user.id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return {"message": "Project deleted successfully"}
+
+@api_router.post("/projects/{project_id}/duplicate", response_model=Project)
+async def duplicate_project(project_id: str, current_user: User = Depends(get_current_user)):
+    """Duplicate a project"""
+    project = await db.projects.find_one({"id": project_id, "user_id": current_user.id})
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Create new project with copied data
+    new_project_data = {
+        "id": str(uuid.uuid4()),
+        "name": f"{project['name']} (Copy)",
+        "user_id": current_user.id,
+        "status": "In Progress",
+        "current_step": 1,
+        "configuration": project.get("configuration"),
+        "serial_numbers": None,  # Don't copy serial numbers
+        "epcis_file_content": None,
+        "created_at": datetime.utcnow(),
+        "updated_at": datetime.utcnow()
+    }
+    
+    await db.projects.insert_one(new_project_data)
+    return Project(**new_project_data)
+
 @api_router.post("/configuration", response_model=SerialConfiguration)
 async def create_configuration(input: SerialConfigurationCreate):
     config_dict = input.model_dump(by_alias=False)  # This gives us snake_case
