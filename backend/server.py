@@ -625,6 +625,16 @@ async def generate_epcis(project_id: str, request: EPCISGenerationRequest, curre
     else:
         filename = f"epcis-{sender_gln}-{receiver_gln}-{today_date}.xml"
     
+    # Save EPCIS file content to project and mark as completed
+    await db.projects.update_one(
+        {"id": project_id, "user_id": current_user.id},
+        {"$set": {
+            "epcis_file_content": xml_content,
+            "status": "Completed",
+            "updated_at": datetime.utcnow()
+        }}
+    )
+    
     # Return as downloadable file
     return Response(
         content=xml_content,
