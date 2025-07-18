@@ -596,11 +596,41 @@ async def create_serial_numbers(project_id: str, input: SerialNumbersCreate, cur
     serial_dict = input.model_dump(by_alias=False)
     serial_obj = SerialNumbers(**serial_dict)
     
-    # Save serial numbers to project
+    # Save serial numbers to project as a list structure for hierarchical data
+    serial_numbers_list = []
+    
+    # Add SSCC serials
+    for sscc_serial in serial_obj.sscc_serial_numbers:
+        serial_numbers_list.append({
+            "type": "sscc",
+            "serial": sscc_serial
+        })
+    
+    # Add case serials
+    for case_serial in serial_obj.case_serial_numbers:
+        serial_numbers_list.append({
+            "type": "case", 
+            "serial": case_serial
+        })
+    
+    # Add inner case serials
+    for inner_case_serial in serial_obj.inner_case_serial_numbers:
+        serial_numbers_list.append({
+            "type": "inner_case",
+            "serial": inner_case_serial
+        })
+    
+    # Add item serials
+    for item_serial in serial_obj.item_serial_numbers:
+        serial_numbers_list.append({
+            "type": "item",
+            "serial": item_serial
+        })
+    
     await db.projects.update_one(
         {"id": project_id, "user_id": current_user.id},
         {"$set": {
-            "serial_numbers": serial_obj.model_dump(by_alias=False),
+            "serial_numbers": serial_numbers_list,
             "current_step": 3,
             "updated_at": datetime.utcnow()
         }}
