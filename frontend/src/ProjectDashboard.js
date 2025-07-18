@@ -158,6 +158,52 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     }
   };
 
+  // Rename project functions
+  const handleRenameClick = (project) => {
+    setRenameProject(project);
+    setRenameProjectName(project.name);
+    setShowRenameModal(true);
+  };
+
+  const handleRenameProject = async () => {
+    if (!renameProjectName.trim() || !renameProject) return;
+    
+    setRenameLoading(true);
+    setError('');
+    
+    try {
+      const response = await axios.put(`${API}/projects/${renameProject.id}`, {
+        name: renameProjectName.trim()
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.status === 200) {
+        // Update the project in the projects list
+        setProjects(projects.map(p => 
+          p.id === renameProject.id 
+            ? { ...p, name: renameProjectName.trim() }
+            : p
+        ));
+        
+        setShowRenameModal(false);
+        setRenameProject(null);
+        setRenameProjectName('');
+      }
+    } catch (err) {
+      setError('Failed to rename project. Please try again.');
+      console.error('Error renaming project:', err);
+    } finally {
+      setRenameLoading(false);
+    }
+  };
+
+  const handleCancelRename = () => {
+    setShowRenameModal(false);
+    setRenameProject(null);
+    setRenameProjectName('');
+  };
+
   useEffect(() => {
     fetchProjects();
   }, []);
