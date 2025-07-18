@@ -17,6 +17,7 @@ function App() {
   // Project management state
   const [currentProject, setCurrentProject] = useState(null);
   const [showDashboard, setShowDashboard] = useState(true);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   
   // Existing state
   const [currentStep, setCurrentStep] = useState(1);
