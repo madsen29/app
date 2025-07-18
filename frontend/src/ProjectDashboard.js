@@ -41,7 +41,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     setError('');
 
     try {
-      const response = await axios.post(`${API}/api/projects`, {
+      const response = await axios.post(`${API}/projects`, {
         name: newProjectName.trim()
       }, {
         headers: { Authorization: `Bearer ${token}` }
