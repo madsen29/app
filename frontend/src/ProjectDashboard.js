@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
 import UserSettings from './UserSettings';
+import { FiEdit2 } from 'react-icons/fi';
 
 const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const [projects, setProjects] = useState([]);
