@@ -228,7 +228,7 @@ class EPCISCriticalIssuesTester:
             if response.status_code == 200:
                 config = response.json()
                 self.log_test("Critical Issues Configuration", True, 
-                            "Configuration created with single productCode field and ssccExtensionDigit",
+                            "Configuration created with productCode field and ssccExtensionDigit",
                             f"Project: {project_id}, Product Code: {config_data['productCode']}, SSCC Extension: {config_data['ssccExtensionDigit']}")
                 return config
             else:
