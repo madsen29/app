@@ -1,5 +1,692 @@
 #!/usr/bin/env python3
 """
+Configuration Data Population Testing for EPCIS XML Generation
+Tests the specific issues mentioned in the review request:
+1. Location vocabulary not showing up
+2. GLNs on Authority not showing up
+3. Indicator digits not showing up
+4. Product Code showing 'None' when there should be a value
+
+Focus on testing the camelCase vs snake_case field mapping fixes in generate_epcis_xml function.
+"""
+
+import requests
+import json
+import xml.etree.ElementTree as ET
+from datetime import datetime
+import sys
+import os
+
+# Get backend URL from environment
+BACKEND_URL = "https://72fab16c-c7e1-4095-8101-1dff788bbfa2.preview.emergentagent.com/api"
+
+class ConfigurationDataTester:
+    def __init__(self):
+        self.base_url = BACKEND_URL
+        self.session = requests.Session()
+        self.test_results = []
+        self.user_token = None
+        self.project_id = None
+        
+    def log_test(self, test_name, success, message, details=None):
+        """Log test results"""
+        result = {
+            'test': test_name,
+            'success': success,
+            'message': message,
+            'details': details,
+            'timestamp': datetime.now().isoformat()
+        }
+        self.test_results.append(result)
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status}: {test_name} - {message}")
+        if details:
+            print(f"   Details: {details}")
+    
+    def test_api_health(self):
+        """Test basic API connectivity"""
+        try:
+            response = self.session.get(f"{self.base_url}/")
+            if response.status_code == 200:
+                data = response.json()
+                if "EPCIS" in data.get("message", ""):
+                    self.log_test("API Health Check", True, "API is responding correctly")
+                    return True
+                else:
+                    self.log_test("API Health Check", False, f"Unexpected response: {data}")
+                    return False
+            else:
+                self.log_test("API Health Check", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+        except Exception as e:
+            self.log_test("API Health Check", False, f"Connection error: {str(e)}")
+            return False
+    
+    def create_test_user_and_login(self):
+        """Create a test user and login to get authentication token"""
+        # Create user
+        user_data = {
+            "email": f"configtest_{datetime.now().strftime('%Y%m%d_%H%M%S')}@test.com",
+            "password": "TestPassword123!",
+            "firstName": "Config",
+            "lastName": "Tester",
+            "companyName": "Test Company",
+            "streetAddress": "123 Test St",
+            "city": "Test City",
+            "state": "TS",
+            "postalCode": "12345",
+            "countryCode": "US"
+        }
+        
+        try:
+            # Register user
+            response = self.session.post(
+                f"{self.base_url}/auth/register",
+                json=user_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code != 200:
+                self.log_test("User Registration", False, f"Registration failed: {response.status_code} - {response.text}")
+                return False
+            
+            # Login
+            login_data = {
+                "email": user_data["email"],
+                "password": user_data["password"]
+            }
+            
+            response = self.session.post(
+                f"{self.base_url}/auth/login",
+                json=login_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                token_data = response.json()
+                self.user_token = token_data["access_token"]
+                self.session.headers.update({"Authorization": f"Bearer {self.user_token}"})
+                self.log_test("User Authentication", True, "User created and authenticated successfully")
+                return True
+            else:
+                self.log_test("User Authentication", False, f"Login failed: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("User Authentication", False, f"Authentication error: {str(e)}")
+            return False
+    
+    def create_test_project(self):
+        """Create a test project"""
+        try:
+            project_data = {
+                "name": f"Configuration Data Test Project - {datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            }
+            
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                project = response.json()
+                self.project_id = project["id"]
+                self.log_test("Project Creation", True, f"Project created successfully", f"Project ID: {self.project_id}")
+                return True
+            else:
+                self.log_test("Project Creation", False, f"Project creation failed: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Project Creation", False, f"Project creation error: {str(e)}")
+            return False
+    
+    def test_comprehensive_configuration_creation(self):
+        """Create configuration with ALL fields that should populate in EPCIS XML"""
+        if not self.project_id:
+            self.log_test("Comprehensive Configuration", False, "No project ID available")
+            return False
+            
+        # Comprehensive configuration with all fields mentioned in review request
+        config_data = {
+            # Basic Configuration
+            "itemsPerCase": 2,
+            "casesPerSscc": 1,
+            "numberOfSscc": 1,
+            "useInnerCases": False,
+            
+            # Company/Product Information
+            "companyPrefix": "1234567",
+            "itemProductCode": "000000",
+            "caseProductCode": "000001",
+            "lotNumber": "LOT123456",
+            "expirationDate": "2026-12-31",
+            
+            # GS1 Indicator Digits
+            "ssccIndicatorDigit": "3",
+            "caseIndicatorDigit": "2",
+            "itemIndicatorDigit": "1",
+            
+            # Business Document Information - Sender
+            "senderCompanyPrefix": "0345802",
+            "senderGln": "0345802000014",
+            "senderSgln": "0345802000014.001",
+            "senderName": "Padagis US LLC",
+            "senderStreetAddress": "2400 Pilot Knob Road",
+            "senderCity": "Mendota Heights",
+            "senderState": "MN",
+            "senderPostalCode": "55120",
+            "senderCountryCode": "US",
+            "senderDespatchAdviceNumber": "DA123456",
+            
+            # Business Document Information - Receiver
+            "receiverCompanyPrefix": "0567890",
+            "receiverGln": "0567890000021",
+            "receiverSgln": "0567890000021.001",
+            "receiverName": "Pharmacy Corp",
+            "receiverStreetAddress": "456 Pharmacy Ave",
+            "receiverCity": "Healthcare City",
+            "receiverState": "CA",
+            "receiverPostalCode": "90210",
+            "receiverCountryCode": "US",
+            "receiverPoNumber": "PO789012",
+            
+            # Business Document Information - Shipper
+            "shipperCompanyPrefix": "0999888",
+            "shipperGln": "0999888000028",
+            "shipperSgln": "0999888000028.001",
+            "shipperName": "Shipping Corp",
+            "shipperStreetAddress": "789 Logistics Blvd",
+            "shipperCity": "Distribution Center",
+            "shipperState": "TX",
+            "shipperPostalCode": "75001",
+            "shipperCountryCode": "US",
+            "shipperSameAsSender": False,
+            
+            # EPCClass Data
+            "productNdc": "45802-046-85",
+            "packageNdc": "45802-046-85",
+            "regulatedProductName": "Metformin Hydrochloride Tablets",
+            "manufacturerName": "Padagis US LLC",
+            "dosageFormType": "Tablet",
+            "strengthDescription": "500 mg",
+            "netContentDescription": "100 tablets"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects/{self.project_id}/configuration",
+                json=config_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                config = response.json()
+                self.log_test("Comprehensive Configuration", True, "Configuration created with all fields", 
+                            f"Configuration includes: GLNs, Company Prefixes, Product Codes, Indicator Digits, EPCClass data")
+                return True
+            else:
+                self.log_test("Comprehensive Configuration", False, f"Configuration creation failed: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Comprehensive Configuration", False, f"Configuration creation error: {str(e)}")
+            return False
+    
+    def test_serial_numbers_creation(self):
+        """Create serial numbers for the configuration"""
+        if not self.project_id:
+            self.log_test("Serial Numbers Creation", False, "No project ID available")
+            return False
+            
+        # For config: 1 SSCC, 1 Case, 2 Items
+        serial_data = {
+            "ssccSerialNumbers": ["TEST001"],
+            "caseSerialNumbers": ["CASE001"],
+            "innerCaseSerialNumbers": [],
+            "itemSerialNumbers": ["ITEM001", "ITEM002"]
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects/{self.project_id}/serial-numbers",
+                json=serial_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                serials = response.json()
+                self.log_test("Serial Numbers Creation", True, "Serial numbers created successfully",
+                            f"SSCCs: {len(serials['sscc_serial_numbers'])}, Cases: {len(serials['case_serial_numbers'])}, Items: {len(serials['item_serial_numbers'])}")
+                return True
+            else:
+                self.log_test("Serial Numbers Creation", False, f"Serial numbers creation failed: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Serial Numbers Creation", False, f"Serial numbers creation error: {str(e)}")
+            return False
+    
+    def test_epcis_generation_and_configuration_data_population(self):
+        """Generate EPCIS XML and test all configuration data population issues"""
+        if not self.project_id:
+            self.log_test("EPCIS Generation", False, "No project ID available")
+            return False
+            
+        epcis_data = {
+            "readPoint": "urn:epc:id:sgln:0999888000028.001",
+            "bizLocation": "urn:epc:id:sgln:0999888000028.001"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects/{self.project_id}/generate-epcis",
+                json=epcis_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                xml_content = response.text
+                self.log_test("EPCIS Generation", True, "EPCIS XML generated successfully")
+                
+                # Now test all the specific configuration data population issues
+                return self.analyze_configuration_data_population(xml_content)
+            else:
+                self.log_test("EPCIS Generation", False, f"EPCIS generation failed: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("EPCIS Generation", False, f"EPCIS generation error: {str(e)}")
+            return False
+    
+    def analyze_configuration_data_population(self, xml_content):
+        """Analyze the EPCIS XML for all configuration data population issues"""
+        try:
+            root = ET.fromstring(xml_content)
+            
+            # Test 1: GLNs on Authority not showing up
+            gln_authority_test = self.test_gln_authority_population(root)
+            
+            # Test 2: Location vocabulary not showing up
+            location_vocab_test = self.test_location_vocabulary_population(root)
+            
+            # Test 3: Indicator digits not showing up
+            indicator_digits_test = self.test_indicator_digits_population(root)
+            
+            # Test 4: Product Code showing 'None' when there should be a value
+            product_code_test = self.test_product_code_population(root)
+            
+            # Test 5: EPCClass data population
+            epcclass_data_test = self.test_epcclass_data_population(root)
+            
+            # Test 6: ILMD extensions (lot number and expiration date)
+            ilmd_test = self.test_ilmd_extensions_population(root)
+            
+            # Test 7: Event structure and counts
+            event_structure_test = self.test_event_structure(root)
+            
+            all_tests_passed = all([
+                gln_authority_test,
+                location_vocab_test,
+                indicator_digits_test,
+                product_code_test,
+                epcclass_data_test,
+                ilmd_test,
+                event_structure_test
+            ])
+            
+            return all_tests_passed
+            
+        except ET.ParseError as e:
+            self.log_test("XML Analysis", False, f"XML parsing error: {str(e)}")
+            return False
+        except Exception as e:
+            self.log_test("XML Analysis", False, f"Analysis error: {str(e)}")
+            return False
+    
+    def test_gln_authority_population(self, root):
+        """Test Issue 1: GLNs on Authority not showing up"""
+        try:
+            # Look for SBDH sender and receiver with Authority="GS1"
+            sender_found = False
+            receiver_found = False
+            sender_gln = None
+            receiver_gln = None
+            
+            for elem in root.iter():
+                if elem.tag.endswith("Sender"):
+                    for identifier in elem.iter():
+                        if identifier.tag.endswith("Identifier"):
+                            authority = identifier.get("Authority")
+                            if authority == "GS1":
+                                sender_gln = identifier.text
+                                sender_found = True
+                                break
+                elif elem.tag.endswith("Receiver"):
+                    for identifier in elem.iter():
+                        if identifier.tag.endswith("Identifier"):
+                            authority = identifier.get("Authority")
+                            if authority == "GS1":
+                                receiver_gln = identifier.text
+                                receiver_found = True
+                                break
+            
+            if sender_found and receiver_found and sender_gln and receiver_gln:
+                if sender_gln == "0345802000014" and receiver_gln == "0567890000021":
+                    self.log_test("GLN Authority Population", True, "GLNs with Authority='GS1' found correctly",
+                                f"Sender GLN: {sender_gln}, Receiver GLN: {receiver_gln}")
+                    return True
+                else:
+                    self.log_test("GLN Authority Population", False, f"GLN values incorrect - Sender: {sender_gln}, Receiver: {receiver_gln}")
+                    return False
+            else:
+                self.log_test("GLN Authority Population", False, "GLNs with Authority='GS1' not found in SBDH")
+                return False
+                
+        except Exception as e:
+            self.log_test("GLN Authority Population", False, f"Error checking GLN Authority: {str(e)}")
+            return False
+    
+    def test_location_vocabulary_population(self, root):
+        """Test Issue 2: Location vocabulary not showing up"""
+        try:
+            # Look for Location vocabulary elements
+            location_vocab_found = False
+            location_elements = []
+            
+            for elem in root.iter():
+                if elem.tag.endswith("Vocabulary") and elem.get("type") == "urn:epcglobal:epcis:vtype:Location":
+                    location_vocab_found = True
+                    # Count vocabulary elements
+                    for vocab_elem in elem.iter():
+                        if vocab_elem.tag.endswith("VocabularyElement"):
+                            location_id = vocab_elem.get("id")
+                            if location_id:
+                                location_elements.append(location_id)
+            
+            # Should have 3 location elements: sender, receiver, shipper
+            expected_locations = [
+                "urn:epc:id:sgln:0345802000014.001",  # sender
+                "urn:epc:id:sgln:0567890000021.001",  # receiver
+                "urn:epc:id:sgln:0999888000028.001"   # shipper
+            ]
+            
+            if location_vocab_found and len(location_elements) >= 3:
+                # Check if expected locations are present
+                locations_match = all(loc in location_elements for loc in expected_locations)
+                if locations_match:
+                    self.log_test("Location Vocabulary Population", True, "Location vocabulary elements found correctly",
+                                f"Found {len(location_elements)} location elements: {location_elements}")
+                    return True
+                else:
+                    self.log_test("Location Vocabulary Population", False, f"Expected locations not found. Expected: {expected_locations}, Found: {location_elements}")
+                    return False
+            else:
+                self.log_test("Location Vocabulary Population", False, f"Location vocabulary not found or insufficient elements. Found: {len(location_elements)} elements")
+                return False
+                
+        except Exception as e:
+            self.log_test("Location Vocabulary Population", False, f"Error checking location vocabulary: {str(e)}")
+            return False
+    
+    def test_indicator_digits_population(self, root):
+        """Test Issue 3: Indicator digits not showing up"""
+        try:
+            # Look for EPC identifiers with correct indicator digits
+            sscc_found = False
+            case_sgtin_found = False
+            item_sgtin_found = False
+            
+            for elem in root.iter():
+                if elem.tag.endswith("epc") or elem.tag.endswith("parentID"):
+                    epc_text = elem.text
+                    if epc_text:
+                        # Check SSCC with indicator digit 3
+                        if "urn:epc:id:sscc:0999888.3TEST001" in epc_text:
+                            sscc_found = True
+                        # Check Case SGTIN with indicator digit 2
+                        elif "urn:epc:id:sgtin:1234567.2000001." in epc_text:
+                            case_sgtin_found = True
+                        # Check Item SGTIN with indicator digit 1
+                        elif "urn:epc:id:sgtin:1234567.1000000." in epc_text:
+                            item_sgtin_found = True
+            
+            if sscc_found and case_sgtin_found and item_sgtin_found:
+                self.log_test("Indicator Digits Population", True, "All indicator digits found correctly in EPCs",
+                            "SSCC (3), Case SGTIN (2), Item SGTIN (1)")
+                return True
+            else:
+                missing = []
+                if not sscc_found: missing.append("SSCC indicator digit 3")
+                if not case_sgtin_found: missing.append("Case indicator digit 2")
+                if not item_sgtin_found: missing.append("Item indicator digit 1")
+                self.log_test("Indicator Digits Population", False, f"Missing indicator digits: {', '.join(missing)}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Indicator Digits Population", False, f"Error checking indicator digits: {str(e)}")
+            return False
+    
+    def test_product_code_population(self, root):
+        """Test Issue 4: Product Code showing 'None' when there should be a value"""
+        try:
+            # Look for product codes in EPC identifiers
+            item_product_code_found = False
+            case_product_code_found = False
+            
+            for elem in root.iter():
+                if elem.tag.endswith("epc") or elem.tag.endswith("parentID"):
+                    epc_text = elem.text
+                    if epc_text:
+                        # Check for item product code (000000)
+                        if "urn:epc:id:sgtin:1234567.1000000." in epc_text:
+                            item_product_code_found = True
+                        # Check for case product code (000001)
+                        elif "urn:epc:id:sgtin:1234567.2000001." in epc_text:
+                            case_product_code_found = True
+            
+            # Also check that 'None' doesn't appear anywhere in the XML
+            xml_content = ET.tostring(root, encoding='unicode')
+            none_found = 'None' in xml_content
+            
+            if item_product_code_found and case_product_code_found and not none_found:
+                self.log_test("Product Code Population", True, "Product codes populated correctly, no 'None' values found",
+                            "Item product code: 000000, Case product code: 000001")
+                return True
+            else:
+                issues = []
+                if not item_product_code_found: issues.append("Item product code missing")
+                if not case_product_code_found: issues.append("Case product code missing")
+                if none_found: issues.append("'None' values found in XML")
+                self.log_test("Product Code Population", False, f"Product code issues: {', '.join(issues)}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Product Code Population", False, f"Error checking product codes: {str(e)}")
+            return False
+    
+    def test_epcclass_data_population(self, root):
+        """Test EPCClass data population"""
+        try:
+            # Look for EPCClass vocabulary with product information
+            epcclass_vocab_found = False
+            package_ndc_found = False
+            regulated_product_name_found = False
+            manufacturer_name_found = False
+            
+            for elem in root.iter():
+                if elem.tag.endswith("Vocabulary") and elem.get("type") == "urn:epcglobal:epcis:vtype:EPCClass":
+                    epcclass_vocab_found = True
+                    # Look for attributes
+                    for attr in elem.iter():
+                        if attr.tag.endswith("attribute"):
+                            attr_id = attr.get("id")
+                            attr_text = attr.text
+                            
+                            if attr_id == "urn:epcglobal:cbv:mda#additionalTradeItemIdentification":
+                                if attr_text == "4580204685":  # Package NDC with hyphens removed
+                                    package_ndc_found = True
+                            elif attr_id == "urn:epcglobal:cbv:mda#regulatedProductName":
+                                if attr_text == "Metformin Hydrochloride Tablets":
+                                    regulated_product_name_found = True
+                            elif attr_id == "urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName":
+                                if attr_text == "Padagis US LLC":
+                                    manufacturer_name_found = True
+            
+            if epcclass_vocab_found and package_ndc_found and regulated_product_name_found and manufacturer_name_found:
+                self.log_test("EPCClass Data Population", True, "EPCClass data populated correctly",
+                            "Package NDC (cleaned), Regulated Product Name, Manufacturer Name found")
+                return True
+            else:
+                issues = []
+                if not epcclass_vocab_found: issues.append("EPCClass vocabulary missing")
+                if not package_ndc_found: issues.append("Package NDC missing or not cleaned")
+                if not regulated_product_name_found: issues.append("Regulated Product Name missing")
+                if not manufacturer_name_found: issues.append("Manufacturer Name missing")
+                self.log_test("EPCClass Data Population", False, f"EPCClass issues: {', '.join(issues)}")
+                return False
+                
+        except Exception as e:
+            self.log_test("EPCClass Data Population", False, f"Error checking EPCClass data: {str(e)}")
+            return False
+    
+    def test_ilmd_extensions_population(self, root):
+        """Test ILMD extensions (lot number and expiration date)"""
+        try:
+            lot_number_found = False
+            expiration_date_found = False
+            
+            for elem in root.iter():
+                if elem.tag.endswith("lotNumber"):
+                    if elem.text == "LOT123456":
+                        lot_number_found = True
+                elif elem.tag.endswith("itemExpirationDate"):
+                    if elem.text == "2026-12-31":
+                        expiration_date_found = True
+            
+            if lot_number_found and expiration_date_found:
+                self.log_test("ILMD Extensions Population", True, "ILMD extensions populated correctly",
+                            "Lot Number: LOT123456, Expiration Date: 2026-12-31")
+                return True
+            else:
+                issues = []
+                if not lot_number_found: issues.append("Lot number missing")
+                if not expiration_date_found: issues.append("Expiration date missing")
+                self.log_test("ILMD Extensions Population", False, f"ILMD issues: {', '.join(issues)}")
+                return False
+                
+        except Exception as e:
+            self.log_test("ILMD Extensions Population", False, f"Error checking ILMD extensions: {str(e)}")
+            return False
+    
+    def test_event_structure(self, root):
+        """Test event structure and counts"""
+        try:
+            object_events = 0
+            aggregation_events = 0
+            
+            for elem in root.iter():
+                if elem.tag.endswith("ObjectEvent"):
+                    object_events += 1
+                elif elem.tag.endswith("AggregationEvent"):
+                    aggregation_events += 1
+            
+            # Expected for 1 SSCC, 1 Case, 2 Items:
+            # 4 ObjectEvents: Items, Cases, SSCCs, Shipping
+            # 2 AggregationEvents: Items→Case, Case→SSCC
+            expected_object_events = 4
+            expected_aggregation_events = 2
+            
+            if object_events == expected_object_events and aggregation_events == expected_aggregation_events:
+                self.log_test("Event Structure", True, "Event structure correct",
+                            f"ObjectEvents: {object_events}, AggregationEvents: {aggregation_events}")
+                return True
+            else:
+                self.log_test("Event Structure", False, 
+                            f"Event count mismatch - ObjectEvents: {object_events} (expected {expected_object_events}), AggregationEvents: {aggregation_events} (expected {expected_aggregation_events})")
+                return False
+                
+        except Exception as e:
+            self.log_test("Event Structure", False, f"Error checking event structure: {str(e)}")
+            return False
+    
+    def run_configuration_data_tests(self):
+        """Run comprehensive configuration data population tests"""
+        print("=" * 80)
+        print("CONFIGURATION DATA POPULATION TESTING")
+        print("=" * 80)
+        print("Testing specific issues from review request:")
+        print("1. Location vocabulary not showing up")
+        print("2. GLNs on Authority not showing up")
+        print("3. Indicator digits not showing up")
+        print("4. Product Code showing 'None' when there should be a value")
+        print("5. Complete configuration field mapping (camelCase vs snake_case)")
+        print("=" * 80)
+        
+        # Test 1: API Health Check
+        if not self.test_api_health():
+            print("\n❌ API is not accessible. Stopping tests.")
+            return False
+        
+        # Test 2: User Authentication
+        if not self.create_test_user_and_login():
+            print("\n❌ User authentication failed. Stopping tests.")
+            return False
+        
+        # Test 3: Project Creation
+        if not self.create_test_project():
+            print("\n❌ Project creation failed. Stopping tests.")
+            return False
+        
+        # Test 4: Comprehensive Configuration Creation
+        if not self.test_comprehensive_configuration_creation():
+            print("\n❌ Configuration creation failed. Stopping tests.")
+            return False
+        
+        # Test 5: Serial Numbers Creation
+        if not self.test_serial_numbers_creation():
+            print("\n❌ Serial numbers creation failed. Stopping tests.")
+            return False
+        
+        # Test 6: EPCIS Generation and Configuration Data Analysis
+        epcis_success = self.test_epcis_generation_and_configuration_data_population()
+        
+        # Summary
+        print("\n" + "=" * 80)
+        print("CONFIGURATION DATA POPULATION TEST SUMMARY")
+        print("=" * 80)
+        
+        passed = sum(1 for result in self.test_results if result['success'])
+        total = len(self.test_results)
+        
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        print(f"Success Rate: {(passed/total)*100:.1f}%")
+        
+        if total - passed > 0:
+            print("\nFailed Tests:")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"  - {result['test']}: {result['message']}")
+        
+        print("\nConfiguration Data Issues Tested:")
+        print("✓ GLN Authority population in SBDH")
+        print("✓ Location vocabulary elements with complete address information")
+        print("✓ Indicator digits in EPC identifiers")
+        print("✓ Product codes (no 'None' values)")
+        print("✓ EPCClass data population")
+        print("✓ ILMD extensions (lot number, expiration date)")
+        print("✓ Event structure and counts")
+        
+        return passed == total
+
+if __name__ == "__main__":
+    tester = ConfigurationDataTester()
+    success = tester.run_configuration_data_tests()
+    sys.exit(0 if success else 1)
+"""
 Configuration Data Population Testing for EPCIS Generation
 Tests the critical user-reported issue: "Configuration data isn't populating correctly in the generated EPCIS file"
 
