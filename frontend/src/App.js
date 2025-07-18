@@ -399,6 +399,7 @@ function App() {
       });
 
       setSuccess('Progress saved successfully!');
+      setHasUnsavedChanges(false);
     } catch (err) {
       setError('Failed to save progress');
       console.error('Error saving progress:', err);
