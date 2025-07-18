@@ -16,6 +16,41 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
   const API = `${BACKEND_URL}/api`;
 
+  // Helper function to calculate totals for a project
+  const calculateProjectTotals = (config) => {
+    if (!config) return { totalCases: 0, totalInnerCases: 0, totalItems: 0 };
+    
+    const numberOfSscc = config.numberOfSscc || 0;
+    const casesPerSscc = config.casesPerSscc || 0;
+    const itemsPerCase = config.itemsPerCase || 0;
+    const useInnerCases = config.useInnerCases || false;
+    const innerCasesPerCase = config.innerCasesPerCase || 0;
+    const itemsPerInnerCase = config.itemsPerInnerCase || 0;
+    
+    let totalCases = 0;
+    let totalInnerCases = 0;
+    let totalItems = 0;
+    
+    if (casesPerSscc === 0) {
+      // Direct SSCC → Items
+      totalItems = numberOfSscc * itemsPerCase;
+    } else if (useInnerCases) {
+      // SSCC → Cases → Inner Cases → Items
+      totalCases = numberOfSscc * casesPerSscc;
+      totalInnerCases = totalCases * innerCasesPerCase;
+      totalItems = totalInnerCases * itemsPerInnerCase;
+    } else {
+      // SSCC → Cases → Items
+      totalCases = numberOfSscc * casesPerSscc;
+      totalItems = totalCases * itemsPerCase;
+    }
+    
+    return { totalCases, totalInnerCases, totalItems };
+  };
+
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+  const API = `${BACKEND_URL}/api`;
+
   useEffect(() => {
     fetchProjects();
   }, []);
