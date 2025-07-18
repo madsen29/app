@@ -434,10 +434,12 @@ function App() {
     
     setShowDashboard(true);
     setCurrentProject(null);
-    setHasUnsavedChanges(false);
-    
-    // Reset state
     setCurrentStep(1);
+    setHasUnsavedChanges(false);
+    setIsPackagingConfigLocked(false);
+    setOriginalPackagingConfig(null);
+    
+    // Reset configuration to defaults
     setConfiguration({
       itemsPerCase: 10,
       casesPerSscc: 5,
@@ -492,6 +494,18 @@ function App() {
       dosageFormType: '',
       strengthDescription: '',
       netContentDescription: ''
+    });
+    
+    // Reset serial number states
+    setHierarchicalSerials([]);
+    setSerialCollectionStep({
+      ssccIndex: 0,
+      caseIndex: 0,
+      innerCaseIndex: 0,
+      itemIndex: 0,
+      currentLevel: 'sscc',
+      currentSerial: '',
+      isComplete: false
     });
   };
 
