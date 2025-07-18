@@ -28,6 +28,9 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [renameProject, setRenameProject] = useState(null);
   const [renameProjectName, setRenameProjectName] = useState('');
+  
+  // Avatar dropdown state
+  const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
   const [renameLoading, setRenameLoading] = useState(false);
   
   const { token, user } = useAuth();
