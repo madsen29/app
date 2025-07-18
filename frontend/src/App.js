@@ -248,8 +248,14 @@ function App() {
   };
 
   const handleBackToDashboard = () => {
+    if (hasUnsavedChanges) {
+      const confirmed = window.confirm('You have unsaved changes. Are you sure you want to go back to the dashboard without saving?');
+      if (!confirmed) return;
+    }
+    
     setShowDashboard(true);
     setCurrentProject(null);
+    setHasUnsavedChanges(false);
     
     // Reset state
     setCurrentStep(1);
