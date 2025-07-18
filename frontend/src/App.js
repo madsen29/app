@@ -12,6 +12,13 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 function App() {
+  const { user, logout } = useAuth();
+  
+  // Project management state
+  const [currentProject, setCurrentProject] = useState(null);
+  const [showDashboard, setShowDashboard] = useState(true);
+  
+  // Existing state
   const [currentStep, setCurrentStep] = useState(1);
   const [configuration, setConfiguration] = useState({
     itemsPerCase: 10,
