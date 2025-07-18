@@ -337,9 +337,25 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Projects ({projects.length})
-              </h3>
+              <div className="flex items-center space-x-4">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  Projects ({projects.length})
+                </h3>
+                {selectedProjects.size > 0 && (
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-gray-600">
+                      {selectedProjects.size} selected
+                    </span>
+                    <button
+                      onClick={handleBatchDelete}
+                      disabled={batchDeleteLoading}
+                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
+                    >
+                      {batchDeleteLoading ? 'Deleting...' : 'Delete Selected'}
+                    </button>
+                  </div>
+                )}
+              </div>
               <div className="flex items-center space-x-4">
                 <label className="text-sm font-medium text-gray-700">Sort by:</label>
                 <select
