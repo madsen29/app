@@ -784,6 +784,11 @@ function App() {
         return;
       }
       
+      // If we have existing serial numbers, auto-save them with the new configuration
+      if (hierarchicalSerials && hierarchicalSerials.length > 0) {
+        autoSaveSerialNumbers(hierarchicalSerials);
+      }
+      
       setCurrentStep(2);
       setSuccess('Configuration saved successfully!');
       scrollToTop();
