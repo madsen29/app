@@ -848,7 +848,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     def add_epcclass_attributes(vocab_element, config):
         if config.get("package_ndc"):
             # Strip hyphens from package_ndc for EPCIS XML
-            clean_package_ndc = config["package_ndc"].replace("-", "")
+            clean_package_ndc = get_config_value("package_ndc", "packageNdc").replace("-", "")
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentification")
             attr.text = clean_package_ndc
@@ -860,27 +860,27 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
         if config.get("regulated_product_name"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#regulatedProductName")
-            attr.text = config["regulated_product_name"]
+            attr.text = get_config_value("regulated_product_name", "regulatedProductName")
         
         if config.get("manufacturer_name"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName")
-            attr.text = config["manufacturer_name"]
+            attr.text = get_config_value("manufacturer_name", "manufacturerName")
         
         if config.get("dosage_form_type"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#dosageFormType")
-            attr.text = config["dosage_form_type"]
+            attr.text = get_config_value("dosage_form_type", "dosageFormType")
         
         if config.get("strength_description"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#strengthDescription")
-            attr.text = config["strength_description"]
+            attr.text = get_config_value("strength_description", "strengthDescription")
         
         if config.get("net_content_description"):
             attr = ET.SubElement(vocab_element, "attribute")
             attr.set("id", "urn:epcglobal:cbv:mda#netContentDescription")
-            attr.text = config["net_content_description"]
+            attr.text = get_config_value("net_content_description", "netContentDescription")
     
     # Create EPCClass vocabulary elements for each packaging level
     # Order: Item → Inner Case → Case
