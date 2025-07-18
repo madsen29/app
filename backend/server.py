@@ -35,7 +35,15 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-    full_name: Optional[str] = None
+    first_name: str = Field(alias="firstName")
+    last_name: str = Field(alias="lastName")
+    # Receiver Information fields as user defaults
+    company_name: str = Field(default="", alias="companyName")
+    street_address: str = Field(default="", alias="streetAddress")
+    city: str = Field(default="", alias="city")
+    state: str = Field(default="", alias="state")
+    postal_code: str = Field(default="", alias="postalCode")
+    country_code: str = Field(default="", alias="countryCode")
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -44,7 +52,14 @@ class UserLogin(BaseModel):
 class User(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     email: EmailStr
-    full_name: Optional[str] = None
+    first_name: str
+    last_name: str
+    company_name: str
+    street_address: str
+    city: str
+    state: str
+    postal_code: str
+    country_code: str
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
