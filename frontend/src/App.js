@@ -401,21 +401,21 @@ function App() {
   };
 
   // Initialize hierarchical serial collection structure
-  const initializeHierarchicalSerials = () => {
+  const initializeHierarchicalSerials = (config = configuration) => {
     const hierarchicalData = [];
     
     // Create structure based on configuration
-    for (let ssccIndex = 0; ssccIndex < configuration.numberOfSscc; ssccIndex++) {
+    for (let ssccIndex = 0; ssccIndex < config.numberOfSscc; ssccIndex++) {
       const ssccData = {
         ssccIndex: ssccIndex,
         ssccSerial: '',
         cases: []
       };
       
-      if (configuration.casesPerSscc === 0) {
+      if (config.casesPerSscc === 0) {
         // Direct SSCC → Items
         ssccData.items = [];
-        for (let itemIndex = 0; itemIndex < configuration.itemsPerCase; itemIndex++) {
+        for (let itemIndex = 0; itemIndex < config.itemsPerCase; itemIndex++) {
           ssccData.items.push({
             itemIndex: itemIndex,
             itemSerial: ''
@@ -423,7 +423,7 @@ function App() {
         }
       } else {
         // SSCC → Cases → Items or SSCC → Cases → Inner Cases → Items
-        for (let caseIndex = 0; caseIndex < configuration.casesPerSscc; caseIndex++) {
+        for (let caseIndex = 0; caseIndex < config.casesPerSscc; caseIndex++) {
           const caseData = {
             caseIndex: caseIndex,
             caseSerial: '',
@@ -431,16 +431,16 @@ function App() {
             items: []
           };
           
-          if (configuration.useInnerCases) {
+          if (config.useInnerCases) {
             // Cases → Inner Cases → Items
-            for (let innerCaseIndex = 0; innerCaseIndex < configuration.innerCasesPerCase; innerCaseIndex++) {
+            for (let innerCaseIndex = 0; innerCaseIndex < config.innerCasesPerCase; innerCaseIndex++) {
               const innerCaseData = {
                 innerCaseIndex: innerCaseIndex,
                 innerCaseSerial: '',
                 items: []
               };
               
-              for (let itemIndex = 0; itemIndex < configuration.itemsPerInnerCase; itemIndex++) {
+              for (let itemIndex = 0; itemIndex < config.itemsPerInnerCase; itemIndex++) {
                 innerCaseData.items.push({
                   itemIndex: itemIndex,
                   itemSerial: ''
@@ -451,7 +451,7 @@ function App() {
             }
           } else {
             // Cases → Items
-            for (let itemIndex = 0; itemIndex < configuration.itemsPerCase; itemIndex++) {
+            for (let itemIndex = 0; itemIndex < config.itemsPerCase; itemIndex++) {
               caseData.items.push({
                 itemIndex: itemIndex,
                 itemSerial: ''
