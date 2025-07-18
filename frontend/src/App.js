@@ -3707,6 +3707,19 @@ function App() {
                   if (!confirmBack) return;
                 }
                 
+                // Set packaging configuration lock if there are serial numbers
+                if (hasSerialNumbers) {
+                  setIsPackagingConfigLocked(true);
+                  setOriginalPackagingConfig({
+                    itemsPerCase: configuration.itemsPerCase,
+                    casesPerSscc: configuration.casesPerSscc,
+                    numberOfSscc: configuration.numberOfSscc,
+                    useInnerCases: configuration.useInnerCases,
+                    innerCasesPerCase: configuration.innerCasesPerCase,
+                    itemsPerInnerCase: configuration.itemsPerInnerCase
+                  });
+                }
+                
                 setCurrentStep(1);
                 scrollToTop();
               }} 
