@@ -2971,11 +2971,11 @@ function App() {
                 type="checkbox"
                 checked={configuration.useInnerCases}
                 onChange={(e) => setConfiguration({...configuration, useInnerCases: e.target.checked})}
-                disabled={configuration.casesPerSscc === 0 || isPackagingConfigLocked}
+                disabled={configuration.casesPerSscc === 0 || configuration.casesPerSscc === '' || isPackagingConfigLocked}
               />
               <span className="checkbox-text">
                 <strong>Enable Inner Cases</strong>
-                <small>{configuration.casesPerSscc === 0 ? 'Not available when Cases per SSCC = 0' : 'Add an intermediate packaging level between cases and items'}</small>
+                <small>{(configuration.casesPerSscc === 0 || configuration.casesPerSscc === '') ? 'Not available when Cases per SSCC = 0 or empty' : 'Add an intermediate packaging level between cases and items'}</small>
               </span>
             </label>
           </div>
