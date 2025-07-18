@@ -74,7 +74,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
 
   const handleDownloadEPCIS = async (projectId) => {
     try {
-      const response = await axios.get(`${API}/api/projects/${projectId}/download-epcis`, {
+      const response = await axios.get(`${API}/projects/${projectId}/download-epcis`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob'
       });
