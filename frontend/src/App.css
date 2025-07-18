@@ -1864,6 +1864,20 @@ box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   padding: 1rem 0;
 }
 
+.project-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.project-progress-header .project-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0;
+}
+
 .step {
   display: flex;
   flex-direction: column;
