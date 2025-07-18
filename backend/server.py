@@ -1065,7 +1065,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     # Get additional configuration parameters
     lot_number = get_config_value("lot_number", "lotNumber", "")
     expiration_date = get_config_value("expiration_date", "expirationDate", "")
-    sscc_indicator_digit = get_config_value("sscc_indicator_digit", "ssccIndicatorDigit")
+    sscc_extension_digit = get_config_value("sscc_extension_digit", "ssccExtensionDigit", "")
     number_of_sscc = get_config_value("number_of_sscc", "numberOfSscc")
     
     # Use shipper SGLN for readPoint and bizLocation
@@ -1113,7 +1113,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     
     # Generate SSCC EPCs using shipper's company prefix
     for sscc_serial in sscc_serials:
-        sscc_epc = f"urn:epc:id:sscc:{shipper_company_prefix}.{sscc_indicator_digit}{sscc_serial}"
+        sscc_epc = f"urn:epc:id:sscc:{shipper_company_prefix}.{sscc_extension_digit}{sscc_serial}"
         sscc_epcs.append(sscc_epc)
     
     # Generate Case EPCs (only if cases exist)
