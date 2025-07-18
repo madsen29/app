@@ -150,6 +150,93 @@ function App() {
     }, 300); // Match animation duration
   };
 
+  // Project management functions
+  const handleSelectProject = (project) => {
+    setCurrentProject(project);
+    setShowDashboard(false);
+    
+    // Load project data
+    if (project.configuration) {
+      setConfiguration(project.configuration);
+    }
+    
+    // Set current step based on project state
+    setCurrentStep(project.current_step);
+    
+    // Load existing data if available
+    if (project.serial_numbers) {
+      setHierarchicalSerials(project.serial_numbers);
+    }
+  };
+
+  const handleBackToDashboard = () => {
+    setShowDashboard(true);
+    setCurrentProject(null);
+    
+    // Reset state
+    setCurrentStep(1);
+    setConfiguration({
+      itemsPerCase: 10,
+      casesPerSscc: 5,
+      numberOfSscc: 1,
+      useInnerCases: false,
+      innerCasesPerCase: 2,
+      itemsPerInnerCase: 5,
+      companyPrefix: '0345802',
+      productCode: '46653',
+      lotNumber: '',
+      expirationDate: '',
+      ssccExtensionDigit: '0',
+      caseIndicatorDigit: '0',
+      innerCaseIndicatorDigit: '0',
+      itemIndicatorDigit: '0',
+      // Business Document Information
+      senderCompanyPrefix: '',
+      senderGln: '',
+      senderSgln: '',
+      senderName: '',
+      senderStreetAddress: '',
+      senderCity: '',
+      senderState: '',
+      senderPostalCode: '',
+      senderCountryCode: '',
+      senderDespatchAdviceNumber: '',
+      receiverCompanyPrefix: '',
+      receiverGln: '',
+      receiverSgln: '',
+      receiverName: '',
+      receiverStreetAddress: '',
+      receiverCity: '',
+      receiverState: '',
+      receiverPostalCode: '',
+      receiverCountryCode: '',
+      receiverPoNumber: '',
+      shipperCompanyPrefix: '',
+      shipperGln: '',
+      shipperSgln: '',
+      shipperName: '',
+      shipperStreetAddress: '',
+      shipperCity: '',
+      shipperState: '',
+      shipperPostalCode: '',
+      shipperCountryCode: '',
+      shipperSameAsSender: false,
+      // EPCClass data
+      productNdc: '',
+      packageNdc: '',
+      regulatedProductName: '',
+      manufacturerName: '',
+      dosageFormType: '',
+      strengthDescription: '',
+      netContentDescription: ''
+    });
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleBackToDashboard();
+  };
+
   const scrollToTop = () => {
     // Small delay to ensure the new step content is rendered
     setTimeout(() => {
