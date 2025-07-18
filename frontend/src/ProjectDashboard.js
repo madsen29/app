@@ -50,6 +50,26 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     return { totalCases, totalInnerCases, totalItems };
   };
 
+  // Helper function to check if packaging configuration is set and locked
+  const isPackagingConfigSetAndLocked = (project) => {
+    if (!project.configuration) return false;
+    
+    // Check if packaging configuration is set (not empty)
+    const packagingSet = (
+      project.configuration.numberOfSscc !== '' && 
+      project.configuration.numberOfSscc !== null &&
+      project.configuration.casesPerSscc !== '' && 
+      project.configuration.casesPerSscc !== null &&
+      project.configuration.itemsPerCase !== '' && 
+      project.configuration.itemsPerCase !== null
+    );
+    
+    // Check if project has serial numbers (indicating it's locked)
+    const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
+    
+    return packagingSet && hasSerialNumbers;
+  };
+
   useEffect(() => {
     fetchProjects();
   }, []);
