@@ -254,7 +254,8 @@ class UserSettingsTester:
     def test_email_uniqueness_validation(self):
         """Test email uniqueness validation by trying to use an existing email"""
         try:
-            # First create another user
+            # First create another user using a new session (without auth)
+            temp_session = requests.Session()
             another_user_email = f"another_{datetime.now().strftime('%Y%m%d_%H%M%S')}@example.com"
             user_data = {
                 "email": another_user_email,
@@ -263,7 +264,7 @@ class UserSettingsTester:
                 "lastName": "User"
             }
             
-            create_response = self.session.post(f"{self.base_url}/auth/register", json=user_data)
+            create_response = temp_session.post(f"{self.base_url}/auth/register", json=user_data)
             if create_response.status_code != 200:
                 self.log_test("Email Uniqueness Validation", False, "Failed to create second user for testing")
                 return False
@@ -283,8 +284,11 @@ class UserSettingsTester:
                 else:
                     self.log_test("Email Uniqueness Validation", False, f"Wrong error message: {response_data.get('detail')}")
                     return False
+            elif response.status_code == 401:
+                self.log_test("Email Uniqueness Validation", False, f"Authentication failed - token may have expired: {response.text}")
+                return False
             else:
-                self.log_test("Email Uniqueness Validation", False, f"Expected 400 error, got {response.status_code}")
+                self.log_test("Email Uniqueness Validation", False, f"Expected 400 error, got {response.status_code}: {response.text}")
                 return False
                 
         except Exception as e:
