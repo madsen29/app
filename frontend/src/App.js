@@ -448,7 +448,7 @@ function App() {
     });
     
     try {
-      await axios.post(`${API}/api/projects/${currentProject.id}/serial-numbers`, {
+      await axios.post(`${API}/projects/${currentProject.id}/serial-numbers`, {
         sscc_serial_numbers: ssccArray,
         case_serial_numbers: caseArray,
         inner_case_serial_numbers: innerCaseArray,
