@@ -2024,14 +2024,12 @@ input:disabled {
 
 /* Project Dashboard Button Styles */
 .btn-resume {
-  background-color: #fbbf24;
-  border-color: #fbbf24;
+  background-color: #f5e58c;
   color: #1f2937;
 }
 
 .btn-resume:hover {
-  background-color: #f59e0b;
-  border-color: #f59e0b;
+  background-color: #ebd977;
   color: #1f2937;
 }
 
@@ -2064,8 +2062,7 @@ input:disabled {
 }
 
 .btn-new-project {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
+  background-color: #0055fb;
   color: white;
   display: flex;
   align-items: center;
@@ -2074,7 +2071,6 @@ input:disabled {
 
 .btn-new-project:hover {
   background-color: #2563eb;
-  border-color: #2563eb;
   color: white;
 }
 

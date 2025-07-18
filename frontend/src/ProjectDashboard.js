@@ -463,23 +463,11 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
           <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
 
               <div className="flex items-center space-x-4 justify-between flex-1">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                <div>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">
                   Projects ({projects.length})
                 </h3>
-                {selectedProjects.size > 0 && (
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">
-                      {selectedProjects.size} selected
-                    </span>
-                    <button
-                      onClick={handleBatchDelete}
-                      disabled={batchDeleteLoading}
-                      className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
-                    >
-                      {batchDeleteLoading ? 'Deleting...' : 'Delete Selected'}
-                    </button>
-                  </div>
-                )}
+                </div>
                 <button
                 onClick={handleCreateProjectClick}
                 className="btn-new-project bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -514,8 +502,9 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
               {/* Select All Header */}
               {projects.length > 0 && (
                 <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 ">
-                  <div className="flex items-center justify-between">
-                    <div className='flex items-center'><input
+                  <div className="flex justify-between flex-col gap-5 md:flex-row">
+                    <div className='flex gap-5 flex-col md:flex-row'>
+                      <div className='flex items-center'><input
                       type="checkbox"
                       checked={isAllSelected}
                       onChange={handleSelectAll}
@@ -525,6 +514,21 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                       Select all on this page
                     </label>
                     </div>
+                    {selectedProjects.size > 0 && (
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={handleBatchDelete}
+                          disabled={batchDeleteLoading}
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
+                        >
+                          {batchDeleteLoading ? 'Deleting...' : 'Delete Selected'}
+                        </button>
+                        <span className="text-sm text-gray-600">
+                          {selectedProjects.size} selected
+                        </span>
+                      </div>
+                    )}
+                </div>
                     <div className="flex items-center space-x-4">
                 <label className="text-sm font-medium text-gray-700">Sort by:</label>
                 <select
