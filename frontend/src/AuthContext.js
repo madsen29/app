@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${API}/auth/login`, {
+      const response = await axios.post(`${API}/api/auth/login`, {
         email,
         password
       });
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
       setToken(access_token);
       
       // Fetch user data
-      const userResponse = await axios.get(`${API}/auth/me`, {
+      const userResponse = await axios.get(`${API}/api/auth/me`, {
         headers: { Authorization: `Bearer ${access_token}` }
       });
       setUser(userResponse.data);
