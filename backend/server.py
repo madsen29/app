@@ -1,5 +1,6 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
 from fastapi.responses import Response
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -11,6 +12,13 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
 import xml.etree.ElementTree as ET
+
+# Authentication imports
+from auth import (
+    UserCreate, UserLogin, User, Token, TokenData,
+    authenticate_user, create_user, create_access_token, verify_token,
+    get_user_by_email, ACCESS_TOKEN_EXPIRE_MINUTES
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
