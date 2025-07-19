@@ -2452,37 +2452,23 @@ function App() {
             try {
               const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
               if (result) {
-                // Check if the barcode format is allowed (2D codes only)
-                const format = result.getBarcodeFormat();
-                console.log('Detected barcode format:', format.toString());
+                const scannedData = result.getText();
+                console.log('Scanned data:', scannedData);
                 
-                // Define 1D formats to reject
-                const oneDFormats = [
-                  'CODE_128', 'CODE_39', 'CODE_93', 'CODABAR', 'ITF', 'RSS_14', 'RSS_EXPANDED',
-                  'UPC_A', 'UPC_E', 'EAN_13', 'EAN_8', 'UPC_EAN_EXTENSION'
-                ];
+                // Validate GS1 content instead of format
+                const validation = validateGS1Barcode(scannedData);
                 
-                // Define 2D formats to allow
-                const twoDFormats = ['DATA_MATRIX', 'QR_CODE', 'AZTEC', 'PDF_417'];
-                
-                const formatString = format.toString();
-                
-                if (oneDFormats.includes(formatString)) {
-                  setError(`❌ 1D barcode detected (${formatString}). Please scan a 2D code (Data Matrix, QR, Aztec, PDF417).`);
-                  // Continue scanning instead of stopping
-                  setTimeout(scanLoop, 100);
-                  return;
-                } else if (!twoDFormats.includes(formatString)) {
-                  setError(`❌ Unsupported barcode format (${formatString}). Please scan a 2D code (Data Matrix, QR, Aztec, PDF417).`);
+                if (!validation.isValid) {
+                  setError(`❌ Non-GS1 barcode detected. ${validation.reason}`);
                   // Continue scanning instead of stopping
                   setTimeout(scanLoop, 100);
                   return;
                 }
                 
-                // Clear any previous errors if we got a valid 2D code
+                // Clear any previous errors if we got valid GS1 data
                 setError('');
+                console.log('Valid GS1 barcode:', validation.reason);
                 
-                const scannedData = result.getText();
                 handleBarcodeResult(scannedData);
                 return;
               }
