@@ -2264,26 +2264,106 @@ function App() {
   };
 
   const handleBarcodeResult = (scannedData) => {
-    // Validate the scanned data using GS1 validation
-    const validation = validateGS1Barcode(scannedData);
-    
-    if (!validation.isValid) {
-      setError(`Invalid barcode: ${validation.reason}`);
-      setIsScanning(false);
-      return;
-    }
-    
-    // If validation passes, proceed with the scanned data
-    console.log('Valid GS1 barcode detected:', validation.reason);
-    
-    // Handle the scanned data based on the current context
-    if (scannerModal.targetSetter) {
-      scannerModal.targetSetter(scannedData);
-      closeScanner();
-    } else {
-      // Handle serial number input
-      handleSerialInput(scannedData);
-      closeScanner();
+    try {
+      // First validate that this is a GS1 barcode
+      const validation = validateGS1Barcode(scannedData);
+      
+      if (!validation.isValid) {
+        setError(`❌ Non-GS1 barcode detected. ${validation.reason}`);
+        return; // Don't close scanner, let it continue
+      }
+      
+      // Parse GS1 Data Matrix barcode
+      const parsedData = parseGS1Barcode(scannedData);
+      
+      console.log('Parsed GS1 Data:', parsedData); // Debug log
+      
+      if (parsedData.serialNumber) {
+        const serialNumber = parsedData.serialNumber;
+        const isItemsLevel = serialCollectionStep.currentLevel === 'item';
+        
+        // Check for duplicates against ALL existing serial numbers in the project
+        const duplicates = validateDuplicateSerials(serialNumber);
+        if (duplicates) {
+          setError(`Duplicate serial number found! "${serialNumber}" is already used at: ${duplicates[0].path}`);
+          return;
+        }
+        
+        // Clear any previous errors
+        setError('');
+        
+        // Handle different scanner target fields
+        if (scannerModal.targetField === 'edit') {
+          // Set the scanned serial number in edit modal
+          setEditModal({
+            ...editModal,
+            currentValue: serialNumber
+          });
+          
+          // Show success message
+          setSuccess(`Scanned serial number: ${serialNumber}`);
+          closeScanner();
+        } else if (isItemsLevel && requiredItemCount > 1) {
+          // Multi-scanning for Items level - use functional update to ensure we have the latest state
+          setScannedItems(prevScannedItems => {
+            // Check if this serial number is already in the scanned items
+            if (prevScannedItems.includes(serialNumber)) {
+              setError(`Duplicate serial number! "${serialNumber}" was already scanned in this session.`);
+              return prevScannedItems; // Return unchanged
+            }
+            
+            const newScannedItems = [...prevScannedItems, serialNumber];
+            
+            // Show progress message
+            setSuccess(`Scanned ${newScannedItems.length} of ${requiredItemCount} items: ${serialNumber}`);
+            
+            if (newScannedItems.length >= requiredItemCount) {
+              // All items scanned, update the textarea and close scanner
+              const itemsText = newScannedItems.join('\n');
+              setSerialCollectionStep({
+                ...serialCollectionStep,
+                currentSerial: itemsText
+              });
+              
+              // Show completion message
+              setSuccess(`All ${requiredItemCount} items scanned successfully!`);
+              setShouldContinueScanning(false);
+              setTimeout(() => closeScanner(), 500); // Small delay to show completion message
+            }
+            
+            return newScannedItems;
+          });
+          
+          // Note: Don't close scanner here - let it continue scanning for more items
+        } else {
+          // Single item scanning (SSCC, Case, Inner Case, or single Item)
+          setSerialCollectionStep({
+            ...serialCollectionStep,
+            currentSerial: serialNumber
+          });
+          
+          // Show detailed success message
+          let successMessage = `Scanned serial number: ${serialNumber}`;
+          if (parsedData.gtin) {
+            successMessage += `\nGTIN: ${parsedData.gtin}`;
+          }
+          if (parsedData.batchLot) {
+            successMessage += `\nBatch/Lot: ${parsedData.batchLot}`;
+          }
+          if (parsedData.expirationDate) {
+            successMessage += `\nExpiration: ${parsedData.expirationDate}`;
+          }
+          
+          setSuccess(successMessage);
+          closeScanner();
+        }
+      } else {
+        setError('Could not extract serial number from barcode');
+      }
+      
+    } catch (error) {
+      console.error('Error parsing barcode:', error);
+      setError('Error parsing barcode data');
     }
   };
 
