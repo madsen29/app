@@ -180,6 +180,12 @@ async def authenticate_user(email: str, password: str) -> Optional[User]:
         return None
     if not verify_password(password, user_data["hashed_password"]):
         return None
+    
+    # Check if user is active and approved (for regular users)
+    if not user_data.get("is_super_admin", False):
+        if user_data.get("status") != "active":
+            return None  # User not approved or deactivated
+    
     return User(**user_data)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
