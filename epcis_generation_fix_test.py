@@ -66,45 +66,38 @@ class EPCISGenerationFixTester:
             return False
     
     def setup_test_user(self):
-        """Create and authenticate a test user"""
-        # Create test user
-        user_data = {
-            "email": f"epcis_test_{datetime.now().strftime('%Y%m%d_%H%M%S')}@test.com",
-            "password": "TestPassword123!",
-            "firstName": "EPCIS",
-            "lastName": "Tester"
+        """Use existing approved test user"""
+        # Use the approved test user we created
+        user_credentials = {
+            "email": "epcis_test_user@test.com",
+            "password": "TestPassword123!"
         }
         
         try:
-            # Register user
-            response = self.session.post(
-                f"{self.base_url}/auth/register",
-                json=user_data,
+            # Login to get token
+            login_response = self.session.post(
+                f"{self.base_url}/auth/login",
+                json=user_credentials,
                 headers={"Content-Type": "application/json"}
             )
             
-            if response.status_code == 200:
-                user_info = response.json()
-                self.user_id = user_info["id"]
+            if login_response.status_code == 200:
+                token_data = login_response.json()
+                self.auth_token = token_data["access_token"]
+                self.session.headers.update({"Authorization": f"Bearer {self.auth_token}"})
                 
-                # Login to get token
-                login_response = self.session.post(
-                    f"{self.base_url}/auth/login",
-                    json={"email": user_data["email"], "password": user_data["password"]},
-                    headers={"Content-Type": "application/json"}
-                )
-                
-                if login_response.status_code == 200:
-                    token_data = login_response.json()
-                    self.auth_token = token_data["access_token"]
-                    self.session.headers.update({"Authorization": f"Bearer {self.auth_token}"})
-                    self.log_test("User Authentication", True, f"Test user created and authenticated: {user_data['email']}")
+                # Get user info
+                me_response = self.session.get(f"{self.base_url}/auth/me")
+                if me_response.status_code == 200:
+                    user_info = me_response.json()
+                    self.user_id = user_info["id"]
+                    self.log_test("User Authentication", True, f"Test user authenticated: {user_credentials['email']}")
                     return True
                 else:
-                    self.log_test("User Authentication", False, f"Login failed: {login_response.status_code}")
+                    self.log_test("User Authentication", False, f"Failed to get user info: {me_response.status_code}")
                     return False
             else:
-                self.log_test("User Authentication", False, f"User registration failed: {response.status_code}")
+                self.log_test("User Authentication", False, f"Login failed: {login_response.status_code} - {login_response.text}")
                 return False
                 
         except Exception as e:
