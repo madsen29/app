@@ -2179,6 +2179,21 @@ function App() {
     setScannerModal({ isOpen: true, targetField, targetSetter });
   };
 
+  const removeScannedItem = (indexToRemove) => {
+    setScannedItems(prevItems => {
+      const newItems = prevItems.filter((_, index) => index !== indexToRemove);
+      
+      // Update success message to reflect new count
+      if (newItems.length > 0) {
+        setSuccess(`${newItems.length} of ${requiredItemCount} items scanned`);
+      } else {
+        setSuccess('');
+      }
+      
+      return newItems;
+    });
+  };
+
   const closeScanner = () => {
     setIsScanning(false);
     
