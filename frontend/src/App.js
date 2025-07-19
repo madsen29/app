@@ -4181,7 +4181,10 @@ function App() {
                   });
                 }
                 
-                navigateToStep(1);
+                if (currentProject) {
+                  navigate(`/project/${currentProject.id}/step/1`);
+                }
+                setCurrentStep(1);
                 scrollToTop();
               }} 
               className="btn-secondary"
