@@ -2787,13 +2787,16 @@ input:disabled {
   .toast-container {
     position: fixed;
     top: 1rem;
-    left: 1rem;
-    right: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 2rem);
+    max-width: 400px;
     z-index: 1000;
   }
 
   .toast {
     width: 100%;
+    min-width: unset;
     border-radius: 8px;
     padding: 1rem;
     font-size: 0.875rem;
