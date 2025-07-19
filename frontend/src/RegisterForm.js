@@ -7,13 +7,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     password: '',
     confirmPassword: '',
     firstName: '',
-    lastName: '',
-    companyName: '',
-    streetAddress: '',
-    city: '',
-    state: '',
-    postalCode: '',
-    countryCode: ''
+    lastName: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
