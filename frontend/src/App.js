@@ -1138,7 +1138,8 @@ function MainApp() {
         autoSaveSerialNumbers(hierarchicalSerials);
       }
       
-      setCurrentStep(2);
+      // Navigate to step 2
+      navigateToStep(2);
       
       // Set appropriate success message
       if (hierarchicalSerials && hierarchicalSerials.length > 0) {
