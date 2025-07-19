@@ -2264,6 +2264,28 @@ function App() {
   };
 
   const handleBarcodeResult = (scannedData) => {
+    // Validate the scanned data using GS1 validation
+    const validation = validateGS1Barcode(scannedData);
+    
+    if (!validation.isValid) {
+      setError(`Invalid barcode: ${validation.reason}`);
+      setIsScanning(false);
+      return;
+    }
+    
+    // If validation passes, proceed with the scanned data
+    console.log('Valid GS1 barcode detected:', validation.reason);
+    
+    // Handle the scanned data based on the current context
+    if (scannerModal.targetSetter) {
+      scannerModal.targetSetter(scannedData);
+      stopScanning();
+    } else {
+      // Handle serial number input
+      handleSerialInput(scannedData);
+      stopScanning();
+    }
+  };
 
   const startScanning = async () => {
     try {
