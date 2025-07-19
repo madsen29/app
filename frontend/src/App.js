@@ -4201,7 +4201,7 @@ function MainApp() {
           <button 
             type="button" 
             onClick={() => {
-              setCurrentStep(2);
+              navigateToStep(2);
               scrollToTop();
             }} 
             className="btn-secondary"
