@@ -37,13 +37,6 @@ class UserCreate(BaseModel):
     password: str
     first_name: str = Field(alias="firstName")
     last_name: str = Field(alias="lastName")
-    # Receiver Information fields as user defaults
-    company_name: str = Field(default="", alias="companyName")
-    street_address: str = Field(default="", alias="streetAddress")
-    city: str = Field(default="", alias="city")
-    state: str = Field(default="", alias="state")
-    postal_code: str = Field(default="", alias="postalCode")
-    country_code: str = Field(default="", alias="countryCode")
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -54,12 +47,6 @@ class User(BaseModel):
     email: EmailStr
     first_name: str = ""
     last_name: str = ""
-    company_name: str = ""
-    street_address: str = ""
-    city: str = ""
-    state: str = ""
-    postal_code: str = ""
-    country_code: str = ""
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -74,12 +61,6 @@ class UserUpdate(BaseModel):
     first_name: Optional[str] = Field(None, alias="firstName")
     last_name: Optional[str] = Field(None, alias="lastName")
     email: Optional[EmailStr] = None
-    company_name: Optional[str] = Field(None, alias="companyName")
-    street_address: Optional[str] = Field(None, alias="streetAddress")
-    city: Optional[str] = Field(None, alias="city")
-    state: Optional[str] = Field(None, alias="state")
-    postal_code: Optional[str] = Field(None, alias="postalCode")
-    country_code: Optional[str] = Field(None, alias="countryCode")
 
 class PasswordUpdate(BaseModel):
     current_password: str = Field(alias="currentPassword")
