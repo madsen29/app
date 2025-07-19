@@ -4512,17 +4512,4 @@ function App() {
   );
 }
 
-// Main App Component with Routing
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainApp />} />
-        <Route path="/project/:projectId/step/:stepNumber" element={<MainApp />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
-  );
-}
-
 export default App;
