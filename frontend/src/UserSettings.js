@@ -717,20 +717,6 @@ const UserSettings = ({ onClose }) => {
                           placeholder="e.g., US"
                         />
                       </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Despatch Advice Number
-                        </label>
-                        <input
-                          type="text"
-                          name="despatchAdviceNumber"
-                          value={locationForm.despatchAdviceNumber}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., 202500221"
-                        />
-                      </div>
                     </div>
                     
                     <div className="mt-4 flex justify-end space-x-3">
