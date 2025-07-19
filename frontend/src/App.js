@@ -2408,6 +2408,7 @@ function App() {
             
             // Show completion message
             setSuccess(`All ${requiredItemCount} items scanned successfully!`);
+            setShouldContinueScanning(false);
             closeScanner();
           }
           // Note: Don't close scanner here - let it continue scanning for more items
