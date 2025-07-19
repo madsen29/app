@@ -2938,7 +2938,17 @@ function App() {
 
             {/* Receiver Information */}
             <div className="business-entity-group">
-              <h4>Receiver Information</h4>
+              <div className="flex justify-between items-center mb-4">
+                <h4>Receiver Information</h4>
+                <button
+                  type="button"
+                  onClick={() => openLocationSelector('receiver')}
+                  className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  title="Select a saved location to fill in receiver information"
+                >
+                  Select Location
+                </button>
+              </div>
               <div className="form-grid">
                 <div className="form-group">
                   <label htmlFor="receiverCompanyPrefix">GS1 Company Prefix (optional):</label>
