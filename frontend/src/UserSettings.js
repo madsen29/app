@@ -6,13 +6,7 @@ const UserSettings = ({ onClose }) => {
   const [userInfo, setUserInfo] = useState({
     firstName: '',
     lastName: '',
-    email: '',
-    companyName: '',
-    streetAddress: '',
-    city: '',
-    state: '',
-    postalCode: '',
-    countryCode: ''
+    email: ''
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
