@@ -46,6 +46,146 @@ const UserSettings = ({ onClose }) => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
   const API = `${BACKEND_URL}/api`;
 
+  // Location functions
+  const loadLocations = async () => {
+    try {
+      setLocationsLoading(true);
+      const response = await axios.get(`${API}/locations`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setLocations(response.data.locations || []);
+    } catch (err) {
+      console.error('Error loading locations:', err);
+      setError('Failed to load locations');
+    } finally {
+      setLocationsLoading(false);
+    }
+  };
+
+  const handleLocationFormChange = (e) => {
+    setLocationForm({
+      ...locationForm,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const resetLocationForm = () => {
+    setLocationForm({
+      name: '',
+      companyPrefix: '',
+      gln: '',
+      sgln: '',
+      companyName: '',
+      streetAddress: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      countryCode: '',
+      despatchAdviceNumber: ''
+    });
+    setEditingLocationId(null);
+  };
+
+  const handleCreateLocation = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError('');
+      
+      if (!locationForm.name.trim()) {
+        setError('Location name is required');
+        return;
+      }
+
+      await axios.post(`${API}/locations`, locationForm, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      setSuccess('Location created successfully');
+      resetLocationForm();
+      loadLocations();
+    } catch (err) {
+      console.error('Error creating location:', err);
+      setError(err.response?.data?.detail || 'Failed to create location');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateLocation = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError('');
+      
+      if (!locationForm.name.trim()) {
+        setError('Location name is required');
+        return;
+      }
+
+      await axios.put(`${API}/locations/${editingLocationId}`, locationForm, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      setSuccess('Location updated successfully');
+      resetLocationForm();
+      loadLocations();
+    } catch (err) {
+      console.error('Error updating location:', err);
+      setError(err.response?.data?.detail || 'Failed to update location');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditLocation = (location) => {
+    setLocationForm({
+      name: location.name || '',
+      companyPrefix: location.companyPrefix || '',
+      gln: location.gln || '',
+      sgln: location.sgln || '',
+      companyName: location.companyName || '',
+      streetAddress: location.streetAddress || '',
+      city: location.city || '',
+      state: location.state || '',
+      postalCode: location.postalCode || '',
+      countryCode: location.countryCode || '',
+      despatchAdviceNumber: location.despatchAdviceNumber || ''
+    });
+    setEditingLocationId(location.id);
+  };
+
+  const handleDeleteLocation = async (locationId) => {
+    if (!window.confirm('Are you sure you want to delete this location?')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError('');
+      
+      await axios.delete(`${API}/locations/${locationId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      setSuccess('Location deleted successfully');
+      loadLocations();
+    } catch (err) {
+      console.error('Error deleting location:', err);
+      setError(err.response?.data?.detail || 'Failed to delete location');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       setUserInfo({
