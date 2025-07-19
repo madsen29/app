@@ -2250,25 +2250,62 @@ input:disabled {
   
   .scanner-content {
     max-height: 95vh;
-    height: 95vh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
   }
   
   .scanner-body {
     padding: 0.75rem;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
   }
   
   .scanner-header,
   .scanner-footer {
     padding: 0.75rem;
+    flex-shrink: 0;
   }
   
   .scanner-footer {
     flex-direction: column;
+    position: sticky;
+    bottom: 0;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
   }
   
   .scanner-footer button {
     width: 100%;
     margin-left: 0 !important;
+    margin-bottom: 0.5rem;
+  }
+  
+  .scanner-footer button:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Make the scanned items list more mobile-friendly */
+  .scanned-items-list {
+    max-height: 120px;
+  }
+  
+  .scanned-item {
+    padding: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .scanned-item-info {
+    width: 100%;
+  }
+  
+  .remove-item-btn {
+    align-self: flex-end;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
   }
 }
 
