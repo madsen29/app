@@ -183,7 +183,9 @@ function App() {
       console.error('Error loading project from URL:', error);
       // Only redirect if it's a legitimate not found error, not auth issues
       if (error.response && error.response.status === 404) {
-        navigateToDashboard();
+        setShowDashboard(true);
+        setCurrentProject(null);
+        navigate('/');
         setError('Project not found');
       } else {
         // For other errors (auth, network), just log and don't navigate away
