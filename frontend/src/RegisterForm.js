@@ -78,6 +78,12 @@ const RegisterForm = ({ onSwitchToLogin }) => {
             </div>
           )}
           
+          {success && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+              {success}
+            </div>
+          )}
+          
           {/* Basic Information */}
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
