@@ -71,6 +71,27 @@ class PasswordUpdate(BaseModel):
     current_password: str = Field(alias="currentPassword")
     new_password: str = Field(alias="newPassword")
 
+# Admin models
+class AdminUserUpdate(BaseModel):
+    first_name: Optional[str] = Field(None, alias="firstName")
+    last_name: Optional[str] = Field(None, alias="lastName")
+    email: Optional[EmailStr] = None
+    status: Optional[str] = None  # pending, active, inactive
+    is_super_admin: Optional[bool] = Field(None, alias="isSuperAdmin")
+
+class AdminPasswordReset(BaseModel):
+    new_password: str = Field(alias="newPassword")
+
+class AdminLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class CreateAdminUser(BaseModel):
+    email: EmailStr
+    password: str
+    first_name: str = Field(alias="firstName")
+    last_name: str = Field(alias="lastName")
+
 # Project Management Models
 class Project(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
