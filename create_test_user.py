@@ -26,7 +26,7 @@ async def create_test_user():
     """Create an approved test user"""
     
     # Connect to MongoDB
-    mongo_url = os.getenv('MONGO_URL', 'mongodb://mongo:27017')
+    mongo_url = os.getenv('MONGO_URL', 'mongodb://localhost:27017')
     client = AsyncIOMotorClient(mongo_url)
     db = client.test_database  # Use correct database name
     
