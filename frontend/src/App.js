@@ -104,6 +104,16 @@ function App() {
   const [shouldContinueScanning, setShouldContinueScanning] = useState(false);
   const [fdaModal, setFdaModal] = useState({ isOpen: false, searchResults: [], isLoading: false });
   const [editModal, setEditModal] = useState({ isOpen: false, path: '', currentValue: '', label: '', contextPath: '' });
+  
+  // User Settings modal state
+  const [showUserSettings, setShowUserSettings] = useState(false);
+  
+  // Location Selector modal state
+  const [locationSelectorModal, setLocationSelectorModal] = useState({
+    isOpen: false,
+    targetSection: null // 'sender', 'receiver', or 'shipper'
+  });
+  
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [autoSaveTimer, setAutoSaveTimer] = useState(null);
   const videoRef = useRef(null);
