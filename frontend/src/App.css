@@ -2223,14 +2223,23 @@ input:disabled {
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
   cursor: pointer;
   margin-left: 0.5rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  min-width: 70px;
 }
 
 .remove-item-btn:hover {
   background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.remove-item-btn:active {
+  transform: translateY(0);
 }
 
 .multi-scan-instruction {
