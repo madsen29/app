@@ -4155,7 +4155,7 @@ function App() {
                   {isScanning && (
                     <div className="scanning-overlay">
                       <div className="scanning-frame"></div>
-                      <p className="scanning-text">Scanning...</p>
+                      <p className="scanning-text">Scanning for 2D codes...</p>
                     </div>
                   )}
                 </div>
@@ -4172,7 +4172,7 @@ function App() {
                     </div>
                     {scannedItems.length > 0 && (
                       <div className="scanned-items-preview">
-                        <p className="preview-label">Scanned items:</p>
+                        <p className="preview-label">Scanned items (tap "Remove" to delete):</p>
                         <ul className="scanned-items-list">
                           {scannedItems.map((item, index) => (
                             <li key={index} className="scanned-item">
@@ -4183,9 +4183,9 @@ function App() {
                               <button
                                 onClick={() => removeScannedItem(index)}
                                 className="remove-item-btn"
-                                title="Remove this item"
+                                title={`Remove item ${index + 1}: ${item}`}
                               >
-                                Remove
+                                ✕ Remove
                               </button>
                             </li>
                           ))}
@@ -4196,11 +4196,11 @@ function App() {
                 )}
                 
                 <div className="scanner-instructions">
-                  <p>Position the 2D code within the camera view</p>
-                  <p>Supported formats: Data Matrix, QR codes, Aztec, PDF417</p>
+                  <p><strong>2D Codes Only:</strong> Position Data Matrix, QR codes, Aztec, or PDF417 within the camera view</p>
+                  <p className="format-restriction">❌ 1D barcodes (UPC, Code 128, etc.) are not supported</p>
                   {requiredItemCount > 1 && (
                     <p className="multi-scan-instruction">
-                      <strong>Multi-scan mode:</strong> Scan {requiredItemCount} items to continue
+                      <strong>Multi-scan mode:</strong> Scan {requiredItemCount} items to continue, or save partial progress
                     </p>
                   )}
                   {!isScanning && (
