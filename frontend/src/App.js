@@ -2285,13 +2285,10 @@ function App() {
                 const scannedData = result.getText();
                 handleBarcodeResult(scannedData);
                 
-                // Check if we should continue scanning (for multi-scan mode)
-                const shouldContinueScanning = serialCollectionStep.currentLevel === 'item' && 
-                                             requiredItemCount > 1 && 
-                                             scannedItems.length < requiredItemCount;
-                
+                // For single-item scanning, stop here
+                // For multi-item scanning, shouldContinueScanning controls continuation
                 if (!shouldContinueScanning) {
-                  return; // Stop scanning for single items or when multi-scan is complete
+                  return;
                 }
               }
             } catch (scanError) {
