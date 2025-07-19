@@ -2031,7 +2031,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*", "https://supply-trace.preview.emergentagent.com"],
+    allow_origins=["*", "https://c77fc0ef-d782-494d-81fe-4e233a061567.preview.emergentagent.com"],
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["Content-Disposition"],

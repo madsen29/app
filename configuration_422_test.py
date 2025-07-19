@@ -5,7 +5,7 @@ Tests the specific 422 error reported by user when POSTing to configuration endp
 
 ISSUE BACKGROUND:
 User is getting a 422 (Unprocessable Content) error when trying to POST to:
-POST https://d693cd3d-ff3c-4d8a-a0c1-55fb8a85ba90.preview.emergentagent.com/api/projects/8b2bde0c-07e6-4b4b-97c8-535023f90e90/configuration
+POST https://c77fc0ef-d782-494d-81fe-4e233a061567.preview.emergentagent.com/api/projects/8b2bde0c-07e6-4b4b-97c8-535023f90e90/configuration
 
 The frontend was sending `sscc_indicator_digit` but the backend now expects `sscc_extension_digit`.
 However, there may be other validation issues.
@@ -24,7 +24,7 @@ import sys
 from datetime import datetime
 
 # Get backend URL from environment
-BACKEND_URL = "https://d693cd3d-ff3c-4d8a-a0c1-55fb8a85ba90.preview.emergentagent.com/api"
+BACKEND_URL = "https://c77fc0ef-d782-494d-81fe-4e233a061567.preview.emergentagent.com/api"
 
 class Configuration422Tester:
     def __init__(self):
