@@ -182,13 +182,7 @@ const UserSettings = ({ onClose }) => {
       setUserInfo({
         firstName: user.first_name || '',
         lastName: user.last_name || '',
-        email: user.email || '',
-        companyName: user.company_name || '',
-        streetAddress: user.street_address || '',
-        city: user.city || '',
-        state: user.state || '',
-        postalCode: user.postal_code || '',
-        countryCode: user.country_code || ''
+        email: user.email || ''
       });
     }
     
