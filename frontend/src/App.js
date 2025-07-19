@@ -1279,7 +1279,7 @@ function MainApp() {
   };
 
   const handleReset = () => {
-    setCurrentStep(1);
+    navigateToStep(1);
     setConfiguration({ 
       itemsPerCase: 10,
       casesPerSscc: 5,
