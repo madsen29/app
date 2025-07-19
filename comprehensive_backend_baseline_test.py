@@ -425,7 +425,7 @@ class ComprehensiveBackendTester:
                     len(data.get("caseSerialNumbers", [])) == 1 and
                     len(data.get("itemSerialNumbers", [])) == 2):
                     self.log_test("Serial Numbers Creation", True, "Serial numbers saved successfully", 
-                                f"SSCC: {len(data.get('sscc_serial_numbers', []))}, Cases: {len(data.get('case_serial_numbers', []))}, Items: {len(data.get('item_serial_numbers', []))}")
+                                f"SSCC: {len(data.get('ssccSerialNumbers', []))}, Cases: {len(data.get('caseSerialNumbers', []))}, Items: {len(data.get('itemSerialNumbers', []))}")
                     return True
                 else:
                     self.log_test("Serial Numbers Creation", False, f"Serial count mismatch: {data}")
