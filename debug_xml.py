@@ -6,7 +6,7 @@ Debug XML generation to check for duplicate attribute issue
 import requests
 import json
 
-BACKEND_URL = "https://72fab16c-c7e1-4095-8101-1dff788bbfa2.preview.emergentagent.com/api"
+BACKEND_URL = "https://d693cd3d-ff3c-4d8a-a0c1-55fb8a85ba90.preview.emergentagent.com/api"
 
 def debug_xml_generation():
     # Use the configuration ID from the previous test
