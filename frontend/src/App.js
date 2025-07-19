@@ -1200,9 +1200,6 @@ function App() {
         await autoSave();
       }
       
-      if (currentProject) {
-        navigate(`/project/${currentProject.id}/step/${step}`);
-      }
       setCurrentStep(step);
       scrollToTop();
       setError('');
