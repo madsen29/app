@@ -2386,14 +2386,33 @@ function App() {
               if (result) {
                 // Check if the barcode format is allowed (2D codes only)
                 const format = result.getBarcodeFormat();
-                const allowedFormats = ['DATA_MATRIX', 'QR_CODE', 'AZTEC', 'PDF_417'];
+                console.log('Detected barcode format:', format.toString());
                 
-                if (!allowedFormats.includes(format.toString())) {
-                  setError(`❌ 1D barcode detected (${format}). Please scan a 2D code (Data Matrix, QR, Aztec, PDF417).`);
+                // Define 1D formats to reject
+                const oneDFormats = [
+                  'CODE_128', 'CODE_39', 'CODE_93', 'CODABAR', 'ITF', 'RSS_14', 'RSS_EXPANDED',
+                  'UPC_A', 'UPC_E', 'EAN_13', 'EAN_8', 'UPC_EAN_EXTENSION'
+                ];
+                
+                // Define 2D formats to allow
+                const twoDFormats = ['DATA_MATRIX', 'QR_CODE', 'AZTEC', 'PDF_417'];
+                
+                const formatString = format.toString();
+                
+                if (oneDFormats.includes(formatString)) {
+                  setError(`❌ 1D barcode detected (${formatString}). Please scan a 2D code (Data Matrix, QR, Aztec, PDF417).`);
+                  // Continue scanning instead of stopping
+                  setTimeout(scanLoop, 100);
+                  return;
+                } else if (!twoDFormats.includes(formatString)) {
+                  setError(`❌ Unsupported barcode format (${formatString}). Please scan a 2D code (Data Matrix, QR, Aztec, PDF417).`);
                   // Continue scanning instead of stopping
                   setTimeout(scanLoop, 100);
                   return;
                 }
+                
+                // Clear any previous errors if we got a valid 2D code
+                setError('');
                 
                 const scannedData = result.getText();
                 handleBarcodeResult(scannedData);
