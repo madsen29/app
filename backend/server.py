@@ -955,8 +955,6 @@ async def update_location(
             update_data["postal_code"] = location_update.postal_code
         if location_update.country_code is not None:
             update_data["country_code"] = location_update.country_code
-        if location_update.despatch_advice_number is not None:
-            update_data["despatch_advice_number"] = location_update.despatch_advice_number
         
         update_data["updated_at"] = datetime.now(timezone.utc)
         
