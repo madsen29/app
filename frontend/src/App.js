@@ -3932,7 +3932,7 @@ function MainApp() {
                   });
                 }
                 
-                setCurrentStep(1);
+                navigateToStep(1);
                 scrollToTop();
               }} 
               className="btn-secondary"
@@ -4068,7 +4068,7 @@ function MainApp() {
                   });
                 }
                 
-                setCurrentStep(1);
+                navigateToStep(1);
                 scrollToTop();
               }} 
               className="btn-secondary"
