@@ -4169,9 +4169,6 @@ function App() {
                   });
                 }
                 
-                if (currentProject) {
-                  navigate(`/project/${currentProject.id}/step/1`);
-                }
                 setCurrentStep(1);
                 scrollToTop();
               }} 
