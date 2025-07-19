@@ -4275,8 +4275,7 @@ function App() {
                 )}
                 
                 <div className="scanner-instructions">
-                  <p><strong>GS1 Barcodes Only:</strong> Scan pharmaceutical barcodes with GS1 data (serial numbers, lot numbers, etc.)</p>
-                  <p className="format-restriction">❌ Consumer product barcodes (UPC/EAN) are not supported</p>
+                  <p>Scan GS1 Data Matrix codes</p>
                   {requiredItemCount > 1 && (
                     <p className="multi-scan-instruction">
                       <strong>Multi-scan mode:</strong> Scan {requiredItemCount} items to continue, or save partial progress
