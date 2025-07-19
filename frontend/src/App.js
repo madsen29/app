@@ -4,6 +4,7 @@ import axios from "axios";
 import { BrowserMultiFormatReader } from '@zxing/browser';
 import { BarcodeFormat } from '@zxing/library';
 import { FiCamera, FiChevronRight, FiPackage, FiBox, FiFolder, FiFile, FiX, FiArrowLeft } from 'react-icons/fi';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import AuthWrapper from './AuthWrapper';
 import ProjectDashboard from './ProjectDashboard';
