@@ -2259,6 +2259,16 @@ function App() {
       const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
       
       if (result) {
+        // Check if the barcode format is allowed (2D codes only)
+        const format = result.getBarcodeFormat();
+        const allowedFormats = ['DATA_MATRIX', 'QR_CODE', 'AZTEC', 'PDF_417'];
+        
+        if (!allowedFormats.includes(format.toString())) {
+          setError(`❌ 1D barcode detected (${format}). Please scan a 2D code (Data Matrix, QR, Aztec, PDF417).`);
+          setIsScanning(false);
+          return;
+        }
+        
         const scannedData = result.getText();
         handleBarcodeResult(scannedData);
       }
