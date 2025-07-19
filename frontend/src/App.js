@@ -496,8 +496,10 @@ function MainApp() {
       });
     }
     
-    // Set current step based on project state
-    setCurrentStep(project.current_step);
+    // Navigate to the appropriate step based on project state
+    if (project.current_step && project.current_step !== currentStep) {
+      navigateToProject(project.id, project.current_step);
+    }
     
     // Check if packaging configuration should be locked
     const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
