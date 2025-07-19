@@ -13,9 +13,6 @@ const API = `${BACKEND_URL}/api`;
 
 function App() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { projectId } = useParams();
   
   // Project management state
   const [currentProject, setCurrentProject] = useState(null);
