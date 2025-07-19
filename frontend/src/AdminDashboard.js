@@ -215,21 +215,22 @@ const AdminDashboard = ({ onLogout }) => {
         {/* User Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           {[
-            { label: 'Total Users', value: users.length, color: 'blue' },
-            { label: 'Pending Approval', value: users.filter(u => u.status === 'pending').length, color: 'yellow' },
-            { label: 'Active Users', value: users.filter(u => u.status === 'active').length, color: 'green' },
-            { label: 'Admin Users', value: users.filter(u => u.isSuperAdmin).length, color: 'purple' }
+            { label: 'Total Users', value: users.length, color: 'bg-blue-600' },
+            { label: 'Pending Approval', value: users.filter(u => u.status === 'pending').length, color: 'bg-yellow-600' },
+            { label: 'Active Users', value: users.filter(u => u.status === 'active').length, color: 'bg-green-600' },
+            { label: 'Admin Users', value: users.filter(u => u.isSuperAdmin).length, color: 'bg-purple-600' }
           ].map((stat, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className={`w-8 h-8 bg-${stat.color}-600 rounded-md flex items-center justify-center`}>
-                    <span className="text-white font-semibold">{stat.value}</span>
+                  <div className={`w-8 h-8 ${stat.color} rounded-md flex items-center justify-center`}>
+                    <span className="text-white font-semibold text-sm">{stat.value}</span>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">{stat.label}</dt>
+                    <dd className="text-lg font-semibold text-gray-900">{stat.value}</dd>
                   </dl>
                 </div>
               </div>
