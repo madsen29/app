@@ -37,8 +37,7 @@ const UserSettings = ({ onClose }) => {
     city: '',
     state: '',
     postalCode: '',
-    countryCode: '',
-    despatchAdviceNumber: ''
+    countryCode: ''
   });
   const [editingLocationId, setEditingLocationId] = useState(null);
   const [locationsLoading, setLocationsLoading] = useState(false);
