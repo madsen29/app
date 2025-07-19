@@ -24,24 +24,6 @@ function App() {
   // Existing state
   const [currentStep, setCurrentStep] = useState(1);
   
-  // Navigation helpers using History API
-  const navigateToDashboard = () => {
-    setShowDashboard(true);
-    setCurrentProject(null);
-    navigate('/');
-  };
-  
-  const navigateToProject = (projectId, step = 1) => {
-    setShowDashboard(false);
-    navigate(`/project/${projectId}/step/${step}`);
-  };
-  
-  const navigateToStep = (step) => {
-    if (currentProject) {
-      navigate(`/project/${currentProject.id}/step/${step}`);
-    }
-  };
-  
   // Handle browser back/forward navigation
   useEffect(() => {
     const path = location.pathname;
