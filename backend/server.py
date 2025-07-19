@@ -432,6 +432,25 @@ async def get_current_user_from_token(token: str) -> User:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+async def get_current_admin_user(token: str = Depends(oauth2_scheme)) -> User:
+    """Get current admin user from JWT token"""
+    try:
+        user = await get_current_user_from_token(token)
+        if not user.is_super_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        return user
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Get current authenticated user"""
     token = credentials.credentials
