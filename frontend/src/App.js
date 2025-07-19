@@ -2461,7 +2461,45 @@ function App() {
     }
   };
 
-  const handleBarcodeResult = (scannedData) => {
+  const validateGS1Barcode = (scannedData) => {
+    // GS1 barcodes contain FNC1 characters (ASCII 29 / Group Separator)
+    const GS1_SEPARATOR = '\u001d';
+    
+    // Check for GS1 FNC1 character
+    if (scannedData.includes(GS1_SEPARATOR)) {
+      return { isValid: true, reason: 'Contains GS1 FNC1 separator' };
+    }
+    
+    // Check for common GS1 Application Identifier patterns
+    // AI 01 (GTIN), AI 21 (Serial), AI 17 (Expiry), AI 10 (Lot), AI 00 (SSCC)
+    const gs1Patterns = [
+      /^01\d{14}/,  // AI 01 + 14-digit GTIN
+      /^00\d{18}/,  // AI 00 + 18-digit SSCC
+      /\b01\d{14}/,  // AI 01 anywhere in string
+      /\b21[\w\d]+/, // AI 21 (Serial number)
+      /\b17\d{6}/,   // AI 17 + 6-digit date (YYMMDD)
+      /\b10[\w\d]+/, // AI 10 (Batch/Lot)
+      /\b11\d{6}/    // AI 11 + 6-digit date (YYMMDD)
+    ];
+    
+    // Check if data matches any GS1 AI patterns
+    for (const pattern of gs1Patterns) {
+      if (pattern.test(scannedData)) {
+        return { isValid: true, reason: `Matches GS1 pattern: ${pattern}` };
+      }
+    }
+    
+    // Check if it's a simple alphanumeric code that could be a serial number
+    // Allow if it's reasonable length and contains letters/numbers
+    if (scannedData.length >= 4 && scannedData.length <= 50 && /^[A-Za-z0-9\-_]+$/.test(scannedData)) {
+      return { isValid: true, reason: 'Valid alphanumeric serial number format' };
+    }
+    
+    return { 
+      isValid: false, 
+      reason: 'Does not contain GS1 FNC1 characters or valid GS1 Application Identifiers. This appears to be a consumer product barcode (UPC/EAN).' 
+    };
+  };
     try {
       // Parse GS1 Data Matrix barcode
       const parsedData = parseGS1Barcode(scannedData);
