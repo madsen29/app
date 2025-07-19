@@ -113,6 +113,29 @@ function App() {
     isOpen: false,
     targetSection: null // 'sender', 'receiver', or 'shipper'
   });
+
+  // Location selector functions
+  const openLocationSelector = (targetSection) => {
+    setLocationSelectorModal({
+      isOpen: true,
+      targetSection: targetSection
+    });
+  };
+
+  const closeLocationSelector = () => {
+    setLocationSelectorModal({
+      isOpen: false,
+      targetSection: null
+    });
+  };
+
+  const handleLocationSelected = (locationData) => {
+    setConfiguration(prevConfig => ({
+      ...prevConfig,
+      ...locationData
+    }));
+    setHasUnsavedChanges(true);
+  };
   
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [autoSaveTimer, setAutoSaveTimer] = useState(null);
