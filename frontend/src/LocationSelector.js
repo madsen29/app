@@ -125,9 +125,6 @@ const LocationSelector = ({ isOpen, onClose, onSelectLocation, targetSection }) 
                         {location.companyPrefix && (
                           <div><span className="font-medium">Company Prefix:</span> {location.companyPrefix}</div>
                         )}
-                        {location.despatchAdviceNumber && targetSection === 'sender' && (
-                          <div><span className="font-medium">Despatch Advice:</span> {location.despatchAdviceNumber}</div>
-                        )}
                       </div>
                     </div>
                     <div className="ml-4">
