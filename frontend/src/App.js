@@ -93,9 +93,14 @@ function MainApp() {
       }
     } catch (error) {
       console.error('Error loading project from URL:', error);
-      // If project doesn't exist or user doesn't have access, redirect to dashboard
-      navigateToDashboard();
-      setError('Project not found or access denied');
+      // Only redirect if it's a legitimate not found error, not auth issues
+      if (error.response && error.response.status === 404) {
+        navigateToDashboard();
+        setError('Project not found');
+      } else {
+        // For other errors (auth, network), just log and don't navigate away
+        console.warn('Failed to load project, staying on current page');
+      }
     }
   };
   const [configuration, setConfiguration] = useState({
