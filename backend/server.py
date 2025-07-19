@@ -109,6 +109,50 @@ class ProjectUpdate(BaseModel):
     serial_numbers: Optional[list] = None  # Allow list for hierarchical structure
     epcis_file_content: Optional[str] = None
 
+# Location model for saved locations
+class LocationCreate(BaseModel):
+    name: str
+    company_prefix: str = Field(default="", alias="companyPrefix")
+    gln: str = Field(default="", alias="gln")
+    sgln: str = Field(default="", alias="sgln")
+    company_name: str = Field(default="", alias="companyName")
+    street_address: str = Field(default="", alias="streetAddress")
+    city: str = Field(default="", alias="city")
+    state: str = Field(default="", alias="state")
+    postal_code: str = Field(default="", alias="postalCode")
+    country_code: str = Field(default="", alias="countryCode")
+    despatch_advice_number: str = Field(default="", alias="despatchAdviceNumber")
+
+class LocationUpdate(BaseModel):
+    name: Optional[str] = None
+    company_prefix: Optional[str] = Field(default=None, alias="companyPrefix")
+    gln: Optional[str] = Field(default=None, alias="gln")
+    sgln: Optional[str] = Field(default=None, alias="sgln")
+    company_name: Optional[str] = Field(default=None, alias="companyName")
+    street_address: Optional[str] = Field(default=None, alias="streetAddress")
+    city: Optional[str] = Field(default=None, alias="city")
+    state: Optional[str] = Field(default=None, alias="state")
+    postal_code: Optional[str] = Field(default=None, alias="postalCode")
+    country_code: Optional[str] = Field(default=None, alias="countryCode")
+    despatch_advice_number: Optional[str] = Field(default=None, alias="despatchAdviceNumber")
+
+class Location(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    name: str
+    company_prefix: str = ""
+    gln: str = ""
+    sgln: str = ""
+    company_name: str = ""
+    street_address: str = ""
+    city: str = ""
+    state: str = ""
+    postal_code: str = ""
+    country_code: str = ""
+    despatch_advice_number: str = ""
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # Authentication functions
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
