@@ -2355,7 +2355,8 @@ function App() {
           }
           
           setSuccess(successMessage);
-          // Don't close scanner here - let the scan loop handle it based on shouldContinueScanning
+          // For single item scanning, close the scanner
+          setTimeout(() => closeScanner(), 100);
         }
       } else {
         setError('Could not extract serial number from barcode');
