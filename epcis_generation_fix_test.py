@@ -244,24 +244,43 @@ class EPCISGenerationFixTester:
             self.log_test("Auto-Save Simulation", False, "No project ID available")
             return False
             
-        # Simulate the hierarchical format that auto-save creates
-        hierarchical_serial_data = {
-            "serial_numbers": {
-                "ssccSerialNumbers": ["AUTO_SAVE_SSCC_001"],
-                "caseSerialNumbers": ["AUTO_SAVE_CASE_001"],
-                "itemSerialNumbers": ["AUTO_SAVE_ITEM_001", "AUTO_SAVE_ITEM_002"]
+        # Create hierarchical serial structure like the frontend does
+        # For config: 1 SSCC, 1 Case, 2 Items
+        hierarchical_structure = [
+            {
+                "ssccIndex": 0,
+                "ssccSerial": "AUTO_SAVE_SSCC_001",
+                "cases": [
+                    {
+                        "caseIndex": 0,
+                        "caseSerial": "AUTO_SAVE_CASE_001",
+                        "innerCases": [],
+                        "items": [
+                            {
+                                "itemIndex": 0,
+                                "itemSerial": "AUTO_SAVE_ITEM_001"
+                            },
+                            {
+                                "itemIndex": 1,
+                                "itemSerial": "AUTO_SAVE_ITEM_002"
+                            }
+                        ]
+                    }
+                ]
             }
-        }
+        ]
         
         try:
+            # Update project with hierarchical serial structure (auto-save format)
             response = self.session.put(
                 f"{self.base_url}/projects/{project_id}",
-                json=hierarchical_serial_data,
+                json={"serial_numbers": hierarchical_structure},
                 headers={"Content-Type": "application/json"}
             )
             
             if response.status_code == 200:
-                self.log_test("Auto-Save Simulation", True, "Hierarchical serial numbers format simulated")
+                project = response.json()
+                self.log_test("Auto-Save Simulation", True, "Project updated with hierarchical serial format")
                 return True
             else:
                 self.log_test("Auto-Save Simulation", False, f"HTTP {response.status_code}: {response.text}")
