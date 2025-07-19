@@ -1050,51 +1050,32 @@ async def delete_location(location_id: str, current_user: User = Depends(get_cur
 async def admin_login(admin: AdminLogin):
     """Admin login"""
     try:
-        print(f"Admin login attempt: {admin.email}")
         user_data = await db.users.find_one({"email": admin.email})
-        print(f"User found: {user_data is not None}")
         
-        if not user_data:
-            print("User not found in database")
+        if not user_data or not user_data.get("is_super_admin", False):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid admin credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
-        print(f"is_super_admin: {user_data.get('is_super_admin', False)}")
-        if not user_data.get("is_super_admin", False):
-            print("User is not super admin")
+        if not verify_password(admin.password, user_data["hashed_password"]):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid admin credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
-        print("Verifying password...")
-        password_valid = verify_password(admin.password, user_data["hashed_password"])
-        print(f"Password valid: {password_valid}")
-        
-        if not password_valid:
-            print("Password verification failed")
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid admin credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        
-        print("Creating access token...")
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={"sub": user_data["email"]}, expires_delta=access_token_expires
         )
-        print("Login successful")
         return {"access_token": access_token, "token_type": "bearer"}
         
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Unexpected error in admin login: {e}")
+        logger.error(f"Error in admin login: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
