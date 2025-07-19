@@ -2212,13 +2212,26 @@ function App() {
     try {
       setIsScanning(true);
       
-      // Initialize the code reader
-      codeReader.current = new BrowserMultiFormatReader();
+      // Initialize the code reader with 2D formats only
+      const hints = new Map();
+      const { BarcodeFormat } = await import('@zxing/library');
+      
+      // Only allow 2D formats (Data Matrix, QR Code, Aztec, PDF417)
+      hints.set(2, [
+        BarcodeFormat.DATA_MATRIX,
+        BarcodeFormat.QR_CODE,
+        BarcodeFormat.AZTEC,
+        BarcodeFormat.PDF_417
+      ]);
+      
+      codeReader.current = new BrowserMultiFormatReader(hints);
       
       // Request camera permissions first
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
-          facingMode: 'environment' // Try to use back camera
+          facingMode: 'environment', // Try to use back camera
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         } 
       });
       
