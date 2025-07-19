@@ -979,8 +979,7 @@ async def update_location(
                 "city": updated_location.get("city", ""),
                 "state": updated_location.get("state", ""),
                 "postalCode": updated_location.get("postal_code", ""),
-                "countryCode": updated_location.get("country_code", ""),
-                "despatchAdviceNumber": updated_location.get("despatch_advice_number", "")
+                "countryCode": updated_location.get("country_code", "")
             }
         }
     except HTTPException:
