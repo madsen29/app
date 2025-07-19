@@ -65,7 +65,11 @@ function MainApp() {
     }
   }, [location.pathname, projectId, currentProject]);
   
-  // Load project data when URL changes
+  const handleCreateProject = (project) => {
+    // The ProjectDashboard will call handleSelectProject for the new project
+    // This is just a placeholder if needed for future functionality
+    handleSelectProject(project);
+  };
   const loadProjectFromUrl = async (urlProjectId) => {
     try {
       const response = await axios.get(`${API}/projects/${urlProjectId}`, {
