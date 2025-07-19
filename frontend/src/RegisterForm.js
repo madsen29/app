@@ -11,6 +11,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
   const { register } = useAuth();
 
   const handleChange = (e) => {
