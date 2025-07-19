@@ -204,12 +204,6 @@ async def create_user(user: UserCreate) -> User:
         "email": user.email,
         "first_name": user.first_name,
         "last_name": user.last_name,
-        "company_name": user.company_name,
-        "street_address": user.street_address,
-        "city": user.city,
-        "state": user.state,
-        "postal_code": user.postal_code,
-        "country_code": user.country_code,
         "hashed_password": hashed_password,
         "is_active": True,
         "created_at": datetime.utcnow()
