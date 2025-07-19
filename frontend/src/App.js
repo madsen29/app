@@ -11,12 +11,8 @@ import ProjectDashboard from './ProjectDashboard';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Main Application Component with routing logic
-function MainApp() {
+function App() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const params = useParams();
   
   // Project management state
   const [currentProject, setCurrentProject] = useState(null);
@@ -25,9 +21,8 @@ function MainApp() {
   const [isPackagingConfigLocked, setIsPackagingConfigLocked] = useState(false);
   const [originalPackagingConfig, setOriginalPackagingConfig] = useState(null);
   
-  // Get current step from URL params
-  const currentStep = parseInt(params.stepNumber) || 1;
-  const projectId = params.projectId;
+  // Existing state
+  const [currentStep, setCurrentStep] = useState(1);
   
   // Navigation helpers using History API
   const navigateToDashboard = () => {
