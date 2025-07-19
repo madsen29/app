@@ -81,8 +81,7 @@ const UserSettings = ({ onClose }) => {
       city: '',
       state: '',
       postalCode: '',
-      countryCode: '',
-      despatchAdviceNumber: ''
+      countryCode: ''
     });
     setEditingLocationId(null);
   };
