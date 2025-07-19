@@ -2353,25 +2353,32 @@ function App() {
         const serialNumber = parsedData.serialNumber;
         const isItemsLevel = serialCollectionStep.currentLevel === 'item';
         
-        // Check for duplicates in already scanned items
+        // Check for duplicates in already scanned items (current session)
         if (scannedItems.includes(serialNumber)) {
-          setError(`Duplicate serial number! "${serialNumber}" was already scanned.`);
+          setError(`Duplicate serial number! "${serialNumber}" was already scanned in this session.`);
           return;
         }
         
+        // Check for duplicates against ALL existing serial numbers in the project
+        const duplicates = validateDuplicateSerials(serialNumber);
+        if (duplicates) {
+          setError(`Duplicate serial number found! "${serialNumber}" is already used at: ${duplicates[0].path}`);
+          return;
+        }
+        
+        // Clear any previous errors
+        setError('');
+        
         // Handle different scanner target fields
         if (scannerModal.targetField === 'edit') {
-          // Set the scanned serial number in edit modal and validate
-          const duplicates = validateDuplicateSerials(serialNumber, editModal.path);
-          if (duplicates) {
-            setError(`Duplicate serial number found! "${serialNumber}" is already used at: ${duplicates[0].path}`);
-          } else {
-            setError('');
-          }
+          // Set the scanned serial number in edit modal
           setEditModal({
             ...editModal,
             currentValue: serialNumber
           });
+          
+          // Show success message
+          setSuccess(`Scanned serial number: ${serialNumber}`);
           closeScanner();
         } else if (isItemsLevel && requiredItemCount > 1) {
           // Multi-scanning for Items level
@@ -2380,7 +2387,6 @@ function App() {
           
           // Show progress message
           setSuccess(`Scanned ${newScannedItems.length} of ${requiredItemCount} items: ${serialNumber}`);
-          setError(''); // Clear any previous errors
           
           if (newScannedItems.length >= requiredItemCount) {
             // All items scanned, update the textarea and close scanner
@@ -2394,6 +2400,7 @@ function App() {
             setSuccess(`All ${requiredItemCount} items scanned successfully!`);
             closeScanner();
           }
+          // Note: Don't close scanner here - let it continue scanning for more items
         } else {
           // Single item scanning (SSCC, Case, Inner Case, or single Item)
           setSerialCollectionStep({
@@ -2421,8 +2428,8 @@ function App() {
       }
       
     } catch (error) {
-      console.error('Error processing barcode:', error);
-      setError('Failed to parse barcode data');
+      console.error('Error parsing barcode:', error);
+      setError('Error parsing barcode data');
     }
   };
 
