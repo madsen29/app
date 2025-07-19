@@ -2264,7 +2264,7 @@ input:disabled {
   }
   
   .scanner-content {
-    max-height: 95vh;
+    max-height: 90vh;
     height: auto;
     display: flex;
     flex-direction: column;
@@ -2708,7 +2708,7 @@ input:disabled {
 
   /* Button Groups Mobile */
   .button-group {
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 0.75rem;
     margin-top: 1.5rem;
   }
