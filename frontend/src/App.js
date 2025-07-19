@@ -3064,7 +3064,17 @@ function App() {
 
             {/* Shipper Information */}
             <div className="business-entity-group">
-              <h4>Shipper Information</h4>
+              <div className="flex justify-between items-center mb-4">
+                <h4>Shipper Information</h4>
+                <button
+                  type="button"
+                  onClick={() => openLocationSelector('shipper')}
+                  className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  title="Select a saved location to fill in shipper information"
+                >
+                  Select Location
+                </button>
+              </div>
               <div className="form-group shipper-same-checkbox">
                 <label className="checkbox-label">
                   <input
