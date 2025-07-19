@@ -67,6 +67,13 @@ const LocationSelector = ({ isOpen, onClose, onSelectLocation, targetSection }) 
     onClose();
   };
 
+  const handleOverlayClick = (event) => {
+    // Only close if clicking directly on the overlay (not on modal content)
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
