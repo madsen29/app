@@ -616,7 +616,7 @@ class ComprehensiveBackendTester:
                 self.log_test("Error Handling", True, f"Unauthorized access properly rejected (HTTP {response.status_code})")
                 return True
             else:
-                self.log_test("Error Handling", False, f"Expected 401, got {response.status_code}")
+                self.log_test("Error Handling", False, f"Expected 401/403, got {response.status_code}")
                 return False
                 
         except Exception as e:
