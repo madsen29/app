@@ -25,6 +25,24 @@ const UserSettings = ({ onClose }) => {
   const [success, setSuccess] = useState('');
   const { user, token, updateUser } = useAuth();
 
+  // Locations state
+  const [locations, setLocations] = useState([]);
+  const [locationForm, setLocationForm] = useState({
+    name: '',
+    companyPrefix: '',
+    gln: '',
+    sgln: '',
+    companyName: '',
+    streetAddress: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    countryCode: '',
+    despatchAdviceNumber: ''
+  });
+  const [editingLocationId, setEditingLocationId] = useState(null);
+  const [locationsLoading, setLocationsLoading] = useState(false);
+
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
   const API = `${BACKEND_URL}/api`;
 
