@@ -29,6 +29,41 @@ function MainApp() {
   // Get current step from URL params
   const currentStep = parseInt(params.stepNumber) || 1;
   const projectId = params.projectId;
+  
+  // Navigation helpers using History API
+  const navigateToDashboard = () => {
+    setShowDashboard(true);
+    setCurrentProject(null);
+    navigate('/');
+  };
+  
+  const navigateToProject = (projectId, step = 1) => {
+    setShowDashboard(false);
+    navigate(`/project/${projectId}/step/${step}`);
+  };
+  
+  const navigateToStep = (step) => {
+    if (currentProject) {
+      navigate(`/project/${currentProject.id}/step/${step}`);
+    }
+  };
+  
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const path = location.pathname;
+    
+    if (path === '/') {
+      setShowDashboard(true);
+      setCurrentProject(null);
+    } else if (path.includes('/project/')) {
+      setShowDashboard(false);
+      
+      // If we have a project ID in URL but no current project, load it
+      if (projectId && (!currentProject || currentProject.id !== projectId)) {
+        loadProjectFromUrl(projectId);
+      }
+    }
+  }, [location.pathname, projectId, currentProject]);
   const [configuration, setConfiguration] = useState({
     itemsPerCase: '',
     casesPerSscc: '',
