@@ -2279,11 +2279,11 @@ function App() {
     // Handle the scanned data based on the current context
     if (scannerModal.targetSetter) {
       scannerModal.targetSetter(scannedData);
-      stopScanning();
+      closeScanner();
     } else {
       // Handle serial number input
       handleSerialInput(scannedData);
-      stopScanning();
+      closeScanner();
     }
   };
 
