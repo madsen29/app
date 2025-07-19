@@ -4195,8 +4195,8 @@ function App() {
                 )}
                 
                 <div className="scanner-instructions">
-                  <p><strong>2D Codes Only:</strong> Position Data Matrix, QR codes, Aztec, or PDF417 within the camera view</p>
-                  <p className="format-restriction">❌ 1D barcodes (UPC, Code 128, etc.) are not supported</p>
+                  <p><strong>GS1 Barcodes Only:</strong> Scan pharmaceutical barcodes with GS1 data (serial numbers, lot numbers, etc.)</p>
+                  <p className="format-restriction">❌ Consumer product barcodes (UPC/EAN) are not supported</p>
                   {requiredItemCount > 1 && (
                     <p className="multi-scan-instruction">
                       <strong>Multi-scan mode:</strong> Scan {requiredItemCount} items to continue, or save partial progress
