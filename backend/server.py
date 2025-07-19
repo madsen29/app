@@ -1563,21 +1563,30 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
     else:
         items_per_case = get_config_value("items_per_case", "itemsPerCase")
     
-    # Get serial numbers from the new list format
+    # Normalize serial numbers data structure to handle both formats
     sscc_serials = []
     case_serials = []
     inner_case_serials = []
     item_serials = []
     
-    for serial_entry in serial_numbers:
-        if serial_entry["type"] == "sscc":
-            sscc_serials.append(serial_entry["serial"])
-        elif serial_entry["type"] == "case":
-            case_serials.append(serial_entry["serial"])
-        elif serial_entry["type"] == "inner_case":
-            inner_case_serials.append(serial_entry["serial"])
-        elif serial_entry["type"] == "item":
-            item_serials.append(serial_entry["serial"])
+    # Check if serial_numbers is in the new list format with "type" fields
+    if serial_numbers and isinstance(serial_numbers, list) and len(serial_numbers) > 0 and isinstance(serial_numbers[0], dict) and "type" in serial_numbers[0]:
+        # Handle new list format with "type" and "serial" fields
+        for serial_entry in serial_numbers:
+            if serial_entry["type"] == "sscc":
+                sscc_serials.append(serial_entry["serial"])
+            elif serial_entry["type"] == "case":
+                case_serials.append(serial_entry["serial"])
+            elif serial_entry["type"] == "inner_case":
+                inner_case_serials.append(serial_entry["serial"])
+            elif serial_entry["type"] == "item":
+                item_serials.append(serial_entry["serial"])
+    elif serial_numbers and isinstance(serial_numbers, dict):
+        # Handle hierarchical format (from auto-save)
+        sscc_serials = serial_numbers.get("ssccSerialNumbers", serial_numbers.get("sscc_serial_numbers", []))
+        case_serials = serial_numbers.get("caseSerialNumbers", serial_numbers.get("case_serial_numbers", []))
+        inner_case_serials = serial_numbers.get("innerCaseSerialNumbers", serial_numbers.get("inner_case_serial_numbers", []))
+        item_serials = serial_numbers.get("itemSerialNumbers", serial_numbers.get("item_serial_numbers", []))
     
     # Generate proper EPC identifiers
     sscc_epcs = []
