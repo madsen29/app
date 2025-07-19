@@ -4349,7 +4349,6 @@ function App() {
       {showDashboard ? (
         <ProjectDashboard 
           onSelectProject={handleSelectProject}
-          onCreateProject={handleCreateProject}
           onLogout={handleLogout}
         />
       ) : (
