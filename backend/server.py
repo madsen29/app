@@ -913,8 +913,7 @@ async def create_location(location_data: LocationCreate, current_user: User = De
                 "city": location.city,
                 "state": location.state,
                 "postalCode": location.postal_code,
-                "countryCode": location.country_code,
-                "despatchAdviceNumber": location.despatch_advice_number
+                "countryCode": location.country_code
             }
         }
     except Exception as e:
