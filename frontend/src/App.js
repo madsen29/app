@@ -1309,9 +1309,6 @@ function App() {
       });
       
       // Navigate to step 3
-      if (currentProject) {
-        navigate(`/project/${currentProject.id}/step/3`);
-      }
       setCurrentStep(3);
       setSuccess('Serial numbers saved successfully!');
       scrollToTop();
