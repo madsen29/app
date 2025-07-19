@@ -853,6 +853,166 @@ async def download_epcis(project_id: str, current_user: User = Depends(get_curre
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
+# Locations endpoints
+@api_router.get("/locations")
+async def get_user_locations(current_user: User = Depends(get_current_user)):
+    """Get all locations for the current user"""
+    try:
+        cursor = db.locations.find({"user_id": current_user.id})
+        locations = []
+        async for location in cursor:
+            location_data = {
+                "id": location["id"],
+                "name": location["name"],
+                "companyPrefix": location.get("company_prefix", ""),
+                "gln": location.get("gln", ""),
+                "sgln": location.get("sgln", ""),
+                "companyName": location.get("company_name", ""),
+                "streetAddress": location.get("street_address", ""),
+                "city": location.get("city", ""),
+                "state": location.get("state", ""),
+                "postalCode": location.get("postal_code", ""),
+                "countryCode": location.get("country_code", ""),
+                "despatchAdviceNumber": location.get("despatch_advice_number", ""),
+                "createdAt": location.get("created_at"),
+                "updatedAt": location.get("updated_at")
+            }
+            locations.append(location_data)
+        
+        return {"locations": locations}
+    except Exception as e:
+        logger.error(f"Error fetching locations: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.post("/locations")
+async def create_location(location_data: LocationCreate, current_user: User = Depends(get_current_user)):
+    """Create a new location for the current user"""
+    try:
+        location = Location(
+            user_id=current_user.id,
+            name=location_data.name,
+            company_prefix=location_data.company_prefix,
+            gln=location_data.gln,
+            sgln=location_data.sgln,
+            company_name=location_data.company_name,
+            street_address=location_data.street_address,
+            city=location_data.city,
+            state=location_data.state,
+            postal_code=location_data.postal_code,
+            country_code=location_data.country_code,
+            despatch_advice_number=location_data.despatch_advice_number
+        )
+        
+        await db.locations.insert_one(location.dict())
+        
+        return {
+            "message": "Location created successfully",
+            "location": {
+                "id": location.id,
+                "name": location.name,
+                "companyPrefix": location.company_prefix,
+                "gln": location.gln,
+                "sgln": location.sgln,
+                "companyName": location.company_name,
+                "streetAddress": location.street_address,
+                "city": location.city,
+                "state": location.state,
+                "postalCode": location.postal_code,
+                "countryCode": location.country_code,
+                "despatchAdviceNumber": location.despatch_advice_number
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error creating location: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.put("/locations/{location_id}")
+async def update_location(
+    location_id: str, 
+    location_update: LocationUpdate, 
+    current_user: User = Depends(get_current_user)
+):
+    """Update a location"""
+    try:
+        # Check if location exists and belongs to current user
+        location = await db.locations.find_one({"id": location_id, "user_id": current_user.id})
+        if not location:
+            raise HTTPException(status_code=404, detail="Location not found")
+        
+        # Prepare update data - only include fields that are not None
+        update_data = {}
+        if location_update.name is not None:
+            update_data["name"] = location_update.name
+        if location_update.company_prefix is not None:
+            update_data["company_prefix"] = location_update.company_prefix
+        if location_update.gln is not None:
+            update_data["gln"] = location_update.gln
+        if location_update.sgln is not None:
+            update_data["sgln"] = location_update.sgln
+        if location_update.company_name is not None:
+            update_data["company_name"] = location_update.company_name
+        if location_update.street_address is not None:
+            update_data["street_address"] = location_update.street_address
+        if location_update.city is not None:
+            update_data["city"] = location_update.city
+        if location_update.state is not None:
+            update_data["state"] = location_update.state
+        if location_update.postal_code is not None:
+            update_data["postal_code"] = location_update.postal_code
+        if location_update.country_code is not None:
+            update_data["country_code"] = location_update.country_code
+        if location_update.despatch_advice_number is not None:
+            update_data["despatch_advice_number"] = location_update.despatch_advice_number
+        
+        update_data["updated_at"] = datetime.now(timezone.utc)
+        
+        await db.locations.update_one(
+            {"id": location_id, "user_id": current_user.id},
+            {"$set": update_data}
+        )
+        
+        # Return updated location
+        updated_location = await db.locations.find_one({"id": location_id, "user_id": current_user.id})
+        
+        return {
+            "message": "Location updated successfully",
+            "location": {
+                "id": updated_location["id"],
+                "name": updated_location["name"],
+                "companyPrefix": updated_location.get("company_prefix", ""),
+                "gln": updated_location.get("gln", ""),
+                "sgln": updated_location.get("sgln", ""),
+                "companyName": updated_location.get("company_name", ""),
+                "streetAddress": updated_location.get("street_address", ""),
+                "city": updated_location.get("city", ""),
+                "state": updated_location.get("state", ""),
+                "postalCode": updated_location.get("postal_code", ""),
+                "countryCode": updated_location.get("country_code", ""),
+                "despatchAdviceNumber": updated_location.get("despatch_advice_number", "")
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating location: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.delete("/locations/{location_id}")
+async def delete_location(location_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a location"""
+    try:
+        result = await db.locations.delete_one({"id": location_id, "user_id": current_user.id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Location not found")
+        
+        return {"message": "Location deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting location: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 def add_ilmd_extension(event_element, lot_number, expiration_date):
     """Add ILMD extension with lot number and expiration date to an event"""
     if lot_number or expiration_date:
