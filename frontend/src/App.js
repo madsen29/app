@@ -2540,7 +2540,9 @@ function App() {
                 if (!validation.isValid) {
                   setError(`❌ Non-GS1 barcode detected. ${validation.reason}`);
                   // Continue scanning instead of stopping
-                  setTimeout(scanLoop, 100);
+                  if (scannerModal.isOpen) {
+                    setTimeout(scanLoop, 500);
+                  }
                   return;
                 }
                 
@@ -2549,13 +2551,15 @@ function App() {
                 console.log('Valid GS1 barcode:', validation.reason);
                 
                 handleBarcodeResult(scannedData);
+                setIsScanning(false);
                 return;
               }
             } catch (scanError) {
-              // Continue scanning
+              // Continue scanning only if modal is still open
+              if (scannerModal.isOpen) {
+                setTimeout(scanLoop, 100);
+              }
             }
-            
-            setTimeout(scanLoop, 100);
           };
           
           scanLoop();
