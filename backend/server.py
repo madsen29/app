@@ -48,7 +48,12 @@ class User(BaseModel):
     first_name: str = ""
     last_name: str = ""
     is_active: bool = True
+    is_super_admin: bool = False
+    status: str = "pending"  # pending, active, inactive
+    approved_by: Optional[str] = None  # Admin ID who approved
+    approved_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Token(BaseModel):
     access_token: str
