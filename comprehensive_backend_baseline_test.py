@@ -39,7 +39,7 @@ class ComprehensiveBackendTester:
         self.session = requests.Session()
         self.test_results = []
         self.auth_token = None
-        self.test_user_email = "baseline.tester@epcis.test"
+        self.test_user_email = "baseline.tester@example.com"
         self.test_user_password = "SecureTestPass123!"
         
     def log_test(self, test_name, success, message, details=None):
