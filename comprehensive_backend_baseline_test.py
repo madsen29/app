@@ -351,7 +351,7 @@ class ComprehensiveBackendTester:
                     data.get("companyPrefix") == "1234567" and
                     data.get("lotNumber") == "LOT123"):
                     self.log_test("Configuration Creation", True, "Configuration saved successfully", 
-                                f"Config ID: {data['id']}, Items/Case: {data['items_per_case']}")
+                                f"Config ID: {data['id']}, Items/Case: {data['itemsPerCase']}")
                     return True
                 else:
                     self.log_test("Configuration Creation", False, f"Configuration data mismatch: {data}")
