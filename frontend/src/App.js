@@ -1386,7 +1386,10 @@ function App() {
   };
 
   const handleReset = () => {
-    navigateToStep(1);
+    if (currentProject) {
+      navigate(`/project/${currentProject.id}/step/1`);
+    }
+    setCurrentStep(1);
     setConfiguration({ 
       itemsPerCase: 10,
       casesPerSscc: 5,
