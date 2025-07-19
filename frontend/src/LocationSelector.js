@@ -14,8 +14,22 @@ const LocationSelector = ({ isOpen, onClose, onSelectLocation, targetSection }) 
   useEffect(() => {
     if (isOpen) {
       loadLocations();
+      
+      // Add escape key listener
+      const handleEscapeKey = (event) => {
+        if (event.key === 'Escape') {
+          onClose();
+        }
+      };
+      
+      document.addEventListener('keydown', handleEscapeKey);
+      
+      // Cleanup function to remove event listener
+      return () => {
+        document.removeEventListener('keydown', handleEscapeKey);
+      };
     }
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   const loadLocations = async () => {
     try {

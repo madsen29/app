@@ -2812,7 +2812,7 @@ function App() {
             {/* Sender Information */}
             <div className="business-entity-group">
               <div className="flex justify-between items-center mb-4">
-                <h4 className="mb-0 pb-0">Sender Information</h4>
+                <h4>Sender Information</h4>
                 <button
                   type="button"
                   onClick={() => openLocationSelector('sender')}
@@ -4255,7 +4255,7 @@ function App() {
                     type="button" 
                     onClick={handleSaveAndExit} 
                     disabled={isLoading} 
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-md font-medium"
                     >
                     Save & Exit
                     </button>

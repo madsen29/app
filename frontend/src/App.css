@@ -713,11 +713,11 @@ input:disabled {
 }
 
 .business-entity-group h4 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-  color: #4a5568;
-  padding-bottom: 0.5rem;
+  margin-bottom: 0;
+  color: #3d4757;
+  padding-bottom: 0;
 }
 
 .shipper-same-checkbox {
@@ -726,6 +726,9 @@ input:disabled {
 
 .shipper-same-checkbox .checkbox-label {
   font-weight: 600;
+  display: flex;
+  gap: 0;
+  align-items: center;
 }
 
 .checkbox-label {
