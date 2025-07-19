@@ -895,8 +895,7 @@ async def create_location(location_data: LocationCreate, current_user: User = De
             city=location_data.city,
             state=location_data.state,
             postal_code=location_data.postal_code,
-            country_code=location_data.country_code,
-            despatch_advice_number=location_data.despatch_advice_number
+            country_code=location_data.country_code
         )
         
         await db.locations.insert_one(location.dict())
