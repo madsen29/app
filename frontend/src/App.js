@@ -4100,9 +4100,41 @@ function App() {
                     </div>
                   )}
                 </div>
+                
+                {/* Multi-scanning progress */}
+                {requiredItemCount > 1 && (
+                  <div className="scanning-progress">
+                    <h4>Scanning Items ({scannedItems.length} of {requiredItemCount})</h4>
+                    <div className="progress-bar-container">
+                      <div 
+                        className="progress-bar-fill" 
+                        style={{ width: `${(scannedItems.length / requiredItemCount) * 100}%` }}
+                      ></div>
+                    </div>
+                    {scannedItems.length > 0 && (
+                      <div className="scanned-items-preview">
+                        <p className="preview-label">Scanned items:</p>
+                        <ul className="scanned-items-list">
+                          {scannedItems.map((item, index) => (
+                            <li key={index} className="scanned-item">
+                              <span className="item-number">{index + 1}.</span>
+                              <span className="item-serial">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
                 <div className="scanner-instructions">
                   <p>Position the barcode within the camera view</p>
                   <p>Supported formats: GS1 Data Matrix, QR codes</p>
+                  {requiredItemCount > 1 && (
+                    <p className="multi-scan-instruction">
+                      <strong>Multi-scan mode:</strong> Scan {requiredItemCount} items to continue
+                    </p>
+                  )}
                   {!isScanning && (
                     <p className="error-text">Camera not started. Please check permissions.</p>
                   )}
@@ -4110,6 +4142,22 @@ function App() {
               </div>
               <div className="scanner-footer">
                 <button className="btn-secondary" onClick={closeScanner}>Cancel</button>
+                {requiredItemCount > 1 && scannedItems.length > 0 && (
+                  <button 
+                    className="btn-primary ml-2" 
+                    onClick={() => {
+                      const itemsText = scannedItems.join('\n');
+                      setSerialCollectionStep({
+                        ...serialCollectionStep,
+                        currentSerial: itemsText
+                      });
+                      setSuccess(`Saved ${scannedItems.length} scanned items`);
+                      closeScanner();
+                    }}
+                  >
+                    Save {scannedItems.length} Items
+                  </button>
+                )}
               </div>
             </div>
           </div>
