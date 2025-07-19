@@ -1045,6 +1045,226 @@ async def delete_location(location_id: str, current_user: User = Depends(get_cur
         logger.error(f"Error deleting location: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Admin endpoints
+@api_router.post("/admin/login", response_model=Token)
+async def admin_login(admin: AdminLogin):
+    """Admin login"""
+    user_data = await db.users.find_one({"email": admin.email})
+    if not user_data or not user_data.get("is_super_admin", False):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid admin credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    if not verify_password(admin.password, user_data["hashed_password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid admin credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user_data["email"]}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@api_router.get("/admin/users")
+async def get_all_users(current_admin: User = Depends(get_current_admin_user)):
+    """Get all users (admin only)"""
+    try:
+        cursor = db.users.find({})
+        users = []
+        async for user in cursor:
+            user_data = {
+                "id": user["id"],
+                "email": user["email"],
+                "firstName": user.get("first_name", ""),
+                "lastName": user.get("last_name", ""),
+                "status": user.get("status", "pending"),
+                "isSuperAdmin": user.get("is_super_admin", False),
+                "isActive": user.get("is_active", True),
+                "approvedBy": user.get("approved_by"),
+                "approvedAt": user.get("approved_at"),
+                "createdAt": user.get("created_at"),
+                "updatedAt": user.get("updated_at")
+            }
+            users.append(user_data)
+        
+        return {"users": users}
+    except Exception as e:
+        logger.error(f"Error fetching users: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.put("/admin/users/{user_id}")
+async def admin_update_user(
+    user_id: str, 
+    user_update: AdminUserUpdate, 
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Update user (admin only)"""
+    try:
+        # Check if user exists
+        user = await db.users.find_one({"id": user_id})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Prepare update data
+        update_data = {"updated_at": datetime.utcnow()}
+        
+        if user_update.first_name is not None:
+            update_data["first_name"] = user_update.first_name
+        if user_update.last_name is not None:
+            update_data["last_name"] = user_update.last_name
+        if user_update.email is not None:
+            # Check if email is already taken
+            existing_user = await db.users.find_one({"email": user_update.email, "id": {"$ne": user_id}})
+            if existing_user:
+                raise HTTPException(status_code=400, detail="Email already taken")
+            update_data["email"] = user_update.email
+        if user_update.status is not None:
+            update_data["status"] = user_update.status
+            # If approving user, set approval info
+            if user_update.status == "active" and user.get("status") != "active":
+                update_data["approved_by"] = current_admin.id
+                update_data["approved_at"] = datetime.utcnow()
+        if user_update.is_super_admin is not None:
+            update_data["is_super_admin"] = user_update.is_super_admin
+        
+        # Update user
+        await db.users.update_one({"id": user_id}, {"$set": update_data})
+        
+        # Return updated user
+        updated_user = await db.users.find_one({"id": user_id})
+        return {
+            "message": "User updated successfully",
+            "user": {
+                "id": updated_user["id"],
+                "email": updated_user["email"],
+                "firstName": updated_user.get("first_name", ""),
+                "lastName": updated_user.get("last_name", ""),
+                "status": updated_user.get("status", "pending"),
+                "isSuperAdmin": updated_user.get("is_super_admin", False),
+                "isActive": updated_user.get("is_active", True),
+                "approvedBy": updated_user.get("approved_by"),
+                "approvedAt": updated_user.get("approved_at")
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating user: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.put("/admin/users/{user_id}/password")
+async def admin_reset_password(
+    user_id: str, 
+    password_data: AdminPasswordReset, 
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Reset user password (admin only)"""
+    try:
+        # Check if user exists
+        user = await db.users.find_one({"id": user_id})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Hash new password
+        hashed_password = get_password_hash(password_data.new_password)
+        
+        # Update password
+        await db.users.update_one(
+            {"id": user_id}, 
+            {"$set": {
+                "hashed_password": hashed_password,
+                "updated_at": datetime.utcnow()
+            }}
+        )
+        
+        return {"message": "Password reset successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error resetting password: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.delete("/admin/users/{user_id}")
+async def admin_delete_user(
+    user_id: str, 
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Delete user (admin only)"""
+    try:
+        # Check if user exists
+        user = await db.users.find_one({"id": user_id})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Prevent self-deletion
+        if user_id == current_admin.id:
+            raise HTTPException(status_code=400, detail="Cannot delete yourself")
+        
+        # Delete user and their projects
+        await db.users.delete_one({"id": user_id})
+        await db.projects.delete_many({"user_id": user_id})
+        await db.locations.delete_many({"user_id": user_id})
+        
+        return {"message": "User deleted successfully"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting user: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.post("/admin/users")
+async def admin_create_user(
+    user_data: CreateAdminUser, 
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Create new admin user (admin only)"""
+    try:
+        # Check if email already exists
+        existing_user = await db.users.find_one({"email": user_data.email})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        # Create new admin user
+        hashed_password = get_password_hash(user_data.password)
+        new_user_data = {
+            "id": str(uuid.uuid4()),
+            "email": user_data.email,
+            "first_name": user_data.first_name,
+            "last_name": user_data.last_name,
+            "hashed_password": hashed_password,
+            "is_active": True,
+            "is_super_admin": True,
+            "status": "active",  # Admin users are automatically active
+            "approved_by": current_admin.id,
+            "approved_at": datetime.utcnow(),
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+        
+        await db.users.insert_one(new_user_data)
+        
+        return {
+            "message": "Admin user created successfully",
+            "user": {
+                "id": new_user_data["id"],
+                "email": new_user_data["email"],
+                "firstName": new_user_data["first_name"],
+                "lastName": new_user_data["last_name"],
+                "isSuperAdmin": True,
+                "status": "active"
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating admin user: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 def add_ilmd_extension(event_element, lot_number, expiration_date):
     """Add ILMD extension with lot number and expiration date to an event"""
     if lot_number or expiration_date:
