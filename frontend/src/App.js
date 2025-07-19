@@ -4241,6 +4241,7 @@ function MainApp() {
       {showDashboard ? (
         <ProjectDashboard 
           onSelectProject={handleSelectProject}
+          onCreateProject={handleCreateProject}
           onLogout={handleLogout}
         />
       ) : (
