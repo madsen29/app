@@ -417,7 +417,6 @@ function MainApp() {
   // Project management functions
   const handleSelectProject = (project) => {
     setCurrentProject(project);
-    setShowDashboard(false);
     setHasUnsavedChanges(false); // Reset unsaved changes flag
     
     // Reset packaging configuration lock state for new project selection
@@ -496,10 +495,9 @@ function MainApp() {
       });
     }
     
-    // Navigate to the appropriate step based on project state
-    if (project.current_step && project.current_step !== currentStep) {
-      navigateToProject(project.id, project.current_step);
-    }
+    // Navigate to the appropriate step based on project state using History API
+    const targetStep = project.current_step || 1;
+    navigateToProject(project.id, targetStep);
     
     // Check if packaging configuration should be locked
     const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
