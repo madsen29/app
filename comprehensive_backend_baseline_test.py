@@ -421,9 +421,9 @@ class ComprehensiveBackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if (len(data["sscc_serial_numbers"]) == 1 and 
-                    len(data["case_serial_numbers"]) == 1 and
-                    len(data["item_serial_numbers"]) == 2):
+                if (len(data.get("sscc_serial_numbers", [])) == 1 and 
+                    len(data.get("case_serial_numbers", [])) == 1 and
+                    len(data.get("item_serial_numbers", [])) == 2):
                     self.log_test("Serial Numbers Creation", True, "Serial numbers saved successfully", 
                                 f"SSCC: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
                     return True
