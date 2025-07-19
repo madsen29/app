@@ -99,6 +99,7 @@ function App() {
   const [scannerModal, setScannerModal] = useState({ isOpen: false, targetField: '', targetSetter: null });
   const [scannedItems, setScannedItems] = useState([]);
   const [requiredItemCount, setRequiredItemCount] = useState(1);
+  const [shouldContinueScanning, setShouldContinueScanning] = useState(false);
   const [fdaModal, setFdaModal] = useState({ isOpen: false, searchResults: [], isLoading: false });
   const [editModal, setEditModal] = useState({ isOpen: false, path: '', currentValue: '', label: '', contextPath: '' });
   const [isAutoSaving, setIsAutoSaving] = useState(false);
