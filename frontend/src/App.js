@@ -12,8 +12,12 @@ import ProjectDashboard from './ProjectDashboard';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-function App() {
+// Main Application Component with routing logic
+function MainApp() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
   
   // Project management state
   const [currentProject, setCurrentProject] = useState(null);
@@ -22,8 +26,9 @@ function App() {
   const [isPackagingConfigLocked, setIsPackagingConfigLocked] = useState(false);
   const [originalPackagingConfig, setOriginalPackagingConfig] = useState(null);
   
-  // Existing state
-  const [currentStep, setCurrentStep] = useState(1);
+  // Get current step from URL params
+  const currentStep = parseInt(params.stepNumber) || 1;
+  const projectId = params.projectId;
   const [configuration, setConfiguration] = useState({
     itemsPerCase: '',
     casesPerSscc: '',
