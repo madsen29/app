@@ -433,18 +433,6 @@ async def update_user_profile(user_update: UserUpdate, current_user: User = Depe
         if existing_user:
             raise HTTPException(status_code=400, detail="Email already registered")
         update_data["email"] = user_update.email
-    if user_update.company_name is not None:
-        update_data["company_name"] = user_update.company_name
-    if user_update.street_address is not None:
-        update_data["street_address"] = user_update.street_address
-    if user_update.city is not None:
-        update_data["city"] = user_update.city
-    if user_update.state is not None:
-        update_data["state"] = user_update.state
-    if user_update.postal_code is not None:
-        update_data["postal_code"] = user_update.postal_code
-    if user_update.country_code is not None:
-        update_data["country_code"] = user_update.country_code
     
     if not update_data:
         raise HTTPException(status_code=400, detail="No valid fields to update")
