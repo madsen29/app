@@ -63,7 +63,7 @@ function MainApp() {
         loadProjectFromUrl(projectId);
       }
     }
-  }, [location.pathname, projectId, currentProject]);
+  }, [location.pathname, projectId]); // Removed currentProject to prevent loops
   
   const handleCreateProject = (project) => {
     // The ProjectDashboard will call handleSelectProject for the new project
