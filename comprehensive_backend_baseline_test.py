@@ -344,12 +344,12 @@ class ComprehensiveBackendTester:
             
             if response.status_code == 200:
                 data = response.json()
-                # Verify key configuration fields
-                if (data.get("items_per_case") == 2 and 
-                    data.get("cases_per_sscc") == 1 and
-                    data.get("number_of_sscc") == 1 and
-                    data.get("company_prefix") == "1234567" and
-                    data.get("lot_number") == "LOT123"):
+                # Verify key configuration fields (response uses camelCase)
+                if (data.get("itemsPerCase") == 2 and 
+                    data.get("casesPerSscc") == 1 and
+                    data.get("numberOfSscc") == 1 and
+                    data.get("companyPrefix") == "1234567" and
+                    data.get("lotNumber") == "LOT123"):
                     self.log_test("Configuration Creation", True, "Configuration saved successfully", 
                                 f"Config ID: {data['id']}, Items/Case: {data['items_per_case']}")
                     return True
