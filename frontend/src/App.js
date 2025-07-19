@@ -4302,9 +4302,6 @@ function App() {
           <button 
             type="button" 
             onClick={() => {
-              if (currentProject) {
-                navigate(`/project/${currentProject.id}/step/2`);
-              }
               setCurrentStep(2);
               scrollToTop();
             }} 
