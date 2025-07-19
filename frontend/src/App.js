@@ -1271,7 +1271,7 @@ function MainApp() {
         await autoSave();
       }
       
-      setCurrentStep(step);
+      navigateToStep(step);
       scrollToTop();
       setError('');
       setSuccess('');
