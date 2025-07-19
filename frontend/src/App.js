@@ -2389,26 +2389,36 @@ function App() {
           setSuccess(`Scanned serial number: ${serialNumber}`);
           closeScanner();
         } else if (isItemsLevel && requiredItemCount > 1) {
-          // Multi-scanning for Items level
-          const newScannedItems = [...scannedItems, serialNumber];
-          setScannedItems(newScannedItems);
-          
-          // Show progress message
-          setSuccess(`Scanned ${newScannedItems.length} of ${requiredItemCount} items: ${serialNumber}`);
-          
-          if (newScannedItems.length >= requiredItemCount) {
-            // All items scanned, update the textarea and close scanner
-            const itemsText = newScannedItems.join('\n');
-            setSerialCollectionStep({
-              ...serialCollectionStep,
-              currentSerial: itemsText
-            });
+          // Multi-scanning for Items level - use functional update to ensure we have the latest state
+          setScannedItems(prevScannedItems => {
+            // Check if this serial number is already in the scanned items
+            if (prevScannedItems.includes(serialNumber)) {
+              setError(`Duplicate serial number! "${serialNumber}" was already scanned in this session.`);
+              return prevScannedItems; // Return unchanged
+            }
             
-            // Show completion message
-            setSuccess(`All ${requiredItemCount} items scanned successfully!`);
-            setShouldContinueScanning(false);
-            closeScanner();
-          }
+            const newScannedItems = [...prevScannedItems, serialNumber];
+            
+            // Show progress message
+            setSuccess(`Scanned ${newScannedItems.length} of ${requiredItemCount} items: ${serialNumber}`);
+            
+            if (newScannedItems.length >= requiredItemCount) {
+              // All items scanned, update the textarea and close scanner
+              const itemsText = newScannedItems.join('\n');
+              setSerialCollectionStep({
+                ...serialCollectionStep,
+                currentSerial: itemsText
+              });
+              
+              // Show completion message
+              setSuccess(`All ${requiredItemCount} items scanned successfully!`);
+              setShouldContinueScanning(false);
+              setTimeout(() => closeScanner(), 500); // Small delay to show completion message
+            }
+            
+            return newScannedItems;
+          });
+          
           // Note: Don't close scanner here - let it continue scanning for more items
         } else {
           // Single item scanning (SSCC, Case, Inner Case, or single Item)
