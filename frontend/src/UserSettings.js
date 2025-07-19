@@ -202,7 +202,21 @@ const UserSettings = ({ onClose }) => {
     if (activeTab === 'locations') {
       loadLocations();
     }
-  }, [user, activeTab]);
+
+    // Add escape key listener
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    
+    document.addEventListener('keydown', handleEscapeKey);
+    
+    // Cleanup function to remove event listener
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [user, activeTab, onClose]);
 
   const handleUserInfoChange = (e) => {
     setUserInfo({
