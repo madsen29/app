@@ -64,6 +64,36 @@ function MainApp() {
       }
     }
   }, [location.pathname, projectId, currentProject]);
+  
+  // Load project data when URL changes
+  const loadProjectFromUrl = async (urlProjectId) => {
+    try {
+      const response = await axios.get(`${API}/projects/${urlProjectId}`, {
+        headers: {
+          'Authorization': `Bearer ${user.access_token}`
+        }
+      });
+      
+      if (response.data) {
+        setCurrentProject(response.data);
+        if (response.data.configuration) {
+          setConfiguration({...configuration, ...response.data.configuration});
+        }
+        if (response.data.serial_numbers) {
+          // Restore serial numbers if they exist
+          const serialNumbers = response.data.serial_numbers;
+          if (serialNumbers.sscc_serial_numbers || serialNumbers.case_serial_numbers || serialNumbers.item_serial_numbers) {
+            initializeHierarchicalSerials(serialNumbers, response.data.configuration);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading project from URL:', error);
+      // If project doesn't exist or user doesn't have access, redirect to dashboard
+      navigateToDashboard();
+      setError('Project not found or access denied');
+    }
+  };
   const [configuration, setConfiguration] = useState({
     itemsPerCase: '',
     casesPerSscc: '',
