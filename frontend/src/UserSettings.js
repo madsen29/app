@@ -60,7 +60,12 @@ const UserSettings = ({ onClose }) => {
         countryCode: user.country_code || ''
       });
     }
-  }, [user]);
+    
+    // Load locations when component mounts or tab changes to locations
+    if (activeTab === 'locations') {
+      loadLocations();
+    }
+  }, [user, activeTab]);
 
   const handleUserInfoChange = (e) => {
     setUserInfo({
