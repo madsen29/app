@@ -153,8 +153,7 @@ const UserSettings = ({ onClose }) => {
       city: location.city || '',
       state: location.state || '',
       postalCode: location.postalCode || '',
-      countryCode: location.countryCode || '',
-      despatchAdviceNumber: location.despatchAdviceNumber || ''
+      countryCode: location.countryCode || ''
     });
     setEditingLocationId(location.id);
   };
