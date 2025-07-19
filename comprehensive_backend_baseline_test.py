@@ -377,7 +377,7 @@ class ComprehensiveBackendTester:
                 data = response.json()
                 config = data.get("configuration")
                 if config:
-                    # Verify configuration fields are preserved
+                    # Verify configuration fields are preserved (stored as snake_case)
                     if (config.get("items_per_case") == 2 and 
                         config.get("company_prefix") == "1234567" and
                         config.get("lot_number") == "LOT123"):
