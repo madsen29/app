@@ -2361,12 +2361,6 @@ function App() {
         const serialNumber = parsedData.serialNumber;
         const isItemsLevel = serialCollectionStep.currentLevel === 'item';
         
-        // Check for duplicates in already scanned items (current session)
-        if (scannedItems.includes(serialNumber)) {
-          setError(`Duplicate serial number! "${serialNumber}" was already scanned in this session.`);
-          return;
-        }
-        
         // Check for duplicates against ALL existing serial numbers in the project
         const duplicates = validateDuplicateSerials(serialNumber);
         if (duplicates) {
