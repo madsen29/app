@@ -870,7 +870,6 @@ async def get_user_locations(current_user: User = Depends(get_current_user)):
                 "state": location.get("state", ""),
                 "postalCode": location.get("postal_code", ""),
                 "countryCode": location.get("country_code", ""),
-                "despatchAdviceNumber": location.get("despatch_advice_number", ""),
                 "createdAt": location.get("created_at"),
                 "updatedAt": location.get("updated_at")
             }
