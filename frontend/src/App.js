@@ -2812,7 +2812,7 @@ function App() {
             {/* Sender Information */}
             <div className="business-entity-group">
               <div className="flex justify-between items-center mb-4">
-                <h4 className="m">Sender Information</h4>
+                <h4 className="mb-0 pb-0">Sender Information</h4>
                 <button
                   type="button"
                   onClick={() => openLocationSelector('sender')}
