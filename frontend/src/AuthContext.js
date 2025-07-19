@@ -69,10 +69,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(`${API}/auth/register`, userData);
       
-      // Auto-login after registration
-      const loginResult = await login(userData.email, userData.password);
-      
-      return loginResult;
+      // Don't auto-login after registration since users need approval
+      return { 
+        success: true, 
+        message: 'Registration successful! Your account is pending admin approval. You will be able to login once approved.' 
+      };
     } catch (error) {
       return { 
         success: false, 
