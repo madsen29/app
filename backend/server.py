@@ -1581,8 +1581,37 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
                 inner_case_serials.append(serial_entry["serial"])
             elif serial_entry["type"] == "item":
                 item_serials.append(serial_entry["serial"])
+    elif serial_numbers and isinstance(serial_numbers, list) and len(serial_numbers) > 0 and isinstance(serial_numbers[0], dict) and "ssccIndex" in serial_numbers[0]:
+        # Handle frontend hierarchical format (from auto-save)
+        for sscc_entry in serial_numbers:
+            sscc_serials.append(sscc_entry.get("ssccSerial", ""))
+            
+            # Extract case serials and item serials from nested structure
+            if "cases" in sscc_entry:
+                for case_entry in sscc_entry["cases"]:
+                    case_serials.append(case_entry.get("caseSerial", ""))
+                    
+                    # Handle inner cases if present
+                    if "innerCases" in case_entry and case_entry["innerCases"]:
+                        for inner_case_entry in case_entry["innerCases"]:
+                            inner_case_serials.append(inner_case_entry.get("innerCaseSerial", ""))
+                            
+                            # Handle items within inner cases
+                            if "items" in inner_case_entry:
+                                for item_entry in inner_case_entry["items"]:
+                                    item_serials.append(item_entry.get("itemSerial", ""))
+                    
+                    # Handle items directly under cases (no inner cases)
+                    if "items" in case_entry:
+                        for item_entry in case_entry["items"]:
+                            item_serials.append(item_entry.get("itemSerial", ""))
+            
+            # Handle items directly under SSCC (no cases)  
+            if "items" in sscc_entry:
+                for item_entry in sscc_entry["items"]:
+                    item_serials.append(item_entry.get("itemSerial", ""))
     elif serial_numbers and isinstance(serial_numbers, dict):
-        # Handle hierarchical format (from auto-save)
+        # Handle simple hierarchical format (legacy)
         sscc_serials = serial_numbers.get("ssccSerialNumbers", serial_numbers.get("sscc_serial_numbers", []))
         case_serials = serial_numbers.get("caseSerialNumbers", serial_numbers.get("case_serial_numbers", []))
         inner_case_serials = serial_numbers.get("innerCaseSerialNumbers", serial_numbers.get("inner_case_serial_numbers", []))
