@@ -592,7 +592,7 @@ const UserSettings = ({ onClose }) => {
                 </p>
 
                 {/* Location Form */}
-                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                <div className="bg-gray-100 p-4 rounded-lg mb-6">
                   <h4 className="text-md font-medium text-gray-900 mb-4">
                     {editingLocationId ? 'Edit Location' : 'Add New Location'}
                   </h4>
