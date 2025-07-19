@@ -2247,6 +2247,12 @@ input:disabled {
   font-weight: 500;
 }
 
+.format-restriction {
+  color: #ef4444 !important;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
 .scanner-footer .btn-primary.ml-2 {
   margin-left: 0.5rem;
 }
