@@ -236,7 +236,6 @@ const AdminDashboard = ({ onLogout }) => {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">{stat.label}</dt>
-                    <dd className="text-lg font-semibold text-gray-900">{stat.value}</dd>
                   </dl>
                 </div>
               </div>

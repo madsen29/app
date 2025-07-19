@@ -491,7 +491,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
               <p className="text-gray-500 mb-4">Get started by creating your first EPCIS project.</p>
               <button
                 onClick={handleCreateProjectClick}
-                className="btn-new-project bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium"
+                className="btn-new-project bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium mx-auto"
               >
                 <FiPlus size={16} />
                 Create First Project
