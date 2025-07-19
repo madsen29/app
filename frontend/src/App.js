@@ -2287,16 +2287,11 @@ function App() {
     try {
       setIsScanning(true);
       
-      // Import specific 2D readers instead of MultiFormatReader
-      const { 
-        BrowserDatamatrixCodeReader, 
-        BrowserQRCodeReader,
-        BrowserMultiFormatReader,
-        BarcodeFormat 
-      } = await import('@zxing/library');
+      // Import BrowserMultiFormatReader
+      const { BrowserMultiFormatReader } = await import('@zxing/library');
       
-      // Use DataMatrix reader primarily (most common for pharmaceutical)
-      codeReader.current = new BrowserDatamatrixCodeReader();
+      // Use MultiFormatReader but validate results
+      codeReader.current = new BrowserMultiFormatReader();
       
       // Request camera permissions and get stream
       const constraints = {
