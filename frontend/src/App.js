@@ -2291,19 +2291,16 @@ function App() {
     try {
       setIsScanning(true);
       
-      // Initialize the code reader with 2D formats only
-      const hints = new Map();
-      const { BarcodeFormat } = await import('@zxing/library');
+      // Import specific 2D readers instead of MultiFormatReader
+      const { 
+        BrowserDatamatrixCodeReader, 
+        BrowserQRCodeReader,
+        BrowserMultiFormatReader,
+        BarcodeFormat 
+      } = await import('@zxing/library');
       
-      // Only allow 2D formats (Data Matrix, QR Code, Aztec, PDF417)
-      hints.set(2, [
-        BarcodeFormat.DATA_MATRIX,
-        BarcodeFormat.QR_CODE,
-        BarcodeFormat.AZTEC,
-        BarcodeFormat.PDF_417
-      ]);
-      
-      codeReader.current = new BrowserMultiFormatReader(hints);
+      // Use DataMatrix reader primarily (most common for pharmaceutical)
+      codeReader.current = new BrowserDatamatrixCodeReader();
       
       // Request camera permissions and get stream
       const constraints = {
