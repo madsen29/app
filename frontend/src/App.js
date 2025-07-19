@@ -2175,6 +2175,7 @@ function App() {
     
     setScannedItems([]);
     setRequiredItemCount(itemCount);
+    setShouldContinueScanning(isItemsLevel && itemCount > 1);
     setScannerModal({ isOpen: true, targetField, targetSetter });
   };
 
