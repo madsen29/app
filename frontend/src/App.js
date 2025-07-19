@@ -79,16 +79,124 @@ function MainApp() {
       });
       
       if (response.data) {
-        setCurrentProject(response.data);
-        if (response.data.configuration) {
-          setConfiguration({...configuration, ...response.data.configuration});
+        const project = response.data;
+        setCurrentProject(project);
+        setHasUnsavedChanges(false); // Reset unsaved changes flag
+        
+        // Reset packaging configuration lock state for new project selection
+        setIsPackagingConfigLocked(false);
+        setOriginalPackagingConfig(null);
+        
+        // Helper function to get configuration value (handles both camelCase and snake_case)
+        const getConfigValue = (config, camelKey, snakeKey, defaultValue) => {
+          return config[camelKey] || config[snakeKey] || defaultValue;
+        };
+        
+        // Helper function to get numeric configuration value
+        const getNumericConfigValue = (config, camelKey, snakeKey, defaultValue) => {
+          const value = config[camelKey] || config[snakeKey] || defaultValue;
+          return parseInt(value) || defaultValue;
+        };
+        
+        // Load project configuration
+        if (project.configuration) {
+          const config = project.configuration;
+          console.log('Loading project configuration:', config);
+          setConfiguration({
+            itemsPerCase: getNumericConfigValue(config, 'itemsPerCase', 'items_per_case', 10),
+            casesPerSscc: getNumericConfigValue(config, 'casesPerSscc', 'cases_per_sscc', 5),
+            numberOfSscc: getNumericConfigValue(config, 'numberOfSscc', 'number_of_sscc', 1),
+            useInnerCases: getConfigValue(config, 'useInnerCases', 'use_inner_cases', false),
+            innerCasesPerCase: getNumericConfigValue(config, 'innerCasesPerCase', 'inner_cases_per_case', 2),
+            itemsPerInnerCase: getNumericConfigValue(config, 'itemsPerInnerCase', 'items_per_inner_case', 5),
+            companyPrefix: getConfigValue(config, 'companyPrefix', 'company_prefix', '0345802'),
+            productCode: getConfigValue(config, 'productCode', 'product_code', '46653'),
+            lotNumber: getConfigValue(config, 'lotNumber', 'lot_number', ''),
+            expirationDate: getConfigValue(config, 'expirationDate', 'expiration_date', ''),
+            ssccExtensionDigit: getConfigValue(config, 'ssccExtensionDigit', 'sscc_extension_digit', '0'),
+            caseIndicatorDigit: getConfigValue(config, 'caseIndicatorDigit', 'case_indicator_digit', '0'),
+            innerCaseIndicatorDigit: getConfigValue(config, 'innerCaseIndicatorDigit', 'inner_case_indicator_digit', '0'),
+            itemIndicatorDigit: getConfigValue(config, 'itemIndicatorDigit', 'item_indicator_digit', '0'),
+            // Business Document Information
+            senderCompanyPrefix: getConfigValue(config, 'senderCompanyPrefix', 'sender_company_prefix', ''),
+            senderGln: getConfigValue(config, 'senderGln', 'sender_gln', ''),
+            senderSgln: getConfigValue(config, 'senderSgln', 'sender_sgln', ''),
+            senderName: getConfigValue(config, 'senderName', 'sender_name', ''),
+            senderStreetAddress: getConfigValue(config, 'senderStreetAddress', 'sender_street_address', ''),
+            senderCity: getConfigValue(config, 'senderCity', 'sender_city', ''),
+            senderState: getConfigValue(config, 'senderState', 'sender_state', ''),
+            senderPostalCode: getConfigValue(config, 'senderPostalCode', 'sender_postal_code', ''),
+            senderCountryCode: getConfigValue(config, 'senderCountryCode', 'sender_country_code', ''),
+            senderDespatchAdviceNumber: getConfigValue(config, 'senderDespatchAdviceNumber', 'sender_despatch_advice_number', ''),
+            receiverCompanyPrefix: getConfigValue(config, 'receiverCompanyPrefix', 'receiver_company_prefix', ''),
+            receiverGln: getConfigValue(config, 'receiverGln', 'receiver_gln', ''),
+            receiverSgln: getConfigValue(config, 'receiverSgln', 'receiver_sgln', ''),
+            receiverName: getConfigValue(config, 'receiverName', 'receiver_name', ''),
+            receiverStreetAddress: getConfigValue(config, 'receiverStreetAddress', 'receiver_street_address', ''),
+            receiverCity: getConfigValue(config, 'receiverCity', 'receiver_city', ''),
+            receiverState: getConfigValue(config, 'receiverState', 'receiver_state', ''),
+            receiverPostalCode: getConfigValue(config, 'receiverPostalCode', 'receiver_postal_code', ''),
+            receiverCountryCode: getConfigValue(config, 'receiverCountryCode', 'receiver_country_code', ''),
+            receiverPoNumber: getConfigValue(config, 'receiverPoNumber', 'receiver_po_number', ''),
+            shipperCompanyPrefix: getConfigValue(config, 'shipperCompanyPrefix', 'shipper_company_prefix', ''),
+            shipperGln: getConfigValue(config, 'shipperGln', 'shipper_gln', ''),
+            shipperSgln: getConfigValue(config, 'shipperSgln', 'shipper_sgln', ''),
+            shipperName: getConfigValue(config, 'shipperName', 'shipper_name', ''),
+            shipperStreetAddress: getConfigValue(config, 'shipperStreetAddress', 'shipper_street_address', ''),
+            shipperCity: getConfigValue(config, 'shipperCity', 'shipper_city', ''),
+            shipperState: getConfigValue(config, 'shipperState', 'shipper_state', ''),
+            shipperPostalCode: getConfigValue(config, 'shipperPostalCode', 'shipper_postal_code', ''),
+            shipperCountryCode: getConfigValue(config, 'shipperCountryCode', 'shipper_country_code', ''),
+            shipperSameAsSender: getConfigValue(config, 'shipperSameAsSender', 'shipper_same_as_sender', false),
+            // EPCClass data
+            productNdc: getConfigValue(config, 'productNdc', 'product_ndc', ''),
+            packageNdc: getConfigValue(config, 'packageNdc', 'package_ndc', ''),
+            regulatedProductName: getConfigValue(config, 'regulatedProductName', 'regulated_product_name', ''),
+            manufacturerName: getConfigValue(config, 'manufacturerName', 'manufacturer_name', ''),
+            dosageFormType: getConfigValue(config, 'dosageFormType', 'dosage_form_type', ''),
+            strengthDescription: getConfigValue(config, 'strengthDescription', 'strength_description', ''),
+            netContentDescription: getConfigValue(config, 'netContentDescription', 'net_content_description', '')
+          });
+          
+          // Store original packaging configuration for comparison
+          setOriginalPackagingConfig({
+            itemsPerCase: getNumericConfigValue(config, 'itemsPerCase', 'items_per_case', ''),
+            casesPerSscc: getNumericConfigValue(config, 'casesPerSscc', 'cases_per_sscc', ''),
+            numberOfSscc: getNumericConfigValue(config, 'numberOfSscc', 'number_of_sscc', ''),
+            useInnerCases: getConfigValue(config, 'useInnerCases', 'use_inner_cases', false),
+            innerCasesPerCase: getNumericConfigValue(config, 'innerCasesPerCase', 'inner_cases_per_case', ''),
+            itemsPerInnerCase: getNumericConfigValue(config, 'itemsPerInnerCase', 'items_per_inner_case', '')
+          });
         }
-        if (response.data.serial_numbers) {
-          // Restore serial numbers if they exist
-          const serialNumbers = response.data.serial_numbers;
-          if (serialNumbers.sscc_serial_numbers || serialNumbers.case_serial_numbers || serialNumbers.item_serial_numbers) {
-            initializeHierarchicalSerials(serialNumbers, response.data.configuration);
+        
+        // Check if packaging configuration should be locked
+        const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
+        setIsPackagingConfigLocked(hasSerialNumbers);
+        
+        // Load existing serial numbers if available
+        if (project.serial_numbers) {
+          setHierarchicalSerials(project.serial_numbers);
+          
+          // Also restore the serial collection step state if we're on step 2
+          if (project.current_step === 2 && project.configuration) {
+            // Find the current position in the serial collection
+            const currentPosition = findCurrentSerialPosition(project.serial_numbers, project.configuration);
+            if (currentPosition.isComplete) {
+              setSerialCollectionStep({
+                ...currentPosition,
+                isComplete: true
+              });
+            } else {
+              setSerialCollectionStep({
+                ...currentPosition,
+                currentSerial: '',
+                isComplete: false
+              });
+            }
           }
+        } else if (project.configuration && project.current_step >= 2) {
+          // Initialize hierarchical serials if we're on step 2 or beyond but don't have saved serial numbers
+          initializeHierarchicalSerials(project.configuration);
         }
       }
     } catch (error) {
