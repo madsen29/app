@@ -7,6 +7,7 @@ import { FiCamera, FiChevronRight, FiPackage, FiBox, FiFolder, FiFile, FiX, FiAr
 import { useAuth } from './AuthContext';
 import AuthWrapper from './AuthWrapper';
 import ProjectDashboard from './ProjectDashboard';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
