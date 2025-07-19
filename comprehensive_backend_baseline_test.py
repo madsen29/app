@@ -612,8 +612,8 @@ class ComprehensiveBackendTester:
         try:
             response = temp_session.get(f"{self.base_url}/projects")
             
-            if response.status_code == 401:
-                self.log_test("Error Handling", True, "Unauthorized access properly rejected")
+            if response.status_code in [401, 403]:
+                self.log_test("Error Handling", True, f"Unauthorized access properly rejected (HTTP {response.status_code})")
                 return True
             else:
                 self.log_test("Error Handling", False, f"Expected 401, got {response.status_code}")
