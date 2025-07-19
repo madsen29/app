@@ -1210,7 +1210,8 @@ function MainApp() {
         }
       });
       
-      setCurrentStep(3);
+      // Navigate to step 3
+      navigateToStep(3);
       setSuccess('Serial numbers saved successfully!');
       scrollToTop();
     } catch (err) {
