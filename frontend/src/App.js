@@ -662,6 +662,7 @@ function App() {
     
     setShowDashboard(true);
     setCurrentProject(null);
+    setCurrentStep(1);
     setHasUnsavedChanges(false);
     setIsPackagingConfigLocked(false);
     setOriginalPackagingConfig(null);
