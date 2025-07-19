@@ -478,7 +478,8 @@ metadata:
 
 test_plan:
   current_focus:
-    []
+    - "EPCIS XML generation"
+    - "EPCIS generation and download UI"
   stuck_tasks:
     []
   test_all: false
