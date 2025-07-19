@@ -2198,6 +2198,10 @@ function App() {
       }
     }
     
+    // Clear multi-scanning state
+    setScannedItems([]);
+    setRequiredItemCount(1);
+    
     setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
   };
 
