@@ -409,6 +409,7 @@ async def root():
 
 # Authentication middleware
 security = HTTPBearer()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Get current authenticated user"""
