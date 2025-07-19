@@ -24,6 +24,7 @@ const RegisterForm = ({ onSwitchToLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
@@ -35,7 +36,17 @@ const RegisterForm = ({ onSwitchToLogin }) => {
     const { confirmPassword, ...userData } = formData;
     const result = await register(userData);
     
-    if (!result.success) {
+    if (result.success) {
+      setSuccess(result.message);
+      // Clear form
+      setFormData({
+        email: '',
+        password: '',
+        confirmPassword: '',
+        firstName: '',
+        lastName: ''
+      });
+    } else {
       setError(result.error);
     }
     
