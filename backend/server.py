@@ -411,6 +411,27 @@ async def root():
 security = HTTPBearer()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
+async def get_current_user_from_token(token: str) -> User:
+    """Get user from JWT token without dependency injection"""
+    try:
+        token_data = verify_token(token)
+        user = await get_user_by_email(token_data.email)
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        return user
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Get current authenticated user"""
     token = credentials.credentials
