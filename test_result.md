@@ -373,9 +373,9 @@ frontend:
   
   - task: "EPCIS generation and download UI"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: true
     status_history:
@@ -394,6 +394,12 @@ frontend:
       - working: "NA"
         agent: "testing"
         comment: "STEP 3 TESTING ATTEMPTED BUT INCOMPLETE: ✅ Successfully completed Step 2 hierarchical serial collection showing 'All Serial Numbers Collected' with complete overview of 1 SSCC → 2 Cases → 4 Inner Cases → 12 Items ❌ COULD NOT REACH STEP 3: Despite completing all serial number collection, unable to navigate to Step 3 EPCIS generation interface. The application appears to remain on Step 2 completion screen without providing clear path to Step 3. This suggests there may be a navigation issue or missing button/link to proceed from Step 2 completion to Step 3 EPCIS generation. RECOMMENDATION: Main agent should investigate the Step 2 to Step 3 transition mechanism and ensure proper navigation flow exists after serial collection completion."
+      - working: false
+        agent: "user"
+        comment: "USER REPORTED CORS AND 500 ERROR: EPCIS file generation is failing with both a CORS policy error and 500 Internal Server Error. The frontend cannot access the backend due to 'No Access-Control-Allow-Origin header is present' and concurrently receiving 'net::ERR_FAILED 500 (Internal Server Error)' for the same API call."
+      - working: false
+        agent: "main"
+        comment: "CRITICAL BUG IDENTIFIED AND FIXED: Root cause was a KeyError: 'type' in the generate_epcis_xml function at line 1573. The function expected serial_numbers in a flat list format with 'type' fields, but auto-save was storing them in hierarchical format. Fixed by adding data structure normalization to handle both formats: 1) New list format with 'type' and 'serial' fields (from POST /serial-numbers) 2) Hierarchical format with ssccSerialNumbers, caseSerialNumbers, etc. (from PUT /projects auto-save). Updated generate_epcis_xml function to detect and handle both data structures correctly."
 
   - task: "Business Document Information fields"
     implemented: true
