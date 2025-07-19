@@ -49,11 +49,6 @@ const LocationSelector = ({ isOpen, onClose, onSelectLocation, targetSection }) 
       [`${targetSection}CountryCode`]: location.countryCode || '',
     };
 
-    // Add despatch advice number only for sender
-    if (targetSection === 'sender') {
-      locationData[`${targetSection}DespatchAdviceNumber`] = location.despatchAdviceNumber || '';
-    }
-
     onSelectLocation(locationData);
     onClose();
   };
