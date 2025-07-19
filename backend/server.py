@@ -223,7 +223,7 @@ async def create_user(user: UserCreate) -> User:
             detail="Email already registered"
         )
     
-    # Create new user
+    # Create new user (pending approval)
     hashed_password = get_password_hash(user.password)
     user_data = {
         "id": str(uuid.uuid4()),
@@ -232,7 +232,12 @@ async def create_user(user: UserCreate) -> User:
         "last_name": user.last_name,
         "hashed_password": hashed_password,
         "is_active": True,
-        "created_at": datetime.utcnow()
+        "is_super_admin": False,
+        "status": "pending",  # Requires admin approval
+        "approved_by": None,
+        "approved_at": None,
+        "created_at": datetime.utcnow(),
+        "updated_at": datetime.utcnow()
     }
     
     await db.users.insert_one(user_data)
