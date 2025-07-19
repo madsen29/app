@@ -4509,6 +4509,14 @@ function App() {
             </div>
           </div>
         )}
+
+        {/* Location Selector Modal */}
+        <LocationSelector 
+          isOpen={locationSelectorModal.isOpen}
+          onClose={closeLocationSelector}
+          onSelectLocation={handleLocationSelected}
+          targetSection={locationSelectorModal.targetSection}
+        />
           </div>
           <div className="footer-wrapper"><img className="logo" src="https://rxerp.com/wp-content/uploads/2025/01/rxerp-logo-hero-tagline.svg"></img></div>
         </div>
