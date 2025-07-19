@@ -28,7 +28,13 @@ const AdminDashboard = ({ onLogout }) => {
       const response = await axios.get(`${API}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUsers(response.data.users || []);
+      const userData = response.data.users || [];
+      console.log('Loaded users:', userData);
+      console.log('User count:', userData.length);
+      console.log('Pending count:', userData.filter(u => u.status === 'pending').length);
+      console.log('Active count:', userData.filter(u => u.status === 'active').length);
+      console.log('Admin count:', userData.filter(u => u.isSuperAdmin).length);
+      setUsers(userData);
     } catch (err) {
       setError('Failed to load users');
       if (err.response?.status === 401 || err.response?.status === 403) {
