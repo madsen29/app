@@ -1237,7 +1237,10 @@ function App() {
       }
       
       // Navigate to step 2
-      navigateToStep(2);
+      if (currentProject) {
+        navigate(`/project/${currentProject.id}/step/2`);
+      }
+      setCurrentStep(2);
       
       // Set appropriate success message
       if (hierarchicalSerials && hierarchicalSerials.length > 0) {
