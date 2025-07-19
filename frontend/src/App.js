@@ -4185,8 +4185,8 @@ function App() {
                 )}
                 
                 <div className="scanner-instructions">
-                  <p>Position the barcode within the camera view</p>
-                  <p>Supported formats: GS1 Data Matrix, QR codes</p>
+                  <p>Position the 2D code within the camera view</p>
+                  <p>Supported formats: Data Matrix, QR codes, Aztec, PDF417</p>
                   {requiredItemCount > 1 && (
                     <p className="multi-scan-instruction">
                       <strong>Multi-scan mode:</strong> Scan {requiredItemCount} items to continue
