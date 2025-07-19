@@ -4165,8 +4165,17 @@ function App() {
                         <ul className="scanned-items-list">
                           {scannedItems.map((item, index) => (
                             <li key={index} className="scanned-item">
-                              <span className="item-number">{index + 1}.</span>
-                              <span className="item-serial">{item}</span>
+                              <div className="scanned-item-info">
+                                <span className="item-number">{index + 1}.</span>
+                                <span className="item-serial">{item}</span>
+                              </div>
+                              <button
+                                onClick={() => removeScannedItem(index)}
+                                className="remove-item-btn"
+                                title="Remove this item"
+                              >
+                                Remove
+                              </button>
                             </li>
                           ))}
                         </ul>
