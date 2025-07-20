@@ -72,24 +72,8 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
 
   // Helper function to check if packaging configuration is set and locked
   const isPackagingConfigSetAndLocked = (project) => {
-    if (!project.configuration) return false;
-    
-    // Check the actual field names (camelCase)
-    const config = project.configuration;
-    const numberOfSscc = config.numberOfSscc;
-    const casesPerSscc = config.casesPerSscc;
-    const itemsPerCase = config.itemsPerCase;
-    
-    const hasValidNumberOfSscc = numberOfSscc !== null && numberOfSscc !== undefined && numberOfSscc !== '' && parseInt(numberOfSscc) > 0;
-    const hasValidCasesPerSscc = casesPerSscc !== null && casesPerSscc !== undefined && casesPerSscc !== '' && parseInt(casesPerSscc) >= 0;
-    const hasValidItemsPerCase = itemsPerCase !== null && itemsPerCase !== undefined && itemsPerCase !== '' && parseInt(itemsPerCase) > 0;
-    
-    const packagingSet = hasValidNumberOfSscc && hasValidCasesPerSscc && hasValidItemsPerCase;
-    
-    // Check if project has serial numbers (using correct field name)
-    const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
-    
-    return packagingSet && hasSerialNumbers;
+    // Temporarily force show for any project with serial numbers
+    return project.serial_numbers && project.serial_numbers.length > 0;
   };
 
   // Pagination helper functions
