@@ -74,15 +74,13 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const isPackagingConfigSetAndLocked = (project) => {
     if (!project.configuration) return false;
     
-    // Check if packaging configuration is set (not empty)
-    const packagingSet = (
-      project.configuration.numberOfSscc !== '' && 
-      project.configuration.numberOfSscc !== null &&
-      project.configuration.casesPerSscc !== '' && 
-      project.configuration.casesPerSscc !== null &&
-      project.configuration.itemsPerCase !== '' && 
-      project.configuration.itemsPerCase !== null
-    );
+    // Check if packaging configuration is set (has valid values)
+    const config = project.configuration;
+    const hasValidNumberOfSscc = config.numberOfSscc !== '' && config.numberOfSscc !== null && config.numberOfSscc !== undefined && config.numberOfSscc > 0;
+    const hasValidCasesPerSscc = config.casesPerSscc !== '' && config.casesPerSscc !== null && config.casesPerSscc !== undefined && config.casesPerSscc >= 0;
+    const hasValidItemsPerCase = config.itemsPerCase !== '' && config.itemsPerCase !== null && config.itemsPerCase !== undefined && config.itemsPerCase > 0;
+    
+    const packagingSet = hasValidNumberOfSscc && hasValidCasesPerSscc && hasValidItemsPerCase;
     
     // Check if project has serial numbers (indicating it's locked)
     const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
