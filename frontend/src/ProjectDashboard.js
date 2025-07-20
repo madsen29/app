@@ -42,12 +42,20 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const calculateProjectTotals = (config) => {
     if (!config) return { totalCases: 0, totalInnerCases: 0, totalItems: 0 };
     
-    const numberOfSscc = config.numberOfSscc || 0;
-    const casesPerSscc = config.casesPerSscc || 0;
-    const itemsPerCase = config.itemsPerCase || 0;
-    const useInnerCases = config.useInnerCases || false;
-    const innerCasesPerCase = config.innerCasesPerCase || 0;
-    const itemsPerInnerCase = config.itemsPerInnerCase || 0;
+    // Helper function to get config value with both camelCase and snake_case fallback
+    const getConfigValue = (camelCase, snakeCase, defaultValue = 0) => {
+      const camelValue = config[camelCase];
+      const snakeValue = config[snakeCase];
+      const value = camelValue !== undefined && camelValue !== null ? camelValue : snakeValue;
+      return value !== undefined && value !== null ? parseInt(value) || defaultValue : defaultValue;
+    };
+    
+    const numberOfSscc = getConfigValue('numberOfSscc', 'number_of_sscc', 0);
+    const casesPerSscc = getConfigValue('casesPerSscc', 'cases_per_sscc', 0);
+    const itemsPerCase = getConfigValue('itemsPerCase', 'items_per_case', 0);
+    const useInnerCases = getConfigValue('useInnerCases', 'use_inner_cases', false);
+    const innerCasesPerCase = getConfigValue('innerCasesPerCase', 'inner_cases_per_case', 0);
+    const itemsPerInnerCase = getConfigValue('itemsPerInnerCase', 'items_per_inner_case', 0);
     
     let totalCases = 0;
     let totalInnerCases = 0;
