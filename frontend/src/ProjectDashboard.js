@@ -74,11 +74,21 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const isPackagingConfigSetAndLocked = (project) => {
     if (!project.configuration) return false;
     
+    // Helper function to get config value with both camelCase and snake_case fallback
+    const getConfigValue = (camelCase, snakeCase) => {
+      const camelValue = project.configuration[camelCase];
+      const snakeValue = project.configuration[snakeCase];
+      return camelValue !== undefined && camelValue !== null ? camelValue : snakeValue;
+    };
+    
     // Check if packaging configuration is set (has valid values)
-    const config = project.configuration;
-    const hasValidNumberOfSscc = config.numberOfSscc !== '' && config.numberOfSscc !== null && config.numberOfSscc !== undefined && config.numberOfSscc > 0;
-    const hasValidCasesPerSscc = config.casesPerSscc !== '' && config.casesPerSscc !== null && config.casesPerSscc !== undefined && config.casesPerSscc >= 0;
-    const hasValidItemsPerCase = config.itemsPerCase !== '' && config.itemsPerCase !== null && config.itemsPerCase !== undefined && config.itemsPerCase > 0;
+    const numberOfSscc = getConfigValue('numberOfSscc', 'number_of_sscc');
+    const casesPerSscc = getConfigValue('casesPerSscc', 'cases_per_sscc');
+    const itemsPerCase = getConfigValue('itemsPerCase', 'items_per_case');
+    
+    const hasValidNumberOfSscc = numberOfSscc !== '' && numberOfSscc !== null && numberOfSscc !== undefined && parseInt(numberOfSscc) > 0;
+    const hasValidCasesPerSscc = casesPerSscc !== '' && casesPerSscc !== null && casesPerSscc !== undefined && parseInt(casesPerSscc) >= 0;
+    const hasValidItemsPerCase = itemsPerCase !== '' && itemsPerCase !== null && itemsPerCase !== undefined && parseInt(itemsPerCase) > 0;
     
     const packagingSet = hasValidNumberOfSscc && hasValidCasesPerSscc && hasValidItemsPerCase;
     
