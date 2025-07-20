@@ -74,11 +74,17 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const isPackagingConfigSetAndLocked = (project) => {
     if (!project.configuration) return false;
     
+    // Debug log to see actual field names
+    if (project.name && project.name.includes('EPCIS')) {
+      console.log('Available config fields:', Object.keys(project.configuration));
+      console.log('Full config:', project.configuration);
+    }
+    
     // Check the actual field names that exist in the backend
     const config = project.configuration;
-    const numberOfSscc = config.number_of_sscc;
-    const casesPerSscc = config.cases_per_sscc;
-    const itemsPerCase = config.items_per_case;
+    const numberOfSscc = config.number_of_sscc || config.numberOfSscc;
+    const casesPerSscc = config.cases_per_sscc || config.casesPerSscc;
+    const itemsPerCase = config.items_per_case || config.itemsPerCase;
     
     const hasValidNumberOfSscc = numberOfSscc !== null && numberOfSscc !== undefined && parseInt(numberOfSscc) > 0;
     const hasValidCasesPerSscc = casesPerSscc !== null && casesPerSscc !== undefined && parseInt(casesPerSscc) >= 0;
@@ -88,23 +94,6 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     
     // Check if project has serial numbers (indicating it's locked)
     const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
-    
-    // Debug log for troubleshooting
-    if (project.name && project.name.includes('EPCIS')) {
-      console.log('Debug hierarchy check:', {
-        name: project.name,
-        numberOfSscc,
-        casesPerSscc, 
-        itemsPerCase,
-        hasValidNumberOfSscc,
-        hasValidCasesPerSscc,
-        hasValidItemsPerCase,
-        packagingSet,
-        serialCount: project.serial_numbers?.length,
-        hasSerialNumbers,
-        shouldShow: packagingSet && hasSerialNumbers
-      });
-    }
     
     return packagingSet && hasSerialNumbers;
   };
