@@ -89,6 +89,23 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     // Check if project has serial numbers (indicating it's locked)
     const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
     
+    // Debug log for troubleshooting
+    if (project.name && project.name.includes('EPCIS')) {
+      console.log('Debug hierarchy check:', {
+        name: project.name,
+        numberOfSscc,
+        casesPerSscc, 
+        itemsPerCase,
+        hasValidNumberOfSscc,
+        hasValidCasesPerSscc,
+        hasValidItemsPerCase,
+        packagingSet,
+        serialCount: project.serial_numbers?.length,
+        hasSerialNumbers,
+        shouldShow: packagingSet && hasSerialNumbers
+      });
+    }
+    
     return packagingSet && hasSerialNumbers;
   };
 
