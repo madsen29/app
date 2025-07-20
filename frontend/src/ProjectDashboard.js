@@ -573,6 +573,19 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                 {getCurrentPageProjects().map((project) => {
                   const totals = calculateProjectTotals(project.configuration);
                   
+                  // Helper function to get config value with fallback for template use
+                  const getTemplateConfigValue = (camelCase, snakeCase, defaultValue = 0) => {
+                    if (!project.configuration) return defaultValue;
+                    const camelValue = project.configuration[camelCase];
+                    const snakeValue = project.configuration[snakeCase];
+                    const value = camelValue !== undefined && camelValue !== null ? camelValue : snakeValue;
+                    return value !== undefined && value !== null ? parseInt(value) || defaultValue : defaultValue;
+                  };
+                  
+                  const numberOfSscc = getTemplateConfigValue('numberOfSscc', 'number_of_sscc', 0);
+                  const casesPerSscc = getTemplateConfigValue('casesPerSscc', 'cases_per_sscc', 0);
+                  const useInnerCases = getTemplateConfigValue('useInnerCases', 'use_inner_cases', false);
+                  
                   return (
                     <li key={project.id} className="px-4 py-4 hover:bg-gray-50">
                       <div className="flex items-center justify-between">
@@ -617,10 +630,10 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                                 <span className="font-medium">Package Hierarchy:</span>
                                 <div className="flex items-center space-x-1">
                                   <span className="bg-gray-100 px-2 py-1 rounded text-xs">
-                                    {project.configuration.numberOfSscc || 0} SSCC{(project.configuration.numberOfSscc || 0) !== 1 ? 's' : ''}
+                                    {numberOfSscc} SSCC{numberOfSscc !== 1 ? 's' : ''}
                                   </span>
                                   
-                                  {project.configuration.casesPerSscc > 0 && (
+                                  {casesPerSscc > 0 && (
                                     <>
                                       <span className="text-gray-400">→</span>
                                       <span className="bg-gray-100 px-2 py-1 rounded text-xs">
@@ -629,7 +642,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                                     </>
                                   )}
                                   
-                                  {project.configuration.useInnerCases && (
+                                  {useInnerCases && (
                                     <>
                                       <span className="text-gray-400">→</span>
                                       <span className="bg-gray-100 px-2 py-1 rounded text-xs">
