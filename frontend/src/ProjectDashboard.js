@@ -606,6 +606,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                             {(() => {
                               const shouldShow = isPackagingConfigSetAndLocked(project);
                               if (project.name && project.name.includes('EPCIS')) {
+                                console.log('Debug project fields:', Object.keys(project));
                                 console.log('Hierarchy display check:', {
                                   name: project.name,
                                   shouldShow,
@@ -614,7 +615,9 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                                     casesPerSscc: project.configuration?.casesPerSscc, 
                                     itemsPerCase: project.configuration?.itemsPerCase
                                   },
-                                  serialCount: project.serial_numbers?.length
+                                  serialCount: project.serial_numbers?.length,
+                                  serialNumbers: project.serialNumbers?.length,
+                                  allSerialFields: Object.keys(project).filter(k => k.toLowerCase().includes('serial'))
                                 });
                               }
                               return shouldShow;
