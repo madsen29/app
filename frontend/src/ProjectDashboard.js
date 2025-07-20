@@ -603,25 +603,8 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                             </div>
                             
                             {/* Package Hierarchy - Only show if packaging configuration is set and locked */}
-                            {(() => {
-                              const shouldShow = isPackagingConfigSetAndLocked(project);
-                              if (project.name && project.name.includes('EPCIS')) {
-                                console.log('Debug project fields:', Object.keys(project));
-                                console.log('Hierarchy display check:', {
-                                  name: project.name,
-                                  shouldShow,
-                                  config: {
-                                    numberOfSscc: project.configuration?.numberOfSscc,
-                                    casesPerSscc: project.configuration?.casesPerSscc, 
-                                    itemsPerCase: project.configuration?.itemsPerCase
-                                  },
-                                  serialCount: project.serial_numbers?.length,
-                                  serialNumbers: project.serialNumbers?.length,
-                                  allSerialFields: Object.keys(project).filter(k => k.toLowerCase().includes('serial'))
-                                });
-                              }
-                              return shouldShow;
-                            })() && (
+                            {/* Package Hierarchy - Only show if packaging configuration is set and locked */}
+                            {isPackagingConfigSetAndLocked(project) && (
                               <div className="mt-2 flex items-center space-x-2 text-sm text-gray-600">
                                 <span className="font-medium">Package Hierarchy:</span>
                                 <div className="flex items-center space-x-1">
