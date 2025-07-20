@@ -559,10 +559,10 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                 {getCurrentPageProjects().map((project) => {
                   const totals = calculateProjectTotals(project.configuration);
                   
-                  // Get actual config values directly
-                  const numberOfSscc = project.configuration?.number_of_sscc || 0;
-                  const casesPerSscc = project.configuration?.cases_per_sscc || 0;
-                  const useInnerCases = project.configuration?.use_inner_cases || false;
+                  // Get actual config values directly using camelCase
+                  const numberOfSscc = project.configuration?.numberOfSscc || 0;
+                  const casesPerSscc = project.configuration?.casesPerSscc || 0;
+                  const useInnerCases = project.configuration?.useInnerCases || false;
                   
                   return (
                     <li key={project.id} className="px-4 py-4 hover:bg-gray-50">
