@@ -635,7 +635,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         {project.status !== 'Completed' && (
                           <button
                             onClick={() => onSelectProject(project)}
-                            className="btn-resume text-white px-3 py-1 rounded text-sm font-medium"
+                            className="px-3 py-1 text-xs font-medium text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-md hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                           >
                             Resume
                           </button>
@@ -643,14 +643,14 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         {project.status === 'Completed' && (
                           <button
                             onClick={() => handleDownloadEPCIS(project.id)}
-                            className="btn-download text-white px-3 py-1 rounded text-sm font-medium"
+                            className="px-3 py-1 text-xs font-medium text-green-600 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500"
                           >
-                            Download
+                            Download EPCIS
                           </button>
                         )}
                         <button
                           onClick={() => handleDeleteProject(project.id)}
-                          className="btn-delete text-white px-3 py-1 rounded text-sm font-medium"
+                          className="px-3 py-1 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                         >
                           <FiTrash2 size={16} />
                         </button>
@@ -750,7 +750,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                       {project.status !== 'Completed' && (
                         <button
                           onClick={() => onSelectProject(project)}
-                          className="btn-resume text-white px-3 py-2 rounded text-sm font-medium"
+                          className="px-3 py-1 text-xs font-medium text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-md hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                         >
                           Resume
                         </button>
@@ -758,14 +758,14 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                       {project.status === 'Completed' && (
                         <button
                           onClick={() => handleDownloadEPCIS(project.id)}
-                          className="btn-download text-white px-3 py-2 rounded text-sm font-medium"
+                          className="px-3 py-1 text-xs font-medium text-green-600 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500"
                         >
-                          Download
+                          Download EPCIS
                         </button>
                       )}
                       <button
                         onClick={() => handleDeleteProject(project.id)}
-                        className="btn-delete text-white px-3 py-2 rounded text-sm font-medium"
+                        className="px-3 py-1 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
                       >
                         <FiTrash2 size={16} />
                       </button>

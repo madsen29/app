@@ -2030,7 +2030,7 @@ input:disabled {
 
 /* Project Dashboard Button Styles */
 .btn-resume {
-  background-color: #f5e58c;
+  background-color: #f7eaa6;
   color: #1f2937;
 }
 
@@ -2040,7 +2040,7 @@ input:disabled {
 }
 
 .btn-download {
-  background-color: #e3e5e9;
+  background-color: #f0f1f1;
   color: #1a202c;
 }
 
@@ -2049,18 +2049,24 @@ input:disabled {
 }
 
 .btn-delete {
-  background-color: #ef4444;
-  border-color: #ef4444;
+  background-color: transparent;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem 0.75rem;
 }
+.btn-delete svg {
+  color: #1a202c;
+}
 
 .btn-delete:hover {
   background-color: #dc2626;
   border-color: #dc2626;
+  color: white;
+}
+
+.btn-delete:hover svg {
   color: white;
 }
 
