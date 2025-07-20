@@ -42,12 +42,12 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
   const calculateProjectTotals = (config) => {
     if (!config) return { totalCases: 0, totalInnerCases: 0, totalItems: 0 };
     
-    const numberOfSscc = config.number_of_sscc || 0;
-    const casesPerSscc = config.cases_per_sscc || 0;
-    const itemsPerCase = config.items_per_case || 0;
-    const useInnerCases = config.use_inner_cases || false;
-    const innerCasesPerCase = config.inner_cases_per_case || 0;
-    const itemsPerInnerCase = config.items_per_inner_case || 0;
+    const numberOfSscc = config.numberOfSscc || 0;
+    const casesPerSscc = config.casesPerSscc || 0;
+    const itemsPerCase = config.itemsPerCase || 0;
+    const useInnerCases = config.useInnerCases || false;
+    const innerCasesPerCase = config.innerCasesPerCase || 0;
+    const itemsPerInnerCase = config.itemsPerInnerCase || 0;
     
     let totalCases = 0;
     let totalInnerCases = 0;
