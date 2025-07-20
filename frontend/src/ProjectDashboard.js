@@ -559,18 +559,10 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                 {getCurrentPageProjects().map((project) => {
                   const totals = calculateProjectTotals(project.configuration);
                   
-                  // Helper function to get config value with fallback for template use
-                  const getTemplateConfigValue = (camelCase, snakeCase, defaultValue = 0) => {
-                    if (!project.configuration) return defaultValue;
-                    const camelValue = project.configuration[camelCase];
-                    const snakeValue = project.configuration[snakeCase];
-                    const value = camelValue !== undefined && camelValue !== null ? camelValue : snakeValue;
-                    return value !== undefined && value !== null ? parseInt(value) || defaultValue : defaultValue;
-                  };
-                  
-                  const numberOfSscc = getTemplateConfigValue('numberOfSscc', 'number_of_sscc', 0);
-                  const casesPerSscc = getTemplateConfigValue('casesPerSscc', 'cases_per_sscc', 0);
-                  const useInnerCases = getTemplateConfigValue('useInnerCases', 'use_inner_cases', false);
+                  // Get actual config values directly
+                  const numberOfSscc = project.configuration?.number_of_sscc || 0;
+                  const casesPerSscc = project.configuration?.cases_per_sscc || 0;
+                  const useInnerCases = project.configuration?.use_inner_cases || false;
                   
                   return (
                     <li key={project.id} className="px-4 py-4 hover:bg-gray-50">
