@@ -80,13 +80,13 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     const casesPerSscc = config.casesPerSscc;
     const itemsPerCase = config.itemsPerCase;
     
-    const hasValidNumberOfSscc = numberOfSscc !== null && numberOfSscc !== undefined && parseInt(numberOfSscc) > 0;
-    const hasValidCasesPerSscc = casesPerSscc !== null && casesPerSscc !== undefined && parseInt(casesPerSscc) >= 0;
-    const hasValidItemsPerCase = itemsPerCase !== null && itemsPerCase !== undefined && parseInt(itemsPerCase) > 0;
+    const hasValidNumberOfSscc = numberOfSscc !== null && numberOfSscc !== undefined && numberOfSscc !== '' && parseInt(numberOfSscc) > 0;
+    const hasValidCasesPerSscc = casesPerSscc !== null && casesPerSscc !== undefined && casesPerSscc !== '' && parseInt(casesPerSscc) >= 0;
+    const hasValidItemsPerCase = itemsPerCase !== null && itemsPerCase !== undefined && itemsPerCase !== '' && parseInt(itemsPerCase) > 0;
     
     const packagingSet = hasValidNumberOfSscc && hasValidCasesPerSscc && hasValidItemsPerCase;
     
-    // Check if project has serial numbers (indicating it's locked)
+    // Check if project has serial numbers (using correct field name)
     const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
     
     return packagingSet && hasSerialNumbers;
