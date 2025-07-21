@@ -918,13 +918,19 @@ function App() {
     // Validate required fields
     const requiredFields = [
       { field: 'numberOfSscc', value: configuration.numberOfSscc, name: 'Number of SSCC' },
-      { field: 'casesPerSscc', value: configuration.casesPerSscc, name: 'Cases per SSCC' },
       { field: 'companyPrefix', value: configuration.companyPrefix, name: 'Company Prefix' },
       { field: 'productCode', value: configuration.productCode, name: 'Product Code' },
       { field: 'ssccExtensionDigit', value: configuration.ssccExtensionDigit, name: 'SSCC Extension Digit' },
       { field: 'caseIndicatorDigit', value: configuration.caseIndicatorDigit, name: 'Case Indicator Digit' },
       { field: 'itemIndicatorDigit', value: configuration.itemIndicatorDigit, name: 'Item Indicator Digit' }
     ];
+    
+    // Special validation for casesPerSscc - it can be 0 (for direct SSCC→Items) but not empty
+    if (configuration.casesPerSscc === '' || configuration.casesPerSscc === null || configuration.casesPerSscc === undefined) {
+      setError('Please fill in the following required fields: Cases per SSCC');
+      setIsLoading(false);
+      return;
+    }
     
     const emptyFields = requiredFields.filter(field => !field.value || field.value === '');
     
