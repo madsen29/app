@@ -2555,6 +2555,9 @@ input:disabled {
     padding: 0.5rem;
     font-size: 0.875rem;
   }
+  .project-card-actions button svg {
+    display: inline;
+  }
 
   .btn-resume,
   .btn-download,

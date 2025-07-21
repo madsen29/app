@@ -635,14 +635,14 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         {project.status === 'Completed' && (
                           <button
                             onClick={() => handleDownloadEPCIS(project.id)}
-                            className="px-3 py-1 text-xs font-medium text-green-600 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="px-3 py-1 text-xs font-medium text-slate-50 bg-slate-900 border border-slate-200 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
                           >
                             Download EPCIS
                           </button>
                         )}
                         <button
                           onClick={() => handleDeleteProject(project.id)}
-                          className="px-3 py-1 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          className="px-3 py-1 text-xs font-medium text-slate-400 rounded-md hover:bg-red-100 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                         >
                           <FiTrash2 size={16} />
                         </button>
@@ -755,7 +755,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                       {project.status === 'Completed' && (
                         <button
                           onClick={() => handleDownloadEPCIS(project.id)}
-                          className="px-3 py-1 text-xs font-medium text-green-600 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="px-3 py-1 text-xs font-medium text-slate-50 bg-slate-900 border border-slate-200 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
                         >
                           Download EPCIS
                         </button>

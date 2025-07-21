@@ -495,182 +495,12 @@ const UserSettings = ({ onClose }) => {
           {activeTab === 'locations' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Saved Locations</h3>
+                <h3 className="text-xl font-medium text-gray-900 mb-1">Saved Locations</h3>
                 <p className="text-sm text-gray-600 mb-6">
                   Create and manage locations that can be used as Sender, Receiver, or Shipper information in your projects.
                 </p>
 
-                {/* Location Form */}
-                <div className="bg-gray-100 p-4 rounded-lg mb-6">
-                  <h4 className="text-md font-medium text-gray-900 mb-4">
-                    {editingLocationId ? 'Edit Location' : 'Add New Location'}
-                  </h4>
-                  <form onSubmit={editingLocationId ? handleUpdateLocation : handleCreateLocation}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Location Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={locationForm.name}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., Main Warehouse, Distribution Center"
-                          required
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          GS1 Company Prefix
-                        </label>
-                        <input
-                          type="text"
-                          name="companyPrefix"
-                          value={locationForm.companyPrefix}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., 0367891"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          GLN (Global Location Number)
-                        </label>
-                        <input
-                          type="text"
-                          name="gln"
-                          value={locationForm.gln}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., 0367891000015"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          SGLN (Serialized GLN)
-                        </label>
-                        <input
-                          type="text"
-                          name="sgln"
-                          value={locationForm.sgln}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., 0367891.00001.0"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Company Name
-                        </label>
-                        <input
-                          type="text"
-                          name="companyName"
-                          value={locationForm.companyName}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., Pharma US LLC"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Street Address
-                        </label>
-                        <input
-                          type="text"
-                          name="streetAddress"
-                          value={locationForm.streetAddress}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., 1255 Main St"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          City
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={locationForm.city}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., Salt Lake City"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          State
-                        </label>
-                        <input
-                          type="text"
-                          name="state"
-                          value={locationForm.state}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., UT"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Postal Code
-                        </label>
-                        <input
-                          type="text"
-                          name="postalCode"
-                          value={locationForm.postalCode}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., 84044"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Country Code
-                        </label>
-                        <input
-                          type="text"
-                          name="countryCode"
-                          value={locationForm.countryCode}
-                          onChange={handleLocationFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="e.g., US"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 flex justify-end space-x-3">
-                      {editingLocationId && (
-                        <button
-                          type="button"
-                          onClick={resetLocationForm}
-                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                        >
-                          Cancel
-                        </button>
-                      )}
-                      <button
-                        type="submit"
-                        disabled={loading}
-                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-                      >
-                        {loading ? (editingLocationId ? 'Updating...' : 'Creating...') : (editingLocationId ? 'Update Location' : 'Create Location')}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                {/* Locations List */}
+{/* Locations List */}
                 <div>
                   <h4 className="text-md font-medium text-gray-900 mb-4">Your Locations</h4>
                   {locationsLoading ? (
@@ -678,12 +508,12 @@ const UserSettings = ({ onClose }) => {
                       <div className="text-gray-600">Loading locations...</div>
                     </div>
                   ) : locations.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 text-gray-500 border mb-6">
                       <p>No locations saved yet.</p>
-                      <p className="text-sm mt-1">Create a location above to get started.</p>
+                      <p className="text-sm mt-1">Create a location below to get started.</p>
                     </div>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-3 mb-4">
                       {locations.map(location => (
                         <div key={location.id} className="bg-white border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start">
@@ -730,6 +560,175 @@ const UserSettings = ({ onClose }) => {
                       ))}
                     </div>
                   )}
+                </div>
+                {/* Location Form */}
+                <div className="bg-green-50 p-4 rounded-lg mb-3 border border-green-200">
+                  <h4 className="text-md font-medium text-green-900 mb-4">
+                    {editingLocationId ? 'Edit Location' : 'Add New Location'}
+                  </h4>
+                  <form onSubmit={editingLocationId ? handleUpdateLocation : handleCreateLocation}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-green-900">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium mb-1">
+                          Location Name *
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={locationForm.name}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., Main Warehouse, Distribution Center"
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          GS1 Company Prefix
+                        </label>
+                        <input
+                          type="text"
+                          name="companyPrefix"
+                          value={locationForm.companyPrefix}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., 0367891"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          GLN (Global Location Number)
+                        </label>
+                        <input
+                          type="text"
+                          name="gln"
+                          value={locationForm.gln}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., 0367891000015"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          SGLN (Serialized GLN)
+                        </label>
+                        <input
+                          type="text"
+                          name="sgln"
+                          value={locationForm.sgln}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., 0367891.00001.0"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          Company Name
+                        </label>
+                        <input
+                          type="text"
+                          name="companyName"
+                          value={locationForm.companyName}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., Pharma US LLC"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          Street Address
+                        </label>
+                        <input
+                          type="text"
+                          name="streetAddress"
+                          value={locationForm.streetAddress}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., 1255 Main St"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          City
+                        </label>
+                        <input
+                          type="text"
+                          name="city"
+                          value={locationForm.city}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., Salt Lake City"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          State
+                        </label>
+                        <input
+                          type="text"
+                          name="state"
+                          value={locationForm.state}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., UT"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          Postal Code
+                        </label>
+                        <input
+                          type="text"
+                          name="postalCode"
+                          value={locationForm.postalCode}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., 84044"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          Country Code
+                        </label>
+                        <input
+                          type="text"
+                          name="countryCode"
+                          value={locationForm.countryCode}
+                          onChange={handleLocationFormChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="e.g., US"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 flex justify-end space-x-3">
+                      {editingLocationId && (
+                        <button
+                          type="button"
+                          onClick={resetLocationForm}
+                          className="px-4 py-2 text-sm font-medium bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50"
+                      >
+                        {loading ? (editingLocationId ? 'Updating...' : 'Creating...') : (editingLocationId ? 'Update Location' : 'Create Location')}
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
