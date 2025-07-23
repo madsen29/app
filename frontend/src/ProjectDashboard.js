@@ -341,18 +341,40 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
     setShowCreateModal(true);
   };
 
-  // Avatar dropdown functions
-  const getAvatarColor = (name) => {
-    if (!name) return '#3b82f6';
-    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#f97316', '#06b6d4', '#84cc16'];
-    const index = name.charCodeAt(0) % colors.length;
-    return colors[index];
-  };
+ const getAvatarColor = (initials) => {
+  if (!initials) return '#3b82f6';
 
-  const getInitials = (name) => {
-    if (!name) return '?';
-    return name.charAt(0).toUpperCase();
-  };
+  const colors = [
+    '#3b82f6', // blue
+    '#ef4444', // red
+    '#10b981', // green
+    '#f59e0b', // yellow
+    '#8b5cf6', // purple
+    '#f97316', // orange
+    '#06b6d4', // teal
+    '#84cc16', // lime
+  ];
+
+  // Combine char codes of up to two initials
+  const charSum = initials
+    .slice(0, 2) // only consider up to 2 characters
+    .split('')
+    .reduce((sum, char) => sum + char.charCodeAt(0), 0);
+
+  const index = charSum % colors.length;
+  return colors[index];
+};
+
+ const getInitials = (firstName, lastName, email) => {
+  if (firstName && lastName) {
+    return `${firstName[0]}${lastName[0]}`.toUpperCase();
+  } else if (firstName) {
+    return firstName[0].toUpperCase();
+  } else if (email) {
+    return email[0].toUpperCase();
+  }
+  return '?';
+};
 
   const handleAvatarClick = () => {
     setShowAvatarDropdown(!showAvatarDropdown);
@@ -378,7 +400,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
         className="avatar-button"
         style={{ backgroundColor: getAvatarColor(user?.first_name || user?.email) }}
       >
-        {getInitials(user?.first_name || user?.email)}
+        {getInitials(user?.first_name, user?.last_name, user?.email)}
       </button>
       {showAvatarDropdown && (
         <div className="avatar-dropdown-menu">
