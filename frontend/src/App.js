@@ -2138,61 +2138,48 @@ function App() {
   };
 
   const selectFdaProduct = (productOption) => {
-    // Extract Product Code from Package NDC by combining last 2 sections
-    // Example: "45802-466-35" -> last 2 sections are "466-35" -> "46635"
+    // Get the package_ndc from the FDA response (10-digit format with dashes like "0574-0820-10")
     const packageNdc = productOption.packageNdc;
     const ndcParts = packageNdc.split('-');
     
-    // Combine the last 2 sections (product code + package code)
-    let productCodeForGS1 = '';
+    // STEP 1: Normalize to 11-digit NDC format for #packageNdc field
+    // Left-pad each segment to 5-4-2 format and join with hyphens
+    let normalizedPackageNdc = '';
     if (ndcParts.length >= 3) {
-      // Take the last 2 sections and combine them
-      const productSection = ndcParts[ndcParts.length - 2]; // Second to last section
-      const packageSection = ndcParts[ndcParts.length - 1]; // Last section
-      productCodeForGS1 = productSection + packageSection;
-    } else {
-      // Fallback if NDC format is unexpected
-      productCodeForGS1 = packageNdc.replace(/-/g, '').slice(5);
+      const labelerPadded = ndcParts[0].padStart(5, '0');  // Pad to 5 digits
+      const productPadded = ndcParts[1].padStart(4, '0');  // Pad to 4 digits  
+      const packagePadded = ndcParts[2].padStart(2, '0');  // Pad to 2 digits
+      normalizedPackageNdc = `${labelerPadded}-${productPadded}-${packagePadded}`;
     }
     
-    // Extract Company Prefix from first section of Package NDC
-    // Example: "0574-0820-10" -> first section is "0574" -> prepend "03" -> "030574"
+    // STEP 2: Process segments for #companyPrefix and #productCode
     let companyPrefix = '';
-    if (ndcParts.length >= 1) {
-      // Take the first section and prepend "03"
-      const firstSection = ndcParts[0];
-      companyPrefix = "03" + firstSection;
+    let productCodeForGS1 = '';
+    
+    if (ndcParts.length >= 3) {
+      // For #companyPrefix: Take first segment (without padding) and prepend "03"
+      // Example: "0574" becomes "030574"
+      companyPrefix = "03" + ndcParts[0];
+      
+      // For #productCode: Take last 2 segments (without padding) and concatenate without dash
+      // Example: "0820" + "10" becomes "082010"  
+      productCodeForGS1 = ndcParts[1] + ndcParts[2];
     } else {
-      // Fallback if NDC format is unexpected
+      // Fallback for unexpected NDC format
       const rawPackageNdc = packageNdc.replace(/-/g, '');
-      companyPrefix = "03" + rawPackageNdc.slice(0, 5);
+      companyPrefix = "03" + rawPackageNdc.slice(0, 4);
+      productCodeForGS1 = rawPackageNdc.slice(4);
     }
     
-    // For Package NDC storage, ensure it's properly formatted as 11 digits
-    const rawPackageNdc = packageNdc.replace(/-/g, '');
-    let selectedPackageNdc;
-    
-    if (rawPackageNdc.length === 10) {
-      // Convert 10-digit to 11-digit by adding leading zero to product code
-      // Format: LLLLL-PPP-KK becomes LLLLL-0PPP-KK
-      const labelerCode = rawPackageNdc.slice(0, 5);
-      const productCode = rawPackageNdc.slice(5, 8);
-      const packageCode = rawPackageNdc.slice(8, 10);
-      selectedPackageNdc = labelerCode + '0' + productCode + packageCode;
-    } else if (rawPackageNdc.length === 11) {
-      // Already 11 digits, use as-is
-      selectedPackageNdc = rawPackageNdc;
-    } else {
-      // Invalid length, use as-is but might cause issues
-      selectedPackageNdc = rawPackageNdc;
-    }
+    // Store the normalized 11-digit NDC without hyphens for backend processing
+    const packageNdcForStorage = normalizedPackageNdc.replace(/-/g, '');
     
     setConfiguration({
       ...configuration,
-      productNdc: productOption.productNdc, // Store the 10-digit product NDC
-      packageNdc: selectedPackageNdc, // Store the 11-digit package NDC without hyphens
-      companyPrefix: companyPrefix, // Company prefix from first section of Package NDC
-      productCode: productCodeForGS1, // Product code from last 2 sections of Package NDC
+      productNdc: productOption.productNdc, // Store the original product NDC
+      packageNdc: packageNdcForStorage, // Store the normalized 11-digit package NDC without hyphens
+      companyPrefix: companyPrefix, // "03" + first segment (without padding)
+      productCode: productCodeForGS1, // Last 2 segments concatenated (without padding)
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
       manufacturerName: productOption.labeler_name || '',
       dosageFormType: productOption.dosage_form || '',
