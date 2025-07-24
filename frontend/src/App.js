@@ -1329,12 +1329,21 @@ function App() {
     // Normalize the serial number (trim whitespace, convert to lowercase for comparison)
     const normalizedNewSerial = newSerial.trim().toLowerCase();
     
+    console.log('validateDuplicateSerials called with:', {
+      newSerial,
+      normalizedNewSerial,
+      currentPath,
+      hierarchicalSerialsLength: hierarchicalSerials.length
+    });
+    
     if (!normalizedNewSerial) {
       return null; // Empty serials are not duplicates
     }
     
     // Collect all existing serials
     hierarchicalSerials.forEach((ssccData, ssccIndex) => {
+      console.log(`Processing SSCC ${ssccIndex}:`, ssccData);
+      
       if (ssccData.ssccSerial && ssccData.ssccSerial.trim()) {
         allSerials.push({
           serial: ssccData.ssccSerial.trim(),
@@ -1366,18 +1375,20 @@ function App() {
                 });
               }
               
-              innerCaseData.items.forEach((itemData, itemIndex) => {
-                if (itemData.itemSerial && itemData.itemSerial.trim()) {
-                  allSerials.push({
-                    serial: itemData.itemSerial.trim(),
-                    normalizedSerial: itemData.itemSerial.trim().toLowerCase(),
-                    path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Inner Case ${innerCaseIndex + 1} → Item ${itemIndex + 1}`,
-                    isCurrentPath: currentPath === `item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`
-                  });
-                }
-              });
+              if (innerCaseData.items) {
+                innerCaseData.items.forEach((itemData, itemIndex) => {
+                  if (itemData.itemSerial && itemData.itemSerial.trim()) {
+                    allSerials.push({
+                      serial: itemData.itemSerial.trim(),
+                      normalizedSerial: itemData.itemSerial.trim().toLowerCase(),
+                      path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Inner Case ${innerCaseIndex + 1} → Item ${itemIndex + 1}`,
+                      isCurrentPath: currentPath === `item-${ssccIndex}-${caseIndex}-${innerCaseIndex}-${itemIndex}`
+                    });
+                  }
+                });
+              }
             });
-          } else {
+          } else if (caseData.items) {
             caseData.items.forEach((itemData, itemIndex) => {
               if (itemData.itemSerial && itemData.itemSerial.trim()) {
                 allSerials.push({
@@ -1404,10 +1415,15 @@ function App() {
       }
     });
     
+    console.log('All serials collected:', allSerials);
+    console.log('Looking for normalized serial:', normalizedNewSerial);
+    
     // Check for duplicates using normalized comparison
     const duplicates = allSerials.filter(item => 
       item.normalizedSerial === normalizedNewSerial && !item.isCurrentPath
     );
+    
+    console.log('Duplicates found:', duplicates);
     
     return duplicates.length > 0 ? duplicates : null;
   };
