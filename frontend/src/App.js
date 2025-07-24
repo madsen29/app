@@ -2277,6 +2277,22 @@ function App() {
     setShouldContinueScanning(false);
     
     setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
+    
+    // Backup cleanup with delay (some browsers need time to release camera)
+    setTimeout(() => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        console.log('Delayed cleanup - forcing camera release');
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => {
+          if (track.readyState !== 'ended') {
+            console.log('Force stopping lingering track:', track.label);
+            track.stop();
+          }
+        });
+        videoRef.current.srcObject = null;
+      }
+    }, 1000);
+    
     console.log('Scanner closed');
   };
 
