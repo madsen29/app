@@ -2514,6 +2514,7 @@ function App() {
   const startContinuousScanning = async () => {
     try {
       setIsScanning(true);
+      scanningRef.current = true; // Start the scan loop
       
       // Import BrowserMultiFormatReader
       const { BrowserMultiFormatReader } = await import('@zxing/library');
