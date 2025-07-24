@@ -2543,7 +2543,7 @@ function App() {
           
           // Start scanning
           const scanLoop = async () => {
-            if (!scannerModal.isOpen) return;
+            if (!scannerModal.isOpen || !scanningRef.current) return;
             
             try {
               const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
@@ -2557,7 +2557,7 @@ function App() {
                 if (!validation.isValid) {
                   setError(`❌ Non-GS1 barcode detected. ${validation.reason}`);
                   // Continue scanning instead of stopping
-                  if (scannerModal.isOpen) {
+                  if (scannerModal.isOpen && scanningRef.current) {
                     setTimeout(scanLoop, 500);
                   }
                   return;
@@ -2573,25 +2573,26 @@ function App() {
                 
                 handleBarcodeResult(scannedData);
                 
-                // For single-item scanning, stop the scan loop
+                // For single-item scanning, stop the scan loop completely
                 if (!willContinueScanning) {
-                  console.log('Single scan complete - not continuing loop');
-                  return; // Don't continue the loop for single scans
+                  console.log('Single scan complete - stopping scan loop');
+                  scanningRef.current = false; // Stop the loop immediately
+                  return;
                 } else {
                   // Continue scanning for more items, but add a small delay
-                  if (scannerModal.isOpen) {
+                  if (scannerModal.isOpen && scanningRef.current) {
                     setTimeout(scanLoop, 200);
                   }
                 }
               } else {
                 // No result, continue scanning
-                if (scannerModal.isOpen) {
+                if (scannerModal.isOpen && scanningRef.current) {
                   setTimeout(scanLoop, 100);
                 }
               }
             } catch (scanError) {
-              // Continue scanning only if modal is still open
-              if (scannerModal.isOpen) {
+              // Continue scanning only if modal is still open and we should be scanning
+              if (scannerModal.isOpen && scanningRef.current) {
                 setTimeout(scanLoop, 100);
               }
             }
