@@ -1366,7 +1366,7 @@ function App() {
             });
           }
           
-          if (caseData.innerCases) {
+          if (caseData.innerCases && caseData.innerCases.length > 0) {
             console.log(`Case ${caseIndex} has innerCases:`, caseData.innerCases);
             caseData.innerCases.forEach((innerCaseData, innerCaseIndex) => {
               if (innerCaseData.innerCaseSerial && innerCaseData.innerCaseSerial.trim()) {
