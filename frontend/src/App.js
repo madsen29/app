@@ -2787,6 +2787,7 @@ function App() {
     } else {
       // Immediately stop camera when modal closes
       console.log('Scanner modal closed - stopping camera in useEffect');
+      scanningRef.current = false; // Stop the scan loop
       
       if (videoRef.current) {
         videoRef.current.pause();
@@ -2818,6 +2819,8 @@ function App() {
     return () => {
       // Cleanup on unmount
       console.log('Scanner useEffect cleanup');
+      scanningRef.current = false; // Stop the scan loop
+      
       if (videoRef.current) {
         videoRef.current.pause();
         
