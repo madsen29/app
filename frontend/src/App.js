@@ -2388,7 +2388,7 @@ function App() {
           setScannedItems(prevScannedItems => {
             // Check if this serial number is already in the scanned items
             if (prevScannedItems.includes(serialNumber)) {
-              setError(`Duplicate serial number! "${serialNumber}" was already scanned in this session.`);
+              setError(`🚫 DUPLICATE IN SESSION! "${serialNumber}" was already scanned in this session.`);
               return prevScannedItems; // Return unchanged
             }
             
