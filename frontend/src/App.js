@@ -2740,10 +2740,20 @@ function App() {
       }, 200);
     } else {
       // Immediately stop camera when modal closes
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-        videoRef.current.srcObject = null;
+      console.log('Scanner modal closed - stopping camera in useEffect');
+      
+      if (videoRef.current) {
+        videoRef.current.pause();
+        
+        if (videoRef.current.srcObject) {
+          const tracks = videoRef.current.srcObject.getTracks();
+          console.log('useEffect: Stopping', tracks.length, 'video tracks');
+          tracks.forEach(track => {
+            console.log('useEffect: Stopping track:', track.kind, track.label);
+            track.stop();
+          });
+          videoRef.current.srcObject = null;
+        }
       }
       
       if (codeReader.current) {
@@ -2761,10 +2771,19 @@ function App() {
     
     return () => {
       // Cleanup on unmount
-      if (videoRef.current && videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-        videoRef.current.srcObject = null;
+      console.log('Scanner useEffect cleanup');
+      if (videoRef.current) {
+        videoRef.current.pause();
+        
+        if (videoRef.current.srcObject) {
+          const tracks = videoRef.current.srcObject.getTracks();
+          console.log('Cleanup: Stopping', tracks.length, 'video tracks');
+          tracks.forEach(track => {
+            console.log('Cleanup: Stopping track:', track.kind, track.label);
+            track.stop();
+          });
+          videoRef.current.srcObject = null;
+        }
       }
       
       if (codeReader.current) {
