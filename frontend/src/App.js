@@ -2358,7 +2358,8 @@ function App() {
         const isItemsLevel = serialCollectionStep.currentLevel === 'item';
         
         // Check for duplicates against ALL existing serial numbers in the project
-        const duplicates = validateDuplicateSerials(serialNumber);
+        const currentPath = getCurrentPath();
+        const duplicates = validateDuplicateSerials(serialNumber, currentPath);
         if (duplicates) {
           setError(`🚫 DUPLICATE DETECTED! "${serialNumber}" is already used at: ${duplicates[0].path}`);
           // Show error for longer time for duplicates
