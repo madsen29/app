@@ -1355,6 +1355,8 @@ function App() {
       
       if (ssccData.cases) {
         ssccData.cases.forEach((caseData, caseIndex) => {
+          console.log(`Processing Case ${caseIndex}:`, caseData);
+          
           if (caseData.caseSerial && caseData.caseSerial.trim()) {
             allSerials.push({
               serial: caseData.caseSerial.trim(),
@@ -1365,6 +1367,7 @@ function App() {
           }
           
           if (caseData.innerCases) {
+            console.log(`Case ${caseIndex} has innerCases:`, caseData.innerCases);
             caseData.innerCases.forEach((innerCaseData, innerCaseIndex) => {
               if (innerCaseData.innerCaseSerial && innerCaseData.innerCaseSerial.trim()) {
                 allSerials.push({
@@ -1376,6 +1379,7 @@ function App() {
               }
               
               if (innerCaseData.items) {
+                console.log(`Inner Case ${innerCaseIndex} has items:`, innerCaseData.items);
                 innerCaseData.items.forEach((itemData, itemIndex) => {
                   if (itemData.itemSerial && itemData.itemSerial.trim()) {
                     allSerials.push({
@@ -1389,16 +1393,23 @@ function App() {
               }
             });
           } else if (caseData.items) {
+            console.log(`Case ${caseIndex} has items:`, caseData.items);
             caseData.items.forEach((itemData, itemIndex) => {
+              console.log(`Processing item ${itemIndex}:`, itemData);
               if (itemData.itemSerial && itemData.itemSerial.trim()) {
+                console.log(`Adding item serial: ${itemData.itemSerial}`);
                 allSerials.push({
                   serial: itemData.itemSerial.trim(),
                   normalizedSerial: itemData.itemSerial.trim().toLowerCase(),
                   path: `SSCC ${ssccIndex + 1} → Case ${caseIndex + 1} → Item ${itemIndex + 1}`,
                   isCurrentPath: currentPath === `item-${ssccIndex}-${caseIndex}-${itemIndex}`
                 });
+              } else {
+                console.log(`Item ${itemIndex} has no itemSerial or empty:`, itemData.itemSerial);
               }
             });
+          } else {
+            console.log(`Case ${caseIndex} has no items or innerCases`);
           }
         });
       } else if (ssccData.items) {
