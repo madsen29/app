@@ -29,7 +29,7 @@ const LocationSelector = ({ isOpen, onClose, onSelectLocation, targetSection }) 
         document.removeEventListener('keydown', handleEscapeKey);
       };
     }
-  }, [isOpen, onClose]);
+  }, [isOpen]); // Remove onClose from dependencies
 
   const loadLocations = async () => {
     try {
