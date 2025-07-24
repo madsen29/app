@@ -2235,13 +2235,28 @@ function App() {
       
       // Get and stop all tracks from the stream
       if (videoRef.current.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
         console.log('Stopping', tracks.length, 'video tracks');
+        
         tracks.forEach(track => {
-          console.log('Stopping track:', track.kind, track.label);
+          console.log('Stopping track:', track.kind, track.label, 'readyState:', track.readyState);
           track.stop();
+          console.log('Track stopped, new readyState:', track.readyState);
         });
+        
+        // Also try stopping from the stream directly
+        if (typeof stream.stop === 'function') {
+          stream.stop();
+          console.log('Called stream.stop()');
+        }
+        
+        // Clear the source
         videoRef.current.srcObject = null;
+        videoRef.current.src = '';
+        videoRef.current.load(); // Force reload to clear any cached stream
+        
+        console.log('Video source cleared and reloaded');
       }
     }
     
