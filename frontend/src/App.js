@@ -2358,7 +2358,14 @@ function App() {
         // Check for duplicates against ALL existing serial numbers in the project
         const duplicates = validateDuplicateSerials(serialNumber);
         if (duplicates) {
-          setError(`Duplicate serial number found! "${serialNumber}" is already used at: ${duplicates[0].path}`);
+          setError(`🚫 DUPLICATE DETECTED! "${serialNumber}" is already used at: ${duplicates[0].path}`);
+          // Show error for longer time for duplicates
+          setTimeout(() => {
+            if (scannerModal.isOpen && isScanning) {
+              // Continue scanning after showing duplicate error
+              console.log('Continuing scan after duplicate error');
+            }
+          }, 2000);
           return;
         }
         
