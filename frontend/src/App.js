@@ -2726,6 +2726,25 @@ function App() {
       setTimeout(() => {
         startContinuousScanning();
       }, 200);
+    } else {
+      // Immediately stop camera when modal closes
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+      }
+      
+      if (codeReader.current) {
+        try {
+          if (typeof codeReader.current.reset === 'function') {
+            codeReader.current.reset();
+          }
+        } catch (error) {
+          console.log('Error stopping scanner on modal close:', error);
+        }
+      }
+      
+      setIsScanning(false);
     }
     
     return () => {
@@ -2733,6 +2752,7 @@ function App() {
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
         tracks.forEach(track => track.stop());
+        videoRef.current.srcObject = null;
       }
       
       if (codeReader.current) {
