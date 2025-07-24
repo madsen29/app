@@ -2359,8 +2359,12 @@ function App() {
         
         // Check for duplicates against ALL existing serial numbers in the project
         const currentPath = getCurrentPath();
+        console.log('Checking duplicates for:', serialNumber, 'currentPath:', currentPath);
         const duplicates = validateDuplicateSerials(serialNumber, currentPath);
+        console.log('Duplicate check result:', duplicates);
+        
         if (duplicates) {
+          console.log('DUPLICATE FOUND - should show error');
           setError(`🚫 DUPLICATE DETECTED! "${serialNumber}" is already used at: ${duplicates[0].path}`);
           // Show error for longer time for duplicates
           setTimeout(() => {
@@ -2370,6 +2374,8 @@ function App() {
             }
           }, 2000);
           return;
+        } else {
+          console.log('No duplicates found - proceeding with scan');
         }
         
         // Clear any previous errors
