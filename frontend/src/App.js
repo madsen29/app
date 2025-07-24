@@ -2228,6 +2228,7 @@ function App() {
   const closeScanner = () => {
     console.log('Closing scanner - stopping camera');
     setIsScanning(false);
+    scanningRef.current = false; // Stop the scan loop
     
     // Stop all video streams more aggressively
     if (videoRef.current) {
