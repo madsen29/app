@@ -32,6 +32,9 @@ const LocationSelector = ({ isOpen, onClose, onSelectLocation, targetSection }) 
   }, [isOpen]); // Remove onClose from dependencies
 
   const loadLocations = async () => {
+    // Prevent multiple simultaneous calls
+    if (loading) return;
+    
     try {
       setLoading(true);
       setError('');
