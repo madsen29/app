@@ -2225,13 +2225,24 @@ function App() {
   };
 
   const closeScanner = () => {
+    console.log('Closing scanner - stopping camera');
     setIsScanning(false);
     
-    // Stop all video streams
-    if (videoRef.current && videoRef.current.srcObject) {
-      const tracks = videoRef.current.srcObject.getTracks();
-      tracks.forEach(track => track.stop());
-      videoRef.current.srcObject = null;
+    // Stop all video streams more aggressively
+    if (videoRef.current) {
+      // Stop the video element
+      videoRef.current.pause();
+      
+      // Get and stop all tracks from the stream
+      if (videoRef.current.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        console.log('Stopping', tracks.length, 'video tracks');
+        tracks.forEach(track => {
+          console.log('Stopping track:', track.kind, track.label);
+          track.stop();
+        });
+        videoRef.current.srcObject = null;
+      }
     }
     
     // Clean up code reader
@@ -2251,6 +2262,7 @@ function App() {
     setShouldContinueScanning(false);
     
     setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
+    console.log('Scanner closed');
   };
 
   const validateGS1Barcode = (scannedData) => {
