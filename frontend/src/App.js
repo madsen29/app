@@ -2049,11 +2049,20 @@ function App() {
           // Preserve current.innerCaseIndex - don't reset it
         };
       } else {
+        // Load existing item serials if they exist when transitioning to items
         const nextItemIndex = findNextItemIndex(current.ssccIndex, current.caseIndex, 0);
+        const currentSSCC = hierarchicalSerials[current.ssccIndex];
+        const existingItems = currentSSCC?.cases?.[current.caseIndex]?.items || [];
+        const existingSerials = existingItems
+          .map(item => item.itemSerial)
+          .filter(serial => serial && serial.trim())
+          .join('\n');
+        
         return {
           ...current,
           currentLevel: 'item',
-          itemIndex: nextItemIndex
+          itemIndex: nextItemIndex,
+          currentSerial: existingSerials
         };
       }
     } else if (current.currentLevel === 'innerCase') {
@@ -2073,8 +2082,6 @@ function App() {
         currentLevel: 'item',
         itemIndex: nextItemIndex,
         currentSerial: existingSerials
-      };
-        itemIndex: nextItemIndex
       };
     } else if (current.currentLevel === 'item') {
       // Move to next item, inner case, case, or SSCC
