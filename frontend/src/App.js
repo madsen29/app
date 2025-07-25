@@ -2325,7 +2325,7 @@ function App() {
         video: {
           facingMode: 'environment',
           width: { ideal: 1280 },
-          height: {720}
+          height: { ideal: 720 }
         }
       });
       
