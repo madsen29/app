@@ -2309,17 +2309,40 @@ function App() {
   };
 
   const resumeScanning = async () => {
-    console.log('Restarting scanner instead of resuming...');
+    console.log('Resuming scanning...');
+    setError('');
     
-    // Simply restart the entire scanner instead of trying to resume
-    // Close the current scanner completely
-    closeScanner();
-    
-    // Small delay to ensure cleanup is complete
-    setTimeout(() => {
-      // Restart the scanner fresh
-      startContinuousScanning();
-    }, 100);
+    try {
+      // Stop any existing stream first
+      if (videoRef.current?.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+      }
+      
+      // Get fresh camera stream (same as startContinuousScanning does)
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      });
+      
+      // Set the stream and wait for it to be ready
+      videoRef.current.srcObject = stream;
+      await new Promise((resolve) => {
+        videoRef.current.onloadedmetadata = resolve;
+      });
+      
+      // Hide pause overlay and start scanning
+      setScanningPaused(false);
+      startScanLoop();
+      
+    } catch (error) {
+      console.error('Failed to resume:', error);
+      setError('Failed to restart camera. Please close and reopen scanner.');
+    }
   };
 
   const pauseScanning = () => {
