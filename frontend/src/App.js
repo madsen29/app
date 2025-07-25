@@ -1177,37 +1177,36 @@ function App() {
       const itemArray = [];
       
       hierarchicalSerials.forEach(ssccData => {
-      ssccArray.push(ssccData.ssccSerial);
-      
-      if (ssccData.cases && ssccData.cases.length > 0) {
-        // Has cases
-        ssccData.cases.forEach(caseData => {
-          caseArray.push(caseData.caseSerial);
-          
-          if (caseData.innerCases && caseData.innerCases.length > 0) {
-            // Has inner cases
-            caseData.innerCases.forEach(innerCaseData => {
-              innerCaseArray.push(innerCaseData.innerCaseSerial);
-              innerCaseData.items.forEach(itemData => {
+        ssccArray.push(ssccData.ssccSerial);
+        
+        if (ssccData.cases && ssccData.cases.length > 0) {
+          // Has cases
+          ssccData.cases.forEach(caseData => {
+            caseArray.push(caseData.caseSerial);
+            
+            if (caseData.innerCases && caseData.innerCases.length > 0) {
+              // Has inner cases
+              caseData.innerCases.forEach(innerCaseData => {
+                innerCaseArray.push(innerCaseData.innerCaseSerial);
+                innerCaseData.items.forEach(itemData => {
+                  itemArray.push(itemData.itemSerial);
+                });
+              });
+            } else {
+              // Direct case → items
+              caseData.items.forEach(itemData => {
                 itemArray.push(itemData.itemSerial);
               });
-            });
-          } else {
-            // Direct case → items
-            caseData.items.forEach(itemData => {
-              itemArray.push(itemData.itemSerial);
-            });
-          }
-        });
-      } else {
-        // Direct SSCC → items
-        ssccData.items.forEach(itemData => {
-          itemArray.push(itemData.itemSerial);
-        });
-      }
-    });
-    
-    try {
+            }
+          });
+        } else {
+          // Direct SSCC → items
+          ssccData.items.forEach(itemData => {
+            itemArray.push(itemData.itemSerial);
+          });
+        }
+      });
+      
       await axios.post(`${API}/projects/${currentProject.id}/serial-numbers`, {
         sscc_serial_numbers: ssccArray,
         case_serial_numbers: caseArray,
