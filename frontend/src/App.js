@@ -2086,14 +2086,23 @@ function App() {
       // Move to items in this inner case and load existing serials if they exist
       const currentSSCC = hierarchicalSerials[current.ssccIndex];
       const existingItems = currentSSCC?.cases?.[current.caseIndex]?.innerCases?.[current.innerCaseIndex]?.items || [];
-      const existingSerials = existingItems
-        .map(item => item.itemSerial)
-        .filter(serial => serial && serial.trim())
-        .join('\n');
       
-      // If all items exist, start editing from index 0. Otherwise, find next empty slot
-      const allItemsExist = existingSerials.split('\n').filter(s => s.trim()).length === configuration.itemsPerInnerCase;
-      const itemIndex = allItemsExist ? 0 : findNextItemIndex(current.ssccIndex, current.caseIndex, current.innerCaseIndex);
+      // Build array of existing serials, preserving order and including empty slots
+      const allSerials = [];
+      for (let i = 0; i < configuration.itemsPerInnerCase; i++) {
+        const item = existingItems[i];
+        const serial = item?.itemSerial || '';
+        if (serial.trim()) {
+          allSerials.push(serial);
+        }
+      }
+      
+      const existingSerials = allSerials.join('\n');
+      const completedCount = allSerials.length;
+      
+      // If all items exist, start editing from index 0. Otherwise, continue from where left off
+      const allItemsExist = completedCount === configuration.itemsPerInnerCase;
+      const itemIndex = allItemsExist ? 0 : completedCount;
       
       return {
         ...current,
