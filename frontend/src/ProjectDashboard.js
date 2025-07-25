@@ -658,7 +658,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                           <>
                             <button
                               onClick={() => onSelectProject(project)}
-                              className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
+                              className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                               Edit
                             </button>
@@ -786,7 +786,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         <>
                           <button
                             onClick={() => onSelectProject(project)}
-                            className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
+                            className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           >
                             Edit
                           </button>
