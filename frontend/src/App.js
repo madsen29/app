@@ -1756,6 +1756,43 @@ function App() {
       setHierarchicalSerials(currentHierarchicalData);
     }
     
+    // Helper function to find next unfinished item index
+    const findNextItemIndex = (ssccIndex, caseIndex, innerCaseIndex) => {
+      const sscc = currentHierarchicalData[ssccIndex];
+      if (!sscc) return 0;
+      
+      if (configuration.useInnerCases) {
+        const innerCase = sscc.cases?.[caseIndex]?.innerCases?.[innerCaseIndex];
+        if (!innerCase?.items) return 0;
+        
+        for (let i = 0; i < innerCase.items.length; i++) {
+          if (!innerCase.items[i].itemSerial) {
+            return i;
+          }
+        }
+        return innerCase.items.length;
+      } else if (configuration.casesPerSscc > 0) {
+        const caseData = sscc.cases?.[caseIndex];
+        if (!caseData?.items) return 0;
+        
+        for (let i = 0; i < caseData.items.length; i++) {
+          if (!caseData.items[i].itemSerial) {
+            return i;
+          }
+        }
+        return caseData.items.length;
+      } else {
+        if (!sscc.items) return 0;
+        
+        for (let i = 0; i < sscc.items.length; i++) {
+          if (!sscc.items[i].itemSerial) {
+            return i;
+          }
+        }
+        return sscc.items.length;
+      }
+    };
+    
     // Parse the clicked level to determine position and restore previous value
     const step = serialCollectionStep;
     
@@ -1774,22 +1811,30 @@ function App() {
     } else if (clickedLevel.includes('Case') && !clickedLevel.includes('Inner')) {
       // Navigate to Case level
       const currentCase = currentHierarchicalData[step.ssccIndex].cases && currentHierarchicalData[step.ssccIndex].cases[step.caseIndex];
+      
+      // Calculate the correct item index for this case
+      const nextItemIndex = findNextItemIndex(step.ssccIndex, step.caseIndex, step.innerCaseIndex);
+      
       setSerialCollectionStep({
         ...step,
         currentLevel: 'case',
         currentSerial: currentCase ? (currentCase.caseSerial || '') : '',
         innerCaseIndex: 0,
-        itemIndex: 0,
+        itemIndex: nextItemIndex,
         isComplete: false
       });
     } else if (clickedLevel.includes('Inner Case')) {
       // Navigate to Inner Case level
       const currentInnerCase = currentHierarchicalData[step.ssccIndex].cases && currentHierarchicalData[step.ssccIndex].cases[step.caseIndex] && currentHierarchicalData[step.ssccIndex].cases[step.caseIndex].innerCases && currentHierarchicalData[step.ssccIndex].cases[step.caseIndex].innerCases[step.innerCaseIndex];
+      
+      // Calculate the correct item index for this inner case
+      const nextItemIndex = findNextItemIndex(step.ssccIndex, step.caseIndex, step.innerCaseIndex);
+      
       setSerialCollectionStep({
         ...step,
         currentLevel: 'innerCase',
         currentSerial: currentInnerCase ? (currentInnerCase.innerCaseSerial || '') : '',
-        itemIndex: 0,
+        itemIndex: nextItemIndex,
         isComplete: false
       });
     }
