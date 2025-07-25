@@ -345,14 +345,17 @@ class ScannerResumeRegressionTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if (data.get("items_per_case") == 2 and 
-                    data.get("cases_per_sscc") == 1 and 
-                    data.get("number_of_sscc") == 1):
+                # Check both camelCase and snake_case field names (backend returns camelCase)
+                items_per_case = data.get("itemsPerCase") or data.get("items_per_case")
+                cases_per_sscc = data.get("casesPerSscc") or data.get("cases_per_sscc") 
+                number_of_sscc = data.get("numberOfSscc") or data.get("number_of_sscc")
+                
+                if (items_per_case == 2 and cases_per_sscc == 1 and number_of_sscc == 1):
                     self.log_test("Configuration Creation", True, "Configuration saved successfully", 
-                                f"Items per case: {data.get('items_per_case')}, Cases per SSCC: {data.get('cases_per_sscc')}")
+                                f"Items per case: {items_per_case}, Cases per SSCC: {cases_per_sscc}")
                     return True
                 else:
-                    self.log_test("Configuration Creation", False, f"Configuration data mismatch: {data}")
+                    self.log_test("Configuration Creation", False, f"Configuration values incorrect - Items: {items_per_case}, Cases: {cases_per_sscc}, SSCCs: {number_of_sscc}")
                     return False
             else:
                 self.log_test("Configuration Creation", False, f"HTTP {response.status_code}: {response.text}")
