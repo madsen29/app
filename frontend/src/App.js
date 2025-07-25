@@ -2061,7 +2061,6 @@ function App() {
         };
       } else {
         // Load existing item serials if they exist when transitioning to items
-        const nextItemIndex = findNextItemIndex(current.ssccIndex, current.caseIndex, 0);
         const currentSSCC = hierarchicalSerials[current.ssccIndex];
         const existingItems = currentSSCC?.cases?.[current.caseIndex]?.items || [];
         const existingSerials = existingItems
@@ -2069,10 +2068,14 @@ function App() {
           .filter(serial => serial && serial.trim())
           .join('\n');
         
+        // If all items exist, start editing from index 0. Otherwise, find next empty slot
+        const allItemsExist = existingSerials.split('\n').filter(s => s.trim()).length === configuration.itemsPerCase;
+        const itemIndex = allItemsExist ? 0 : findNextItemIndex(current.ssccIndex, current.caseIndex, 0);
+        
         return {
           ...current,
           currentLevel: 'item',
-          itemIndex: nextItemIndex,
+          itemIndex: itemIndex,
           currentSerial: existingSerials
         };
       }
