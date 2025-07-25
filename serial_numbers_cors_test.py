@@ -10,7 +10,7 @@ Test Areas:
 4. Complete Workflow - End-to-end testing
 
 Review Request Focus:
-- Verify CORS issue has been resolved for https://c77fc0ef-d782-494d-81fe-4e233a061567.preview.emergentagent.com
+- Verify CORS issue has been resolved for https://4f60c693-95e0-4a12-94b7-85a4355c0121.preview.emergentagent.com
 - Test POST /api/projects/{project_id}/serial-numbers endpoint
 - Verify camelCase/snake_case field mapping works correctly
 - Test complete workflow from project creation to serial numbers creation
@@ -23,8 +23,8 @@ import sys
 import os
 
 # Get backend URL from environment
-BACKEND_URL = "https://c77fc0ef-d782-494d-81fe-4e233a061567.preview.emergentagent.com/api"
-FRONTEND_URL = "https://c77fc0ef-d782-494d-81fe-4e233a061567.preview.emergentagent.com"
+BACKEND_URL = "https://4f60c693-95e0-4a12-94b7-85a4355c0121.preview.emergentagent.com/api"
+FRONTEND_URL = "https://4f60c693-95e0-4a12-94b7-85a4355c0121.preview.emergentagent.com"
 
 class SerialNumbersCORSTester:
     def __init__(self):
@@ -68,7 +68,7 @@ class SerialNumbersCORSTester:
             cors_methods = response.headers.get('Access-Control-Allow-Methods', '')
             cors_headers = response.headers.get('Access-Control-Allow-Headers', '')
             
-            # Backend is configured with allow_origins=["*", "https://c77fc0ef-d782-494d-81fe-4e233a061567.preview.emergentagent.com"]
+            # Backend is configured with allow_origins=["*", "https://4f60c693-95e0-4a12-94b7-85a4355c0121.preview.emergentagent.com"]
             # So it should return the specific origin or "*"
             origin_allowed = (cors_origin == '*' or 
                             cors_origin == self.frontend_url or

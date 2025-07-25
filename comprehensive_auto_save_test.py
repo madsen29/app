@@ -15,7 +15,7 @@ import threading
 from datetime import datetime
 import sys
 
-BACKEND_URL = "https://c77fc0ef-d782-494d-81fe-4e233a061567.preview.emergentagent.com/api"
+BACKEND_URL = "https://4f60c693-95e0-4a12-94b7-85a4355c0121.preview.emergentagent.com/api"
 
 class ComprehensiveAutoSaveTester:
     def __init__(self):
