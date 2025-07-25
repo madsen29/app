@@ -2313,13 +2313,27 @@ function App() {
     setScanningPaused(false);
     setError(''); // Clear any error messages
     
+    // Debug the current stream state
+    const currentStream = videoRef.current?.srcObject;
+    console.log('Current stream state:', {
+      hasStream: !!currentStream,
+      streamActive: currentStream ? !currentStream.ended : false,
+      trackCount: currentStream ? currentStream.getTracks().length : 0,
+      activeTracks: currentStream ? currentStream.getTracks().filter(t => t.readyState === 'live').length : 0
+    });
+    
     // Check if we need to re-establish the camera stream
-    if (!videoRef.current?.srcObject) {
-      console.log('Video stream missing - re-establishing camera');
+    const needsNewStream = !currentStream || 
+                          currentStream.ended || 
+                          currentStream.getTracks().length === 0 ||
+                          currentStream.getTracks().every(track => track.readyState !== 'live');
+    
+    if (needsNewStream) {
+      console.log('Stream needs to be re-established');
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            facingMode: 'environment', // Try back camera first
+            facingMode: 'environment',
             width: { ideal: 1280 },
             height: { ideal: 720 }
           }
@@ -2333,13 +2347,15 @@ function App() {
             videoRef.current.onloadedmetadata = resolve;
           });
           
-          console.log('Camera stream re-established');
+          console.log('Camera stream re-established successfully');
         }
       } catch (error) {
         console.error('Failed to re-establish camera stream:', error);
         setError('Failed to access camera. Please close and reopen scanner.');
         return;
       }
+    } else {
+      console.log('Using existing stream');
     }
     
     // Reset the code reader to ensure clean state
@@ -2356,19 +2372,26 @@ function App() {
     
     // Restart scanning
     setTimeout(() => {
-      if (scannerModal.isOpen && scanningRef.current && videoRef.current?.srcObject) {
-        console.log('Restarting scan loop with camera stream');
+      const finalStream = videoRef.current?.srcObject;
+      const streamReady = finalStream && 
+                         !finalStream.ended && 
+                         finalStream.getTracks().some(track => track.readyState === 'live');
+      
+      if (scannerModal.isOpen && scanningRef.current && streamReady) {
+        console.log('Restarting scan loop with verified camera stream');
         startScanLoop();
       } else {
-        console.log('Still cannot resume after stream check:', {
+        console.log('Still cannot resume after all checks:', {
           modalOpen: scannerModal.isOpen,
           scanning: scanningRef.current,
           hasVideo: !!videoRef.current,
-          hasStream: !!videoRef.current?.srcObject
+          hasStream: !!finalStream,
+          streamEnded: finalStream ? finalStream.ended : 'no stream',
+          activeTracks: finalStream ? finalStream.getTracks().filter(t => t.readyState === 'live').length : 0
         });
         setError('Cannot resume scanning. Please close and reopen scanner.');
       }
-    }, 200);
+    }, 300);
   };
 
   const pauseScanning = () => {
