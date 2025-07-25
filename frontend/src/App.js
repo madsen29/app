@@ -1156,18 +1156,23 @@ function App() {
     }
   };
 
-  const handleSerialNumbersSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleSerialNumbersSubmit = async () => {
+    console.log('Submitting serial numbers. Current hierarchicalSerials:', hierarchicalSerials);
+    
+    // Add safety check for hierarchicalSerials
+    if (!hierarchicalSerials || !Array.isArray(hierarchicalSerials)) {
+      console.error('hierarchicalSerials is undefined or not an array:', hierarchicalSerials);
+      setError('Serial numbers data is missing. Please reload the project and try again.');
+      return;
+    }
+    
+    setLoading(true);
     setError('');
     
-    // Convert hierarchical structure to flat arrays for backend
-    const ssccArray = [];
-    const caseArray = [];
-    const innerCaseArray = [];
-    const itemArray = [];
-    
-    hierarchicalSerials.forEach(ssccData => {
+    try {
+      const serialNumbersData = [];
+      
+      hierarchicalSerials.forEach(ssccData => {
       ssccArray.push(ssccData.ssccSerial);
       
       if (ssccData.cases && ssccData.cases.length > 0) {
