@@ -1962,7 +1962,7 @@ function App() {
       const nextStep = calculateNextStep();
       setSerialCollectionStep({
         ...nextStep,
-        currentSerial: ''
+        currentSerial: nextStep.currentSerial || ''
       });
     }
     
