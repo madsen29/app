@@ -2078,9 +2078,6 @@ function App() {
       }
     } else if (current.currentLevel === 'innerCase') {
       // Move to items in this inner case and load existing serials if they exist
-      const nextItemIndex = findNextItemIndex(current.ssccIndex, current.caseIndex, current.innerCaseIndex);
-      
-      // Check if there are existing item serials to load
       const currentSSCC = hierarchicalSerials[current.ssccIndex];
       const existingItems = currentSSCC?.cases?.[current.caseIndex]?.innerCases?.[current.innerCaseIndex]?.items || [];
       const existingSerials = existingItems
@@ -2088,10 +2085,14 @@ function App() {
         .filter(serial => serial && serial.trim())
         .join('\n');
       
+      // If all items exist, start editing from index 0. Otherwise, find next empty slot
+      const allItemsExist = existingSerials.split('\n').filter(s => s.trim()).length === configuration.itemsPerInnerCase;
+      const itemIndex = allItemsExist ? 0 : findNextItemIndex(current.ssccIndex, current.caseIndex, current.innerCaseIndex);
+      
       return {
         ...current,
         currentLevel: 'item',
-        itemIndex: nextItemIndex,
+        itemIndex: itemIndex,
         currentSerial: existingSerials
       };
     } else if (current.currentLevel === 'item') {
