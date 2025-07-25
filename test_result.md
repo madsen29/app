@@ -166,7 +166,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Packaging Hierarchy Display Fix"
+    - "Scanner Tap to Resume Scanning Fix"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
