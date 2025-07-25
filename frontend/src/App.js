@@ -463,7 +463,12 @@ function App() {
     }
     
     // Set current step based on project state
-    setCurrentStep(project.current_step || 1);
+    // For completed projects, always go to Step 3 for editing
+    if (project.status === 'Completed') {
+      setCurrentStep(3);
+    } else {
+      setCurrentStep(project.current_step || 1);
+    }
     
     // Check if packaging configuration should be locked
     const hasSerialNumbers = project.serial_numbers && project.serial_numbers.length > 0;
