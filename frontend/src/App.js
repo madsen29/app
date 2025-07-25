@@ -2309,115 +2309,17 @@ function App() {
   };
 
   const resumeScanning = async () => {
-    console.log('Resuming scanning...');
-    setError(''); // Clear any error messages
+    console.log('Restarting scanner instead of resuming...');
     
-    try {
-      // Always re-establish the camera stream when resuming for reliability
-      console.log('Re-establishing camera stream for resume...');
-      
-      // First, clean up any existing stream
-      if (videoRef.current?.srcObject) {
-        const existingStream = videoRef.current.srcObject;
-        const tracks = existingStream.getTracks();
-        tracks.forEach(track => track.stop());
-        videoRef.current.srcObject = null;
-      }
-      
-      // Request fresh camera stream
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'environment',
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
-      });
-      
-      if (!videoRef.current) {
-        console.error('Video element not available');
-        setError('Camera interface not available. Please close and reopen scanner.');
-        return;
-      }
-      
-      // Set the new stream
-      videoRef.current.srcObject = stream;
-      
-      // Wait for video to be ready with a timeout
-      await new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Video loading timeout'));
-        }, 5000);
-        
-        videoRef.current.onloadedmetadata = () => {
-          clearTimeout(timeout);
-          resolve();
-        };
-        
-        // Also resolve if video becomes ready state
-        if (videoRef.current.readyState >= 1) {
-          clearTimeout(timeout);
-          resolve();
-        }
-      });
-      
-      // Explicitly start video playback
-      await videoRef.current.play();
-      
-      // Force video element display refresh to fix black screen issue
-      // Temporarily modify CSS to force re-render of the video display buffer
-      const originalObjectFit = videoRef.current.style.objectFit;
-      const originalDisplay = videoRef.current.style.display;
-      
-      videoRef.current.style.objectFit = 'contain';
-      videoRef.current.style.display = 'none';
-      
-      // Force reflow by accessing offsetHeight
-      videoRef.current.offsetHeight;
-      
-      // Restore original styles
-      videoRef.current.style.display = originalDisplay || 'block';
-      videoRef.current.style.objectFit = originalObjectFit || 'cover';
-      
-      // Additional forced refresh with a small timeout
-      setTimeout(() => {
-        if (videoRef.current) {
-          const currentSrc = videoRef.current.srcObject;
-          videoRef.current.srcObject = null;
-          videoRef.current.srcObject = currentSrc;
-        }
-      }, 50);
-      
-      console.log('Camera stream re-established successfully with display refresh');
-      
-      // Reset the code reader to ensure clean state
-      if (codeReader.current) {
-        try {
-          if (typeof codeReader.current.reset === 'function') {
-            codeReader.current.reset();
-            console.log('Code reader reset for resume');
-          }
-        } catch (error) {
-          console.log('Error resetting code reader:', error);
-        }
-      }
-      
-      // Verify we're still in the right state to resume
-      if (!scannerModal.isOpen || !scanningRef.current) {
-        console.log('Scanner state changed during resume - aborting');
-        return;
-      }
-      
-      // NOW set scanningPaused to false to hide the pause overlay - only after video is ready
-      setScanningPaused(false);
-      
-      // Start scanning immediately
-      console.log('Starting scan loop after successful camera re-establishment');
-      startScanLoop();
-      
-    } catch (error) {
-      console.error('Failed to resume scanning:', error);
-      setError(`Failed to resume camera: ${error.message}. Please close and reopen scanner.`);
-    }
+    // Simply restart the entire scanner instead of trying to resume
+    // Close the current scanner completely
+    closeScanner();
+    
+    // Small delay to ensure cleanup is complete
+    setTimeout(() => {
+      // Restart the scanner fresh
+      startContinuousScanning();
+    }, 100);
   };
 
   const pauseScanning = () => {
