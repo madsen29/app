@@ -2249,6 +2249,25 @@ function App() {
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
   };
 
+  // Scanner pause/resume functions
+  const resumeScanning = () => {
+    console.log('Resuming scanning...');
+    setScanningPaused(false);
+    setError(''); // Clear any error messages
+    
+    // Restart the scan loop after a brief delay
+    setTimeout(() => {
+      if (scannerModal.isOpen && scanningRef.current) {
+        startScanLoop();
+      }
+    }, 100);
+  };
+
+  const pauseScanning = () => {
+    console.log('Pausing scanning...');
+    setScanningPaused(true);
+  };
+
   // Barcode scanning functions
   const openScanner = (targetField, targetSetter) => {
     // Determine if this is multi-item scanning for Items level
