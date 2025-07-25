@@ -2310,7 +2310,6 @@ function App() {
 
   const resumeScanning = async () => {
     console.log('Resuming scanning...');
-    setScanningPaused(false);
     setError(''); // Clear any error messages
     
     try {
@@ -2361,6 +2360,9 @@ function App() {
         }
       });
       
+      // Explicitly start video playback
+      await videoRef.current.play();
+      
       console.log('Camera stream re-established successfully');
       
       // Reset the code reader to ensure clean state
@@ -2381,13 +2383,15 @@ function App() {
         return;
       }
       
+      // NOW set scanningPaused to false to hide the pause overlay - only after video is ready
+      setScanningPaused(false);
+      
       // Start scanning immediately
       console.log('Starting scan loop after successful camera re-establishment');
       startScanLoop();
       
     } catch (error) {
       console.error('Failed to resume scanning:', error);
-      setScanningPaused(true); // Set back to paused state
       setError(`Failed to resume camera: ${error.message}. Please close and reopen scanner.`);
     }
   };
