@@ -2313,35 +2313,31 @@ function App() {
     setScanningPaused(false);
     setError(''); // Clear any error messages
     
-    // Reset the code reader to ensure clean state
+    // Simple reset and restart without reinitializing everything
     if (codeReader.current) {
       try {
         if (typeof codeReader.current.reset === 'function') {
           codeReader.current.reset();
-          console.log('Code reader reset before resume');
+          console.log('Code reader reset for resume');
         }
       } catch (error) {
         console.log('Error resetting code reader:', error);
       }
     }
     
-    // Reinitialize the code reader with a fresh instance
-    setTimeout(async () => {
-      if (scannerModal.isOpen && scanningRef.current) {
-        try {
-          // Import fresh reader instance
-          const { BrowserMultiFormatReader } = await import('@zxing/library');
-          codeReader.current = new BrowserMultiFormatReader();
-          
-          // Set format hints to only allow 2D codes
-          codeReader.current.hints.set(2, [16, 17, 18, 19, 20]); // QR_CODE, DATA_MATRIX, PDF_417, AZTEC, MAXICODE
-          
-          console.log('Fresh code reader initialized for resume');
-          startScanLoop();
-        } catch (error) {
-          console.error('Error reinitializing scanner on resume:', error);
-          setError('Failed to resume scanner. Please close and reopen.');
-        }
+    // Restart scanning with existing reader and video stream
+    setTimeout(() => {
+      if (scannerModal.isOpen && scanningRef.current && videoRef.current && videoRef.current.srcObject) {
+        console.log('Restarting scan loop with existing setup');
+        startScanLoop();
+      } else {
+        console.log('Cannot resume - missing scanner state:', {
+          modalOpen: scannerModal.isOpen,
+          scanning: scanningRef.current,
+          hasVideo: !!videoRef.current,
+          hasStream: !!videoRef.current?.srcObject
+        });
+        setError('Cannot resume scanning. Please close and reopen scanner.');
       }
     }, 200);
   };
