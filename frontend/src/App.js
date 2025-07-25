@@ -4164,6 +4164,18 @@ function App() {
   const renderSerialTree = () => {
     console.log('Rendering tree with hierarchicalSerials:', hierarchicalSerials); // Debug log
     
+    // Add safety check for hierarchicalSerials
+    if (!hierarchicalSerials || !Array.isArray(hierarchicalSerials)) {
+      console.error('hierarchicalSerials is undefined or not an array in renderSerialTree:', hierarchicalSerials);
+      return (
+        <div className="tree-view">
+          <div className="error-message" style={{padding: '20px', textAlign: 'center', color: '#ef4444'}}>
+            Serial numbers data is missing. Please reload the project.
+          </div>
+        </div>
+      );
+    }
+    
     return (
       <div className="tree-view">
         {hierarchicalSerials.map((ssccData, ssccIndex) => (
