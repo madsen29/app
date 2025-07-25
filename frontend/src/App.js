@@ -1347,7 +1347,7 @@ function App() {
   };
 
   // Duplicate validation function
-  const validateDuplicateSerials = (newSerial, currentPath) => {
+  const validateDuplicateSerials = (newSerial, currentPath, excludePaths = []) => {
     const allSerials = [];
     
     // Normalize the serial number (trim whitespace, convert to lowercase for comparison)
@@ -1357,6 +1357,7 @@ function App() {
       newSerial,
       normalizedNewSerial,
       currentPath,
+      excludePaths,
       hierarchicalSerialsLength: hierarchicalSerials.length
     });
     
