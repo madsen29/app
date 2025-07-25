@@ -1974,13 +1974,51 @@ function App() {
     const current = serialCollectionStep;
     const totals = calculateTotals();
     
+    // Helper function to find next unfinished item index
+    const findNextItemIndex = (ssccIndex, caseIndex, innerCaseIndex) => {
+      const sscc = hierarchicalSerials[ssccIndex];
+      if (!sscc) return 0;
+      
+      if (configuration.useInnerCases) {
+        const innerCase = sscc.cases?.[caseIndex]?.innerCases?.[innerCaseIndex];
+        if (!innerCase?.items) return 0;
+        
+        for (let i = 0; i < innerCase.items.length; i++) {
+          if (!innerCase.items[i].itemSerial) {
+            return i;
+          }
+        }
+        return innerCase.items.length;
+      } else if (configuration.casesPerSscc > 0) {
+        const caseData = sscc.cases?.[caseIndex];
+        if (!caseData?.items) return 0;
+        
+        for (let i = 0; i < caseData.items.length; i++) {
+          if (!caseData.items[i].itemSerial) {
+            return i;
+          }
+        }
+        return caseData.items.length;
+      } else {
+        if (!sscc.items) return 0;
+        
+        for (let i = 0; i < sscc.items.length; i++) {
+          if (!sscc.items[i].itemSerial) {
+            return i;
+          }
+        }
+        return sscc.items.length;
+      }
+    };
+    
     if (current.currentLevel === 'sscc') {
       // Move to first case or first item (if direct SSCC→Items)
       if (configuration.casesPerSscc === 0) {
+        const nextItemIndex = findNextItemIndex(current.ssccIndex, 0, 0);
         return {
           ...current,
           currentLevel: 'item',
-          itemIndex: 0
+          itemIndex: nextItemIndex
         };
       } else {
         return {
@@ -1998,18 +2036,20 @@ function App() {
           innerCaseIndex: 0
         };
       } else {
+        const nextItemIndex = findNextItemIndex(current.ssccIndex, current.caseIndex, 0);
         return {
           ...current,
           currentLevel: 'item',
-          itemIndex: 0
+          itemIndex: nextItemIndex
         };
       }
     } else if (current.currentLevel === 'innerCase') {
       // Move to first item in this inner case
+      const nextItemIndex = findNextItemIndex(current.ssccIndex, current.caseIndex, current.innerCaseIndex);
       return {
         ...current,
         currentLevel: 'item',
-        itemIndex: 0
+        itemIndex: nextItemIndex
       };
     } else if (current.currentLevel === 'item') {
       // Move to next item, inner case, case, or SSCC
