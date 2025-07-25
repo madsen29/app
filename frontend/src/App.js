@@ -1457,17 +1457,34 @@ function App() {
     // Check for duplicates using normalized comparison, excluding current path and excluded paths
     const duplicates = allSerials.filter(item => {
       const isCurrentPath = item.isCurrentPath;
-      const isExcludedPath = excludePaths.some(excludePath => {
-        // Convert exclude path format to match item path check format
-        const excludePathParts = excludePath.split('-');
-        if (excludePathParts[0] === 'item') {
-          const excludeItemPath = excludePath;
-          const itemPathFromSerial = `item-${ssccIndex}-${caseIndex}-${itemIndex}`;
-          // Need to extract indices from the actual item serial path format
-          return false; // For now, let's use a simpler approach
+      
+      // Check if this item's path is in the exclude list
+      // Extract path format from the collected serial item and compare with exclude paths
+      let itemPath = '';
+      if (item.path.includes('Inner Case')) {
+        // Extract indices for inner case items: "SSCC 1 → Case 1 → Inner Case 1 → Item 1" 
+        const matches = item.path.match(/SSCC (\d+).*Case (\d+).*Inner Case (\d+).*Item (\d+)/);
+        if (matches) {
+          const [, sscc, case_, innerCase, itemNum] = matches;
+          itemPath = `item-${parseInt(sscc)-1}-${parseInt(case_)-1}-${parseInt(innerCase)-1}-${parseInt(itemNum)-1}`;
         }
-        return false;
-      });
+      } else if (item.path.includes('→ Case')) {
+        // Extract indices for case items: "SSCC 1 → Case 1 → Item 1"
+        const matches = item.path.match(/SSCC (\d+).*Case (\d+).*Item (\d+)/);
+        if (matches) {
+          const [, sscc, case_, itemNum] = matches;
+          itemPath = `item-${parseInt(sscc)-1}-${parseInt(case_)-1}-${parseInt(itemNum)-1}`;
+        }
+      } else if (item.path.includes('→ Item')) {
+        // Extract indices for direct items: "SSCC 1 → Item 1"
+        const matches = item.path.match(/SSCC (\d+).*Item (\d+)/);
+        if (matches) {
+          const [, sscc, itemNum] = matches;
+          itemPath = `item-${parseInt(sscc)-1}-${parseInt(itemNum)-1}`;
+        }
+      }
+      
+      const isExcludedPath = excludePaths.includes(itemPath);
       
       return item.normalizedSerial === normalizedNewSerial && !isCurrentPath && !isExcludedPath;
     });
