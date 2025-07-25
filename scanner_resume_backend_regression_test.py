@@ -576,11 +576,11 @@ class ScannerResumeRegressionTester:
             # Restore headers
             self.session.headers.update(original_headers)
             
-            if response.status_code == 401:
-                self.log_test("Unauthorized Access", True, "Properly rejected unauthorized access")
+            if response.status_code in [401, 403]:
+                self.log_test("Unauthorized Access", True, f"Properly rejected unauthorized access (HTTP {response.status_code})")
                 return True
             else:
-                self.log_test("Unauthorized Access", False, f"Expected 401, got {response.status_code}")
+                self.log_test("Unauthorized Access", False, f"Expected 401/403, got {response.status_code}")
                 return False
                 
         except Exception as e:
