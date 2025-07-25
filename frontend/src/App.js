@@ -2020,20 +2020,26 @@ function App() {
           itemIndex: nextItemIndex
         };
       } else {
-        // Continue with the case they were working on, don't reset to caseIndex: 0
+        // Continue with the case they were working on, and load its existing serial
+        const currentSSCC = hierarchicalSerials[current.ssccIndex];
+        const currentCase = currentSSCC?.cases?.[current.caseIndex];
         return {
           ...current,
-          currentLevel: 'case'
+          currentLevel: 'case',
+          currentSerial: currentCase?.caseSerial || ''
           // Preserve current.caseIndex - don't reset it
         };
       }
     } else if (current.currentLevel === 'case') {
       // Move to the current inner case or first item
       if (configuration.useInnerCases) {
-        // Continue with the inner case they were working on, don't reset to innerCaseIndex: 0
+        // Continue with the inner case they were working on, and load its existing serial
+        const currentSSCC = hierarchicalSerials[current.ssccIndex];
+        const currentInnerCase = currentSSCC?.cases?.[current.caseIndex]?.innerCases?.[current.innerCaseIndex];
         return {
           ...current,
-          currentLevel: 'innerCase'
+          currentLevel: 'innerCase',
+          currentSerial: currentInnerCase?.innerCaseSerial || ''
           // Preserve current.innerCaseIndex - don't reset it
         };
       } else {
