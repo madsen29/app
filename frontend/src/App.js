@@ -4427,18 +4427,21 @@ function App() {
   };
 
   const renderStep2 = () => {
-    // Re-initialize hierarchical serials for completed projects if missing
+    // Re-initialize hierarchical serials for completed projects if missing or corrupted
     if (currentProject && currentProject.status === 'Completed' && (!hierarchicalSerials || hierarchicalSerials.length === 0)) {
       console.log('Re-initializing hierarchical serials for completed project');
       
       // First try to restore from currentProject.serial_numbers
       if (currentProject.serial_numbers && currentProject.serial_numbers.length > 0) {
         console.log('Restoring from currentProject.serial_numbers:', currentProject.serial_numbers);
-        setHierarchicalSerials(currentProject.serial_numbers);
+        
+        // Check if the data needs conversion from flat format to hierarchical
+        const convertedData = convertFlatToHierarchical(currentProject.serial_numbers, currentProject.configuration);
+        setHierarchicalSerials(convertedData);
         
         // Also ensure serial collection step is marked as complete
         if (currentProject.configuration) {
-          const currentPosition = findCurrentSerialPosition(currentProject.serial_numbers, currentProject.configuration);
+          const currentPosition = findCurrentSerialPosition(convertedData, currentProject.configuration);
           setSerialCollectionStep({
             ...currentPosition,
             isComplete: true
@@ -4448,6 +4451,23 @@ function App() {
         // If currentProject.serial_numbers is empty, try to fetch fresh data from backend
         console.warn('currentProject.serial_numbers is empty, project data may be corrupted');
         setError('Serial numbers data is missing. Please refresh the page and try again.');
+      }
+    }
+    
+    // Also check if current hierarchicalSerials is in flat format and needs conversion
+    if (hierarchicalSerials && hierarchicalSerials.length > 0 && currentProject && currentProject.configuration) {
+      const firstItem = hierarchicalSerials[0];
+      if (firstItem && typeof firstItem === 'object' && firstItem.type && firstItem.serial) {
+        console.log('Detected flat format in current hierarchicalSerials, converting...');
+        const convertedData = convertFlatToHierarchical(hierarchicalSerials, currentProject.configuration);
+        setHierarchicalSerials(convertedData);
+        
+        // Update serial collection step
+        const currentPosition = findCurrentSerialPosition(convertedData, currentProject.configuration);
+        setSerialCollectionStep({
+          ...currentPosition,
+          isComplete: true
+        });
       }
     }
     const totals = calculateTotals();
