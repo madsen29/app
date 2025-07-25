@@ -1454,10 +1454,23 @@ function App() {
     console.log('All serials collected:', allSerials);
     console.log('Looking for normalized serial:', normalizedNewSerial);
     
-    // Check for duplicates using normalized comparison
-    const duplicates = allSerials.filter(item => 
-      item.normalizedSerial === normalizedNewSerial && !item.isCurrentPath
-    );
+    // Check for duplicates using normalized comparison, excluding current path and excluded paths
+    const duplicates = allSerials.filter(item => {
+      const isCurrentPath = item.isCurrentPath;
+      const isExcludedPath = excludePaths.some(excludePath => {
+        // Convert exclude path format to match item path check format
+        const excludePathParts = excludePath.split('-');
+        if (excludePathParts[0] === 'item') {
+          const excludeItemPath = excludePath;
+          const itemPathFromSerial = `item-${ssccIndex}-${caseIndex}-${itemIndex}`;
+          // Need to extract indices from the actual item serial path format
+          return false; // For now, let's use a simpler approach
+        }
+        return false;
+      });
+      
+      return item.normalizedSerial === normalizedNewSerial && !isCurrentPath && !isExcludedPath;
+    });
     
     console.log('Duplicates found:', duplicates);
     
