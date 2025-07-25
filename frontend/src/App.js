@@ -2308,12 +2308,41 @@ function App() {
     scanLoop();
   };
 
-  const resumeScanning = () => {
+  const resumeScanning = async () => {
     console.log('Resuming scanning...');
     setScanningPaused(false);
     setError(''); // Clear any error messages
     
-    // Simple reset and restart without reinitializing everything
+    // Check if we need to re-establish the camera stream
+    if (!videoRef.current?.srcObject) {
+      console.log('Video stream missing - re-establishing camera');
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: 'environment', // Try back camera first
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        });
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          
+          // Wait for video to be ready
+          await new Promise((resolve) => {
+            videoRef.current.onloadedmetadata = resolve;
+          });
+          
+          console.log('Camera stream re-established');
+        }
+      } catch (error) {
+        console.error('Failed to re-establish camera stream:', error);
+        setError('Failed to access camera. Please close and reopen scanner.');
+        return;
+      }
+    }
+    
+    // Reset the code reader to ensure clean state
     if (codeReader.current) {
       try {
         if (typeof codeReader.current.reset === 'function') {
@@ -2325,13 +2354,13 @@ function App() {
       }
     }
     
-    // Restart scanning with existing reader and video stream
+    // Restart scanning
     setTimeout(() => {
-      if (scannerModal.isOpen && scanningRef.current && videoRef.current && videoRef.current.srcObject) {
-        console.log('Restarting scan loop with existing setup');
+      if (scannerModal.isOpen && scanningRef.current && videoRef.current?.srcObject) {
+        console.log('Restarting scan loop with camera stream');
         startScanLoop();
       } else {
-        console.log('Cannot resume - missing scanner state:', {
+        console.log('Still cannot resume after stream check:', {
           modalOpen: scannerModal.isOpen,
           scanning: scanningRef.current,
           hasVideo: !!videoRef.current,
