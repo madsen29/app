@@ -1166,7 +1166,7 @@ function App() {
       return;
     }
     
-    setLoading(true);
+    setIsLoading(true);
     setError('');
     
     try {
