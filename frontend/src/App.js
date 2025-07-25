@@ -2024,14 +2024,23 @@ function App() {
         // Direct SSCC → Items: Load existing item serials if they exist
         const currentSSCC = hierarchicalSerials[current.ssccIndex];
         const existingItems = currentSSCC?.items || [];
-        const existingSerials = existingItems
-          .map(item => item.itemSerial)
-          .filter(serial => serial && serial.trim())
-          .join('\n');
         
-        // If all items exist, start editing from index 0. Otherwise, find next empty slot
-        const allItemsExist = existingSerials.split('\n').filter(s => s.trim()).length === configuration.itemsPerCase;
-        const itemIndex = allItemsExist ? 0 : findNextItemIndex(current.ssccIndex, 0, 0);
+        // Build array of existing serials, preserving order and including empty slots
+        const allSerials = [];
+        for (let i = 0; i < configuration.itemsPerCase; i++) {
+          const item = existingItems[i];
+          const serial = item?.itemSerial || '';
+          if (serial.trim()) {
+            allSerials.push(serial);
+          }
+        }
+        
+        const existingSerials = allSerials.join('\n');
+        const completedCount = allSerials.length;
+        
+        // If all items exist, start editing from index 0. Otherwise, continue from where left off
+        const allItemsExist = completedCount === configuration.itemsPerCase;
+        const itemIndex = allItemsExist ? 0 : completedCount;
         
         return {
           ...current,
