@@ -2313,12 +2313,37 @@ function App() {
     setScanningPaused(false);
     setError(''); // Clear any error messages
     
-    // Restart the scan loop after a brief delay
-    setTimeout(() => {
-      if (scannerModal.isOpen && scanningRef.current) {
-        startScanLoop();
+    // Reset the code reader to ensure clean state
+    if (codeReader.current) {
+      try {
+        if (typeof codeReader.current.reset === 'function') {
+          codeReader.current.reset();
+          console.log('Code reader reset before resume');
+        }
+      } catch (error) {
+        console.log('Error resetting code reader:', error);
       }
-    }, 100);
+    }
+    
+    // Reinitialize the code reader with a fresh instance
+    setTimeout(async () => {
+      if (scannerModal.isOpen && scanningRef.current) {
+        try {
+          // Import fresh reader instance
+          const { BrowserMultiFormatReader } = await import('@zxing/library');
+          codeReader.current = new BrowserMultiFormatReader();
+          
+          // Set format hints to only allow 2D codes
+          codeReader.current.hints.set(2, [16, 17, 18, 19, 20]); // QR_CODE, DATA_MATRIX, PDF_417, AZTEC, MAXICODE
+          
+          console.log('Fresh code reader initialized for resume');
+          startScanLoop();
+        } catch (error) {
+          console.error('Error reinitializing scanner on resume:', error);
+          setError('Failed to resume scanner. Please close and reopen.');
+        }
+      }
+    }, 200);
   };
 
   const pauseScanning = () => {
