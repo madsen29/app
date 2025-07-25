@@ -1170,7 +1170,11 @@ function App() {
     setError('');
     
     try {
-      const serialNumbersData = [];
+      // Convert hierarchical structure to flat arrays for backend
+      const ssccArray = [];
+      const caseArray = [];
+      const innerCaseArray = [];
+      const itemArray = [];
       
       hierarchicalSerials.forEach(ssccData => {
       ssccArray.push(ssccData.ssccSerial);
