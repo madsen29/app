@@ -2363,7 +2363,31 @@ function App() {
       // Explicitly start video playback
       await videoRef.current.play();
       
-      console.log('Camera stream re-established successfully');
+      // Force video element display refresh to fix black screen issue
+      // Temporarily modify CSS to force re-render of the video display buffer
+      const originalObjectFit = videoRef.current.style.objectFit;
+      const originalDisplay = videoRef.current.style.display;
+      
+      videoRef.current.style.objectFit = 'contain';
+      videoRef.current.style.display = 'none';
+      
+      // Force reflow by accessing offsetHeight
+      videoRef.current.offsetHeight;
+      
+      // Restore original styles
+      videoRef.current.style.display = originalDisplay || 'block';
+      videoRef.current.style.objectFit = originalObjectFit || 'cover';
+      
+      // Additional forced refresh with a small timeout
+      setTimeout(() => {
+        if (videoRef.current) {
+          const currentSrc = videoRef.current.srcObject;
+          videoRef.current.srcObject = null;
+          videoRef.current.srcObject = currentSrc;
+        }
+      }, 50);
+      
+      console.log('Camera stream re-established successfully with display refresh');
       
       // Reset the code reader to ensure clean state
       if (codeReader.current) {
