@@ -4337,6 +4337,95 @@ function App() {
     }
   };
 
+  // Function to convert flat serial format back to hierarchical format (for fixing corrupted projects)
+  const convertFlatToHierarchical = (flatData, config) => {
+    console.log('Converting flat data to hierarchical:', { flatData, config });
+    
+    if (!flatData || !Array.isArray(flatData) || flatData.length === 0) {
+      return [];
+    }
+    
+    // Check if data is already in hierarchical format
+    if (flatData[0] && typeof flatData[0] === 'object' && 
+        (flatData[0].hasOwnProperty('ssccSerial') || flatData[0].hasOwnProperty('cases') || flatData[0].hasOwnProperty('items'))) {
+      console.log('Data is already in hierarchical format');
+      return flatData;
+    }
+    
+    // Extract serials by type
+    const ssccSerials = flatData.filter(item => item.type === 'sscc').map(item => item.serial);
+    const caseSerials = flatData.filter(item => item.type === 'case').map(item => item.serial);
+    const innerCaseSerials = flatData.filter(item => item.type === 'inner_case').map(item => item.serial);
+    const itemSerials = flatData.filter(item => item.type === 'item').map(item => item.serial);
+    
+    console.log('Extracted serials:', { ssccSerials, caseSerials, innerCaseSerials, itemSerials });
+    
+    const hierarchicalData = [];
+    
+    for (let ssccIndex = 0; ssccIndex < config.numberOfSscc; ssccIndex++) {
+      const ssccData = {
+        ssccSerial: ssccSerials[ssccIndex] || '',
+        cases: []
+      };
+      
+      if (config.casesPerSscc === 0) {
+        // Direct SSCC → Items
+        ssccData.items = [];
+        for (let itemIndex = 0; itemIndex < config.itemsPerCase; itemIndex++) {
+          const globalItemIndex = ssccIndex * config.itemsPerCase + itemIndex;
+          ssccData.items.push({
+            itemSerial: itemSerials[globalItemIndex] || ''
+          });
+        }
+      } else {
+        // SSCC → Cases
+        for (let caseIndex = 0; caseIndex < config.casesPerSscc; caseIndex++) {
+          const globalCaseIndex = ssccIndex * config.casesPerSscc + caseIndex;
+          const caseData = {
+            caseSerial: caseSerials[globalCaseIndex] || '',
+            innerCases: [],
+            items: []
+          };
+          
+          if (config.useInnerCases) {
+            // Cases → Inner Cases → Items
+            for (let innerCaseIndex = 0; innerCaseIndex < config.innerCasesPerCase; innerCaseIndex++) {
+              const globalInnerCaseIndex = globalCaseIndex * config.innerCasesPerCase + innerCaseIndex;
+              const innerCaseData = {
+                innerCaseSerial: innerCaseSerials[globalInnerCaseIndex] || '',
+                items: []
+              };
+              
+              for (let itemIndex = 0; itemIndex < config.itemsPerInnerCase; itemIndex++) {
+                const globalItemIndex = globalInnerCaseIndex * config.itemsPerInnerCase + itemIndex;
+                innerCaseData.items.push({
+                  itemSerial: itemSerials[globalItemIndex] || ''
+                });
+              }
+              
+              caseData.innerCases.push(innerCaseData);
+            }
+          } else {
+            // Cases → Items directly
+            for (let itemIndex = 0; itemIndex < config.itemsPerCase; itemIndex++) {
+              const globalItemIndex = globalCaseIndex * config.itemsPerCase + itemIndex;
+              caseData.items.push({
+                itemSerial: itemSerials[globalItemIndex] || ''
+              });
+            }
+          }
+          
+          ssccData.cases.push(caseData);
+        }
+      }
+      
+      hierarchicalData.push(ssccData);
+    }
+    
+    console.log('Converted to hierarchical format:', hierarchicalData);
+    return hierarchicalData;
+  };
+
   const renderStep2 = () => {
     // Re-initialize hierarchical serials for completed projects if missing
     if (currentProject && currentProject.status === 'Completed' && (!hierarchicalSerials || hierarchicalSerials.length === 0)) {
