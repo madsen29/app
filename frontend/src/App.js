@@ -3353,7 +3353,11 @@ function App() {
                   type="text"
                   id="productNdc"
                   value={configuration.productNdc}
-                  onChange={(e) => setConfiguration({...configuration, productNdc: e.target.value})}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^0-9-]/g, '');
+                    setConfiguration({ ...configuration, productNdc: value });
+                  }}
+                  inputMode="text"
                   placeholder="e.g., 45802-466"
                 />
                 <button 
@@ -3502,12 +3506,19 @@ function App() {
             <div className="form-group">
               <label htmlFor="numberOfSscc">Number of SSCCs:</label>
               <input
-                type="number"
+                type="tel"
                 id="numberOfSscc"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 min="1"
                 max="20"
                 value={configuration.numberOfSscc}
-                onChange={(e) => setConfiguration({...configuration, numberOfSscc: e.target.value ? parseInt(e.target.value) : ''})}
+                onChange={(e) =>
+                  setConfiguration({
+                    ...configuration,
+                    numberOfSscc: e.target.value ? parseInt(e.target.value) : ''
+                  })
+                }
                 disabled={isPackagingConfigLocked}
                 placeholder="e.g., 1"
                 required
@@ -3516,10 +3527,12 @@ function App() {
             <div className="form-group">
               <label htmlFor="casesPerSscc">Cases per SSCC:</label>
               <input
-                type="number"
+                type="tel"
                 id="casesPerSscc"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 min="0"
-                max="50"
+                max="500000"
                 value={configuration.casesPerSscc}
                 onChange={(e) => setConfiguration({...configuration, casesPerSscc: e.target.value ? parseInt(e.target.value) : ''})}
                 disabled={isPackagingConfigLocked}
@@ -3550,10 +3563,12 @@ function App() {
               <div className="form-group">
                 <label htmlFor="itemsPerCase">Items per SSCC:</label>
                 <input
-                  type="number"
+                  type="tel"
                   id="itemsPerCase"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   min="1"
-                  max="1000"
+                  max="100000000"
                   value={configuration.itemsPerCase}
                   onChange={(e) => setConfiguration({...configuration, itemsPerCase: e.target.value ? parseInt(e.target.value) : ''})}
                   disabled={isPackagingConfigLocked}
@@ -3571,10 +3586,12 @@ function App() {
                 <div className="form-group">
                   <label htmlFor="innerCasesPerCase">Inner Cases per Case:</label>
                   <input
-                    type="number"
+                    type="tel"
                     id="innerCasesPerCase"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     min="1"
-                    max="50"
+                    max="50000"
                     value={configuration.innerCasesPerCase}
                     onChange={(e) => setConfiguration({...configuration, innerCasesPerCase: e.target.value ? parseInt(e.target.value) : ''})}
                     disabled={isPackagingConfigLocked}
@@ -3585,10 +3602,12 @@ function App() {
                 <div className="form-group">
                   <label htmlFor="itemsPerInnerCase">Items per Inner Case:</label>
                   <input
-                    type="number"
+                    type="tel"
                     id="itemsPerInnerCase"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     min="1"
-                    max="100"
+                    max="100000"
                     value={configuration.itemsPerInnerCase}
                     onChange={(e) => setConfiguration({...configuration, itemsPerInnerCase: e.target.value ? parseInt(e.target.value) : ''})}
                     disabled={isPackagingConfigLocked}
@@ -3609,6 +3628,8 @@ function App() {
                 <input
                   type="number"
                   id="itemsPerCase"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   min="1"
                   max="100"
                   value={configuration.itemsPerCase}
@@ -3630,8 +3651,10 @@ function App() {
               <div className="form-group">
                 <label htmlFor="ssccExtensionDigit">SSCC Extension Digit:</label>
                 <input
-                  type="text"
+                  type="tel"
                   id="ssccExtensionDigit"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   maxLength="1"
                   value={configuration.ssccExtensionDigit}
                   onChange={(e) => setConfiguration({...configuration, ssccExtensionDigit: e.target.value})}
@@ -3643,8 +3666,10 @@ function App() {
               <div className="form-group">
                 <label htmlFor="caseIndicatorDigit">Case Indicator Digit:</label>
                 <input
-                  type="text"
+                  type="tel"
                   id="caseIndicatorDigit"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   maxLength="1"
                   value={configuration.caseIndicatorDigit}
                   onChange={(e) => setConfiguration({...configuration, caseIndicatorDigit: e.target.value})}
@@ -3657,8 +3682,10 @@ function App() {
                 <div className="form-group">
                   <label htmlFor="innerCaseIndicatorDigit">Inner Case Indicator Digit:</label>
                   <input
-                    type="text"
+                    type="tel"
                     id="innerCaseIndicatorDigit"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     maxLength="1"
                     value={configuration.innerCaseIndicatorDigit}
                     onChange={(e) => setConfiguration({...configuration, innerCaseIndicatorDigit: e.target.value})}
@@ -3671,8 +3698,10 @@ function App() {
               <div className="form-group">
                 <label htmlFor="itemIndicatorDigit">Item Indicator Digit:</label>
                 <input
-                  type="text"
+                  type="tel"
                   id="itemIndicatorDigit"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   maxLength="1"
                   value={configuration.itemIndicatorDigit}
                   onChange={(e) => setConfiguration({...configuration, itemIndicatorDigit: e.target.value})}
