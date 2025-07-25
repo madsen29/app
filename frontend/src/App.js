@@ -1966,8 +1966,9 @@ function App() {
       const nextStep = calculateNextStep();
       setSerialCollectionStep({
         ...nextStep,
-        // Clear serial when going TO item level OR FROM item level (new containers need empty fields)
-        currentSerial: (nextStep.currentLevel === 'item' || serialCollectionStep.currentLevel === 'item') 
+        // Only clear serial when transitioning FROM item level to new containers
+        // Preserve serials when going TO item level (existing serials) or between non-item levels
+        currentSerial: (serialCollectionStep.currentLevel === 'item' && nextStep.currentLevel !== 'item') 
           ? '' 
           : (nextStep.currentSerial || '')
       });
