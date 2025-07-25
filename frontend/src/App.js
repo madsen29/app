@@ -4339,17 +4339,26 @@ function App() {
 
   const renderStep2 = () => {
     // Re-initialize hierarchical serials for completed projects if missing
-    if (currentProject && currentProject.status === 'Completed' && currentProject.serial_numbers && (!hierarchicalSerials || hierarchicalSerials.length === 0)) {
+    if (currentProject && currentProject.status === 'Completed' && (!hierarchicalSerials || hierarchicalSerials.length === 0)) {
       console.log('Re-initializing hierarchical serials for completed project');
-      setHierarchicalSerials(currentProject.serial_numbers);
       
-      // Also ensure serial collection step is marked as complete
-      if (currentProject.configuration) {
-        const currentPosition = findCurrentSerialPosition(currentProject.serial_numbers, currentProject.configuration);
-        setSerialCollectionStep({
-          ...currentPosition,
-          isComplete: true
-        });
+      // First try to restore from currentProject.serial_numbers
+      if (currentProject.serial_numbers && currentProject.serial_numbers.length > 0) {
+        console.log('Restoring from currentProject.serial_numbers:', currentProject.serial_numbers);
+        setHierarchicalSerials(currentProject.serial_numbers);
+        
+        // Also ensure serial collection step is marked as complete
+        if (currentProject.configuration) {
+          const currentPosition = findCurrentSerialPosition(currentProject.serial_numbers, currentProject.configuration);
+          setSerialCollectionStep({
+            ...currentPosition,
+            isComplete: true
+          });
+        }
+      } else {
+        // If currentProject.serial_numbers is empty, try to fetch fresh data from backend
+        console.warn('currentProject.serial_numbers is empty, project data may be corrupted');
+        setError('Serial numbers data is missing. Please refresh the page and try again.');
       }
     }
     const totals = calculateTotals();
