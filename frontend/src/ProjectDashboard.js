@@ -783,12 +783,20 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         </button>
                       )}
                       {project.status === 'Completed' && (
-                        <button
-                          onClick={() => handleDownloadEPCIS(project.id)}
-                          className="px-3 py-1 text-xs font-medium text-slate-50 bg-slate-900 border border-slate-200 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
-                        >
-                          Download EPCIS
-                        </button>
+                        <>
+                          <button
+                            onClick={() => onSelectProject(project)}
+                            className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDownloadEPCIS(project.id)}
+                            className="px-3 py-1 text-xs font-medium text-slate-50 bg-slate-900 border border-slate-200 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                          >
+                            Download EPCIS
+                          </button>
+                        </>
                       )}
                       <button
                         onClick={() => handleDeleteProject(project.id)}
