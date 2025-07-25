@@ -146,6 +146,18 @@ frontend:
         agent: "main"
         comment: "SCANNER 2D CODE RESTRICTION IMPLEMENTED: ✅ Updated startContinuousScanning function to use BarcodeFormat hints restricting to 2D codes only ✅ Added format validation in scan result handling to reject 1D barcodes ✅ Enhanced error messages to clearly indicate when 1D barcode is detected ✅ Added visual indicators in scanner instructions about 2D code requirement ✅ Applied format restrictions to both single-scan and continuous-scan modes"
 
+  - task: "Edit Button for Completed Projects"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/ProjectDashboard.js, /app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "EDIT BUTTON FOR COMPLETED PROJECTS IMPLEMENTED: ✅ Added Edit button next to Download EPCIS for completed projects in both desktop and mobile views ✅ Edit button uses blue styling to differentiate from Download EPCIS (black/gray) ✅ Modified handleSelectProject function to automatically set currentStep = 3 for completed projects ✅ Users can now edit completed projects and regenerate EPCIS files ✅ Preserves all existing project data when editing ✅ Ready for testing to verify edit functionality works correctly"
+
   - task: "Scanner Tap to Resume Scanning Fix"
     implemented: true
     working: false
