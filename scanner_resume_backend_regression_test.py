@@ -29,8 +29,8 @@ class ScannerResumeRegressionTester:
         self.session = requests.Session()
         self.test_results = []
         self.auth_token = None
-        self.test_user_email = "scanner_test_user@regression.com"
-        self.test_user_password = "TestPassword123!"
+        self.test_user_email = "epcis_test_user@test.com"
+        self.test_user_password = "testpassword123"
         
     def log_test(self, test_name, success, message, details=None):
         """Log test results"""
