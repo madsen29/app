@@ -530,6 +530,50 @@ input:disabled {
   100% { transform: scale(1); opacity: 1; }
 }
 
+/* Pause overlay styles */
+.pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pause-overlay:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.pause-message {
+  text-align: center;
+  color: white;
+  animation: pausePulse 2s infinite;
+}
+
+.pause-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.pause-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes pausePulse {
+  0% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0.8; transform: scale(1); }
+}
+
 .scanner-instructions {
   margin-top: 1rem;
   text-align: center;
