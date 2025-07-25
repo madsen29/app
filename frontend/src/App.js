@@ -1965,8 +1965,10 @@ function App() {
       const nextStep = calculateNextStep();
       setSerialCollectionStep({
         ...nextStep,
-        // Clear serial for item level transitions, preserve for others
-        currentSerial: nextStep.currentLevel === 'item' ? '' : (nextStep.currentSerial || '')
+        // Clear serial when going TO item level OR FROM item level (new containers need empty fields)
+        currentSerial: (nextStep.currentLevel === 'item' || serialCollectionStep.currentLevel === 'item') 
+          ? '' 
+          : (nextStep.currentSerial || '')
       });
     }
     
