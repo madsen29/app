@@ -1925,7 +1925,7 @@ function App() {
       const nextStep = calculateNextStep(serialLines.length - 1);
       setSerialCollectionStep({
         ...nextStep,
-        currentSerial: ''
+        currentSerial: nextStep.currentSerial || ''
       });
     } else {
       // Single serial handling for non-item levels
