@@ -143,6 +143,7 @@ function App() {
   const codeReader = useRef(null);
   const [isScanning, setIsScanning] = useState(false);
   const scanningRef = useRef(false); // Add a ref to track scanning state
+  const [scanningPaused, setScanningPaused] = useState(false); // Add pause state
 
   // Auto-dismiss toast after 4 seconds
   useEffect(() => {
