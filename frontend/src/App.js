@@ -2011,7 +2011,7 @@ function App() {
     };
     
     if (current.currentLevel === 'sscc') {
-      // Move to first case or first item (if direct SSCC→Items)
+      // Move to the current case or first item (if direct SSCC→Items)
       if (configuration.casesPerSscc === 0) {
         const nextItemIndex = findNextItemIndex(current.ssccIndex, 0, 0);
         return {
@@ -2020,19 +2020,21 @@ function App() {
           itemIndex: nextItemIndex
         };
       } else {
+        // Continue with the case they were working on, don't reset to caseIndex: 0
         return {
           ...current,
-          currentLevel: 'case',
-          caseIndex: 0
+          currentLevel: 'case'
+          // Preserve current.caseIndex - don't reset it
         };
       }
     } else if (current.currentLevel === 'case') {
-      // Move to first inner case or first item
+      // Move to the current inner case or first item
       if (configuration.useInnerCases) {
+        // Continue with the inner case they were working on, don't reset to innerCaseIndex: 0
         return {
           ...current,
-          currentLevel: 'innerCase',
-          innerCaseIndex: 0
+          currentLevel: 'innerCase'
+          // Preserve current.innerCaseIndex - don't reset it
         };
       } else {
         const nextItemIndex = findNextItemIndex(current.ssccIndex, current.caseIndex, 0);
