@@ -1849,7 +1849,21 @@ function App() {
     if (serialCollectionStep.currentLevel === 'item') {
       const serialLines = serialCollectionStep.currentSerial.split('\n').filter(line => line.trim());
       
-      // Validate all serials for duplicates
+      // Validate all serials for duplicates, excluding current items being edited
+      const currentItemPaths = [];
+      for (let i = 0; i < serialLines.length; i++) {
+        const tempItemIndex = serialCollectionStep.itemIndex + i;
+        let tempPath;
+        if (configuration.useInnerCases) {
+          tempPath = `item-${serialCollectionStep.ssccIndex}-${serialCollectionStep.caseIndex}-${serialCollectionStep.innerCaseIndex}-${tempItemIndex}`;
+        } else if (configuration.casesPerSscc > 0) {
+          tempPath = `item-${serialCollectionStep.ssccIndex}-${serialCollectionStep.caseIndex}-${tempItemIndex}`;
+        } else {
+          tempPath = `item-${serialCollectionStep.ssccIndex}-${tempItemIndex}`;
+        }
+        currentItemPaths.push(tempPath);
+      }
+      
       for (let i = 0; i < serialLines.length; i++) {
         const serial = serialLines[i].trim();
         if (serial) {
@@ -1864,7 +1878,7 @@ function App() {
             tempPath = `item-${serialCollectionStep.ssccIndex}-${tempItemIndex}`;
           }
           
-          const duplicates = validateDuplicateSerials(serial, tempPath);
+          const duplicates = validateDuplicateSerials(serial, tempPath, currentItemPaths);
           if (duplicates) {
             setError(`Duplicate serial number found on line ${i + 1}! "${serial}" is already used at: ${duplicates[0].path}`);
             return;
