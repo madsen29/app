@@ -2019,11 +2019,20 @@ function App() {
     if (current.currentLevel === 'sscc') {
       // Move to the current case or first item (if direct SSCC→Items)
       if (configuration.casesPerSscc === 0) {
+        // Direct SSCC → Items: Load existing item serials if they exist
         const nextItemIndex = findNextItemIndex(current.ssccIndex, 0, 0);
+        const currentSSCC = hierarchicalSerials[current.ssccIndex];
+        const existingItems = currentSSCC?.items || [];
+        const existingSerials = existingItems
+          .map(item => item.itemSerial)
+          .filter(serial => serial && serial.trim())
+          .join('\n');
+        
         return {
           ...current,
           currentLevel: 'item',
-          itemIndex: nextItemIndex
+          itemIndex: nextItemIndex,
+          currentSerial: existingSerials
         };
       } else {
         // Continue with the case they were working on, and load its existing serial
