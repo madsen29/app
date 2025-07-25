@@ -1691,7 +1691,7 @@ function App() {
     // Get current hierarchical data before making any changes
     const currentHierarchicalData = [...hierarchicalSerials];
     
-    // Save current serial before navigating
+    // Save current serial before navigating (but preserve all existing data)
     if (serialCollectionStep.currentSerial.trim()) {
       const currentSSCC = currentHierarchicalData[serialCollectionStep.ssccIndex];
       
@@ -1751,10 +1751,11 @@ function App() {
           }
           break;
       }
-      
-      // Update the hierarchical data with current changes
-      setHierarchicalSerials(currentHierarchicalData);
     }
+    
+    // CRITICAL: Update hierarchical data BEFORE changing navigation state
+    // This ensures all previous serial numbers are preserved
+    setHierarchicalSerials(currentHierarchicalData);
     
     // Helper function to find next unfinished item index
     const findNextItemIndex = (ssccIndex, caseIndex, innerCaseIndex) => {
@@ -1797,15 +1798,13 @@ function App() {
     const step = serialCollectionStep;
     
     if (clickedLevel.includes('SSCC')) {
-      // Navigate to SSCC level
+      // Navigate to SSCC level - preserve all existing data
       const currentSSCC = currentHierarchicalData[step.ssccIndex];
       setSerialCollectionStep({
         ...step,
         currentLevel: 'sscc',
         currentSerial: currentSSCC.ssccSerial || '',
-        caseIndex: 0,
-        innerCaseIndex: 0,
-        itemIndex: 0,
+        // Don't reset indices - preserve current navigation context  
         isComplete: false
       });
     } else if (clickedLevel.includes('Case') && !clickedLevel.includes('Inner')) {
