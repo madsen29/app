@@ -2057,11 +2057,23 @@ function App() {
         };
       }
     } else if (current.currentLevel === 'innerCase') {
-      // Move to first item in this inner case
+      // Move to items in this inner case and load existing serials if they exist
       const nextItemIndex = findNextItemIndex(current.ssccIndex, current.caseIndex, current.innerCaseIndex);
+      
+      // Check if there are existing item serials to load
+      const currentSSCC = hierarchicalSerials[current.ssccIndex];
+      const existingItems = currentSSCC?.cases?.[current.caseIndex]?.innerCases?.[current.innerCaseIndex]?.items || [];
+      const existingSerials = existingItems
+        .map(item => item.itemSerial)
+        .filter(serial => serial && serial.trim())
+        .join('\n');
+      
       return {
         ...current,
         currentLevel: 'item',
+        itemIndex: nextItemIndex,
+        currentSerial: existingSerials
+      };
         itemIndex: nextItemIndex
       };
     } else if (current.currentLevel === 'item') {
