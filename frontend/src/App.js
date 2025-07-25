@@ -2356,6 +2356,7 @@ function App() {
   const closeScanner = () => {
     setIsScanning(false);
     scanningRef.current = false; // Stop the scan loop
+    setScanningPaused(false); // Reset pause state
     
     // Stop all video streams more aggressively
     if (videoRef.current) {
