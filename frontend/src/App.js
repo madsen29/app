@@ -1963,7 +1963,8 @@ function App() {
       const nextStep = calculateNextStep();
       setSerialCollectionStep({
         ...nextStep,
-        currentSerial: nextStep.currentSerial || ''
+        // Clear serial for item level transitions, preserve for others
+        currentSerial: nextStep.currentLevel === 'item' ? '' : (nextStep.currentSerial || '')
       });
     }
     
