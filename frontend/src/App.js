@@ -2325,7 +2325,7 @@ function App() {
         video: {
           facingMode: 'environment',
           width: { ideal: 1280 },
-          height: { ideal: 720 }
+          height: {720}
         }
       });
       
@@ -2335,8 +2335,26 @@ function App() {
         videoRef.current.onloadedmetadata = resolve;
       });
       
+      // Reset the code reader to ensure clean state
+      if (codeReader.current) {
+        try {
+          if (typeof codeReader.current.reset === 'function') {
+            codeReader.current.reset();
+            console.log('Code reader reset for resume');
+          }
+        } catch (error) {
+          console.log('Error resetting code reader:', error);
+        }
+      }
+      
+      // CRITICAL: Ensure scanning state is properly set for resume
+      scanningRef.current = true;
+      setIsScanning(true);
+      
       // Hide pause overlay and start scanning
       setScanningPaused(false);
+      
+      console.log('Starting scan loop after resume');
       startScanLoop();
       
     } catch (error) {
