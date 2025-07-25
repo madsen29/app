@@ -2295,24 +2295,7 @@ function App() {
     });
   };
 
-  const resumeScanning = () => {
-    console.log('Resuming scanning...');
-    setScanningPaused(false);
-    setError(''); // Clear any error messages
-    
-    // Restart the scan loop after a brief delay
-    setTimeout(() => {
-      if (scannerModal.isOpen && scanningRef.current) {
-        startScanLoop();
-      }
-    }, 100);
-  };
-
-  const pauseScanning = () => {
-    console.log('Pausing scanning...');
-    setScanningPaused(true);
-  };
-    console.log('Closing scanner - stopping camera');
+  const closeScanner = () => {
     setIsScanning(false);
     scanningRef.current = false; // Stop the scan loop
     
