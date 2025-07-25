@@ -591,8 +591,8 @@ function App() {
       netContentDescription: ''
     });
     
-    // Reset serial number states
-    setHierarchicalSerials([]);
+    // Reset serial collection step to initial state (but preserve hierarchicalSerials)
+    // DO NOT clear hierarchicalSerials here as it causes data loss during complex navigation
     setSerialCollectionStep({
       ssccIndex: 0,
       caseIndex: 0,
