@@ -610,8 +610,31 @@ function App() {
     setError('');
     
     try {
+      // Determine the actual step based on progress, not just the current UI step
+      let actualStep = currentStep;
+      
+      // If user has serial numbers entered, they should be on step 2 minimum
+      if (hierarchicalSerials && hierarchicalSerials.length > 0) {
+        const hasAnySerials = hierarchicalSerials.some(sscc => 
+          (sscc.ssccSerial && sscc.ssccSerial.trim()) ||
+          (sscc.cases && sscc.cases.some(caseData => 
+            (caseData.caseSerial && caseData.caseSerial.trim()) ||
+            (caseData.items && caseData.items.some(item => item.itemSerial && item.itemSerial.trim())) ||
+            (caseData.innerCases && caseData.innerCases.some(innerCase => 
+              (innerCase.innerCaseSerial && innerCase.innerCaseSerial.trim()) ||
+              (innerCase.items && innerCase.items.some(item => item.itemSerial && item.itemSerial.trim()))
+            ))
+          )) ||
+          (sscc.items && sscc.items.some(item => item.itemSerial && item.itemSerial.trim()))
+        );
+        
+        if (hasAnySerials && actualStep < 2) {
+          actualStep = 2; // Keep them on step 2 if they have serial progress
+        }
+      }
+      
       const updateData = {
-        current_step: currentStep,
+        current_step: actualStep,
         updated_at: new Date().toISOString()
       };
 
