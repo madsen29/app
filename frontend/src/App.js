@@ -2276,15 +2276,15 @@ function App() {
           setError('');
           console.log('Valid GS1 barcode:', validation.reason);
           
-          // Check if we should continue scanning BEFORE processing the result
-          const isItemsLevel = serialCollectionStep.currentLevel === 'item';
-          const willContinueScanning = shouldContinueScanning && isItemsLevel && requiredItemCount > 1;
-          
           handleBarcodeResult(scannedData);
           
-          // Pause scanning after successful scan
-          if (willContinueScanning) {
-            pauseScanning(); // Pause for multi-item scanning
+          // Check if we should continue scanning for multi-item scanning
+          const isItemsLevel = serialCollectionStep.currentLevel === 'item';
+          const shouldContinue = shouldContinueScanning && isItemsLevel && requiredItemCount > 1;
+          
+          if (shouldContinue) {
+            // Continue scanning automatically - no pause
+            setTimeout(scanLoop, 1000); // Small delay then continue
           } else {
             // For single-item scanning, close completely  
             console.log('Single scan complete - stopping scan loop');
