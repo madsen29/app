@@ -4338,6 +4338,20 @@ function App() {
   };
 
   const renderStep2 = () => {
+    // Re-initialize hierarchical serials for completed projects if missing
+    if (currentProject && currentProject.status === 'Completed' && currentProject.serial_numbers && (!hierarchicalSerials || hierarchicalSerials.length === 0)) {
+      console.log('Re-initializing hierarchical serials for completed project');
+      setHierarchicalSerials(currentProject.serial_numbers);
+      
+      // Also ensure serial collection step is marked as complete
+      if (currentProject.configuration) {
+        const currentPosition = findCurrentSerialPosition(currentProject.serial_numbers, currentProject.configuration);
+        setSerialCollectionStep({
+          ...currentPosition,
+          isComplete: true
+        });
+      }
+    }
     const totals = calculateTotals();
     
     if (serialCollectionStep.isComplete) {
