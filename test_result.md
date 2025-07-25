@@ -178,7 +178,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Scanner Tap to Resume Scanning Fix"
+    - "Edit Button for Completed Projects"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
