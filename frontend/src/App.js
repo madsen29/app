@@ -4517,10 +4517,18 @@ function App() {
               <div className="scanner-body">
                 <div className="camera-container">
                   <video ref={videoRef} className="scanner-video" autoPlay muted playsInline></video>
-                  {isScanning && (
+                  {isScanning && !scanningPaused && (
                     <div className="scanning-overlay">
                       <div className="scanning-frame"></div>
                       <p className="scanning-text">Scanning for 2D codes...</p>
+                    </div>
+                  )}
+                  {scanningPaused && (
+                    <div className="pause-overlay" onClick={resumeScanning}>
+                      <div className="pause-message">
+                        <div className="pause-icon">⏸️</div>
+                        <p className="pause-text">Tap to Resume Scanning</p>
+                      </div>
                     </div>
                   )}
                 </div>
