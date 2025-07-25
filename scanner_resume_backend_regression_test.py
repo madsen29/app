@@ -416,14 +416,17 @@ class ScannerResumeRegressionTester:
             
             if response.status_code == 200:
                 data = response.json()
-                if (len(data.get("sscc_serial_numbers", [])) == 1 and 
-                    len(data.get("case_serial_numbers", [])) == 1 and 
-                    len(data.get("item_serial_numbers", [])) == 2):
+                # Check both camelCase and snake_case field names (backend returns camelCase)
+                sscc_serials = data.get("ssccSerialNumbers") or data.get("sscc_serial_numbers", [])
+                case_serials = data.get("caseSerialNumbers") or data.get("case_serial_numbers", [])
+                item_serials = data.get("itemSerialNumbers") or data.get("item_serial_numbers", [])
+                
+                if (len(sscc_serials) == 1 and len(case_serials) == 1 and len(item_serials) == 2):
                     self.log_test("Serial Numbers Creation", True, "Serial numbers created successfully", 
-                                f"SSCC: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
+                                f"SSCC: {len(sscc_serials)}, Cases: {len(case_serials)}, Items: {len(item_serials)}")
                     return True
                 else:
-                    self.log_test("Serial Numbers Creation", False, f"Serial count mismatch: {data}")
+                    self.log_test("Serial Numbers Creation", False, f"Serial count incorrect - SSCC: {len(sscc_serials)}, Cases: {len(case_serials)}, Items: {len(item_serials)}")
                     return False
             else:
                 self.log_test("Serial Numbers Creation", False, f"HTTP {response.status_code}: {response.text}")
