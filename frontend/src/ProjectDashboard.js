@@ -609,7 +609,6 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                             </div>
                             
                             {/* Package Hierarchy - Only show if packaging configuration is set and locked */}
-                            {/* Package Hierarchy - Only show if packaging configuration is set and locked */}
                             {isPackagingConfigSetAndLocked(project) && (
                               <div className="mt-2 flex items-center space-x-2 text-sm text-gray-600">
                                 <span className="font-medium">Package Hierarchy:</span>
@@ -649,7 +648,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         {project.status !== 'Completed' && (
                           <button
                             onClick={() => onSelectProject(project)}
-                            className="px-3 py-1 text-xs font-medium text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-md hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                            className="px-3 py-1 text-sm font-medium text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-md hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                           >
                             Resume
                           </button>
@@ -658,13 +657,13 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                           <>
                             <button
                               onClick={() => onSelectProject(project)}
-                              className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                               Edit
                             </button>
                             <button
                               onClick={() => handleDownloadEPCIS(project.id)}
-                              className="px-3 py-1 text-xs font-medium text-slate-50 bg-slate-900 border border-slate-200 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                              className="px-3 py-1 text-sm font-medium text-slate-50 bg-slate-900 border border-slate-200 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
                             >
                               Download EPCIS
                             </button>
@@ -672,7 +671,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         )}
                         <button
                           onClick={() => handleDeleteProject(project.id)}
-                          className="px-3 py-1 text-xs font-medium text-slate-400 rounded-md hover:bg-red-100 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          className="px-3 py-1 text-sm font-medium text-slate-400 rounded-md hover:bg-red-100 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                         >
                           <FiTrash2 size={16} />
                         </button>
