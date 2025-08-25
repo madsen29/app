@@ -611,7 +611,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                             {/* Package Hierarchy - Only show if packaging configuration is set and locked */}
                             {isPackagingConfigSetAndLocked(project) && (
                               <div className="mt-2 flex items-center space-x-2 text-sm text-gray-600">
-                                <span className="font-medium">Package Hierarchy:</span>
+                                {/* <span className="font-medium">Package Hierarchy:</span> */}
                                 <div className="flex items-center space-x-1">
                                   <span className="bg-gray-100 px-2 py-1 rounded text-xs">
                                     {numberOfSscc} SSCC{numberOfSscc !== 1 ? 's' : ''}
@@ -636,7 +636,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                                   )}
                                   
                                   <span className="text-gray-400">→</span>
-                                  <span className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">
+                                  <span className="bg-gray-100 px-2 py-1 rounded text-xs">
                                     {totals.totalItems} Item{totals.totalItems !== 1 ? 's' : ''}
                                   </span>
                                 </div>
@@ -648,7 +648,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                         {project.status !== 'Completed' && (
                           <button
                             onClick={() => onSelectProject(project)}
-                            className="px-3 py-1 text-sm font-medium text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-md hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                            className="px-3 py-1 text-sm font-medium text-yellow-900 bg-yellow-300 border border-yellow-500 rounded-md hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                           >
                             Resume
                           </button>
@@ -657,13 +657,13 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                           <>
                             <button
                               onClick={() => onSelectProject(project)}
-                              className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="px-3 py-1 text-sm font-medium text-slate-900 bg-slate-100 border border-slate-200 rounded-md hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-500"
                             >
                               Edit
                             </button>
                             <button
                               onClick={() => handleDownloadEPCIS(project.id)}
-                              className="px-3 py-1 text-sm font-medium text-slate-50 bg-slate-900 border border-slate-200 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                              className="px-3 py-1 text-sm font-medium text-green-50 bg-green-600 border border-green-700 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                             >
                               Download EPCIS
                             </button>
@@ -740,7 +740,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                     {/* Mobile Package Hierarchy */}
                     {isPackagingConfigSetAndLocked(project) && (
                       <div className="package-hierarchy">
-                        <div className="font-medium text-gray-700 mb-2">Package Hierarchy:</div>
+                        {/* <div className="font-medium text-gray-700 mb-2">Package Hierarchy:</div> */}
                         <div className="flex flex-col space-y-1">
                           <div className="bg-gray-100 px-2 py-1 rounded text-xs">
                             {numberOfSscc} SSCC{numberOfSscc !== 1 ? 's' : ''}
@@ -765,7 +765,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                           )}
                           
                           <div className="hierarchy-arrow">↓</div>
-                          <div className="bg-blue-100 px-2 py-1 rounded text-xs text-blue-800">
+                          <div className="bg-gray-100 px-2 py-1 rounded text-xs">
                             {totals.totalItems} Item{totals.totalItems !== 1 ? 's' : ''}
                           </div>
                         </div>
