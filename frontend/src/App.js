@@ -2968,7 +2968,7 @@ function App() {
         
         // Start optimized scanning loop
         setScanningPaused(false);
-        startOptimizedScanLoop();
+        startScanLoop();
         
       } catch (permissionError) {
         console.error('Camera permission error:', permissionError);
