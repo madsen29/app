@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import axios from "axios";
-import { BrowserMultiFormatReader } from '@zxing/browser';
+import { BrowserDatamatrixCodeReader } from '@zxing/browser';
 import { BarcodeFormat } from '@zxing/library';
 import { FiCamera, FiChevronRight, FiPackage, FiBox, FiFolder, FiFile, FiX, FiArrowLeft } from 'react-icons/fi';
 import { useAuth } from './AuthContext';
