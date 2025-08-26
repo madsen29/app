@@ -2470,6 +2470,100 @@ function App() {
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
   };
 
+  // Optimized scanning loop specifically for Data Matrix codes with smooth mobile performance
+  const startOptimizedScanLoop = async () => {
+    let isProcessingResult = false; // Prevent multiple simultaneous scans
+    
+    const scanLoop = async () => {
+      // Check if we should continue scanning
+      if (!scannerModal.isOpen || !scanningRef.current || scanningPaused || isProcessingResult) {
+        return;
+      }
+      
+      try {
+        // Only attempt scan if video is ready and playing
+        if (!videoRef.current || videoRef.current.readyState < 2) {
+          setTimeout(scanLoop, 200); // Wait for video to be ready
+          return;
+        }
+        
+        const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
+        
+        if (result) {
+          isProcessingResult = true; // Prevent concurrent processing
+          
+          const scannedData = result.getText();
+          console.log('Data Matrix scanned:', scannedData);
+          
+          // Validate that this is a GS1 Data Matrix barcode
+          const validation = validateGS1Barcode(scannedData);
+          
+          if (!validation.isValid) {
+            setError(`❌ Invalid barcode type. Only 2D Data Matrix codes with GS1 data are supported. ${validation.reason}`);
+            // Continue scanning after error display
+            setTimeout(() => {
+              isProcessingResult = false;
+              if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
+                setTimeout(scanLoop, 800); // Resume scanning with delay
+              }
+            }, 1500);
+            return;
+          }
+          
+          // Clear any previous errors
+          setError('');
+          console.log('Valid GS1 Data Matrix code detected:', validation.reason);
+          
+          // Process the scanned result
+          handleBarcodeResult(scannedData);
+          
+          // Check if we should continue scanning for multi-item scanning
+          const isItemsLevel = serialCollectionStep.currentLevel === 'item';
+          const shouldContinue = shouldContinueScanning && isItemsLevel && requiredItemCount > 1;
+          
+          if (shouldContinue) {
+            // Continue scanning for multi-item workflow
+            setTimeout(() => {
+              isProcessingResult = false;
+              if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
+                setTimeout(scanLoop, 1200); // Small delay then continue
+              }
+            }, 500);
+          } else {
+            // Single scan complete - stop scanning
+            console.log('Single Data Matrix scan complete');
+            scanningRef.current = false;
+            isProcessingResult = false;
+            return;
+          }
+        } else {
+          // No result found - continue scanning with optimized timing for mobile
+          if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
+            setTimeout(scanLoop, 300); // Reduced frequency for smoother mobile performance
+          }
+        }
+        
+      } catch (scanError) {
+        // Handle scan errors gracefully - common on mobile due to focus/lighting
+        if (scanError.name === 'ChecksumException' || scanError.name === 'FormatException') {
+          // These are normal - continue scanning
+          if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
+            setTimeout(scanLoop, 200);
+          }
+        } else {
+          console.log('Scan error (continuing):', scanError.message);
+          // Continue scanning even with errors - mobile cameras can be temperamental
+          if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
+            setTimeout(scanLoop, 400);
+          }
+        }
+      }
+    };
+    
+    // Start the scan loop
+    scanLoop();
+  };
+
   // Scanner pause/resume functions
   const startScanLoop = async () => {
     const scanLoop = async () => {
