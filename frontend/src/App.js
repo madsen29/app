@@ -1139,6 +1139,11 @@ function App() {
       // If we have existing serial numbers, auto-save them with the new configuration
       if (hierarchicalSerials && hierarchicalSerials.length > 0) {
         autoSaveSerialNumbers(hierarchicalSerials);
+      } else {
+        // For new projects or projects without serial data, initialize the hierarchical structure
+        // based on the configuration they just set up
+        console.log('Initializing empty hierarchical serials for new project configuration');
+        initializeHierarchicalSerials(configuration);
       }
       
       // Navigate to step 2
@@ -1148,7 +1153,7 @@ function App() {
       if (hierarchicalSerials && hierarchicalSerials.length > 0) {
         setSuccess('Configuration saved successfully! Your previously entered serial numbers have been preserved.');
       } else {
-        setSuccess('Configuration saved successfully!');
+        setSuccess('Configuration saved successfully! Ready to assign serial numbers.');
       }
       
       scrollToTop();
