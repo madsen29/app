@@ -2909,106 +2909,99 @@ function App() {
     }
   };
 
+  // Optimized Data Matrix scanner for smooth mobile performance
   const startContinuousScanning = async () => {
     try {
       setIsScanning(true);
-      scanningRef.current = true; // Start the scan loop
+      scanningRef.current = true;
+      setError('');
       
-      // Import BrowserMultiFormatReader
-      const { BrowserMultiFormatReader } = await import('@zxing/library');
+      // Import Data Matrix specific reader for better performance
+      const { BrowserDatamatrixCodeReader } = await import('@zxing/library');
       
-      // Use MultiFormatReader but validate results
-      codeReader.current = new BrowserMultiFormatReader();
+      // Create Data Matrix-only reader (faster and more accurate)
+      codeReader.current = new BrowserDatamatrixCodeReader();
       
-      // Request camera permissions and get stream
+      // Optimized camera constraints for mobile performance
       const constraints = {
         video: {
-          facingMode: 'environment', // Try to use back camera
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          facingMode: 'environment', // Back camera preferred
+          width: { ideal: 1280, max: 1920 },
+          height: { ideal: 720, max: 1080 },
+          frameRate: { ideal: 30, max: 60 }, // Optimal frame rate for scanning
+          // Mobile-specific optimizations
+          zoom: false,
+          torch: false,
+          focusMode: 'continuous',
+          whiteBalance: 'auto'
         }
       };
       
       try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          
-          // Wait for video to be ready
-          await new Promise((resolve) => {
-            videoRef.current.onloadedmetadata = resolve;
-          });
-          
-          // Start scanning with pause/resume capability
-          setScanningPaused(false); // Start unpaused
-          startScanLoop();
+        if (!videoRef.current) {
+          throw new Error('Video element not available');
         }
         
-      } catch (permissionError) {
-        // Fallback to any available camera
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // Set up video stream with mobile optimizations
+        videoRef.current.srcObject = stream;
+        videoRef.current.playsInline = true; // Prevent fullscreen on iOS
+        videoRef.current.muted = true;
         
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+        // Wait for video to be ready
+        await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => reject(new Error('Video load timeout')), 10000);
           
-          await new Promise((resolve) => {
-            videoRef.current.onloadedmetadata = resolve;
-          });
-          
-          // Start scanning loop
-          const scanLoop = async () => {
-            if (!scannerModal.isOpen) return;
-            
-            try {
-              const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
-              if (result) {
-                const scannedData = result.getText();
-                console.log('Scanned data:', scannedData);
-                
-                // Validate GS1 content instead of format
-                const validation = validateGS1Barcode(scannedData);
-                
-                if (!validation.isValid) {
-                  setError(`❌ Non-GS1 barcode detected. ${validation.reason}`);
-                  // Continue scanning instead of stopping
-                  if (scannerModal.isOpen) {
-                    setTimeout(scanLoop, 500);
-                  }
-                  return;
-                }
-                
-                // Clear any previous errors if we got valid GS1 data
-                setError('');
-                console.log('Valid GS1 barcode:', validation.reason);
-                
-                handleBarcodeResult(scannedData);
-                setIsScanning(false);
-                return;
-              }
-            } catch (scanError) {
-              // Continue scanning only if modal is still open
-              if (scannerModal.isOpen) {
-                setTimeout(scanLoop, 100);
-              }
-            }
+          videoRef.current.onloadedmetadata = () => {
+            clearTimeout(timeout);
+            resolve();
           };
           
-          scanLoop();
+          if (videoRef.current.readyState >= 2) {
+            clearTimeout(timeout);
+            resolve();
+          }
+        });
+        
+        console.log('Data Matrix scanner initialized - scanning only 2D Data Matrix codes');
+        
+        // Start optimized scanning loop
+        setScanningPaused(false);
+        startOptimizedScanLoop();
+        
+      } catch (permissionError) {
+        console.error('Camera permission error:', permissionError);
+        // Fallback with basic constraints
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: 'environment' } 
+          });
+          
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            videoRef.current.playsInline = true;
+            videoRef.current.muted = true;
+            
+            await new Promise((resolve) => {
+              videoRef.current.onloadedmetadata = resolve;
+            });
+            
+            console.log('Data Matrix scanner initialized with fallback camera');
+            setScanningPaused(false);
+            startOptimizedScanLoop();
+          }
+        } catch (fallbackError) {
+          console.error('Fallback camera error:', fallbackError);
+          setError('Unable to access camera. Please check permissions and try again.');
+          setIsScanning(false);
         }
       }
       
     } catch (err) {
-      console.error('Error starting continuous scanner:', err);
+      console.error('Error starting Data Matrix scanner:', err);
+      setError('Failed to initialize scanner. Please refresh and try again.');
       setIsScanning(false);
-      
-      if (err.name === 'NotAllowedError') {
-        setError('Camera access denied. Please allow camera permissions and try again.');
-      } else if (err.name === 'NotFoundError') {
-        setError('No camera found on this device');
-      } else {
-        setError('Failed to start camera scanner: ' + err.message);
-      }
     }
   };
 
