@@ -4492,38 +4492,41 @@ function App() {
   };
 
   const renderStep2 = () => {
-    // Re-initialize hierarchical serials for completed projects if missing or corrupted
-    if (currentProject && currentProject.status === 'Completed' && (!hierarchicalSerials || hierarchicalSerials.length === 0)) {
-      console.log('Re-initializing hierarchical serials for completed project');
+    // Re-initialize hierarchical serials ONLY for completed projects with missing data
+    // Do NOT interfere with new projects or projects in progress
+    if (currentProject && 
+        currentProject.status === 'Completed' && 
+        currentProject.serial_numbers && 
+        currentProject.serial_numbers.length > 0 &&
+        (!hierarchicalSerials || hierarchicalSerials.length === 0)) {
       
-      // First try to restore from currentProject.serial_numbers
-      if (currentProject.serial_numbers && currentProject.serial_numbers.length > 0) {
-        console.log('Restoring from currentProject.serial_numbers:', currentProject.serial_numbers);
-        
-        // Check if the data needs conversion from flat format to hierarchical
-        const convertedData = convertFlatToHierarchical(currentProject.serial_numbers, currentProject.configuration);
-        setHierarchicalSerials(convertedData);
-        
-        // Also ensure serial collection step is marked as complete
-        if (currentProject.configuration) {
-          const currentPosition = findCurrentSerialPosition(convertedData, currentProject.configuration);
-          setSerialCollectionStep({
-            ...currentPosition,
-            isComplete: true
-          });
-        }
-      } else {
-        // If currentProject.serial_numbers is empty, try to fetch fresh data from backend
-        console.warn('currentProject.serial_numbers is empty, project data may be corrupted');
-        setError('Serial numbers data is missing. Please refresh the page and try again.');
+      console.log('Re-initializing hierarchical serials for completed project with missing state');
+      
+      // Check if the data needs conversion from flat format to hierarchical
+      const convertedData = convertFlatToHierarchical(currentProject.serial_numbers, currentProject.configuration);
+      setHierarchicalSerials(convertedData);
+      
+      // Also ensure serial collection step is marked as complete
+      if (currentProject.configuration) {
+        const currentPosition = findCurrentSerialPosition(convertedData, currentProject.configuration);
+        setSerialCollectionStep({
+          ...currentPosition,
+          isComplete: true
+        });
       }
     }
     
-    // Also check if current hierarchicalSerials is in flat format and needs conversion
-    if (hierarchicalSerials && hierarchicalSerials.length > 0 && currentProject && currentProject.configuration) {
+    // Check if current hierarchicalSerials is in flat format and needs conversion
+    // But ONLY for completed projects, not new ones
+    if (hierarchicalSerials && 
+        hierarchicalSerials.length > 0 && 
+        currentProject && 
+        currentProject.status === 'Completed' &&
+        currentProject.configuration) {
+      
       const firstItem = hierarchicalSerials[0];
       if (firstItem && typeof firstItem === 'object' && firstItem.type && firstItem.serial) {
-        console.log('Detected flat format in current hierarchicalSerials, converting...');
+        console.log('Detected flat format in completed project hierarchicalSerials, converting...');
         const convertedData = convertFlatToHierarchical(hierarchicalSerials, currentProject.configuration);
         setHierarchicalSerials(convertedData);
         
