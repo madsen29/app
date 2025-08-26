@@ -2989,7 +2989,7 @@ function App() {
             
             console.log('Data Matrix scanner initialized with fallback camera');
             setScanningPaused(false);
-            startOptimizedScanLoop();
+            startScanLoop();
           }
         } catch (fallbackError) {
           console.error('Fallback camera error:', fallbackError);
