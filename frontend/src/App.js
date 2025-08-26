@@ -2925,13 +2925,14 @@ function App() {
       // Create Data Matrix-only reader (faster and more accurate)
       codeReader.current = new BrowserDatamatrixCodeReader();
       
-      // Request camera permissions with mobile optimizations
+      // Request camera permissions with mobile optimizations and tighter zoom
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: 'environment', // Back camera
-          width: { ideal: 1280, max: 1920 },
-          height: { ideal: 720, max: 1080 },
-          frameRate: { ideal: 30 }
+          width: { ideal: 640, max: 800 }, // Tighter zoom for closer scanning
+          height: { ideal: 480, max: 600 }, // Tighter zoom for closer scanning
+          frameRate: { ideal: 30 },
+          aspectRatio: { ideal: 4/3 }
         } 
       });
       
