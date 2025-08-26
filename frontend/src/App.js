@@ -2843,18 +2843,47 @@ function App() {
         // SUCCESS: Provide haptic feedback and audio beep for successful scan
         console.log('🎉 SUCCESSFUL SCAN - Triggering feedback!'); // Debug log
         
+        // Visual flash for mobile debugging (brief green flash)
+        document.body.style.backgroundColor = '#00ff00';
+        setTimeout(() => {
+          document.body.style.backgroundColor = '';
+        }, 150);
+        
         try {
-          // Haptic feedback (vibrate phone) - try multiple methods
+          // Enhanced haptic feedback for iOS and Android
           console.log('Attempting haptic feedback...');
           
-          if (navigator.vibrate && typeof navigator.vibrate === 'function') {
+          // Try iOS-specific haptic feedback first
+          if (window.navigator && window.navigator.vibrate) {
             console.log('Using navigator.vibrate');
-            navigator.vibrate(200); // 200ms vibration
-          } else if (window.navigator && window.navigator.vibrate) {
-            console.log('Using window.navigator.vibrate');
-            window.navigator.vibrate(200);
-          } else {
-            console.log('Haptic feedback not supported on this device');
+            // Try different vibration patterns for iOS
+            window.navigator.vibrate([200]); // Array format for iOS compatibility
+            window.navigator.vibrate(200);   // Standard format as backup
+          }
+          
+          // Try additional iOS haptic methods
+          if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') {
+            console.log('iOS device detected - attempting haptic permission');
+            DeviceMotionEvent.requestPermission().then(response => {
+              if (response === 'granted') {
+                if (window.navigator.vibrate) {
+                  window.navigator.vibrate(200);
+                  console.log('iOS haptic with permission granted');
+                }
+              }
+            }).catch(err => console.log('iOS permission denied'));
+          }
+          
+          // Try webkit-specific haptic for iOS
+          if (window.navigator.vibrate === undefined && window.navigator.webkitVibrate) {
+            console.log('Using webkit vibrate');
+            window.navigator.webkitVibrate(200);
+          }
+          
+          // Fallback for older devices
+          if (navigator.vibrate && typeof navigator.vibrate === 'function') {
+            console.log('Using legacy navigator.vibrate');
+            navigator.vibrate(200);
           }
           
           // Audio beep - try simpler approach first
