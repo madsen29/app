@@ -2566,61 +2566,8 @@ function App() {
 
   // Scanner pause/resume functions
   const startScanLoop = async () => {
-    const scanLoop = async () => {
-      if (!scannerModal.isOpen || !scanningRef.current || scanningPaused) return;
-      
-      try {
-        const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
-        if (result) {
-          const scannedData = result.getText();
-          console.log('Scanned data:', scannedData);
-          
-          // Validate GS1 content instead of format
-          const validation = validateGS1Barcode(scannedData);
-          
-          if (!validation.isValid) {
-            setError(`❌ Non-GS1 barcode detected. ${validation.reason}`);
-            // Continue scanning instead of stopping
-            if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
-              setTimeout(scanLoop, 500);
-            }
-            return;
-          }
-          
-          // Clear any previous errors if we got valid GS1 data
-          setError('');
-          console.log('Valid GS1 barcode:', validation.reason);
-          
-          handleBarcodeResult(scannedData);
-          
-          // Check if we should continue scanning for multi-item scanning
-          const isItemsLevel = serialCollectionStep.currentLevel === 'item';
-          const shouldContinue = shouldContinueScanning && isItemsLevel && requiredItemCount > 1;
-          
-          if (shouldContinue) {
-            // Continue scanning automatically - no pause
-            setTimeout(scanLoop, 1000); // Small delay then continue
-          } else {
-            // For single-item scanning, close completely  
-            console.log('Single scan complete - stopping scan loop');
-            scanningRef.current = false;
-            return;
-          }
-        } else {
-          // No result, continue scanning
-          if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
-            setTimeout(scanLoop, 100);
-          }
-        }
-      } catch (scanError) {
-        // Continue scanning only if modal is still open and we should be scanning
-        if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
-          setTimeout(scanLoop, 100);
-        }
-      }
-    };
-    
-    scanLoop();
+    // Use the optimized Data Matrix scan loop
+    startOptimizedScanLoop();
   };
 
   const resumeScanning = async () => {
