@@ -2841,83 +2841,39 @@ function App() {
         setError('');
         
         // SUCCESS: Provide haptic feedback and audio beep for successful scan
-        console.log('🎉 SUCCESSFUL SCAN - Triggering feedback!'); // Debug log
-        
-        // Visual flash for mobile debugging (brief green flash)
-        document.body.style.backgroundColor = '#00ff00';
-        setTimeout(() => {
-          document.body.style.backgroundColor = '';
-        }, 150);
-        
         try {
-          // Enhanced haptic feedback for iOS and Android
-          console.log('Attempting haptic feedback...');
-          
-          // Try iOS-specific haptic feedback first
+          // Haptic feedback - multiple methods for iOS compatibility
           if (window.navigator && window.navigator.vibrate) {
-            console.log('Using navigator.vibrate');
-            // Try different vibration patterns for iOS
-            window.navigator.vibrate([200]); // Array format for iOS compatibility
-            window.navigator.vibrate(200);   // Standard format as backup
+            window.navigator.vibrate([200]); // Array format for iOS
+            window.navigator.vibrate(200);   // Standard format
           }
           
-          // Try additional iOS haptic methods
-          if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') {
-            console.log('iOS device detected - attempting haptic permission');
-            DeviceMotionEvent.requestPermission().then(response => {
-              if (response === 'granted') {
-                if (window.navigator.vibrate) {
-                  window.navigator.vibrate(200);
-                  console.log('iOS haptic with permission granted');
-                }
-              }
-            }).catch(err => console.log('iOS permission denied'));
-          }
-          
-          // Try webkit-specific haptic for iOS
-          if (window.navigator.vibrate === undefined && window.navigator.webkitVibrate) {
-            console.log('Using webkit vibrate');
-            window.navigator.webkitVibrate(200);
-          }
-          
-          // Fallback for older devices
           if (navigator.vibrate && typeof navigator.vibrate === 'function') {
-            console.log('Using legacy navigator.vibrate');
             navigator.vibrate(200);
           }
           
-          // Audio beep - try simpler approach first
-          console.log('Attempting audio beep...');
-          
-          // Try simple audio element first (more reliable)
+          // Audio beep
           const audio = new Audio();
           audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYfCC+N0fHSgS0FK3zD7uGWRgoXY7zs3ZdQEwxOqeXtrGcdCFOx3/PsmTIBJHzE7uiT';
           audio.volume = 0.3;
-          
-          audio.play().then(() => {
-            console.log('✅ Audio beep played successfully');
-          }).catch(() => {
-            console.log('Simple audio failed, trying Web Audio API...');
-            
-            // Fallback to Web Audio API
+          audio.play().catch(() => {
+            // Fallback to Web Audio API if simple audio fails
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
-            
             oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
-            
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.3);
-            console.log('✅ Web Audio API beep triggered');
           });
           
         } catch (feedbackError) {
-          console.error('❌ Scan feedback failed:', feedbackError);
+          // Silently handle feedback errors to avoid disrupting scan workflow
+          console.log('Scan feedback unavailable:', feedbackError.message);
         }
         
         // Handle different scanner target fields
