@@ -190,7 +190,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Edit Button for Completed Projects"
+    - "Data Matrix Only Scanner Optimization"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
