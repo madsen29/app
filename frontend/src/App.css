@@ -1240,7 +1240,7 @@ input:disabled {
   top: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 100000;
+  z-index: 1100; /* Higher than scanner modal (1000) */
   pointer-events: none;
 }
 
