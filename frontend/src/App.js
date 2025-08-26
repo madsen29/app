@@ -2841,29 +2841,54 @@ function App() {
         setError('');
         
         // SUCCESS: Provide haptic feedback and audio beep for successful scan
+        console.log('🎉 SUCCESSFUL SCAN - Triggering feedback!'); // Debug log
+        
         try {
-          // Haptic feedback (vibrate phone) - only on mobile devices
+          // Haptic feedback (vibrate phone) - try multiple methods
+          console.log('Attempting haptic feedback...');
+          
           if (navigator.vibrate && typeof navigator.vibrate === 'function') {
+            console.log('Using navigator.vibrate');
             navigator.vibrate(200); // 200ms vibration
+          } else if (window.navigator && window.navigator.vibrate) {
+            console.log('Using window.navigator.vibrate');
+            window.navigator.vibrate(200);
+          } else {
+            console.log('Haptic feedback not supported on this device');
           }
           
-          // Audio beep - create and play a short success tone
-          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
+          // Audio beep - try simpler approach first
+          console.log('Attempting audio beep...');
           
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
+          // Try simple audio element first (more reliable)
+          const audio = new Audio();
+          audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYfCC+N0fHSgS0FK3zD7uGWRgoXY7zs3ZdQEwxOqeXtrGcdCFOx3/PsmTIBJHzE7uiT';
+          audio.volume = 0.3;
           
-          oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz beep
-          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Gentle volume
-          gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2); // Fade out
+          audio.play().then(() => {
+            console.log('✅ Audio beep played successfully');
+          }).catch(() => {
+            console.log('Simple audio failed, trying Web Audio API...');
+            
+            // Fallback to Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+            console.log('✅ Web Audio API beep triggered');
+          });
           
-          oscillator.start(audioContext.currentTime);
-          oscillator.stop(audioContext.currentTime + 0.2); // 200ms beep
         } catch (feedbackError) {
-          // Ignore feedback errors - don't let them break scanning functionality
-          console.log('Scan feedback failed (non-critical):', feedbackError);
+          console.error('❌ Scan feedback failed:', feedbackError);
         }
         
         // Handle different scanner target fields
