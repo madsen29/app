@@ -2605,13 +2605,14 @@ function App() {
       const { BrowserDatamatrixCodeReader } = await import('@zxing/library');
       codeReader.current = new BrowserDatamatrixCodeReader();
       
-      // Get fresh camera stream with mobile optimizations
+      // Get fresh camera stream with mobile optimizations and tighter zoom
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'environment',
-          width: { ideal: 1280, max: 1920 },
-          height: { ideal: 720, max: 1080 },
-          frameRate: { ideal: 30 }
+          width: { ideal: 640, max: 800 }, // Tighter zoom
+          height: { ideal: 480, max: 600 }, // Tighter zoom
+          frameRate: { ideal: 30 },
+          aspectRatio: { ideal: 4/3 }
         }
       });
       
