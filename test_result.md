@@ -146,6 +146,18 @@ frontend:
         agent: "main"
         comment: "SCANNER 2D CODE RESTRICTION IMPLEMENTED: ✅ Updated startContinuousScanning function to use BarcodeFormat hints restricting to 2D codes only ✅ Added format validation in scan result handling to reject 1D barcodes ✅ Enhanced error messages to clearly indicate when 1D barcode is detected ✅ Added visual indicators in scanner instructions about 2D code requirement ✅ Applied format restrictions to both single-scan and continuous-scan modes"
 
+  - task: "Data Matrix Only Scanner Optimization"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js, /app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "DATA MATRIX SCANNER OPTIMIZATION COMPLETED: ✅ REPLACED BrowserMultiFormatReader with BrowserDatamatrixCodeReader for Data Matrix-only scanning ✅ MOBILE PERFORMANCE: Added frameRate control, playsInline, muted properties, and hardware acceleration CSS ✅ OPTIMIZED SCAN LOOP: Reduced scan frequency from 100ms to 300ms, added concurrent processing prevention, better error handling ✅ CLEAR USER FEEDBACK: Updated scanning text to specify 'Data Matrix codes only' and added hint about ignoring 1D barcodes ✅ ENHANCED CAMERA SETUP: Mobile-specific constraints, better timeout handling, iOS optimizations ✅ ELIMINATES FLICKERING: Hardware acceleration and performance optimizations in CSS"
+
   - task: "Edit Button for Completed Projects"
     implemented: true
     working: false
