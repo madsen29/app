@@ -2893,59 +2893,64 @@ function App() {
     try {
       setIsScanning(true);
       
-      // Import BrowserMultiFormatReader
-      const { BrowserMultiFormatReader } = await import('@zxing/library');
+      // Import Data Matrix specific reader for better performance
+      const { BrowserDatamatrixCodeReader } = await import('@zxing/library');
       
-      // Use MultiFormatReader but validate results
-      codeReader.current = new BrowserMultiFormatReader();
+      // Create Data Matrix-only reader (faster and more accurate)
+      codeReader.current = new BrowserDatamatrixCodeReader();
       
-      // Request camera permissions first
+      // Request camera permissions with mobile optimizations
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
-          facingMode: 'environment', // Try to use back camera
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          facingMode: 'environment', // Back camera
+          width: { ideal: 1280, max: 1920 },
+          height: { ideal: 720, max: 1080 },
+          frameRate: { ideal: 30 }
         } 
       });
       
-      // Set the video stream
+      // Set up video stream with mobile optimizations
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.playsInline = true; // Prevent fullscreen on iOS
+        videoRef.current.muted = true;
       }
       
-      // Start scanning
+      // Scan for Data Matrix code
       const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
       
       if (result) {
         const scannedData = result.getText();
-        console.log('Scanned data:', scannedData);
+        console.log('Data Matrix scanned:', scannedData);
         
-        // Validate GS1 content instead of format
+        // Validate that this is a GS1 Data Matrix barcode
         const validation = validateGS1Barcode(scannedData);
         
         if (!validation.isValid) {
-          setError(`❌ Non-GS1 barcode detected. ${validation.reason}`);
+          setError(`❌ Invalid barcode type. Only 2D Data Matrix codes with GS1 data are supported. ${validation.reason}`);
           setIsScanning(false);
           return;
         }
         
-        // Clear any previous errors if we got valid GS1 data
+        // Clear any previous errors
         setError('');
-        console.log('Valid GS1 barcode:', validation.reason);
+        console.log('Valid GS1 Data Matrix code:', validation.reason);
         
         handleBarcodeResult(scannedData);
       }
       
     } catch (err) {
-      console.error('Error starting scanner:', err);
+      console.error('Error starting Data Matrix scanner:', err);
       setIsScanning(false);
       
       if (err.name === 'NotAllowedError') {
         setError('Camera access denied. Please allow camera permissions and try again.');
       } else if (err.name === 'NotFoundError') {
-        setError('No camera found on this device');
+        setError('No camera found on this device.');
+      } else if (err.name === 'NotReadableError') {
+        setError('Camera is being used by another application.');
       } else {
-        setError('Failed to start camera scanner: ' + err.message);
+        setError('Failed to start Data Matrix scanner. Please try again.');
       }
     }
   };
