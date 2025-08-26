@@ -1136,9 +1136,20 @@ function App() {
         });
       }
       
+      // CRITICAL: On mobile, React state updates can be asynchronous and cause race conditions
+      // Force synchronous state clearing before checking hierarchicalSerials
+      setHierarchicalSerials([]);
+      
+      // Wait for state update to complete on mobile devices
+      await new Promise(resolve => setTimeout(resolve, 0));
+      
       // If we have existing serial numbers, auto-save them with the new configuration
-      if (hierarchicalSerials && hierarchicalSerials.length > 0) {
-        autoSaveSerialNumbers(hierarchicalSerials);
+      // But since we just cleared the state, this should only apply to projects with saved data
+      if (currentProject && currentProject.serial_numbers && currentProject.serial_numbers.length > 0) {
+        // Restore and auto-save existing project data
+        setHierarchicalSerials(currentProject.serial_numbers);
+        autoSaveSerialNumbers(currentProject.serial_numbers);
+        console.log('Preserved existing project serial data');
       } else {
         // For new projects or projects without serial data, initialize the hierarchical structure
         // based on the configuration they just set up
