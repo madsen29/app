@@ -2994,18 +2994,20 @@ function App() {
       // Create Data Matrix-only reader (faster and more accurate)
       codeReader.current = new BrowserDatamatrixCodeReader();
       
-      // Optimized camera constraints for mobile performance
+      // Optimized camera constraints for mobile performance with tighter zoom
       const constraints = {
         video: {
           facingMode: 'environment', // Back camera preferred
-          width: { ideal: 1280, max: 1920 },
-          height: { ideal: 720, max: 1080 },
+          width: { ideal: 640, max: 800 }, // Reduced for tighter zoom
+          height: { ideal: 480, max: 600 }, // Reduced for tighter zoom  
           frameRate: { ideal: 30, max: 60 }, // Optimal frame rate for scanning
-          // Mobile-specific optimizations
+          // Mobile-specific optimizations for tighter scanning area
           zoom: false,
           torch: false,
           focusMode: 'continuous',
-          whiteBalance: 'auto'
+          whiteBalance: 'auto',
+          // Advanced constraints for better Data Matrix detection
+          aspectRatio: { ideal: 4/3 } // Better aspect ratio for scanning
         }
       };
       
