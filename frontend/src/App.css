@@ -2860,7 +2860,7 @@ input:disabled {
     transform: translateX(-50%);
     width: calc(100% - 2rem);
     max-width: 400px;
-    z-index: 1000;
+    z-index: 1100; /* Higher than scanner modal */
   }
 
   .toast {
