@@ -3049,7 +3049,12 @@ function App() {
         // Fallback with basic constraints
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: 'environment' } 
+            video: { 
+              facingMode: 'environment',
+              width: { ideal: 640, max: 800 }, // Tighter zoom
+              height: { ideal: 480, max: 600 }, // Tighter zoom
+              aspectRatio: { ideal: 4/3 }
+            } 
           });
           
           if (videoRef.current) {
