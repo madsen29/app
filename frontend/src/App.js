@@ -4973,7 +4973,10 @@ function App() {
                   {isScanning && (
                     <div className="scanning-overlay">
                       <div className="scanning-frame"></div>
-                      <p className="scanning-text">Scanning for 2D codes...</p>
+                      <p className="scanning-text">Scanning for 2D Data Matrix codes only...</p>
+                      <p className="scanning-hint" style={{fontSize: '12px', opacity: 0.8, marginTop: '8px'}}>
+                        UPC, Code128, and other 1D barcodes will be ignored
+                      </p>
                     </div>
                   )}
                 </div>
