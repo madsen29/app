@@ -2274,8 +2274,8 @@ input:disabled {
 
 .item-number {
   color: #6b7280;
-  margin-right: 0.5rem;
-  min-width: 20px;
+  margin-right: 0.3rem;
+  min-width: 12px;
 }
 
 .item-serial {
@@ -2292,10 +2292,10 @@ input:disabled {
   padding: 0.4rem 0.75rem;
   font-size: 0.8rem;
   cursor: pointer;
-  margin-left: 0.5rem;
+  margin-left: 0.4rem;
   transition: all 0.2s ease;
   font-weight: 500;
-  min-width: 70px;
+  min-width: 30px;
 }
 
 .remove-item-btn:hover {

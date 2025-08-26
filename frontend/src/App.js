@@ -5004,10 +5004,6 @@ function App() {
                   {isScanning && (
                     <div className="scanning-overlay">
                       <div className="scanning-frame"></div>
-                      <p className="scanning-text">Scanning for 2D Data Matrix codes only...</p>
-                      <p className="scanning-hint" style={{fontSize: '12px', opacity: 0.8, marginTop: '8px'}}>
-                        UPC, Code128, and other 1D barcodes will be ignored
-                      </p>
                     </div>
                   )}
                 </div>
@@ -5024,21 +5020,21 @@ function App() {
                     </div>
                     {scannedItems.length > 0 && (
                       <div className="scanned-items-preview">
-                        <p className="preview-label">Scanned items (tap "Remove" to delete):</p>
+                        <p className="preview-label">Scanned items (tap "x" to remove):</p>
                         <ul className="scanned-items-list">
                           {scannedItems.map((item, index) => (
                             <li key={index} className="scanned-item">
                               <div className="scanned-item-info">
                                 <span className="item-number">{index + 1}.</span>
                                 <span className="item-serial">{item}</span>
-                              </div>
                               <button
                                 onClick={() => removeScannedItem(index)}
                                 className="remove-item-btn"
                                 title={`Remove item ${index + 1}: ${item}`}
                               >
-                                ✕ Remove
+                                ✕
                               </button>
+                              </div>
                             </li>
                           ))}
                         </ul>
