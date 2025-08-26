@@ -2571,7 +2571,7 @@ function App() {
   };
 
   const resumeScanning = async () => {
-    console.log('Resuming scanning...');
+    console.log('Resuming Data Matrix scanning...');
     setError('');
     
     try {
@@ -2582,28 +2582,35 @@ function App() {
         videoRef.current.srcObject = null;
       }
       
-      // Get fresh camera stream (same as startContinuousScanning does)
+      // Import Data Matrix specific reader
+      const { BrowserDatamatrixCodeReader } = await import('@zxing/library');
+      codeReader.current = new BrowserDatamatrixCodeReader();
+      
+      // Get fresh camera stream with mobile optimizations
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'environment',
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          width: { ideal: 1280, max: 1920 },
+          height: { ideal: 720, max: 1080 },
+          frameRate: { ideal: 30 }
         }
       });
       
-      // Set the stream and wait for it to be ready
+      // Set up video with mobile optimizations
       videoRef.current.srcObject = stream;
+      videoRef.current.playsInline = true;
+      videoRef.current.muted = true;
+      
+      // Wait for video to be ready
       await new Promise((resolve) => {
         videoRef.current.onloadedmetadata = resolve;
       });
       
       // Reset the code reader to ensure clean state
-      if (codeReader.current) {
+      if (codeReader.current && typeof codeReader.current.reset === 'function') {
         try {
-          if (typeof codeReader.current.reset === 'function') {
-            codeReader.current.reset();
-            console.log('Code reader reset for resume');
-          }
+          codeReader.current.reset();
+          console.log('Data Matrix reader reset for resume');
         } catch (error) {
           console.log('Error resetting code reader:', error);
         }
@@ -2613,14 +2620,14 @@ function App() {
       scanningRef.current = true;
       setIsScanning(true);
       
-      // Hide pause overlay and start scanning
+      // Hide pause overlay and start optimized scanning
       setScanningPaused(false);
       
-      console.log('Starting scan loop after resume');
-      startScanLoop();
+      console.log('Starting optimized Data Matrix scan loop after resume');
+      startOptimizedScanLoop();
       
     } catch (error) {
-      console.error('Failed to resume:', error);
+      console.error('Failed to resume Data Matrix scanning:', error);
       setError('Failed to restart camera. Please close and reopen scanner.');
     }
   };
