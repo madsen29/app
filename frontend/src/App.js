@@ -382,6 +382,9 @@ function App() {
 
   // Project management functions
   const handleSelectProject = (project) => {
+    // CRITICAL: Clear any existing serial state to prevent cross-project contamination
+    setHierarchicalSerials([]);
+    
     setCurrentProject(project);
     setShowDashboard(false);
     setHasUnsavedChanges(false); // Reset unsaved changes flag
