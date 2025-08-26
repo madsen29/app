@@ -2840,6 +2840,32 @@ function App() {
         // Clear any previous errors
         setError('');
         
+        // SUCCESS: Provide haptic feedback and audio beep for successful scan
+        try {
+          // Haptic feedback (vibrate phone) - only on mobile devices
+          if (navigator.vibrate && typeof navigator.vibrate === 'function') {
+            navigator.vibrate(200); // 200ms vibration
+          }
+          
+          // Audio beep - create and play a short success tone
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz beep
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Gentle volume
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2); // Fade out
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.2); // 200ms beep
+        } catch (feedbackError) {
+          // Ignore feedback errors - don't let them break scanning functionality
+          console.log('Scan feedback failed (non-critical):', feedbackError);
+        }
+        
         // Handle different scanner target fields
         if (scannerModal.targetField === 'edit') {
           // Set the scanned serial number in edit modal
