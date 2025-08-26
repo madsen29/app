@@ -493,6 +493,21 @@ input:disabled {
   height: 300px;
   object-fit: cover;
   display: block;
+  /* Mobile optimizations for smooth scanning */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  /* Prevent video flickering on mobile */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  /* Optimize for performance */
+  will-change: transform;
+  /* Prevent iOS fullscreen */
+  -webkit-playsinline: true;
+  /* Smooth rendering */
+  image-rendering: optimizeQuality;
+  -webkit-font-smoothing: antialiased;
 }
 
 .scanning-overlay {
