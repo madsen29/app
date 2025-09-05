@@ -426,15 +426,15 @@ class BackendTester:
             if response.status_code == 200:
                 data = response.json()
                 
-                # Check serial number counts match configuration (using snake_case field names)
-                if (len(data.get("sscc_serial_numbers", [])) == 1 and 
-                    len(data.get("case_serial_numbers", [])) == 1 and
-                    len(data.get("item_serial_numbers", [])) == 2):
+                # Check serial number counts match configuration (API returns camelCase)
+                if (len(data.get("ssccSerialNumbers", [])) == 1 and 
+                    len(data.get("caseSerialNumbers", [])) == 1 and
+                    len(data.get("itemSerialNumbers", [])) == 2):
                     self.log_test("Serial Numbers Creation", True, "Serial numbers created with correct counts", 
-                                f"SSCC: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
+                                f"SSCC: {len(data['ssccSerialNumbers'])}, Cases: {len(data['caseSerialNumbers'])}, Items: {len(data['itemSerialNumbers'])}")
                     return True
                 else:
-                    self.log_test("Serial Numbers Creation", False, f"Serial count mismatch: {data}")
+                    self.log_test("Serial Numbers Creation", False, f"Serial count validation failed - expected 1 SSCC, 1 Case, 2 Items")
                     return False
             else:
                 self.log_test("Serial Numbers Creation", False, f"HTTP {response.status_code}: {response.text}")
