@@ -250,7 +250,7 @@ export class ScandItScanner {
   async stopScanning() {
     try {
       if (this.camera) {
-        await this.camera.switchToDesiredState(SDCCore.FrameSourceState.Off);
+        await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.Off);
       }
 
       if (this.sparkScan) {
