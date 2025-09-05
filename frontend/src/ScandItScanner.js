@@ -147,11 +147,11 @@ export class ScandItScanner {
       console.log('📦 Setting up MatrixScan for batch scanning...');
 
       // Configure batch settings for Data Matrix only
-      const settings = new SDCBarcode.BarcodeBatchSettings();
-      settings.enabledSymbologies = [SDCBarcode.Symbology.DataMatrix]; // Data Matrix ONLY
+      const settings = new this.SDCBarcode.BarcodeBatchSettings();
+      settings.enabledSymbologies = [this.SDCBarcode.Symbology.DataMatrix]; // Data Matrix ONLY
 
       // Create BarcodeBatch instance
-      this.barcodeBatch = await SDCBarcode.BarcodeBatch.forContext(this.context, settings);
+      this.barcodeBatch = await this.SDCBarcode.BarcodeBatch.forContext(this.context, settings);
 
       // Setup camera
       const cameraSettings = SDCBarcode.BarcodeBatch.recommendedCameraSettings;
