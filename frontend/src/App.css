@@ -2348,30 +2348,51 @@ input:disabled {
 /* Mobile specific scanner modal styles */
 @media (max-width: 768px) {
   .scanner-modal {
-    padding: 0.5rem;
+    padding: 0.25rem;
+    align-items: flex-start;
+    padding-top: 2rem;
   }
   
   .scanner-content {
-    max-height: 90vh;
+    max-height: 95vh;
+    width: 100%;
+    max-width: 95vw;
     height: auto;
     display: flex;
     flex-direction: column;
   }
   
-  .scanner-body {
-    padding: 0.75rem;
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-  }
-  
-  .scanner-header,
-  .scanner-footer {
+  .scanner-header {
     padding: 0.75rem;
     flex-shrink: 0;
   }
   
+  .scanner-header h3 {
+    font-size: 1.25rem;
+  }
+  
+  .scanner-body {
+    padding: 0.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  
+  .camera-container {
+    height: 300px;
+    flex-shrink: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .scandit-scanner {
+    height: 300px !important;
+    min-height: 300px;
+  }
+  
   .scanner-footer {
+    padding: 0.75rem;
+    flex-shrink: 0;
     flex-direction: column;
     position: sticky;
     bottom: 0;
@@ -2389,15 +2410,19 @@ input:disabled {
     margin-bottom: 0;
   }
   
-  /* Make the scanned items list more mobile-friendly */
+  /* Make the scanned items list more mobile-friendly - show alongside scanner */
   .scanned-items-list {
-    max-height: 120px;
+    max-height: 200px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 100px;
   }
   
   .scanned-item {
-    padding: 0.75rem;
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    flex-direction: row;
+    align-items: center;
     gap: 0.5rem;
   }
   
