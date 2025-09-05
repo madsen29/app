@@ -4866,17 +4866,11 @@ function App() {
                   </div>
                 )}
                 
-                <div className="scanner-instructions">
-                  <p>Scan GS1 Data Matrix codes</p>
-                  {requiredItemCount > 1 && (
-                    <p className="multi-scan-instruction">
-                      <strong>Multi-scan mode:</strong> Scan {requiredItemCount} items to continue, or save partial progress
-                    </p>
-                  )}
-                  {!isScanning && (
+                {!isScanning && (
+                  <div className="scanner-instructions">
                     <p className="error-text">Camera not started. Please check permissions.</p>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               <div className="scanner-footer">
                 <button className="btn-secondary" onClick={closeScanner}>Cancel</button>
