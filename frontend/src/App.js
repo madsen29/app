@@ -2495,172 +2495,98 @@ function App() {
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
   };
 
-  // Optimized scanning loop specifically for Data Matrix codes with smooth mobile performance
-  const startOptimizedScanLoop = async () => {
-    let isProcessingResult = false; // Prevent multiple simultaneous scans
-    
-    const scanLoop = async () => {
-      // Check if we should continue scanning
-      if (!scannerModal.isOpen || !scanningRef.current || scanningPaused || isProcessingResult) {
-        return;
-      }
-      
-      try {
-        // Only attempt scan if video is ready and playing
-        if (!videoRef.current || videoRef.current.readyState < 2) {
-          setTimeout(scanLoop, 200); // Wait for video to be ready
-          return;
-        }
-        
-        const result = await codeReader.current.decodeOnceFromVideoDevice(undefined, videoRef.current);
-        
-        if (result) {
-          isProcessingResult = true; // Prevent concurrent processing
-          
-          const scannedData = result.getText();
-          console.log('Data Matrix scanned:', scannedData);
-          
-          // Validate that this is a GS1 Data Matrix barcode
-          const validation = validateGS1Barcode(scannedData);
-          
-          if (!validation.isValid) {
-            setError(`❌ Invalid barcode type. Only 2D Data Matrix codes with GS1 data are supported. ${validation.reason}`);
-            // Continue scanning after error display
-            setTimeout(() => {
-              isProcessingResult = false;
-              if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
-                setTimeout(scanLoop, 800); // Resume scanning with delay
-              }
-            }, 1500);
-            return;
-          }
-          
-          // Clear any previous errors
-          setError('');
-          console.log('Valid GS1 Data Matrix code detected:', validation.reason);
-          
-          // Process the scanned result
-          handleBarcodeResult(scannedData);
-          
-          // Check if we should continue scanning for multi-item scanning
-          const isItemsLevel = serialCollectionStep.currentLevel === 'item';
-          const shouldContinue = shouldContinueScanning && isItemsLevel && requiredItemCount > 1;
-          
-          if (shouldContinue) {
-            // Continue scanning for multi-item workflow
-            setTimeout(() => {
-              isProcessingResult = false;
-              if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
-                setTimeout(scanLoop, 1200); // Small delay then continue
-              }
-            }, 500);
-          } else {
-            // Single scan complete - stop scanning
-            console.log('Single Data Matrix scan complete');
-            scanningRef.current = false;
-            isProcessingResult = false;
-            return;
-          }
-        } else {
-          // No result found - continue scanning with optimized timing for mobile
-          if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
-            setTimeout(scanLoop, 300); // Reduced frequency for smoother mobile performance
-          }
-        }
-        
-      } catch (scanError) {
-        // Handle scan errors gracefully - common on mobile due to focus/lighting
-        if (scanError.name === 'ChecksumException' || scanError.name === 'FormatException') {
-          // These are normal - continue scanning
-          if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
-            setTimeout(scanLoop, 200);
-          }
-        } else {
-          console.log('Scan error (continuing):', scanError.message);
-          // Continue scanning even with errors - mobile cameras can be temperamental
-          if (scannerModal.isOpen && scanningRef.current && !scanningPaused) {
-            setTimeout(scanLoop, 400);
-          }
-        }
-      }
-    };
-    
-    // Start the scan loop
-    scanLoop();
-  };
+  // ===== SCANDIT SCANNER FUNCTIONS =====
 
-  // Scanner pause/resume functions
-  const startScanLoop = async () => {
-    // Use the optimized Data Matrix scan loop
-    startOptimizedScanLoop();
-  };
-
-  const resumeScanning = async () => {
-    console.log('Resuming Data Matrix scanning...');
-    setError('');
-    
+  /**
+   * Initialize ScandIt scanner instance
+   */
+  const initializeScandItScanner = async () => {
     try {
-      // Stop any existing stream first
-      if (videoRef.current?.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-        videoRef.current.srcObject = null;
+      if (!scanditScannerRef.current) {
+        console.log('🚀 Creating new ScandIt scanner instance...');
+        scanditScannerRef.current = new ScandItScanner(SCANDIT_LICENSE_KEY);
+        await scanditScannerRef.current.initialize();
       }
-      
-      // Import Data Matrix specific reader
-      const { BrowserDatamatrixCodeReader } = await import('@zxing/library');
-      codeReader.current = new BrowserDatamatrixCodeReader();
-      
-      // Get fresh camera stream with mobile optimizations and tighter zoom
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'environment',
-          width: { ideal: 640, max: 800 }, // Tighter zoom
-          height: { ideal: 480, max: 600 }, // Tighter zoom
-          frameRate: { ideal: 30 },
-          aspectRatio: { ideal: 4/3 }
-        }
-      });
-      
-      // Set up video with mobile optimizations
-      videoRef.current.srcObject = stream;
-      videoRef.current.playsInline = true;
-      videoRef.current.muted = true;
-      
-      // Wait for video to be ready
-      await new Promise((resolve) => {
-        videoRef.current.onloadedmetadata = resolve;
-      });
-      
-      // Reset the code reader to ensure clean state
-      if (codeReader.current && typeof codeReader.current.reset === 'function') {
-        try {
-          codeReader.current.reset();
-          console.log('Data Matrix reader reset for resume');
-        } catch (error) {
-          console.log('Error resetting code reader:', error);
-        }
-      }
-      
-      // CRITICAL: Ensure scanning state is properly set for resume
-      scanningRef.current = true;
-      setIsScanning(true);
-      
-      // Hide pause overlay and start optimized scanning
-      setScanningPaused(false);
-      
-      console.log('Starting optimized Data Matrix scan loop after resume');
-      startOptimizedScanLoop();
-      
+      return scanditScannerRef.current;
     } catch (error) {
-      console.error('Failed to resume Data Matrix scanning:', error);
-      setError('Failed to restart camera. Please close and reopen scanner.');
+      console.error('❌ Failed to initialize ScandIt scanner:', error);
+      setError('Failed to initialize professional scanner. Please refresh and try again.');
+      throw error;
     }
   };
 
-  const pauseScanning = () => {
-    console.log('Pausing scanning...');
-    setScanningPaused(true);
+  /**
+   * Handle successful barcode scan from ScandIt
+   */
+  const handleScandItScan = (scannedData, scanMode) => {
+    console.log(`📱 ScandIt ${scanMode} scan:`, scannedData);
+
+    // Validate that this is a GS1 Data Matrix barcode (maintain existing validation)
+    const validation = validateGS1Barcode(scannedData);
+    
+    if (!validation.isValid) {
+      setError(`❌ Invalid barcode type. Only 2D Data Matrix codes with GS1 data are supported. ${validation.reason}`);
+      return;
+    }
+
+    // Clear any previous errors and process the scan
+    setError('');
+    console.log('✅ Valid GS1 Data Matrix code detected:', validation.reason);
+    
+    // Use existing barcode result processing logic
+    handleBarcodeResult(scannedData);
+  };
+
+  /**
+   * Start ScandIt scanning based on scanning context
+   */
+  const startScanning = async () => {
+    try {
+      setIsScanning(true);
+      setError('');
+
+      if (!scannerContainerRef.current) {
+        throw new Error('Scanner container not available');
+      }
+
+      const scanner = await initializeScandItScanner();
+      
+      // Determine scanning mode based on current context
+      const isItemsLevel = serialCollectionStep.currentLevel === 'item';
+      const isBatchScanning = shouldContinueScanning && isItemsLevel && requiredItemCount > 1;
+      
+      if (isBatchScanning) {
+        console.log('📦 Starting MatrixScan for batch item scanning...');
+        await scanner.initializeBatchScanner(scannerContainerRef.current, handleScandItScan);
+      } else {
+        console.log('📱 Starting SparkScan for single scanning...');
+        await scanner.initializeSingleScanner(scannerContainerRef.current, handleScandItScan);
+      }
+
+      await scanner.startScanning();
+      console.log('✅ ScandIt scanner started successfully');
+
+    } catch (error) {
+      console.error('❌ Failed to start ScandIt scanner:', error);
+      setIsScanning(false);
+      
+      if (error.message.includes('permission')) {
+        setError('Camera access denied. Please allow camera permissions and try again.');
+      } else if (error.message.includes('camera')) {
+        setError('No camera found on this device.');
+      } else {
+        setError(`Failed to start scanner: ${error.message}`);
+      }
+    }
+  };
+
+  /**
+   * Start continuous scanning (batch mode)
+   */
+  const startContinuousScanning = async () => {
+    // For ScandIt, continuous scanning is the same as regular scanning
+    // The mode is determined by the scanning context
+    await startScanning();
   };
 
   // Barcode scanning functions
@@ -2690,78 +2616,48 @@ function App() {
     });
   };
 
-  const closeScanner = () => {
-    setIsScanning(false);
-    scanningRef.current = false; // Stop the scan loop
-    setScanningPaused(false); // Reset pause state
-    
-    // Stop all video streams more aggressively
-    if (videoRef.current) {
-      // Stop the video element
-      videoRef.current.pause();
+  /**
+   * Stop scanning and cleanup
+   */
+  const closeScanner = async () => {
+    try {
+      console.log('🛑 Closing ScandIt scanner...');
       
-      // Get and stop all tracks from the stream
-      if (videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject;
-        const tracks = stream.getTracks();
-        console.log('Stopping', tracks.length, 'video tracks');
-        
-        tracks.forEach(track => {
-          console.log('Stopping track:', track.kind, track.label, 'readyState:', track.readyState);
-          track.stop();
-          console.log('Track stopped, new readyState:', track.readyState);
-        });
-        
-        // Also try stopping from the stream directly
-        if (typeof stream.stop === 'function') {
-          stream.stop();
-          console.log('Called stream.stop()');
-        }
-        
-        // Clear the source
-        videoRef.current.srcObject = null;
-        videoRef.current.src = '';
-        videoRef.current.load(); // Force reload to clear any cached stream
-        
-        console.log('Video source cleared and reloaded');
+      setIsScanning(false);
+      setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
+      
+      if (scanditScannerRef.current) {
+        await scanditScannerRef.current.stopScanning();
+        // Note: We don't dispose the scanner instance to avoid re-initialization costs
+        // It will be reused for subsequent scans
       }
+      
+      // Clear multi-scanning state
+      setScannedItems([]);
+      setRequiredItemCount(1);
+      setShouldContinueScanning(false);
+      
+      // Clear any scanner-related errors
+      if (error && error.includes('scanner')) {
+        setError('');
+      }
+      
+      console.log('✅ ScandIt scanner closed');
+      
+    } catch (error) {
+      console.error('❌ Error closing scanner:', error);
+      // Don't show error to user for cleanup issues
     }
-    
-    // Clean up code reader
-    if (codeReader.current) {
-      try {
-        if (typeof codeReader.current.reset === 'function') {
-          codeReader.current.reset();
-        }
-      } catch (error) {
-        console.log('Error stopping scanner:', error);
-      }
-    }
-    
-    // Clear multi-scanning state
-    setScannedItems([]);
-    setRequiredItemCount(1);
-    setShouldContinueScanning(false);
-    
-    setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
-    
-    // Backup cleanup with delay (some browsers need time to release camera)
-    setTimeout(() => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        console.log('Delayed cleanup - forcing camera release');
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => {
-          if (track.readyState !== 'ended') {
-            console.log('Force stopping lingering track:', track.label);
-            track.stop();
-          }
-        });
-        videoRef.current.srcObject = null;
-      }
-    }, 1000);
-    
-    console.log('Scanner closed');
   };
+
+  // Cleanup ScandIt resources on component unmount
+  useEffect(() => {
+    return () => {
+      if (scanditScannerRef.current) {
+        scanditScannerRef.current.dispose().catch(console.error);
+      }
+    };
+  }, []);
 
   const validateGS1Barcode = (scannedData) => {
     // GS1 barcodes contain FNC1 characters (ASCII 29 / Group Separator)
