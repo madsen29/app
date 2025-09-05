@@ -166,7 +166,7 @@ export class ScandItScanner {
       await this.context.setFrameSource(this.camera);
 
       // Create data capture view
-      this.view = await this.SDCCore.DataCaptureView.forContext(this.context);
+      this.view = new this.SDCCore.DataCaptureView(this.context);
       this.view.connectToElement(containerElement);
 
       // Add batch overlay for visual feedback
