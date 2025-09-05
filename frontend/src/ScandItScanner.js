@@ -123,7 +123,7 @@ export class ScandItScanner {
       });
 
       // Connect to DOM element
-      containerElement.appendChild(sparkScanView.element);
+      sparkScanView.connectToElement(containerElement);
       
       // Setup camera
       const cameraSettings = this.SDCBarcode.SparkScan.recommendedCameraSettings;
