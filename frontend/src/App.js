@@ -2502,15 +2502,13 @@ function App() {
    */
   const initializeScandItScanner = async () => {
     try {
-      if (!scanditScannerRef.current) {
-        console.log('🚀 Creating new ScandIt scanner instance...');
-        scanditScannerRef.current = new ScandItScanner(SCANDIT_LICENSE_KEY);
-        await scanditScannerRef.current.initialize();
+      if (!scandItScannerRef.current) {
+        console.log('🚀 Creating new working ScandIt scanner...');
+        scandItScannerRef.current = new SimpleScandItScanner(SCANDIT_LICENSE_KEY);
       }
-      return scanditScannerRef.current;
+      return scandItScannerRef.current;
     } catch (error) {
       console.error('❌ Failed to initialize ScandIt scanner:', error);
-      setError('Failed to initialize professional scanner. Please refresh and try again.');
       throw error;
     }
   };
