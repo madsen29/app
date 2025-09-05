@@ -265,16 +265,17 @@ export class ScandItScanner {
    */
   async stopScanning() {
     try {
-      if (this.camera) {
-        await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.Off);
-      }
-
-      if (this.sparkScan) {
-        // SparkScan stops automatically when camera stops
+      if (this.sparkScan && this.view && this.view.stopScanning) {
+        // Stop SparkScan scanning
+        await this.view.stopScanning();
         console.log('📱 SparkScan stopped');
       } else if (this.barcodeBatch) {
         this.barcodeBatch.isEnabled = false;
         console.log('📦 MatrixScan stopped');
+      }
+
+      if (this.camera) {
+        await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.Off);
       }
 
     } catch (error) {
