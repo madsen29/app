@@ -426,7 +426,7 @@ class BackendTester:
             if response.status_code == 200:
                 data = response.json()
                 
-                # Check serial number counts match configuration
+                # Check serial number counts match configuration (using snake_case field names)
                 if (len(data.get("sscc_serial_numbers", [])) == 1 and 
                     len(data.get("case_serial_numbers", [])) == 1 and
                     len(data.get("item_serial_numbers", [])) == 2):
