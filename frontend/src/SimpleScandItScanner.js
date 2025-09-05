@@ -106,9 +106,9 @@ export class SimpleScandItScanner {
 
   async startScanning() {
     try {
-      if (this.barcodeBatch) {
-        this.barcodeBatch.isEnabled = true;
-        console.log('📦 Scanner enabled');
+      if (this.barcodeCapture) {
+        this.barcodeCapture.isEnabled = true;
+        console.log('📦 BarcodeCapture enabled');
       }
       
       if (this.camera) {
