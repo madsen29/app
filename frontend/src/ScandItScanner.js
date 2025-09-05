@@ -161,7 +161,7 @@ export class ScandItScanner {
       // Create BarcodeBatch instance
       this.barcodeBatch = await this.SDCBarcode.BarcodeBatch.forContext(this.context, settings);
 
-      // Setup camera
+      // Setup camera with recommended settings for BarcodeBatch
       const cameraSettings = this.SDCBarcode.BarcodeBatch.recommendedCameraSettings;
       await this.camera.applySettings(cameraSettings);
       await this.context.setFrameSource(this.camera);
