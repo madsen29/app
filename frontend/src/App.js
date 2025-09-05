@@ -2495,6 +2495,67 @@ function App() {
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
   };
 
+  // ===== GS1 DATA MATRIX PARSING =====
+  
+  /**
+   * Parse GS1 Data Matrix barcode to extract serial number
+   * Example: 01003723360643092115000042751\x1D1729053110771565E
+   * AI (01) = GTIN, AI (21) = Serial Number, etc.
+   */
+  const parseGS1DataMatrix = (scannedData) => {
+    try {
+      console.log('🔍 Parsing GS1 Data Matrix:', scannedData);
+      
+      // Replace Group Separator character (ASCII 29) with readable separator
+      const cleanData = scannedData.replace(/\x1D/g, '|GS|');
+      console.log('📋 Cleaned data:', cleanData);
+      
+      // Extract GTIN (AI 01) - 14 digits after "01"
+      const gtinMatch = scannedData.match(/01(\d{14})/);
+      const gtin = gtinMatch ? gtinMatch[1] : null;
+      
+      // Extract Serial Number (AI 21) - variable length after "21"
+      const serialMatch = scannedData.match(/21([^\\x1D]+)/);
+      const serialNumber = serialMatch ? serialMatch[1] : null;
+      
+      // Extract Lot/Batch Number (AI 10) - variable length after "10"
+      const lotMatch = scannedData.match(/10([^\\x1D]+)/);
+      const lotNumber = lotMatch ? lotMatch[1] : null;
+      
+      // Extract Expiration Date (AI 17) - 6 digits YYMMDD after "17"
+      const expMatch = scannedData.match(/17(\d{6})/);
+      const expirationDate = expMatch ? expMatch[1] : null;
+      
+      console.log('📊 Parsed GS1 data:', {
+        gtin,
+        serialNumber,
+        lotNumber,
+        expirationDate,
+        cleanData
+      });
+      
+      return {
+        gtin,
+        serialNumber,
+        lotNumber,
+        expirationDate,
+        rawData: scannedData,
+        cleanData
+      };
+      
+    } catch (error) {
+      console.error('❌ Error parsing GS1 Data Matrix:', error);
+      return {
+        gtin: null,
+        serialNumber: scannedData, // Fallback to raw data
+        lotNumber: null,
+        expirationDate: null,
+        rawData: scannedData,
+        cleanData: scannedData
+      };
+    }
+  };
+
   // ===== SCANDIT SCANNER FUNCTIONS =====
 
   /**
