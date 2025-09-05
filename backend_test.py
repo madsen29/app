@@ -348,7 +348,7 @@ class BackendTester:
             if response.status_code == 200:
                 data = response.json()
                 
-                # Check key configuration fields
+                # Check key configuration fields (using snake_case as returned by API)
                 if (data.get("company_prefix") == "1234567" and 
                     data.get("item_product_code") == "000000" and
                     data.get("lot_number") == "LOT123" and
