@@ -1,162 +1,126 @@
 /**
- * Simple ScandIt Scanner - Ground-up implementation
- * Focus on getting basic Data Matrix scanning working
+ * Ultra Simple ScandIt Scanner - Using Direct SDK Approach
+ * Based on official ScandIt documentation pattern
  */
 
 export class SimpleScandItScanner {
   constructor(licenseKey) {
     this.licenseKey = licenseKey;
-    this.isInitialized = false;
-    this.context = null;
-    this.camera = null;
-    this.barcodeCapture = null;
-    this.view = null;
+    this.scanner = null;
     this.onScanCallback = null;
-    
-    // ScandIt modules
-    this.SDCCore = null;
-    this.SDCBarcode = null;
-  }
-
-  async initialize() {
-    try {
-      console.log('🚀 Initializing Simple ScandIt Scanner...');
-      
-      // Import ScandIt modules
-      this.SDCCore = await import('@scandit/web-datacapture-core');
-      this.SDCBarcode = await import('@scandit/web-datacapture-barcode');
-      
-      // Configure ScandIt
-      const libraryLocation = new URL('scandit-sdk/', document.baseURI).toString();
-      await this.SDCCore.configure({
-        licenseKey: this.licenseKey,
-        libraryLocation: libraryLocation,
-        moduleLoaders: [this.SDCBarcode.barcodeCaptureLoader()]
-      });
-
-      // Create context
-      this.context = await this.SDCCore.DataCaptureContext.create();
-      
-      // Setup camera
-      this.camera = this.SDCCore.Camera.default;
-      await this.context.setFrameSource(this.camera);
-      
-      this.isInitialized = true;
-      console.log('✅ Simple ScandIt Scanner initialized');
-      return true;
-      
-    } catch (error) {
-      console.error('❌ Simple ScandIt initialization failed:', error);
-      throw error;
-    }
   }
 
   async createScanner(containerElement, onScanCallback) {
     try {
-      if (!this.isInitialized) {
-        await this.initialize();
-      }
-
+      console.log('🚀 Creating Ultra Simple ScandIt Scanner...');
       this.onScanCallback = onScanCallback;
-      console.log('📦 Creating simple BarcodeCapture scanner...');
 
-      // Create barcode capture settings (simpler than BarcodeBatch)
-      const settings = new this.SDCBarcode.BarcodeCaptureSettings();
-      settings.enableSymbology(this.SDCBarcode.Symbology.DataMatrix);
-
-      // Create barcode capture and ADD TO CONTEXT explicitly
-      this.barcodeCapture = await this.SDCBarcode.BarcodeCapture.forContext(this.context, settings);
+      // Import ScandIt modules
+      const SDCCore = await import('@scandit/web-datacapture-core');
+      const SDCBarcode = await import('@scandit/web-datacapture-barcode');
       
-      // Explicitly add capture to context to ensure SDK knows about it
-      this.context.addMode(this.barcodeCapture);
+      // Configure ScandIt with ultra simple approach
+      const libraryLocation = new URL('scandit-sdk/', document.baseURI).toString();
+      await SDCCore.configure({
+        licenseKey: this.licenseKey,
+        libraryLocation: libraryLocation,
+        moduleLoaders: [SDCBarcode.barcodeCaptureLoader()]
+      });
 
+      console.log('✅ ScandIt configured');
+
+      // Create context
+      const context = await SDCCore.DataCaptureContext.create();
+      
+      // Create settings - only Data Matrix
+      const settings = new SDCBarcode.BarcodeCaptureSettings();
+      settings.enableSymbology(SDCBarcode.Symbology.DataMatrix);
+      
+      // Create BarcodeCapture
+      const barcodeCapture = await SDCBarcode.BarcodeCapture.forContext(context, settings);
+      
+      // Setup camera AFTER BarcodeCapture is created
+      const camera = SDCCore.Camera.default;
+      await context.setFrameSource(camera);
+      
       // Create view
-      this.view = await this.SDCCore.DataCaptureView.forContext(this.context);
-      this.view.connectToElement(containerElement);
-
-      // Add overlay
-      const overlay = await this.SDCBarcode.BarcodeCaptureOverlay.withBarcodeCaptureForView(
-        this.barcodeCapture,
-        this.view
-      );
-
-      // Setup listener
-      this.barcodeCapture.addListener({
+      const view = await SDCCore.DataCaptureView.forContext(context);
+      view.connectToElement(containerElement);
+      
+      // Create overlay
+      const overlay = await SDCBarcode.BarcodeCaptureOverlay.withBarcodeCaptureForView(barcodeCapture, view);
+      
+      // Add listener
+      barcodeCapture.addListener({
         didScan: (barcodeCapture, session) => {
-          console.log('📊 Barcode captured!');
+          console.log('📊 Ultra Simple - Barcode scanned!');
           
           session.newlyRecognizedBarcodes.forEach(barcode => {
-            console.log('🔍 Detected:', barcode.data, barcode.symbology);
+            console.log('🔍 Ultra Simple - Detected:', barcode.data, barcode.symbology);
             
-            if (barcode.symbology === this.SDCBarcode.Symbology.DataMatrix) {
-              console.log('✅ Data Matrix found:', barcode.data);
-              if (this.onScanCallback) {
-                this.onScanCallback(barcode.data);
-              }
+            if (this.onScanCallback) {
+              this.onScanCallback(barcode.data);
             }
           });
         }
       });
 
-      console.log('✅ Simple BarcodeCapture scanner created');
+      // Store references
+      this.scanner = { barcodeCapture, camera, view, context };
+      
+      console.log('✅ Ultra Simple Scanner created');
       return true;
 
     } catch (error) {
-      console.error('❌ Failed to create scanner:', error);
+      console.error('❌ Ultra Simple Scanner creation failed:', error);
       throw error;
     }
   }
 
   async startScanning() {
     try {
-      if (this.barcodeCapture) {
-        this.barcodeCapture.isEnabled = true;
-        console.log('📦 BarcodeCapture enabled');
+      if (!this.scanner) {
+        throw new Error('Scanner not created');
       }
+
+      console.log('🎬 Ultra Simple - Starting...');
       
-      if (this.camera) {
-        await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.On);
-        console.log('📷 Camera started');
-      }
+      // Enable capture
+      this.scanner.barcodeCapture.isEnabled = true;
+      
+      // Start camera
+      await this.scanner.camera.switchToDesiredState(this.scanner.context.frameSourceState.On);
+      
+      console.log('✅ Ultra Simple - Scanner started');
     } catch (error) {
-      console.error('❌ Failed to start scanning:', error);
+      console.error('❌ Ultra Simple - Failed to start:', error);
+      throw error;
     }
   }
 
   async stopScanning() {
     try {
-      if (this.barcodeCapture) {
-        this.barcodeCapture.isEnabled = false;
+      if (this.scanner) {
+        this.scanner.barcodeCapture.isEnabled = false;
+        await this.scanner.camera.switchToDesiredState(this.scanner.context.frameSourceState.Off);
+        console.log('🛑 Ultra Simple - Scanner stopped');
       }
-      
-      if (this.camera) {
-        await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.Off);
-      }
-      
-      console.log('🛑 Scanner stopped');
     } catch (error) {
-      console.error('❌ Failed to stop scanning:', error);
+      console.error('❌ Ultra Simple - Failed to stop:', error);
     }
   }
 
   dispose() {
     try {
-      if (this.barcodeCapture) {
-        this.barcodeCapture.removeAllListeners();
+      if (this.scanner) {
+        this.scanner.barcodeCapture.removeAllListeners();
+        this.scanner.view.dispose();
+        this.scanner.context.dispose();
+        this.scanner = null;
       }
-      
-      if (this.view) {
-        this.view.dispose();
-      }
-      
-      if (this.context) {
-        this.context.dispose();
-      }
-      
-      this.isInitialized = false;
-      console.log('🧹 Scanner disposed');
+      console.log('🧹 Ultra Simple - Scanner disposed');
     } catch (error) {
-      console.error('❌ Failed to dispose:', error);
+      console.error('❌ Ultra Simple - Failed to dispose:', error);
     }
   }
 }
