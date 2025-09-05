@@ -251,12 +251,7 @@ export class ScandItScanner {
    */
   async startScanning() {
     try {
-      if (!this.camera) {
-        throw new Error('Camera not initialized');
-      }
-
-      console.log('🎬 Starting camera...');
-      await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.On);
+      console.log('🎬 Starting scanning...');
       
       if (this.sparkScan && this.view && this.view.prepareScanning) {
         // Start SparkScan scanning
@@ -266,6 +261,12 @@ export class ScandItScanner {
         console.log('📦 Enabling BarcodeBatch...');
         this.barcodeBatch.isEnabled = true;
         console.log('📦 MatrixScan started - isEnabled:', this.barcodeBatch.isEnabled);
+      }
+
+      // Start camera after scanning is prepared
+      if (this.camera) {
+        await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.On);
+        console.log('📷 Camera started');
       }
 
     } catch (error) {
