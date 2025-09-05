@@ -92,7 +92,7 @@ export class ScandItScanner {
       settings.scanIntention = this.SDCBarcode.ScanIntention.Smart; // Smart scanning intention
 
       // Create SparkScan instance
-      this.sparkScan = this.SDCBarcode.SparkScan.forSettings(settings);
+      this.sparkScan = await this.SDCBarcode.SparkScan.forSettings(settings);
 
       // Configure SparkScan view settings
       const viewSettings = new this.SDCBarcode.SparkScanViewSettings();
