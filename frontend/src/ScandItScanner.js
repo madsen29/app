@@ -102,13 +102,6 @@ export class ScandItScanner {
       viewSettings.cameraSwitchButtonVisible = false; // Hide camera switch
       viewSettings.torchButtonVisible = true; // Show torch button
 
-      // Create SparkScan view
-      const sparkScanView = new this.SDCBarcode.SparkScanView(
-        this.context,
-        this.sparkScan,
-        viewSettings
-      );
-
       // Setup scan listener - capture module reference for callback
       const SDCBarcode = this.SDCBarcode;
       
@@ -122,8 +115,13 @@ export class ScandItScanner {
         }
       });
 
-      // Connect to DOM element
-      sparkScanView.connectToElement(containerElement);
+      // Create SparkScan view with forElement method
+      const sparkScanView = this.SDCBarcode.SparkScanView.forElement(
+        containerElement,
+        this.context,
+        this.sparkScan,
+        viewSettings
+      );
       
       // Setup camera
       const cameraSettings = this.SDCBarcode.SparkScan.recommendedCameraSettings;
