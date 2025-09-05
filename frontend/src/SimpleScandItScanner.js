@@ -23,6 +23,9 @@ export class SimpleScandItScanner {
       
       // Configure ScandIt with local files (back to working approach)
       console.log('📁 Using local library files...');
+      console.log('🌐 Current domain:', window.location.hostname);
+      console.log('🔑 License key preview:', this.licenseKey.substring(0, 30) + '...' + this.licenseKey.substring(this.licenseKey.length - 10));
+      
       const libraryLocation = new URL('scandit-sdk/', document.baseURI).toString();
       await SDCCore.configure({
         licenseKey: this.licenseKey,
