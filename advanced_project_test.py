@@ -18,7 +18,7 @@ import concurrent.futures
 import threading
 
 # Get backend URL from environment
-BACKEND_URL = "https://4f60c693-95e0-4a12-94b7-85a4355c0121.preview.emergentagent.com/api"
+BACKEND_URL = "https://serial-tracker-1.preview.emergentagent.com/api"
 
 class AdvancedProjectTester:
     def __init__(self):

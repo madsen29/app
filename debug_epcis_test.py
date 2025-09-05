@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 # Get backend URL from environment
-BACKEND_URL = "https://4f60c693-95e0-4a12-94b7-85a4355c0121.preview.emergentagent.com/api"
+BACKEND_URL = "https://serial-tracker-1.preview.emergentagent.com/api"
 
 def debug_epcis_generation():
     """Debug the EPCIS generation to understand the XML structure"""
