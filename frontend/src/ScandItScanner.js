@@ -159,7 +159,7 @@ export class ScandItScanner {
       settings.enableSymbology(this.SDCBarcode.Symbology.DataMatrix);
 
       // Create BarcodeBatch instance
-      this.barcodeBatch = this.SDCBarcode.BarcodeBatch.forContext(this.context, settings);
+      this.barcodeBatch = await this.SDCBarcode.BarcodeBatch.forContext(this.context, settings);
 
       // Setup camera
       const cameraSettings = this.SDCBarcode.BarcodeBatch.recommendedCameraSettings;
