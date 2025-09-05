@@ -19,11 +19,11 @@ export class SimpleScandItScanner {
       const SDCCore = await import('@scandit/web-datacapture-core');
       const SDCBarcode = await import('@scandit/web-datacapture-barcode');
       
-      // Configure ScandIt with ultra simple approach
-      const libraryLocation = new URL('scandit-sdk/', document.baseURI).toString();
+      // Configure ScandIt with CDN instead of local files
+      console.log('🌐 Using CDN library location...');
       await SDCCore.configure({
         licenseKey: this.licenseKey,
-        libraryLocation: libraryLocation,
+        libraryLocation: "https://cdn.jsdelivr.net/npm/@scandit/web-datacapture-core@7.5.1/build/",
         moduleLoaders: [SDCBarcode.barcodeCaptureLoader()]
       });
 
