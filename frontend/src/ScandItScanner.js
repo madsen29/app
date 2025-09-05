@@ -245,8 +245,9 @@ export class ScandItScanner {
 
       await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.On);
       
-      if (this.sparkScan) {
-        // SparkScan handles its own scanning lifecycle
+      if (this.sparkScan && this.view && this.view.prepareScanning) {
+        // Start SparkScan scanning
+        await this.view.prepareScanning();
         console.log('📱 SparkScan started');
       } else if (this.barcodeBatch) {
         this.barcodeBatch.isEnabled = true;
