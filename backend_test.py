@@ -146,7 +146,7 @@ class BackendTester:
                 required_fields = ["id", "email", "first_name", "last_name"]
                 
                 if all(field in data for field in required_fields):
-                    if data["email"] == "baseline_test_user@test.com":
+                    if data["email"] == "epcis_test_user@test.com":
                         self.test_user_id = data["id"]
                         self.log_test("JWT Token Validation", True, "JWT token validated successfully", 
                                     f"User ID: {data['id']}, Email: {data['email']}")
