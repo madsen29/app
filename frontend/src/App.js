@@ -5,9 +5,8 @@ import { FiCamera, FiChevronRight, FiPackage, FiBox, FiFolder, FiFile, FiX, FiAr
 import { useAuth } from './AuthContext';
 import AuthWrapper from './AuthWrapper';
 
-// ScandIt Imports
-import * as SDCCore from '@scandit/web-datacapture-core';
-import * as SDCBarcode from '@scandit/web-datacapture-barcode';
+// ScandIt Integration
+import ScandItScanner from './ScandItScanner';
 import ProjectDashboard from './ProjectDashboard';
 import LocationSelector from './LocationSelector';
 
