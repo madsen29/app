@@ -89,7 +89,8 @@ export class SimpleScandItScanner {
       this.scanner.barcodeCapture.isEnabled = true;
       
       // Start camera
-      await this.scanner.camera.switchToDesiredState(this.scanner.context.frameSourceState.On);
+      const SDCCore = await import('@scandit/web-datacapture-core');
+      await this.scanner.camera.switchToDesiredState(SDCCore.FrameSourceState.On);
       
       console.log('✅ Ultra Simple - Scanner started');
     } catch (error) {
