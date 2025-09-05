@@ -3042,7 +3042,7 @@ function App() {
     if (scannerModal.isOpen) {
       // Small delay to ensure modal and ScandIt container are rendered
       setTimeout(() => {
-        startScanning(); // Use new ScandIt scanner
+        startScandItScanning(); // Use new ScandIt scanner
       }, 200);
     } else {
       // Stop ScandIt scanner when modal closes
