@@ -168,14 +168,17 @@ export class ScandItScanner {
         this.view
       );
 
-      // Configure overlay appearance
+      // Configure overlay appearance - capture module references for callbacks
+      const SDCCore = this.SDCCore;
+      const SDCBarcode = this.SDCBarcode;
+      
       overlay.listener = {
         brushForTrackedBarcode: (overlay, trackedBarcode) => {
           // Green brush for successfully scanned Data Matrix codes
-          if (trackedBarcode.barcode.symbology === this.SDCBarcode.Symbology.DataMatrix) {
-            return new this.SDCCore.Brush(
-              this.SDCCore.Color.fromHex('#00FF00'), // Green fill
-              this.SDCCore.Color.fromHex('#00AA00'), // Darker green stroke
+          if (trackedBarcode.barcode.symbology === SDCBarcode.Symbology.DataMatrix) {
+            return new SDCCore.Brush(
+              SDCCore.Color.fromHex('#00FF00'), // Green fill
+              SDCCore.Color.fromHex('#00AA00'), // Darker green stroke
               3 // Stroke width
             );
           }
@@ -184,7 +187,7 @@ export class ScandItScanner {
         
         didTapTrackedBarcode: (overlay, trackedBarcode) => {
           // Handle tapped barcodes
-          if (trackedBarcode.barcode.symbology === this.SDCBarcode.Symbology.DataMatrix) {
+          if (trackedBarcode.barcode.symbology === SDCBarcode.Symbology.DataMatrix) {
             console.log('👆 Tapped Data Matrix:', trackedBarcode.barcode.data);
             onScanCallback(trackedBarcode.barcode.data, 'batch');
           }
