@@ -2658,8 +2658,8 @@ function App() {
   // Cleanup ScandIt resources on component unmount
   useEffect(() => {
     return () => {
-      if (scanditScannerRef.current) {
-        scanditScannerRef.current.dispose().catch(console.error);
+      if (scandItScannerRef.current) {
+        scandItScannerRef.current.dispose().catch(console.error);
       }
     };
   }, []);
