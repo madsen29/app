@@ -82,8 +82,8 @@ export class ScandItScanner {
       console.log('📱 Setting up SparkScan for single scanning...');
 
       // Configure SparkScan settings for Data Matrix only
-      const settings = new SDCBarcode.SparkScanSettings();
-      settings.enabledSymbologies = [SDCBarcode.Symbology.DataMatrix]; // Data Matrix ONLY
+      const settings = new this.SDCBarcode.SparkScanSettings();
+      settings.enabledSymbologies = [this.SDCBarcode.Symbology.DataMatrix]; // Data Matrix ONLY
       settings.codeDuplicateFilter = 0; // Allow immediate re-scanning
       settings.scanIntention = SDCBarcode.ScanIntention.Smart; // Smart scanning intention
 
