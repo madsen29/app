@@ -58,32 +58,31 @@ export class SimpleScandItScanner {
       }
 
       this.onScanCallback = onScanCallback;
-      console.log('📦 Creating simple scanner...');
+      console.log('📦 Creating simple BarcodeCapture scanner...');
 
-      // Create barcode batch settings
-      const settings = new this.SDCBarcode.BarcodeBatchSettings();
+      // Create barcode capture settings (simpler than BarcodeBatch)
+      const settings = new this.SDCBarcode.BarcodeCaptureSettings();
       settings.enableSymbology(this.SDCBarcode.Symbology.DataMatrix);
 
-      // Create barcode batch
-      this.barcodeBatch = await this.SDCBarcode.BarcodeBatch.forContext(this.context, settings);
+      // Create barcode capture
+      this.barcodeCapture = await this.SDCBarcode.BarcodeCapture.forContext(this.context, settings);
 
       // Create view
       this.view = await this.SDCCore.DataCaptureView.forContext(this.context);
       this.view.connectToElement(containerElement);
 
       // Add overlay
-      const overlay = await this.SDCBarcode.BarcodeBatchBasicOverlay.withBarcodeBatchForView(
-        this.barcodeBatch,
+      const overlay = await this.SDCBarcode.BarcodeCaptureOverlay.withBarcodeCaptureForView(
+        this.barcodeCapture,
         this.view
       );
 
       // Setup listener
-      this.barcodeBatch.addListener({
-        didUpdateSession: (barcodeBatch, session) => {
-          console.log('📊 Scan session update:', session.addedTrackedBarcodes.length);
+      this.barcodeCapture.addListener({
+        didScan: (barcodeCapture, session) => {
+          console.log('📊 Barcode captured!');
           
-          session.addedTrackedBarcodes.forEach(trackedBarcode => {
-            const barcode = trackedBarcode.barcode;
+          session.newlyRecognizedBarcodes.forEach(barcode => {
             console.log('🔍 Detected:', barcode.data, barcode.symbology);
             
             if (barcode.symbology === this.SDCBarcode.Symbology.DataMatrix) {
@@ -96,7 +95,7 @@ export class SimpleScandItScanner {
         }
       });
 
-      console.log('✅ Simple scanner created');
+      console.log('✅ Simple BarcodeCapture scanner created');
       return true;
 
     } catch (error) {
