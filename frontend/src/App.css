@@ -3143,3 +3143,21 @@ input:disabled {
     display: none;
   }
 }
+
+/* Desktop styles for scanned items list */
+@media (min-width: 769px) {
+  .scanned-items-list {
+    max-height: 250px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 100px;
+  }
+  
+  .scanner-content {
+    max-height: 90vh;
+  }
+  
+  .scanner-body {
+    max-height: none;
+  }
+}
