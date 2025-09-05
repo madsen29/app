@@ -2631,8 +2631,8 @@ function App() {
       setIsScanning(false);
       setScannerModal({ isOpen: false, targetField: '', targetSetter: null });
       
-      if (scanditScannerRef.current) {
-        await scanditScannerRef.current.stopScanning();
+      if (scandItScannerRef.current) {
+        await scandItScannerRef.current.stopScanning();
         // Note: We don't dispose the scanner instance to avoid re-initialization costs
         // It will be reused for subsequent scans
       }
