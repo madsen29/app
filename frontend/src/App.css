@@ -482,6 +482,11 @@ input:disabled {
 
 .scanner-body {
   padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .camera-container {
