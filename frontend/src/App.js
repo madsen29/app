@@ -2500,48 +2500,81 @@ function App() {
   /**
    * Parse GS1 Data Matrix barcode to extract serial number
    * Example: 01003723360643092115000042751\x1D1729053110771565E
-   * AI (01) = GTIN, AI (21) = Serial Number, etc.
+   * AI (01) = GTIN (14 digits), AI (21) = Serial Number (variable), etc.
    */
   const parseGS1DataMatrix = (scannedData) => {
     try {
-      console.log('🔍 Parsing GS1 Data Matrix:', scannedData);
+      console.log('🔍 Parsing GS1 Data Matrix - Raw:', scannedData);
+      console.log('🔍 Raw bytes:', Array.from(scannedData).map(c => c.charCodeAt(0)));
       
-      // Replace Group Separator character (ASCII 29) with readable separator
+      // Replace Group Separator character (ASCII 29) with pipe for visibility
       const cleanData = scannedData.replace(/\x1D/g, '|GS|');
       console.log('📋 Cleaned data:', cleanData);
       
-      // Extract GTIN (AI 01) - 14 digits after "01"
-      const gtinMatch = scannedData.match(/01(\d{14})/);
-      const gtin = gtinMatch ? gtinMatch[1] : null;
-      
-      // Extract Serial Number (AI 21) - variable length after "21"
-      const serialMatch = scannedData.match(/21([^\\x1D]+)/);
-      const serialNumber = serialMatch ? serialMatch[1] : null;
-      
-      // Extract Lot/Batch Number (AI 10) - variable length after "10"
-      const lotMatch = scannedData.match(/10([^\\x1D]+)/);
-      const lotNumber = lotMatch ? lotMatch[1] : null;
-      
-      // Extract Expiration Date (AI 17) - 6 digits YYMMDD after "17"
-      const expMatch = scannedData.match(/17(\d{6})/);
-      const expirationDate = expMatch ? expMatch[1] : null;
-      
-      console.log('📊 Parsed GS1 data:', {
-        gtin,
-        serialNumber,
-        lotNumber,
-        expirationDate,
-        cleanData
-      });
-      
-      return {
-        gtin,
-        serialNumber,
-        lotNumber,
-        expirationDate,
+      let parsedData = {
+        gtin: null,
+        serialNumber: null,
+        lotNumber: null,
+        expirationDate: null,
         rawData: scannedData,
         cleanData
       };
+      
+      // Parse step by step through the GS1 data
+      let position = 0;
+      let dataString = scannedData;
+      
+      console.log('🔍 Starting GS1 parsing...');
+      
+      // Extract GTIN (AI 01) - always 14 digits
+      if (dataString.startsWith('01')) {
+        parsedData.gtin = dataString.substring(2, 16); // positions 2-15 (14 digits)
+        position = 16;
+        console.log('📋 GTIN (01):', parsedData.gtin);
+      }
+      
+      // Extract Serial Number (AI 21) - variable length until next AI or GS
+      if (dataString.substring(position, position + 2) === '21') {
+        position += 2; // skip AI
+        let endPos = dataString.indexOf('\x1D', position); // find next group separator
+        if (endPos === -1) {
+          // Look for next AI pattern if no GS found
+          const nextAI = dataString.substring(position).match(/(\d{2})/g);
+          if (nextAI && nextAI.length > 1) {
+            // Find position of second AI pattern
+            endPos = position + dataString.substring(position).search(/\d{2}(?=\d)/);
+          } else {
+            endPos = dataString.length; // use rest of string
+          }
+        }
+        parsedData.serialNumber = dataString.substring(position, endPos);
+        position = endPos;
+        console.log('📋 Serial Number (21):', parsedData.serialNumber);
+      }
+      
+      // Skip Group Separator if present
+      if (dataString.charAt(position) === '\x1D') {
+        position++;
+        console.log('📋 Skipped Group Separator at position:', position);
+      }
+      
+      // Extract Expiration Date (AI 17) - 6 digits YYMMDD
+      if (dataString.substring(position, position + 2) === '17') {
+        parsedData.expirationDate = dataString.substring(position + 2, position + 8);
+        position += 8;
+        console.log('📋 Expiration Date (17):', parsedData.expirationDate);
+      }
+      
+      // Extract Lot/Batch Number (AI 10) - variable length
+      if (dataString.substring(position, position + 2) === '10') {
+        position += 2; // skip AI
+        parsedData.lotNumber = dataString.substring(position); // rest of string
+        console.log('📋 Lot Number (10):', parsedData.lotNumber);
+      }
+      
+      console.log('📊 Final parsed GS1 data:', parsedData);
+      
+      return parsedData;
       
     } catch (error) {
       console.error('❌ Error parsing GS1 Data Matrix:', error);
