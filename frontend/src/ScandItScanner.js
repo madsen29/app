@@ -208,13 +208,27 @@ export class ScandItScanner {
       
       this.barcodeBatch.addListener({
         didUpdateSession: (barcodeBatch, session) => {
+          console.log('📊 BarcodeBatch session update:', {
+            addedBarcodes: session.addedTrackedBarcodes.length,
+            removedBarcodes: session.removedTrackedBarcodes.length,
+            updatedBarcodes: session.updatedTrackedBarcodes.length
+          });
+          
           if (session.addedTrackedBarcodes.length > 0) {
             // Emit feedback for new Data Matrix codes
             session.addedTrackedBarcodes.forEach(trackedBarcode => {
+              console.log('🔍 Detected barcode:', {
+                data: trackedBarcode.barcode.data,
+                symbology: trackedBarcode.barcode.symbology,
+                isDataMatrix: trackedBarcode.barcode.symbology === SDCBarcodeBatch.Symbology.DataMatrix
+              });
+              
               if (trackedBarcode.barcode.symbology === SDCBarcodeBatch.Symbology.DataMatrix) {
                 feedback.emit();
                 console.log('✅ MatrixScan detected Data Matrix:', trackedBarcode.barcode.data);
                 onScanCallback(trackedBarcode.barcode.data, 'batch');
+              } else {
+                console.log('❌ Ignoring non-DataMatrix code:', trackedBarcode.barcode.symbology);
               }
             });
           }
