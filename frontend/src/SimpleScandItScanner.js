@@ -83,18 +83,22 @@ export class SimpleScandItScanner {
         throw new Error('Scanner not created');
       }
 
-      console.log('🎬 Ultra Simple - Starting...');
+      console.log('🎬 Ultra Simple - Starting camera FIRST...');
       
-      // Enable capture
-      this.scanner.barcodeCapture.isEnabled = true;
-      
-      // Start camera
+      // Start camera FIRST (before enabling capture)
       const SDCCore = await import('@scandit/web-datacapture-core');
       await this.scanner.camera.switchToDesiredState(SDCCore.FrameSourceState.On);
+      console.log('📷 Camera started successfully');
+      
+      // THEN enable capture
+      console.log('📦 Enabling BarcodeCapture...');
+      this.scanner.barcodeCapture.isEnabled = true;
+      console.log('✅ BarcodeCapture enabled:', this.scanner.barcodeCapture.isEnabled);
       
       console.log('✅ Ultra Simple - Scanner started');
     } catch (error) {
       console.error('❌ Ultra Simple - Failed to start:', error);
+      console.error('Error details:', error.stack);
       throw error;
     }
   }
