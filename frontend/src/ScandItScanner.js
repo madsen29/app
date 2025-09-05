@@ -99,7 +99,7 @@ export class ScandItScanner {
       viewSettings.torchButtonVisible = true; // Show torch button
 
       // Create SparkScan view
-      const sparkScanView = await SDCBarcode.SparkScanView.withSettingsForContext(
+      const sparkScanView = await this.SDCBarcode.SparkScanView.withSettingsForContext(
         this.context,
         this.sparkScan,
         viewSettings
