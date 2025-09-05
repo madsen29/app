@@ -138,8 +138,8 @@ export class SimpleScandItScanner {
 
   dispose() {
     try {
-      if (this.barcodeBatch) {
-        this.barcodeBatch.removeAllListeners();
+      if (this.barcodeCapture) {
+        this.barcodeCapture.removeAllListeners();
       }
       
       if (this.view) {
