@@ -109,7 +109,7 @@ export class ScandItScanner {
       this.sparkScan.addListener({
         didScan: (sparkScan, session) => {
           const barcode = session.newlyRecognizedBarcodes[0];
-          if (barcode && barcode.symbology === SDCBarcode.Symbology.DataMatrix) {
+          if (barcode && barcode.symbology === this.SDCBarcode.Symbology.DataMatrix) {
             console.log('✅ SparkScan detected Data Matrix:', barcode.data);
             onScanCallback(barcode.data, 'single');
           }
