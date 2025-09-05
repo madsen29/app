@@ -39,11 +39,10 @@ export class ScandItScanner {
         barcodeLoaded: !!this.SDCBarcode
       });
       
-      // Configure ScandIt with license key
+      // Configure ScandIt with license key - using local modules
       console.log('🔑 Configuring ScandIt with license key...');
       await this.SDCCore.configure({
         licenseKey: this.licenseKey,
-        libraryLocation: "https://cdn.jsdelivr.net/npm/@scandit/web-datacapture-core@7.5.1/build/",
         moduleLoaders: [this.SDCBarcode.barcodeCaptureLoader()]
       });
 
