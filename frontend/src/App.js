@@ -100,21 +100,13 @@ function App() {
   const [success, setSuccess] = useState('');
   const [isToastExiting, setIsToastExiting] = useState(false);
   // Scanner states and refs
-  const videoRef = useRef(null);
-  const codeReader = useRef(null);
   const [scannerModal, setScannerModal] = useState({ isOpen: false, targetField: '', currentValue: '' });
   const [isScanning, setIsScanning] = useState(false);
-  const [scanningPaused, setScanningPaused] = useState(false);
-  const scanningRef = useRef(false);
   const [scannedItems, setScannedItems] = useState([]);
   const [shouldContinueScanning, setShouldContinueScanning] = useState(false);
   
-  // ScandIt scanner instances
-  const scanditContextRef = useRef(null);
-  const scanditCameraRef = useRef(null);
-  const scanditViewRef = useRef(null);
-  const sparkScanRef = useRef(null);
-  const batchScanRef = useRef(null);
+  // ScandIt scanner instance and container ref
+  const scanditScannerRef = useRef(null);
   const scannerContainerRef = useRef(null);
 
   // ScandIt License Key
