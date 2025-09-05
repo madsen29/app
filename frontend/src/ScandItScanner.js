@@ -158,13 +158,13 @@ export class ScandItScanner {
       // Enable Data Matrix symbology - disable all others by default
       settings.enableSymbology(this.SDCBarcode.Symbology.DataMatrix);
 
-      // Create BarcodeBatch instance
-      this.barcodeBatch = await this.SDCBarcode.BarcodeBatch.forContext(this.context, settings);
-
-      // Setup camera with recommended settings for BarcodeBatch
+      // Setup camera FIRST
       const cameraSettings = this.SDCBarcode.BarcodeBatch.recommendedCameraSettings;
       await this.camera.applySettings(cameraSettings);
       await this.context.setFrameSource(this.camera);
+
+      // Create BarcodeBatch instance
+      this.barcodeBatch = await this.SDCBarcode.BarcodeBatch.forContext(this.context, settings);
 
       // Create data capture view
       this.view = await this.SDCCore.DataCaptureView.forContext(this.context);
