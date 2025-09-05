@@ -198,7 +198,7 @@ export class ScandItScanner {
           if (session.addedTrackedBarcodes.length > 0) {
             // Emit feedback for new Data Matrix codes
             session.addedTrackedBarcodes.forEach(trackedBarcode => {
-              if (trackedBarcode.barcode.symbology === SDCBarcode.Symbology.DataMatrix) {
+              if (trackedBarcode.barcode.symbology === this.SDCBarcode.Symbology.DataMatrix) {
                 feedback.emit();
                 console.log('✅ MatrixScan detected Data Matrix:', trackedBarcode.barcode.data);
                 onScanCallback(trackedBarcode.barcode.data, 'batch');
