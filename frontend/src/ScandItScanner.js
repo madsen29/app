@@ -1,43 +1,58 @@
-import * as SDCCore from '@scandit/web-datacapture-core';
-import * as SDCBarcode from '@scandit/web-datacapture-barcode';
-
 /**
  * ScandIt Scanner Component for EPCIS Aggregator
- * Handles both single scanning (SparkScan) and batch scanning (MatrixScan)
+ * Handles both single scanning (SparkScan) and batch scanning (MatrixScan)  
  * Optimized for Data Matrix codes only
  */
 
 export class ScandItScanner {
   constructor(licenseKey) {
     this.licenseKey = licenseKey;
+    this.isInitialized = false;
+    this.currentMode = null; // 'single' or 'batch'
+    
+    // ScandIt modules will be loaded dynamically
+    this.SDCCore = null;
+    this.SDCBarcode = null;
+    
+    // ScandIt instances
     this.context = null;
     this.camera = null;
     this.view = null;
     this.sparkScan = null;
     this.barcodeBatch = null;
-    this.isInitialized = false;
-    this.currentMode = null; // 'single' or 'batch'
   }
 
   /**
-   * Initialize ScandIt SDK
+   * Initialize ScandIt SDK with dynamic imports
    */
   async initialize() {
     try {
       console.log('🚀 Initializing ScandIt SDK...');
       
+      // Dynamically import ScandIt modules
+      console.log('📦 Loading ScandIt modules...');
+      this.SDCCore = await import('@scandit/web-datacapture-core');
+      this.SDCBarcode = await import('@scandit/web-datacapture-barcode');
+      
+      console.log('✅ ScandIt modules loaded:', {
+        coreLoaded: !!this.SDCCore,
+        barcodeLoaded: !!this.SDCBarcode
+      });
+      
       // Configure ScandIt with license key
-      await SDCCore.configure({
+      console.log('🔑 Configuring ScandIt with license key...');
+      await this.SDCCore.configure({
         licenseKey: this.licenseKey,
-        libraryLocation: "https://cdn.jsdelivr.net/npm/@scandit/web-datacapture-core@7.5.1/build/",
-        moduleLoaders: [SDCBarcode.barcodeCaptureLoader()]
+        libraryLocation: "https://cdn.jsdelivr.net/npm/@scandit/web-datacapture-core@7/build/",
+        moduleLoaders: [this.SDCBarcode.barcodeCaptureLoader()]
       });
 
       // Create data capture context
-      this.context = await SDCCore.DataCaptureContext.create();
+      console.log('🎯 Creating data capture context...');
+      this.context = await this.SDCCore.DataCaptureContext.create();
       
       // Setup camera with optimized settings
-      this.camera = SDCCore.Camera.default;
+      this.camera = this.SDCCore.Camera.default;
       
       console.log('✅ ScandIt SDK initialized successfully');
       this.isInitialized = true;
@@ -45,6 +60,12 @@ export class ScandItScanner {
       return true;
     } catch (error) {
       console.error('❌ Failed to initialize ScandIt:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        coreModule: !!this.SDCCore,
+        barcodeModule: !!this.SDCBarcode
+      });
       throw new Error(`ScandIt initialization failed: ${error.message}`);
     }
   }
