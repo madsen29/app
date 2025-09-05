@@ -100,10 +100,26 @@ function App() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isToastExiting, setIsToastExiting] = useState(false);
-  const [scannerModal, setScannerModal] = useState({ isOpen: false, targetField: '', targetSetter: null });
+  // Scanner states and refs
+  const [scannerModal, setScannerModal] = useState({ isOpen: false, targetField: '', currentValue: '' });
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanningPaused, setScanningPaused] = useState(false);
+  const scanningRef = useRef(false);
   const [scannedItems, setScannedItems] = useState([]);
-  const [requiredItemCount, setRequiredItemCount] = useState(1);
   const [shouldContinueScanning, setShouldContinueScanning] = useState(false);
+  
+  // ScandIt scanner instances
+  const scanditContextRef = useRef(null);
+  const scanditCameraRef = useRef(null);
+  const scanditViewRef = useRef(null);
+  const sparkScanRef = useRef(null);
+  const batchScanRef = useRef(null);
+  const scannerContainerRef = useRef(null);
+
+  // ScandIt License Key
+  const SCANDIT_LICENSE_KEY = "Avq2K9OBRx04MGjA0PBXZNg0GJdPLM/Tfykv+wm9WZBVMtoG93WJHfBxpgo7WGNWmHhHRFtEYJpecdnrBgWsLAkdP5ZlYq63v1+63fVPf0KUV3PNwWq1+VlGD4D4XeZCZVBLaapqykHhca2fSWOu1WElRQo0XGK91WeblTlU53qTM7MK8hbiYPACkBWcGhbbFuBvDnuTCGVyLUjoVKZOVi77ChaJYMUb53gt+YWWf5ZyO8WYr+zkgXcUkN7VFtqzuvSZhKQAz9R9FVTqSg5yfS3LmMNk0EtcpOurlgxKtIkZA2zB0hk+AC73W+clFYW0hUivDlIa+3FmYA2YUaUurvXm8FdCNUJoGDQC3le7JX0T2Fxem9G/yIuVV1qQwDHVgGXon0DbBde2jCy28YlqypdViFKseHq4yVWCwxno8/rcGVzj6M3By/ZCy72aQifK1qi/4/FYBlNsyW8Q2XZKtn9EZns8B6vIMcn25WpUvyiAL9PbkiaX2TM+/9a1peyw3zytVg26fyuxcbKNdkDvlFZA/TIuEiQqltkohZuxmGfwGojeT6U2eGWdoGiX8Z2CVkm00JNU302QKkSxvf0F/igdZhZW9HDJQfXSFX8zStGz/jf09CAND+EWlJj7qEO3Pkmi/n3o+ZDnjdiT9NYH3InzoeoLLBsxkZi1FObPf+FtSgNmytMcJWERiKUegF1nQJLyKU3pWoo6OqNWXiV7BjQsMukyW8G+Ti0+rPtmKnR/cA2Vjx4rQxRx1ukltI2tMMHteVzVYXa9BkuGu0b4eWQAH4EB4GarCgkK30aOx6nMB+yDioH+aeZxBBK+F7tu7N3CibuyddHe6ncCSpSBjG/0O3n2mylP6zn80L/z";
+
+  const [requiredItemCount, setRequiredItemCount] = useState(1);
   const [fdaModal, setFdaModal] = useState({ isOpen: false, searchResults: [], isLoading: false });
   const [editModal, setEditModal] = useState({ isOpen: false, path: '', currentValue: '', label: '', contextPath: '' });
   
