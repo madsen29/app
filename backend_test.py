@@ -1,19 +1,27 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for EPCIS Serial Number Aggregation App - FILENAME STRUCTURE TESTING
-Tests the updated EPCIS filename structure functionality with focus on:
-1. EPCIS filename generation using new naming convention: "epcis"-{senderGLN}-{receiverGLN}-{YYMMDD}
-2. Configuration with sender_gln and receiver_gln values
-3. Serial numbers creation for configurations
-4. Filename verification in response headers
-5. Date format validation (YYMMDD)
-6. Testing with different GLN values
+Backend API Comprehensive Baseline Testing for EPCIS Serial Number Aggregation App
+Tests all backend API endpoints to verify functionality after ScandIt integration changes.
+ScandIt changes are frontend-only, so all backend functionality should remain intact.
 
-Test scenarios:
-- Create configurations with different sender_gln and receiver_gln values
-- Verify filename follows pattern: "epcis"-{senderGLN}-{receiverGLN}-{todays date in YYMMDD}
-- Test with realistic GLN values
-- Ensure existing XML generation functionality still works
+Test Areas:
+1. Authentication Endpoints - User registration, login, JWT token validation
+2. Project Management - CRUD operations for projects
+3. Configuration API - Saving and retrieving project configuration
+4. Serial Numbers API - Serial number creation and validation
+5. EPCIS Generation - Complete EPCIS XML generation workflow
+6. Error Handling - Proper validation and error responses
+
+Review Request Configuration:
+- Company Prefix: 1234567
+- Product Code: 000000
+- Items per case: 2
+- Cases per SSCC: 1
+- Number of SSCCs: 1
+- Lot Number: LOT123
+- Expiration Date: 2026-12-31
+
+Expected Result: 100% backend API functionality working correctly
 """
 
 import requests
