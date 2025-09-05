@@ -5,8 +5,8 @@ import { FiCamera, FiChevronRight, FiPackage, FiBox, FiFolder, FiFile, FiX, FiAr
 import { useAuth } from './AuthContext';
 import AuthWrapper from './AuthWrapper';
 
-// ScandIt Integration
-import ScandItScanner from './ScandItScanner';
+// ZXing Barcode Scanner
+import { BrowserDatamatrixCodeReader } from '@zxing/browser';
 import ProjectDashboard from './ProjectDashboard';
 import LocationSelector from './LocationSelector';
 
