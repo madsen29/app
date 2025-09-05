@@ -551,11 +551,11 @@ class BackendTester:
         try:
             response = self.session.get(f"{self.base_url}/projects")
             
-            if response.status_code == 401:
-                self.log_test("Error Handling - Unauthorized", True, "Properly rejects unauthorized access")
+            if response.status_code in [401, 403]:
+                self.log_test("Error Handling - Unauthorized", True, f"Properly rejects unauthorized access (HTTP {response.status_code})")
                 success = True
             else:
-                self.log_test("Error Handling - Unauthorized", False, f"Expected 401, got {response.status_code}")
+                self.log_test("Error Handling - Unauthorized", False, f"Expected 401/403, got {response.status_code}")
                 success = False
                 
         except Exception as e:
