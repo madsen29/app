@@ -5,7 +5,8 @@ import { FiCamera, FiChevronRight, FiPackage, FiBox, FiFolder, FiFile, FiX, FiAr
 import { useAuth } from './AuthContext';
 import AuthWrapper from './AuthWrapper';
 
-// ScandIt Integration - Fresh Implementation
+// ScandIt Integration - Working Implementation
+import SimpleScandItScanner from './SimpleScandItScanner';
 import ProjectDashboard from './ProjectDashboard';
 import LocationSelector from './LocationSelector';
 
