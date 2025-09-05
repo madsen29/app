@@ -39,6 +39,9 @@ class BackendTester:
         self.base_url = BACKEND_URL
         self.session = requests.Session()
         self.test_results = []
+        self.auth_token = None
+        self.test_user_id = None
+        self.test_project_id = None
         
     def log_test(self, test_name, success, message, details=None):
         """Log test results"""
@@ -72,6 +75,264 @@ class BackendTester:
                 return False
         except Exception as e:
             self.log_test("API Health Check", False, f"Connection error: {str(e)}")
+            return False
+    
+    def test_user_registration(self):
+        """Test user registration endpoint"""
+        test_user_data = {
+            "email": "baseline_test_user@test.com",
+            "password": "TestPassword123!",
+            "firstName": "Baseline",
+            "lastName": "Tester"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/auth/register",
+                json=test_user_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["id", "email", "first_name", "last_name"]
+                
+                if all(field in data for field in required_fields):
+                    if data["email"] == test_user_data["email"]:
+                        self.test_user_id = data["id"]
+                        self.log_test("User Registration", True, "User registered successfully", 
+                                    f"User ID: {data['id']}, Email: {data['email']}")
+                        return True
+                    else:
+                        self.log_test("User Registration", False, f"Email mismatch: expected {test_user_data['email']}, got {data['email']}")
+                        return False
+                else:
+                    self.log_test("User Registration", False, f"Missing required fields in response: {data}")
+                    return False
+            else:
+                # User might already exist, try to continue with login
+                if response.status_code == 400 and "already registered" in response.text:
+                    self.log_test("User Registration", True, "User already exists (continuing with existing user)")
+                    return True
+                else:
+                    self.log_test("User Registration", False, f"HTTP {response.status_code}: {response.text}")
+                    return False
+                
+        except Exception as e:
+            self.log_test("User Registration", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_user_login(self):
+        """Test user login endpoint"""
+        login_data = {
+            "email": "baseline_test_user@test.com",
+            "password": "TestPassword123!"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/auth/login",
+                json=login_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["access_token", "token_type"]
+                
+                if all(field in data for field in required_fields):
+                    if data["token_type"] == "bearer":
+                        self.auth_token = data["access_token"]
+                        # Set authorization header for future requests
+                        self.session.headers.update({"Authorization": f"Bearer {self.auth_token}"})
+                        self.log_test("User Login", True, "User logged in successfully", 
+                                    f"Token type: {data['token_type']}")
+                        return True
+                    else:
+                        self.log_test("User Login", False, f"Unexpected token type: {data['token_type']}")
+                        return False
+                else:
+                    self.log_test("User Login", False, f"Missing required fields in response: {data}")
+                    return False
+            else:
+                self.log_test("User Login", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("User Login", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_jwt_token_validation(self):
+        """Test JWT token validation with /auth/me endpoint"""
+        if not self.auth_token:
+            self.log_test("JWT Token Validation", False, "No auth token available")
+            return False
+            
+        try:
+            response = self.session.get(f"{self.base_url}/auth/me")
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["id", "email", "first_name", "last_name"]
+                
+                if all(field in data for field in required_fields):
+                    if data["email"] == "baseline_test_user@test.com":
+                        self.test_user_id = data["id"]
+                        self.log_test("JWT Token Validation", True, "JWT token validated successfully", 
+                                    f"User ID: {data['id']}, Email: {data['email']}")
+                        return True
+                    else:
+                        self.log_test("JWT Token Validation", False, f"Unexpected user email: {data['email']}")
+                        return False
+                else:
+                    self.log_test("JWT Token Validation", False, f"Missing required fields in response: {data}")
+                    return False
+            else:
+                self.log_test("JWT Token Validation", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("JWT Token Validation", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_project_creation(self):
+        """Test project creation endpoint"""
+        if not self.auth_token:
+            self.log_test("Project Creation", False, "No auth token available")
+            return False
+            
+        project_data = {
+            "name": "Baseline Test Project"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects",
+                json=project_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["id", "name", "user_id", "status", "current_step"]
+                
+                if all(field in data for field in required_fields):
+                    if (data["name"] == project_data["name"] and 
+                        data["status"] == "In Progress" and 
+                        data["current_step"] == 1):
+                        self.test_project_id = data["id"]
+                        self.log_test("Project Creation", True, "Project created successfully", 
+                                    f"Project ID: {data['id']}, Name: {data['name']}")
+                        return True
+                    else:
+                        self.log_test("Project Creation", False, f"Unexpected project data: {data}")
+                        return False
+                else:
+                    self.log_test("Project Creation", False, f"Missing required fields in response: {data}")
+                    return False
+            else:
+                self.log_test("Project Creation", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Project Creation", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_project_retrieval(self):
+        """Test project retrieval endpoint"""
+        if not self.test_project_id:
+            self.log_test("Project Retrieval", False, "No test project ID available")
+            return False
+            
+        try:
+            response = self.session.get(f"{self.base_url}/projects/{self.test_project_id}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["id", "name", "user_id", "status", "current_step"]
+                
+                if all(field in data for field in required_fields):
+                    if data["id"] == self.test_project_id:
+                        self.log_test("Project Retrieval", True, "Project retrieved successfully", 
+                                    f"Project ID: {data['id']}, Name: {data['name']}")
+                        return True
+                    else:
+                        self.log_test("Project Retrieval", False, f"Project ID mismatch: expected {self.test_project_id}, got {data['id']}")
+                        return False
+                else:
+                    self.log_test("Project Retrieval", False, f"Missing required fields in response: {data}")
+                    return False
+            else:
+                self.log_test("Project Retrieval", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Project Retrieval", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_project_listing(self):
+        """Test project listing endpoint"""
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if isinstance(data, list):
+                    # Should contain at least our test project
+                    project_found = any(project.get("id") == self.test_project_id for project in data)
+                    if project_found:
+                        self.log_test("Project Listing", True, "Project listing successful", 
+                                    f"Found {len(data)} projects including test project")
+                        return True
+                    else:
+                        self.log_test("Project Listing", False, f"Test project not found in listing of {len(data)} projects")
+                        return False
+                else:
+                    self.log_test("Project Listing", False, f"Expected list response, got: {type(data)}")
+                    return False
+            else:
+                self.log_test("Project Listing", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Project Listing", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_project_update(self):
+        """Test project update endpoint"""
+        if not self.test_project_id:
+            self.log_test("Project Update", False, "No test project ID available")
+            return False
+            
+        update_data = {
+            "name": "Updated Baseline Test Project",
+            "status": "In Progress"
+        }
+        
+        try:
+            response = self.session.put(
+                f"{self.base_url}/projects/{self.test_project_id}",
+                json=update_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if data.get("name") == update_data["name"]:
+                    self.log_test("Project Update", True, "Project updated successfully", 
+                                f"New name: {data['name']}")
+                    return True
+                else:
+                    self.log_test("Project Update", False, f"Name not updated: expected {update_data['name']}, got {data.get('name')}")
+                    return False
+            else:
+                self.log_test("Project Update", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Project Update", False, f"Request error: {str(e)}")
             return False
     
     def test_review_request_specific_configuration(self):
