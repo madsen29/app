@@ -94,11 +94,32 @@ export class SimpleScandItScanner {
       this.scanner.barcodeCapture.isEnabled = true;
       console.log('✅ BarcodeCapture enabled:', this.scanner.barcodeCapture.isEnabled);
       
-      // Now start camera (should work since context is properly initialized)
-      console.log('📷 Starting camera...');
+      // Debug context state before starting camera
+      console.log('📷 Debugging context state...');
+      console.log('Context:', this.scanner.context);
+      console.log('Camera:', this.scanner.camera);
+      console.log('BarcodeCapture:', this.scanner.barcodeCapture);
+      
+      // Try different camera start approach
+      console.log('📷 Starting camera with explicit state check...');
       const SDCCore = await import('@scandit/web-datacapture-core');
-      await this.scanner.camera.switchToDesiredState(SDCCore.FrameSourceState.On);
-      console.log('✅ Camera started successfully!');
+      
+      // Check current camera state first
+      console.log('Current camera state:', this.scanner.camera.currentState);
+      console.log('Desired camera state would be:', SDCCore.FrameSourceState.On);
+      
+      // Try to start camera with error isolation
+      try {
+        await this.scanner.camera.switchToDesiredState(SDCCore.FrameSourceState.On);
+        console.log('✅ Camera started successfully!');
+      } catch (cameraError) {
+        console.error('❌ Camera start failed:', cameraError);
+        console.error('Camera error stack:', cameraError.stack);
+        
+        // Try alternative - just enable capture without camera start
+        console.log('🔄 Trying capture-only mode...');
+        throw cameraError;
+      }
       
       console.log('🚀 Ultra Simple - Scanner fully operational!');
     } catch (error) {
