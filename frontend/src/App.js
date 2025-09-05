@@ -101,6 +101,8 @@ function App() {
   const [success, setSuccess] = useState('');
   const [isToastExiting, setIsToastExiting] = useState(false);
   // Scanner states and refs
+  const videoRef = useRef(null);
+  const codeReader = useRef(null);
   const [scannerModal, setScannerModal] = useState({ isOpen: false, targetField: '', currentValue: '' });
   const [isScanning, setIsScanning] = useState(false);
   const [scanningPaused, setScanningPaused] = useState(false);
