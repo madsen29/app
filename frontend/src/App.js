@@ -4786,7 +4786,7 @@ function App() {
               <div className="scanner-body">
                 <div className="camera-container">
                   {/* ScandIt Scanner Container - replaces old video element */}
-                  <div ref={scannerContainerRef} className="scandit-scanner" style={{width: '100%', height: '100%'}}></div>
+                  <div ref={scannerContainerRef} className="scandit-scanner" style={{width: '100%', height: '100%', minHeight: '400px'}}></div>
                   {isScanning && (
                     <div className="scanning-overlay">
                       <div className="scanning-frame"></div>
