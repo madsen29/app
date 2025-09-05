@@ -2595,6 +2595,13 @@ function App() {
     await startScandItScanning();
   };
 
+  // Legacy scanner functions (for existing ZXing-based scanning)
+  const startScanLoop = async () => {
+    // This function is called by existing scanner code
+    // For now, redirect to ScandIt scanning
+    await startScandItScanning();
+  };
+
   // Barcode scanning functions
   const openScanner = (targetField, targetSetter) => {
     // Determine if this is multi-item scanning for Items level
