@@ -2608,25 +2608,30 @@ function App() {
         throw new Error('Scanner container not available');
       }
 
+      console.log('📱 Starting working ScandIt Data Matrix scanner...');
       const scanner = await initializeScandItScanner();
       
-      // Determine scanning mode based on current context
-      const isItemsLevel = serialCollectionStep.currentLevel === 'item';
-      const isBatchScanning = shouldContinueScanning && isItemsLevel && requiredItemCount > 1;
-      
-      if (isBatchScanning) {
-        console.log('📦 Starting MatrixScan for batch item scanning...');
-        await scanner.initializeBatchScanner(scannerContainerRef.current, handleScandItScan);
-      } else {
-        console.log('📱 Starting SparkScan for single scanning...');
-        await scanner.initializeSingleScanner(scannerContainerRef.current, handleScandItScan);
-      }
+      // Initialize scanner with GS1 parsing callback
+      await scanner.createScanner(scannerContainerRef.current, (scannedData) => {
+        console.log('📱 ScandIt scan detected:', scannedData);
+        
+        // Parse GS1 Data Matrix to extract serial number
+        const parsedData = parseGS1DataMatrix(scannedData);
+        
+        if (parsedData.serialNumber) {
+          console.log('✅ Serial number extracted:', parsedData.serialNumber);
+          handleScandItScan(parsedData.serialNumber, 'single');
+        } else {
+          console.log('⚠️ No serial number found, using raw data:', scannedData);
+          handleScandItScan(scannedData, 'single');
+        }
+      });
 
       await scanner.startScanning();
-      console.log('✅ ScandIt scanner started successfully');
+      console.log('✅ Working ScandIt scanner started successfully');
 
     } catch (error) {
-      console.error('❌ Failed to start ScandIt scanner:', error);
+      console.error('❌ Failed to start working ScandIt scanner:', error);
       setIsScanning(false);
       
       if (error.message.includes('permission')) {
