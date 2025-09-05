@@ -3146,73 +3146,18 @@ function App() {
     };
   };
 
+  // Scanner modal useEffect for ScandIt integration
   useEffect(() => {
     if (scannerModal.isOpen) {
-      // Small delay to ensure modal is rendered
+      // Small delay to ensure modal and ScandIt container are rendered
       setTimeout(() => {
-        startContinuousScanning();
+        startScanning(); // Use new ScandIt scanner
       }, 200);
     } else {
-      // Immediately stop camera when modal closes
-      console.log('Scanner modal closed - stopping camera in useEffect');
-      scanningRef.current = false; // Stop the scan loop
-      
-      if (videoRef.current) {
-        videoRef.current.pause();
-        
-        if (videoRef.current.srcObject) {
-          const tracks = videoRef.current.srcObject.getTracks();
-          console.log('useEffect: Stopping', tracks.length, 'video tracks');
-          tracks.forEach(track => {
-            console.log('useEffect: Stopping track:', track.kind, track.label);
-            track.stop();
-          });
-          videoRef.current.srcObject = null;
-        }
-      }
-      
-      if (codeReader.current) {
-        try {
-          if (typeof codeReader.current.reset === 'function') {
-            codeReader.current.reset();
-          }
-        } catch (error) {
-          console.log('Error stopping scanner on modal close:', error);
-        }
-      }
-      
-      setIsScanning(false);
+      // Stop ScandIt scanner when modal closes
+      console.log('Scanner modal closed - stopping ScandIt scanner');
+      closeScanner();
     }
-    
-    return () => {
-      // Cleanup on unmount
-      console.log('Scanner useEffect cleanup');
-      scanningRef.current = false; // Stop the scan loop
-      
-      if (videoRef.current) {
-        videoRef.current.pause();
-        
-        if (videoRef.current.srcObject) {
-          const tracks = videoRef.current.srcObject.getTracks();
-          console.log('Cleanup: Stopping', tracks.length, 'video tracks');
-          tracks.forEach(track => {
-            console.log('Cleanup: Stopping track:', track.kind, track.label);
-            track.stop();
-          });
-          videoRef.current.srcObject = null;
-        }
-      }
-      
-      if (codeReader.current) {
-        try {
-          if (typeof codeReader.current.reset === 'function') {
-            codeReader.current.reset();
-          }
-        } catch (error) {
-          console.log('Cleanup error:', error);
-        }
-      }
-    };
   }, [scannerModal.isOpen]);
 
   // Scroll to top when step changes
