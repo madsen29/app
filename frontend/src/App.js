@@ -2540,7 +2540,7 @@ function App() {
   /**
    * Start ScandIt scanning based on scanning context
    */
-  const startScanning = async () => {
+  const startScandItScanning = async () => {
     try {
       setIsScanning(true);
       setError('');
@@ -2586,7 +2586,7 @@ function App() {
   const startContinuousScanning = async () => {
     // For ScandIt, continuous scanning is the same as regular scanning
     // The mode is determined by the scanning context
-    await startScanning();
+    await startScandItScanning();
   };
 
   // Barcode scanning functions
