@@ -779,77 +779,7 @@ class BackendTester:
             print(f"❌ {(passed/total)*100:.1f}% backend functionality working")
         
         return passed == total
-        """Run tests focused on review request requirements"""
-        print("=" * 80)
-        print("REVIEW REQUEST FOCUSED TESTING - HIERARCHICAL SERIAL NUMBER COLLECTION")
-        print("=" * 80)
-        print("Testing Configuration: 1 SSCC, 2 Cases, 2 Inner Cases per Case, 3 Items per Inner Case")
-        print("Focus Areas:")
-        print("1. Enhanced Duplicate Detection (Backend Integration)")
-        print("2. Multi-level Navigation Data Preservation (Backend Integration)")
-        print("3. Hierarchical Serial Collection Backend Integration")
-        print("4. EPCIS XML Generation (Package NDC & EPCClass ordering)")
-        print("=" * 80)
-        
-        # Test 1: API Health Check
-        if not self.test_api_health():
-            print("\n❌ API is not accessible. Stopping tests.")
-            return False
-        
-        # Test 2: Review Request Specific Configuration
-        config_id = self.test_review_request_specific_configuration()
-        
-        # Test 3: Review Request Serial Numbers
-        serial_id = self.test_review_request_serial_numbers(config_id)
-        
-        # Test 4: Package NDC Hyphen Removal (CRITICAL ISSUE)
-        package_ndc_success = self.test_package_ndc_hyphen_removal(config_id)
-        
-        # Test 5: EPCClass Vocabulary Order (CRITICAL ISSUE)
-        epcclass_order_success = self.test_epcclass_vocabulary_order(config_id)
-        
-        # Test 6: Multiple Hierarchy Configurations
-        self.test_multiple_hierarchy_configurations()
-        
-        # Test 7: Detailed EPCIS Generation Test (for 4-level hierarchy)
-        self.test_epcis_generation_detailed(config_id)
-        
-        # Summary
-        print("\n" + "=" * 80)
-        print("REVIEW REQUEST TEST SUMMARY")
-        print("=" * 80)
-        
-        passed = sum(1 for result in self.test_results if result['success'])
-        total = len(self.test_results)
-        
-        print(f"Total Tests: {total}")
-        print(f"Passed: {passed}")
-        print(f"Failed: {total - passed}")
-        print(f"Success Rate: {(passed/total)*100:.1f}%")
-        
-        # Critical Issues Status
-        print("\n" + "=" * 40)
-        print("CRITICAL ISSUES STATUS")
-        print("=" * 40)
-        print(f"Package NDC Hyphen Removal: {'✅ FIXED' if package_ndc_success else '❌ STILL FAILING'}")
-        print(f"EPCClass Vocabulary Order: {'✅ FIXED' if epcclass_order_success else '❌ STILL FAILING'}")
-        
-        if total - passed > 0:
-            print("\nFailed Tests:")
-            for result in self.test_results:
-                if not result['success']:
-                    print(f"  - {result['test']}: {result['message']}")
-        
-        print("\nReview Request Features Tested:")
-        print("✓ 4-level hierarchy: SSCC→Cases→Inner Cases→Items")
-        print("✓ Package NDC field storage and processing")
-        print("✓ EPCClass vocabulary generation and ordering")
-        print("✓ Hierarchical data conversion to flat arrays")
-        print("✓ Backend integration for enhanced serial collection")
-        
-        return passed == total
-
 if __name__ == "__main__":
     tester = BackendTester()
-    success = tester.run_review_request_tests()
+    success = tester.run_comprehensive_baseline_tests()
     sys.exit(0 if success else 1)
