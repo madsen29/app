@@ -52,7 +52,7 @@ export class ScandItScanner {
 
       // Create data capture context
       console.log('🎯 Creating data capture context...');
-      this.context = await this.SDCCore.DataCaptureContext.create();
+      this.context = this.SDCCore.DataCaptureContext.forLicenseKey(this.licenseKey);
       
       // Setup camera with optimized settings
       this.camera = this.SDCCore.Camera.default;
