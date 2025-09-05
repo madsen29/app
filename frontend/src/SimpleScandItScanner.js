@@ -122,8 +122,8 @@ export class SimpleScandItScanner {
 
   async stopScanning() {
     try {
-      if (this.barcodeBatch) {
-        this.barcodeBatch.isEnabled = false;
+      if (this.barcodeCapture) {
+        this.barcodeCapture.isEnabled = false;
       }
       
       if (this.camera) {
