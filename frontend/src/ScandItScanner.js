@@ -274,7 +274,7 @@ export class ScandItScanner {
       console.log('🧹 Disposing ScandIt resources...');
 
       if (this.camera) {
-        await this.camera.switchToDesiredState(SDCCore.FrameSourceState.Off);
+        await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.Off);
       }
 
       if (this.sparkScan) {
