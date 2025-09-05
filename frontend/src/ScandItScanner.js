@@ -192,7 +192,7 @@ export class ScandItScanner {
       };
 
       // Setup batch listener for automatic feedback
-      const feedback = SDCCore.Feedback.defaultFeedback;
+      const feedback = this.SDCCore.Feedback.defaultFeedback;
       this.barcodeBatch.addListener({
         didUpdateSession: (barcodeBatch, session) => {
           if (session.addedTrackedBarcodes.length > 0) {
