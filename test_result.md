@@ -202,10 +202,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Data Matrix Only Scanner Optimization"
+    - "ScandIt Professional Scanner Integration"
   stuck_tasks: []
   test_all: false
-  test_priority: "high_first"
+  test_priority: "critical_first"
 
 agent_communication:
   - agent: "main"
