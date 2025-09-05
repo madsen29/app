@@ -228,7 +228,7 @@ export class ScandItScanner {
         throw new Error('Camera not initialized');
       }
 
-      await this.camera.switchToDesiredState(SDCCore.FrameSourceState.On);
+      await this.camera.switchToDesiredState(this.SDCCore.FrameSourceState.On);
       
       if (this.sparkScan) {
         // SparkScan handles its own scanning lifecycle
