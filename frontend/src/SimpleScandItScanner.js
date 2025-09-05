@@ -64,8 +64,11 @@ export class SimpleScandItScanner {
       const settings = new this.SDCBarcode.BarcodeCaptureSettings();
       settings.enableSymbology(this.SDCBarcode.Symbology.DataMatrix);
 
-      // Create barcode capture
+      // Create barcode capture and ADD TO CONTEXT explicitly
       this.barcodeCapture = await this.SDCBarcode.BarcodeCapture.forContext(this.context, settings);
+      
+      // Explicitly add capture to context to ensure SDK knows about it
+      this.context.addMode(this.barcodeCapture);
 
       // Create view
       this.view = await this.SDCCore.DataCaptureView.forContext(this.context);
