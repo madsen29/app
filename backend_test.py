@@ -348,16 +348,16 @@ class BackendTester:
             if response.status_code == 200:
                 data = response.json()
                 
-                # Check key configuration fields (using snake_case as returned by API)
-                if (data.get("company_prefix") == "1234567" and 
-                    data.get("item_product_code") == "000000" and
-                    data.get("lot_number") == "LOT123" and
-                    data.get("expiration_date") == "2026-12-31"):
+                # Check key configuration fields (API returns camelCase)
+                if (data.get("companyPrefix") == "1234567" and 
+                    data.get("itemProductCode") == "000000" and
+                    data.get("lotNumber") == "LOT123" and
+                    data.get("expirationDate") == "2026-12-31"):
                     self.log_test("Configuration Creation", True, "Configuration created with review request parameters", 
-                                f"Company Prefix: {data.get('company_prefix')}, Lot: {data.get('lot_number')}")
+                                f"Company Prefix: {data.get('companyPrefix')}, Lot: {data.get('lotNumber')}")
                     return True
                 else:
-                    self.log_test("Configuration Creation", False, f"Configuration data mismatch: {data}")
+                    self.log_test("Configuration Creation", False, f"Configuration validation failed - expected fields not found correctly")
                     return False
             else:
                 self.log_test("Configuration Creation", False, f"HTTP {response.status_code}: {response.text}")
