@@ -184,7 +184,7 @@ export class ScandItScanner {
         
         didTapTrackedBarcode: (overlay, trackedBarcode) => {
           // Handle tapped barcodes
-          if (trackedBarcode.barcode.symbology === SDCBarcode.Symbology.DataMatrix) {
+          if (trackedBarcode.barcode.symbology === this.SDCBarcode.Symbology.DataMatrix) {
             console.log('👆 Tapped Data Matrix:', trackedBarcode.barcode.data);
             onScanCallback(trackedBarcode.barcode.data, 'batch');
           }
