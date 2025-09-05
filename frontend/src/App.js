@@ -4951,10 +4951,15 @@ function App() {
               </div>
               <div className="scanner-body">
                 <div className="camera-container">
-                  <video ref={videoRef} className="scanner-video" autoPlay muted playsInline></video>
+                  {/* ScandIt Scanner Container - replaces old video element */}
+                  <div ref={scannerContainerRef} className="scandit-scanner" style={{width: '100%', height: '100%'}}></div>
                   {isScanning && (
                     <div className="scanning-overlay">
                       <div className="scanning-frame"></div>
+                      <p className="scanning-text">Scanning for 2D Data Matrix codes only...</p>
+                      <p className="scanning-hint" style={{fontSize: '12px', opacity: 0.8, marginTop: '8px'}}>
+                        UPC, Code128, and other 1D barcodes will be ignored
+                      </p>
                     </div>
                   )}
                 </div>
