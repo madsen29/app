@@ -91,10 +91,10 @@ export class SimpleScandItScanner {
 
       console.log('🎬 Ultra Simple - Starting camera AND enabling capture...');
       
-      // Enable capture first  
+      // Enable capture first using proper API method
       console.log('📦 Enabling BarcodeCapture...');
-      this.scanner.barcodeCapture.isEnabled = true;
-      console.log('✅ BarcodeCapture enabled:', this.scanner.barcodeCapture.isEnabled);
+      await this.scanner.barcodeCapture.setEnabled(true);
+      console.log('✅ BarcodeCapture enabled:', this.scanner.barcodeCapture.isEnabled());
       
       // Now start camera for the first time
       console.log('📷 Starting camera for the first time...');
