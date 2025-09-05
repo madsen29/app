@@ -488,6 +488,28 @@ input:disabled {
   background: #000;
 }
 
+/* ScandIt Scanner Container */
+.scandit-scanner {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  border-radius: 8px;
+  /* Mobile optimizations for smooth scanning */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  /* Prevent flickering */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  /* Optimize for performance */
+  will-change: transform;
+  /* Smooth rendering */
+  image-rendering: optimizeQuality;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Legacy scanner video (kept for compatibility) */
 .scanner-video {
   width: 100%;
   height: 300px;
