@@ -9,7 +9,7 @@ export class SimpleScandItScanner {
     this.isInitialized = false;
     this.context = null;
     this.camera = null;
-    this.barcodeBatch = null;
+    this.barcodeCapture = null;
     this.view = null;
     this.onScanCallback = null;
     
