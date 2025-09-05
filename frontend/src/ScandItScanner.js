@@ -85,10 +85,10 @@ export class ScandItScanner {
       const settings = new this.SDCBarcode.SparkScanSettings();
       settings.enabledSymbologies = [this.SDCBarcode.Symbology.DataMatrix]; // Data Matrix ONLY
       settings.codeDuplicateFilter = 0; // Allow immediate re-scanning
-      settings.scanIntention = SDCBarcode.ScanIntention.Smart; // Smart scanning intention
+      settings.scanIntention = this.SDCBarcode.ScanIntention.Smart; // Smart scanning intention
 
       // Create SparkScan instance
-      this.sparkScan = await SDCBarcode.SparkScan.forSettings(settings);
+      this.sparkScan = await this.SDCBarcode.SparkScan.forSettings(settings);
 
       // Configure SparkScan view settings
       const viewSettings = new SDCBarcode.SparkScanViewSettings();
