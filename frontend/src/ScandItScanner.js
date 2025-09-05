@@ -170,7 +170,7 @@ export class ScandItScanner {
 
       // Create data capture view
       this.view = new this.SDCCore.DataCaptureView(this.context);
-      containerElement.appendChild(this.view.element);
+      this.view.connectToElement(containerElement);
 
       // Add batch overlay for visual feedback
       const overlay = new this.SDCBarcode.BarcodeBatchBasicOverlay(
