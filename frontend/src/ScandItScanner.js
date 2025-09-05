@@ -171,7 +171,7 @@ export class ScandItScanner {
       this.view.connectToElement(containerElement);
 
       // Add batch overlay for visual feedback
-      const overlay = new this.SDCBarcode.BarcodeBatchBasicOverlay(
+      const overlay = await this.SDCBarcode.BarcodeBatchBasicOverlay.withBarcodeBatchForView(
         this.barcodeBatch,
         this.view
       );
