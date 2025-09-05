@@ -2581,9 +2581,9 @@ function App() {
   };
 
   /**
-   * Start continuous scanning (batch mode)
+   * Start continuous ScandIt scanning (batch mode)
    */
-  const startContinuousScanning = async () => {
+  const startScandItContinuousScanning = async () => {
     // For ScandIt, continuous scanning is the same as regular scanning
     // The mode is determined by the scanning context
     await startScandItScanning();
