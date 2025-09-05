@@ -96,7 +96,7 @@ export class ScandItScanner {
 
       // Configure SparkScan view settings
       const viewSettings = new this.SDCBarcode.SparkScanViewSettings();
-      viewSettings.defaultScanningMode = this.SDCBarcode.SparkScanScanningModeTarget; // Precision scanning
+      // Remove the defaultScanningMode setting for now to avoid the copyWith error
       viewSettings.soundEnabled = true; // Built-in beep
       viewSettings.hapticEnabled = true; // Built-in haptic feedback
       viewSettings.cameraSwitchButtonVisible = false; // Hide camera switch
