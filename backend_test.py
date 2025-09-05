@@ -335,7 +335,293 @@ class BackendTester:
             self.log_test("Project Update", False, f"Request error: {str(e)}")
             return False
     
-    def test_review_request_specific_configuration(self):
+    def test_configuration_creation(self):
+        """Test configuration creation with review request parameters"""
+        if not self.test_project_id:
+            self.log_test("Configuration Creation", False, "No test project ID available")
+            return False
+            
+        # Review request configuration
+        config_data = {
+            "itemsPerCase": 2,
+            "casesPerSscc": 1,
+            "numberOfSscc": 1,
+            "useInnerCases": False,
+            "companyPrefix": "1234567",
+            "itemProductCode": "000000",
+            "caseProductCode": "000000",
+            "lotNumber": "LOT123",
+            "expirationDate": "2026-12-31",
+            "ssccExtensionDigit": "3",
+            "caseIndicatorDigit": "2",
+            "itemIndicatorDigit": "1",
+            # Business document information
+            "senderCompanyPrefix": "0345802",
+            "senderGln": "0345802000014",
+            "senderSgln": "0345802000014.001",
+            "receiverCompanyPrefix": "0567890",
+            "receiverGln": "0567890000021",
+            "receiverSgln": "0567890000021.001",
+            "shipperCompanyPrefix": "0999888",
+            "shipperGln": "0999888000028",
+            "shipperSgln": "0999888000028.001",
+            "shipperSameAsSender": False
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects/{self.test_project_id}/configuration",
+                json=config_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check key configuration fields
+                if (data.get("company_prefix") == "1234567" and 
+                    data.get("item_product_code") == "000000" and
+                    data.get("lot_number") == "LOT123" and
+                    data.get("expiration_date") == "2026-12-31"):
+                    self.log_test("Configuration Creation", True, "Configuration created with review request parameters", 
+                                f"Company Prefix: {data.get('company_prefix')}, Lot: {data.get('lot_number')}")
+                    return True
+                else:
+                    self.log_test("Configuration Creation", False, f"Configuration data mismatch: {data}")
+                    return False
+            else:
+                self.log_test("Configuration Creation", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Configuration Creation", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_configuration_retrieval(self):
+        """Test configuration retrieval from project"""
+        if not self.test_project_id:
+            self.log_test("Configuration Retrieval", False, "No test project ID available")
+            return False
+            
+        try:
+            response = self.session.get(f"{self.base_url}/projects/{self.test_project_id}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                config = data.get("configuration")
+                
+                if config:
+                    # Check that configuration contains expected fields
+                    expected_fields = ["company_prefix", "item_product_code", "lot_number", "expiration_date"]
+                    if all(field in config for field in expected_fields):
+                        self.log_test("Configuration Retrieval", True, "Configuration retrieved successfully", 
+                                    f"Fields present: {len(config)} configuration parameters")
+                        return True
+                    else:
+                        missing_fields = [field for field in expected_fields if field not in config]
+                        self.log_test("Configuration Retrieval", False, f"Missing configuration fields: {missing_fields}")
+                        return False
+                else:
+                    self.log_test("Configuration Retrieval", False, "No configuration found in project")
+                    return False
+            else:
+                self.log_test("Configuration Retrieval", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Configuration Retrieval", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_serial_numbers_creation(self):
+        """Test serial numbers creation with review request configuration"""
+        if not self.test_project_id:
+            self.log_test("Serial Numbers Creation", False, "No test project ID available")
+            return False
+            
+        # For review request config: 1 SSCC, 1 Case, 2 Items
+        serial_data = {
+            "ssccSerialNumbers": ["BASELINE_SSCC_001"],
+            "caseSerialNumbers": ["BASELINE_CASE_001"],
+            "innerCaseSerialNumbers": [],
+            "itemSerialNumbers": ["BASELINE_ITEM_001", "BASELINE_ITEM_002"]
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects/{self.test_project_id}/serial-numbers",
+                json=serial_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check serial number counts match configuration
+                if (len(data.get("sscc_serial_numbers", [])) == 1 and 
+                    len(data.get("case_serial_numbers", [])) == 1 and
+                    len(data.get("item_serial_numbers", [])) == 2):
+                    self.log_test("Serial Numbers Creation", True, "Serial numbers created with correct counts", 
+                                f"SSCC: {len(data['sscc_serial_numbers'])}, Cases: {len(data['case_serial_numbers'])}, Items: {len(data['item_serial_numbers'])}")
+                    return True
+                else:
+                    self.log_test("Serial Numbers Creation", False, f"Serial count mismatch: {data}")
+                    return False
+            else:
+                self.log_test("Serial Numbers Creation", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Serial Numbers Creation", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_serial_numbers_validation(self):
+        """Test serial numbers validation with incorrect counts"""
+        if not self.test_project_id:
+            self.log_test("Serial Numbers Validation", False, "No test project ID available")
+            return False
+            
+        # Test with wrong item count (should be 2, providing 3)
+        invalid_serial_data = {
+            "ssccSerialNumbers": ["BASELINE_SSCC_001"],
+            "caseSerialNumbers": ["BASELINE_CASE_001"],
+            "innerCaseSerialNumbers": [],
+            "itemSerialNumbers": ["ITEM_001", "ITEM_002", "ITEM_003"]  # Wrong count
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects/{self.test_project_id}/serial-numbers",
+                json=invalid_serial_data,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 400:
+                error_msg = response.json().get("detail", "")
+                if "Expected 2 item serial numbers" in error_msg:
+                    self.log_test("Serial Numbers Validation", True, "Validation correctly rejected wrong item count")
+                    return True
+                else:
+                    self.log_test("Serial Numbers Validation", False, f"Unexpected error message: {error_msg}")
+                    return False
+            else:
+                self.log_test("Serial Numbers Validation", False, f"Expected 400 error, got {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Serial Numbers Validation", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_epcis_generation(self):
+        """Test EPCIS XML generation with review request configuration"""
+        if not self.test_project_id:
+            self.log_test("EPCIS Generation", False, "No test project ID available")
+            return False
+            
+        epcis_request = {
+            "readPoint": "urn:epc:id:sgln:1234567.00000.0",
+            "bizLocation": "urn:epc:id:sgln:1234567.00001.0"
+        }
+        
+        try:
+            response = self.session.post(
+                f"{self.base_url}/projects/{self.test_project_id}/generate-epcis",
+                json=epcis_request,
+                headers={"Content-Type": "application/json"}
+            )
+            
+            if response.status_code == 200:
+                xml_content = response.text
+                
+                # Basic XML validation
+                try:
+                    root = ET.fromstring(xml_content)
+                    
+                    # Check for EPCISDocument root element
+                    if root.tag.endswith("EPCISDocument"):
+                        # Check for test serial numbers in XML
+                        if ("BASELINE_SSCC_001" in xml_content and 
+                            "BASELINE_CASE_001" in xml_content and
+                            "BASELINE_ITEM_001" in xml_content and
+                            "BASELINE_ITEM_002" in xml_content):
+                            
+                            # Check Content-Disposition header for filename
+                            content_disposition = response.headers.get("Content-Disposition", "")
+                            if "filename=" in content_disposition:
+                                self.log_test("EPCIS Generation", True, "EPCIS XML generated successfully with proper filename", 
+                                            f"Contains all test serials, Filename header: {content_disposition}")
+                                return True
+                            else:
+                                self.log_test("EPCIS Generation", False, "Missing Content-Disposition filename header")
+                                return False
+                        else:
+                            self.log_test("EPCIS Generation", False, "Test serial numbers not found in XML")
+                            return False
+                    else:
+                        self.log_test("EPCIS Generation", False, f"Invalid XML root element: {root.tag}")
+                        return False
+                        
+                except ET.ParseError as e:
+                    self.log_test("EPCIS Generation", False, f"Invalid XML generated: {str(e)}")
+                    return False
+            else:
+                self.log_test("EPCIS Generation", False, f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("EPCIS Generation", False, f"Request error: {str(e)}")
+            return False
+    
+    def test_error_handling_unauthorized(self):
+        """Test error handling for unauthorized access"""
+        # Temporarily remove auth header
+        original_auth = self.session.headers.get("Authorization")
+        if original_auth:
+            del self.session.headers["Authorization"]
+        
+        try:
+            response = self.session.get(f"{self.base_url}/projects")
+            
+            if response.status_code == 401:
+                self.log_test("Error Handling - Unauthorized", True, "Properly rejects unauthorized access")
+                success = True
+            else:
+                self.log_test("Error Handling - Unauthorized", False, f"Expected 401, got {response.status_code}")
+                success = False
+                
+        except Exception as e:
+            self.log_test("Error Handling - Unauthorized", False, f"Request error: {str(e)}")
+            success = False
+        finally:
+            # Restore auth header
+            if original_auth:
+                self.session.headers["Authorization"] = original_auth
+                
+        return success
+    
+    def test_complete_workflow(self):
+        """Test complete end-to-end workflow"""
+        workflow_steps = [
+            ("User Registration", self.test_user_registration),
+            ("User Login", self.test_user_login),
+            ("JWT Token Validation", self.test_jwt_token_validation),
+            ("Project Creation", self.test_project_creation),
+            ("Configuration Creation", self.test_configuration_creation),
+            ("Serial Numbers Creation", self.test_serial_numbers_creation),
+            ("EPCIS Generation", self.test_epcis_generation)
+        ]
+        
+        workflow_success = True
+        for step_name, step_function in workflow_steps:
+            if not step_function():
+                workflow_success = False
+                break
+        
+        if workflow_success:
+            self.log_test("Complete Workflow", True, "End-to-end workflow completed successfully")
+        else:
+            self.log_test("Complete Workflow", False, "Workflow failed at one or more steps")
+            
+        return workflow_success
         """Test configuration creation with review request specific parameters"""
         # Review request configuration: 1 SSCC, 2 Cases, 2 Inner Cases per Case, 3 Items per Inner Case
         # Company Prefix: 1234567, Package NDC: 45802-046-85
