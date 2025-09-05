@@ -7,10 +7,13 @@ import ScannerTest from './ScannerTest';
 const AppRouter = () => {
   // Simple routing based on URL path
   const isAdminPath = window.location.pathname.startsWith('/admin');
+  const isScannerTestPath = window.location.pathname.startsWith('/scanner-test');
 
   return (
     <>
-      {isAdminPath ? (
+      {isScannerTestPath ? (
+        <ScannerTest />
+      ) : isAdminPath ? (
         <Admin />
       ) : (
         <AuthProvider>
