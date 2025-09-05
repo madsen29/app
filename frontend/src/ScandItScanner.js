@@ -130,6 +130,9 @@ export class ScandItScanner {
       await this.camera.applySettings(cameraSettings);
       await this.context.setFrameSource(this.camera);
 
+      // Store the view for lifecycle management
+      this.view = sparkScanView;
+      
       this.currentMode = 'single';
       console.log('✅ SparkScan ready for Data Matrix scanning');
       
