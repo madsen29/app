@@ -105,11 +105,13 @@ export class ScandItScanner {
         viewSettings
       );
 
-      // Setup scan listener
+      // Setup scan listener - capture module reference for callback
+      const SDCBarcode = this.SDCBarcode;
+      
       this.sparkScan.addListener({
         didScan: (sparkScan, session) => {
           const barcode = session.newlyRecognizedBarcodes[0];
-          if (barcode && barcode.symbology === this.SDCBarcode.Symbology.DataMatrix) {
+          if (barcode && barcode.symbology === SDCBarcode.Symbology.DataMatrix) {
             console.log('✅ SparkScan detected Data Matrix:', barcode.data);
             onScanCallback(barcode.data, 'single');
           }
