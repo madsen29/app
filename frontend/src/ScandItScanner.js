@@ -154,7 +154,8 @@ export class ScandItScanner {
 
       // Configure batch settings for Data Matrix only
       const settings = new this.SDCBarcode.BarcodeBatchSettings();
-      settings.enableSymbology(this.SDCBarcode.Symbology.DataMatrix, true); // Enable Data Matrix ONLY
+      // Enable Data Matrix symbology - disable all others by default
+      settings.enableSymbology(this.SDCBarcode.Symbology.DataMatrix);
 
       // Create BarcodeBatch instance
       this.barcodeBatch = await this.SDCBarcode.BarcodeBatch.forContext(this.context, settings);
