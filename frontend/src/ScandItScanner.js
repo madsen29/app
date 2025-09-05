@@ -39,9 +39,9 @@ export class ScandItScanner {
         barcodeLoaded: !!this.SDCBarcode
       });
       
-      // Configure ScandIt with license key - using local npm package files
+      // Configure ScandIt with license key - using local files in public directory
       console.log('🔑 Configuring ScandIt with license key...');
-      const libraryLocation = new URL('node_modules/@scandit/web-datacapture-core/build/', document.baseURI).toString();
+      const libraryLocation = new URL('scandit-sdk/', document.baseURI).toString();
       console.log('📍 Library location:', libraryLocation);
       
       await this.SDCCore.configure({
