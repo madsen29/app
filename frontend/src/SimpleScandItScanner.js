@@ -68,28 +68,26 @@ export class SimpleScandItScanner {
       barcodeCapture.addListener({
         didScan: (barcodeCapture, session) => {
           console.log('📊 Ultra Simple - Barcode scanned!');
-          console.log('📊 Session object:', session);
           
-          // Check if newlyRecognizedBarcodes exists and has items
-          if (session && session.newlyRecognizedBarcodes && session.newlyRecognizedBarcodes.length > 0) {
-            session.newlyRecognizedBarcodes.forEach(barcode => {
-              console.log('🔍 Ultra Simple - Detected:', barcode.data, barcode.symbology);
-              
-              // Debouncing: prevent duplicate scans within 2 seconds of same data
-              const now = Date.now();
-              const isNewScan = (barcode.data !== lastScanData) || (now - lastScanTime > 2000);
-              
-              if (isNewScan && this.onScanCallback) {
-                console.log('✅ Processing new scan:', barcode.data);
-                lastScanTime = now;
-                lastScanData = barcode.data;
-                this.onScanCallback(barcode.data);
-              } else {
-                console.log('⏭️ Skipping duplicate scan:', barcode.data);
-              }
-            });
+          // Check for the correct property structure (singular barcode)
+          if (session && session._newlyRecognizedBarcode) {
+            const barcode = session._newlyRecognizedBarcode;
+            console.log('🔍 Ultra Simple - Detected:', barcode._data, barcode._symbology);
+            
+            // Debouncing: prevent duplicate scans within 2 seconds of same data
+            const now = Date.now();
+            const isNewScan = (barcode._data !== lastScanData) || (now - lastScanTime > 2000);
+            
+            if (isNewScan && this.onScanCallback) {
+              console.log('✅ Processing new scan:', barcode._data);
+              lastScanTime = now;
+              lastScanData = barcode._data;
+              this.onScanCallback(barcode._data);
+            } else {
+              console.log('⏭️ Skipping duplicate scan:', barcode._data);
+            }
           } else {
-            console.log('⚠️ No barcodes in session or session is invalid');
+            console.log('⚠️ No barcode in session:', session);
           }
         }
       });
