@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import axios from "axios";
-import { BrowserDatamatrixCodeReader } from '@zxing/browser';
-import { BarcodeFormat } from '@zxing/library';
 import { FiCamera, FiChevronRight, FiPackage, FiBox, FiFolder, FiFile, FiX, FiArrowLeft } from 'react-icons/fi';
 import { useAuth } from './AuthContext';
 import AuthWrapper from './AuthWrapper';
+
+// ScandIt Imports
+import * as SDCCore from '@scandit/web-datacapture-core';
+import * as SDCBarcode from '@scandit/web-datacapture-barcode';
 import ProjectDashboard from './ProjectDashboard';
 import LocationSelector from './LocationSelector';
 
