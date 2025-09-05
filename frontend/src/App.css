@@ -494,6 +494,9 @@ input:disabled {
   border-radius: 8px;
   overflow: hidden;
   background: #000;
+  height: 400px;
+  flex-shrink: 0;
+  margin-bottom: 1rem;
 }
 
 /* ScandIt Scanner Container */
