@@ -120,7 +120,7 @@ export class ScandItScanner {
       sparkScanView.connectToElement(containerElement);
       
       // Setup camera
-      const cameraSettings = SDCBarcode.SparkScan.recommendedCameraSettings;
+      const cameraSettings = this.SDCBarcode.SparkScan.recommendedCameraSettings;
       await this.camera.applySettings(cameraSettings);
       await this.context.setFrameSource(this.camera);
 
