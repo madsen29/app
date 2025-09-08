@@ -2584,7 +2584,6 @@ function App() {
   const initializeScandItScanner = async () => {
     try {
       if (!scandItScannerRef.current) {
-        console.log('🚀 Creating new working ScandIt scanner...');
         scandItScannerRef.current = new SimpleScandItScanner(SCANDIT_LICENSE_KEY);
       }
       return scandItScannerRef.current;
