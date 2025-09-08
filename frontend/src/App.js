@@ -4850,7 +4850,6 @@ function App() {
                 )}
               </div>
               <div className="scanner-footer">
-                <button className="btn-secondary" onClick={closeScanner}>Cancel</button>
                 {requiredItemCount > 1 && scannedItems.length > 0 && (
                   <button 
                     className="btn-primary ml-2" 
@@ -4867,6 +4866,7 @@ function App() {
                     Save {scannedItems.length} Items
                   </button>
                 )}
+                <button className="btn-secondary" onClick={closeScanner}>Cancel</button>
               </div>
             </div>
           </div>
