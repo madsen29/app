@@ -5,8 +5,6 @@
 
 export class SimpleScandItScanner {
   constructor(licenseKey) {
-    console.log('🔑 Scanner constructor - License key length:', licenseKey?.length);
-    console.log('🔑 Scanner constructor - License key preview:', licenseKey?.substring(0, 50) + '...');
     this.licenseKey = licenseKey;
     this.scanner = null;
     this.onScanCallback = null;
