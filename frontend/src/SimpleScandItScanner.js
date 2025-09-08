@@ -120,7 +120,6 @@ export class SimpleScandItScanner {
         this.scanner.context.dispose();
         this.scanner = null;
       }
-      console.log('🧹 Ultra Simple - Scanner disposed');
     } catch (error) {
       console.error('❌ Ultra Simple - Failed to dispose:', error);
     }
