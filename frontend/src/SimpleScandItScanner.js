@@ -36,14 +36,12 @@ export class SimpleScandItScanner {
       // Create BarcodeCapture
       const barcodeCapture = await SDCBarcode.BarcodeCapture.forContext(context, settings);
       
-      // CRITICAL: Add capture mode to context (this was the missing step!)
+      // Add capture mode to context
       context.addMode(barcodeCapture);
-      console.log('✅ BarcodeCapture mode added to context');
       
-      // Setup camera AFTER BarcodeCapture is created (but don't start it yet)
+      // Setup camera
       const camera = SDCCore.Camera.default;
       await context.setFrameSource(camera);
-      console.log('📷 Camera configured as frame source (not started yet)');
       
       // Create view
       const view = await SDCCore.DataCaptureView.forContext(context);
