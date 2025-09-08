@@ -2504,12 +2504,8 @@ function App() {
    */
   const parseGS1DataMatrix = (scannedData) => {
     try {
-      console.log('🔍 Parsing GS1 Data Matrix - Raw:', scannedData);
-      console.log('🔍 Raw bytes:', Array.from(scannedData).map(c => c.charCodeAt(0)));
-      
       // Replace Group Separator character (ASCII 29) with pipe for visibility
       const cleanData = scannedData.replace(/\x1D/g, '|GS|');
-      console.log('📋 Cleaned data:', cleanData);
       
       let parsedData = {
         gtin: null,
@@ -2524,13 +2520,10 @@ function App() {
       let position = 0;
       let dataString = scannedData;
       
-      console.log('🔍 Starting GS1 parsing...');
-      
       // Extract GTIN (AI 01) - always 14 digits
       if (dataString.startsWith('01')) {
-        parsedData.gtin = dataString.substring(2, 16); // positions 2-15 (14 digits)
+        parsedData.gtin = dataString.substring(2, 16); 
         position = 16;
-        console.log('📋 GTIN (01):', parsedData.gtin);
       }
       
       // Extract Serial Number (AI 21) - variable length until next AI or GS
@@ -2549,30 +2542,24 @@ function App() {
         }
         parsedData.serialNumber = dataString.substring(position, endPos);
         position = endPos;
-        console.log('📋 Serial Number (21):', parsedData.serialNumber);
       }
       
       // Skip Group Separator if present
       if (dataString.charAt(position) === '\x1D') {
         position++;
-        console.log('📋 Skipped Group Separator at position:', position);
       }
       
       // Extract Expiration Date (AI 17) - 6 digits YYMMDD
       if (dataString.substring(position, position + 2) === '17') {
         parsedData.expirationDate = dataString.substring(position + 2, position + 8);
         position += 8;
-        console.log('📋 Expiration Date (17):', parsedData.expirationDate);
       }
       
       // Extract Lot/Batch Number (AI 10) - variable length
       if (dataString.substring(position, position + 2) === '10') {
         position += 2; // skip AI
         parsedData.lotNumber = dataString.substring(position); // rest of string
-        console.log('📋 Lot Number (10):', parsedData.lotNumber);
       }
-      
-      console.log('📊 Final parsed GS1 data:', parsedData);
       
       return parsedData;
       
