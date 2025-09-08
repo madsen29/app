@@ -2628,7 +2628,6 @@ function App() {
         throw new Error('Scanner container not available');
       }
 
-      console.log('📱 Starting working ScandIt Data Matrix scanner...');
       const scanner = await initializeScandItScanner();
       
       // Initialize scanner with GS1 parsing callback
@@ -2644,7 +2643,6 @@ function App() {
       });
 
       await scanner.startScanning();
-      console.log('✅ Working ScandIt scanner started successfully');
 
     } catch (error) {
       console.error('❌ Failed to start working ScandIt scanner:', error);
