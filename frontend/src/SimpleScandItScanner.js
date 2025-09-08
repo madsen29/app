@@ -75,8 +75,6 @@ export class SimpleScandItScanner {
 
       // Store references
       this.scanner = { barcodeCapture, camera, view, context };
-      
-      console.log('✅ Ultra Simple Scanner created');
       return true;
 
     } catch (error) {
