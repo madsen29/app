@@ -12,26 +12,19 @@ export class SimpleScandItScanner {
 
   async createScanner(containerElement, onScanCallback) {
     try {
-      console.log('🚀 Creating Ultra Simple ScandIt Scanner...');
       this.onScanCallback = onScanCallback;
 
       // Import ScandIt modules
       const SDCCore = await import('@scandit/web-datacapture-core');
       const SDCBarcode = await import('@scandit/web-datacapture-barcode');
       
-      // Configure ScandIt with local files (back to working approach)
-      console.log('📁 Using local library files...');
-      console.log('🌐 Current domain:', window.location.hostname);
-      console.log('🔑 License key preview:', this.licenseKey.substring(0, 30) + '...' + this.licenseKey.substring(this.licenseKey.length - 10));
-      
+      // Configure ScandIt 
       const libraryLocation = new URL('scandit-sdk/', document.baseURI).toString();
       await SDCCore.configure({
         licenseKey: this.licenseKey,
         libraryLocation: libraryLocation,
         moduleLoaders: [SDCBarcode.barcodeCaptureLoader()]
       });
-
-      console.log('✅ ScandIt configured');
 
       // Create context
       const context = await SDCCore.DataCaptureContext.create();
