@@ -2633,16 +2633,12 @@ function App() {
       
       // Initialize scanner with GS1 parsing callback
       await scanner.createScanner(scannerContainerRef.current, (scannedData) => {
-        console.log('📱 ScandIt scan detected:', scannedData);
-        
         // Parse GS1 Data Matrix to extract serial number
         const parsedData = parseGS1DataMatrix(scannedData);
         
         if (parsedData.serialNumber) {
-          console.log('✅ Serial number extracted:', parsedData.serialNumber);
           handleScandItScan(parsedData.serialNumber, 'single');
         } else {
-          console.log('⚠️ No serial number found, using raw data:', scannedData);
           handleScandItScan(scannedData, 'single');
         }
       });
