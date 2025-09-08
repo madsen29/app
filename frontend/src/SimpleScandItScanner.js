@@ -56,27 +56,19 @@ export class SimpleScandItScanner {
       
       barcodeCapture.addListener({
         didScan: (barcodeCapture, session) => {
-          console.log('📊 Ultra Simple - Barcode scanned!');
-          
           // Check for the correct property structure (singular barcode)
           if (session && session._newlyRecognizedBarcode) {
             const barcode = session._newlyRecognizedBarcode;
-            console.log('🔍 Ultra Simple - Detected:', barcode._data, barcode._symbology);
             
             // Debouncing: prevent duplicate scans within 2 seconds of same data
             const now = Date.now();
             const isNewScan = (barcode._data !== lastScanData) || (now - lastScanTime > 2000);
             
             if (isNewScan && this.onScanCallback) {
-              console.log('✅ Processing new scan:', barcode._data);
               lastScanTime = now;
               lastScanData = barcode._data;
               this.onScanCallback(barcode._data);
-            } else {
-              console.log('⏭️ Skipping duplicate scan:', barcode._data);
             }
-          } else {
-            console.log('⚠️ No barcode in session:', session);
           }
         }
       });
