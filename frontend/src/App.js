@@ -416,6 +416,9 @@ function App() {
     if (project.configuration) {
       const config = project.configuration;
       console.log('Loading project configuration:', config);
+      console.log('casesPerSscc value from DB:', config.casesPerSscc, 'type:', typeof config.casesPerSscc);
+      console.log('cases_per_sscc value from DB:', config.cases_per_sscc, 'type:', typeof config.cases_per_sscc);
+      
       setConfiguration({
         itemsPerCase: getNumericConfigValue(config, 'itemsPerCase', 'items_per_case', ''),
         casesPerSscc: getNumericConfigValue(config, 'casesPerSscc', 'cases_per_sscc', ''),
