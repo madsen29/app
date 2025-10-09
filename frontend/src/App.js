@@ -661,6 +661,7 @@ function App() {
 
       // Save configuration if we're on step 1 or beyond
       if (currentStep >= 1) {
+        console.log('Saving configuration - casesPerSscc:', configuration.casesPerSscc, 'type:', typeof configuration.casesPerSscc);
         updateData.configuration = {
           itemsPerCase: configuration.itemsPerCase,
           casesPerSscc: configuration.casesPerSscc,
