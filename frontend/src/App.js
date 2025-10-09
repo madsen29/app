@@ -3761,7 +3761,11 @@ function App() {
                   min="1"
                   max="100000000"
                   value={configuration.itemsPerCase}
-                  onChange={(e) => setConfiguration({...configuration, itemsPerCase: e.target.value ? parseInt(e.target.value) : ''})}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const parsedValue = value === '' ? '' : parseInt(value);
+                    setConfiguration({...configuration, itemsPerCase: isNaN(parsedValue) ? '' : parsedValue});
+                  }}
                   disabled={isPackagingConfigLocked}
                   placeholder="e.g., 10"
                   required
@@ -3824,7 +3828,11 @@ function App() {
                   min="1"
                   max="100"
                   value={configuration.itemsPerCase}
-                  onChange={(e) => setConfiguration({...configuration, itemsPerCase: e.target.value ? parseInt(e.target.value) : ''})}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const parsedValue = value === '' ? '' : parseInt(value);
+                    setConfiguration({...configuration, itemsPerCase: isNaN(parsedValue) ? '' : parsedValue});
+                  }}
                   disabled={isPackagingConfigLocked}
                   placeholder="e.g., 10"
                   required
