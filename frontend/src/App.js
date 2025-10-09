@@ -3699,7 +3699,11 @@ function App() {
                 onChange={(e) =>
                   setConfiguration({
                     ...configuration,
-                    numberOfSscc: e.target.value ? parseInt(e.target.value) : ''
+                    numberOfSscc: (() => {
+                      const value = e.target.value;
+                      const parsedValue = value === '' ? '' : parseInt(value);
+                      return isNaN(parsedValue) ? '' : parsedValue;
+                    })()
                   })
                 }
                 disabled={isPackagingConfigLocked}
