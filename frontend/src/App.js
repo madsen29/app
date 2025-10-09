@@ -3808,7 +3808,11 @@ function App() {
                     min="1"
                     max="100000"
                     value={configuration.itemsPerInnerCase}
-                    onChange={(e) => setConfiguration({...configuration, itemsPerInnerCase: e.target.value ? parseInt(e.target.value) : ''})}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const parsedValue = value === '' ? '' : parseInt(value);
+                      setConfiguration({...configuration, itemsPerInnerCase: isNaN(parsedValue) ? '' : parsedValue});
+                    }}
                     disabled={isPackagingConfigLocked}
                     placeholder="e.g., 5"
                     required
