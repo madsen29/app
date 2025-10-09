@@ -407,7 +407,9 @@ function App() {
     // Helper function to get numeric configuration value
     const getNumericConfigValue = (config, camelKey, snakeKey, defaultValue) => {
       const value = config[camelKey] || config[snakeKey] || defaultValue;
-      return parseInt(value) || defaultValue;
+      const parsed = parseInt(value);
+      // Return parsed value if it's a valid number (including 0), otherwise return defaultValue
+      return !isNaN(parsed) ? parsed : defaultValue;
     };
     
     // Load project configuration
