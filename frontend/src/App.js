@@ -401,7 +401,14 @@ function App() {
     
     // Helper function to get configuration value (handles both camelCase and snake_case)
     const getConfigValue = (config, camelKey, snakeKey, defaultValue) => {
-      return config[camelKey] || config[snakeKey] || defaultValue;
+      // Properly handle falsy values by checking for undefined/null instead of using ||
+      if (config[camelKey] !== undefined && config[camelKey] !== null) {
+        return config[camelKey];
+      } else if (config[snakeKey] !== undefined && config[snakeKey] !== null) {
+        return config[snakeKey];
+      } else {
+        return defaultValue;
+      }
     };
     
     // Helper function to get numeric configuration value
