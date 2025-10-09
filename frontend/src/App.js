@@ -406,9 +406,17 @@ function App() {
     
     // Helper function to get numeric configuration value
     const getNumericConfigValue = (config, camelKey, snakeKey, defaultValue) => {
-      const value = config[camelKey] || config[snakeKey] || defaultValue;
+      // Properly handle 0 values by checking for undefined/null instead of using ||
+      let value;
+      if (config[camelKey] !== undefined && config[camelKey] !== null) {
+        value = config[camelKey];
+      } else if (config[snakeKey] !== undefined && config[snakeKey] !== null) {
+        value = config[snakeKey];
+      } else {
+        value = defaultValue;
+      }
+      
       const parsed = parseInt(value);
-      console.log(`getNumericConfigValue(${camelKey}): value=${value}, parsed=${parsed}, defaultValue=${defaultValue}, result=${!isNaN(parsed) ? parsed : defaultValue}`);
       // Return parsed value if it's a valid number (including 0), otherwise return defaultValue
       return !isNaN(parsed) ? parsed : defaultValue;
     };
