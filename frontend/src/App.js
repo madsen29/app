@@ -408,6 +408,7 @@ function App() {
     const getNumericConfigValue = (config, camelKey, snakeKey, defaultValue) => {
       const value = config[camelKey] || config[snakeKey] || defaultValue;
       const parsed = parseInt(value);
+      console.log(`getNumericConfigValue(${camelKey}): value=${value}, parsed=${parsed}, defaultValue=${defaultValue}, result=${!isNaN(parsed) ? parsed : defaultValue}`);
       // Return parsed value if it's a valid number (including 0), otherwise return defaultValue
       return !isNaN(parsed) ? parsed : defaultValue;
     };
