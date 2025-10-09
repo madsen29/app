@@ -3717,7 +3717,11 @@ function App() {
                 min="0"
                 max="500000"
                 value={configuration.casesPerSscc}
-                onChange={(e) => setConfiguration({...configuration, casesPerSscc: e.target.value ? parseInt(e.target.value) : ''})}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const parsedValue = value === '' ? '' : parseInt(value);
+                  setConfiguration({...configuration, casesPerSscc: isNaN(parsedValue) ? '' : parsedValue});
+                }}
                 disabled={isPackagingConfigLocked}
                 placeholder="e.g., 5 (or 0 for direct SSCC → Items)"
                 required
