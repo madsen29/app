@@ -2745,7 +2745,7 @@ function App() {
         }
       } else {
         // Direct SSCC → Items
-        const itemsPerSSCC = configuration.itemsPerCase;
+        const itemsPerSSCC = activeProduct.itemsPerCase;
         if (nextItemIndex < itemsPerSSCC) {
           // More items in this SSCC
           return {
