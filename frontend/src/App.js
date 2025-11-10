@@ -1139,24 +1139,12 @@ function App() {
       
       setConfigurationId(response.data.id);
       
-      // Also save the complete configuration to the project for persistence
+      // Also save the complete configuration to the project for persistence (multi-product format)
       await axios.put(`${API}/projects/${currentProject.id}`, {
         configuration: {
-          itemsPerCase: configuration.itemsPerCase,
-          casesPerSscc: configuration.casesPerSscc,
-          numberOfSscc: configuration.numberOfSscc,
-          useInnerCases: configuration.useInnerCases,
-          innerCasesPerCase: configuration.innerCasesPerCase,
-          itemsPerInnerCase: configuration.itemsPerInnerCase,
-          companyPrefix: configuration.companyPrefix,
-          productCode: configuration.productCode,
-          lotNumber: configuration.lotNumber,
-          expirationDate: configuration.expirationDate,
-          ssccExtensionDigit: configuration.ssccExtensionDigit,
-          caseIndicatorDigit: configuration.caseIndicatorDigit,
-          innerCaseIndicatorDigit: configuration.innerCaseIndicatorDigit,
-          itemIndicatorDigit: configuration.itemIndicatorDigit,
-          // Business Document Information
+          // Multi-product array
+          products: products,
+          // Business Document Information (shared across products)
           senderCompanyPrefix: configuration.senderCompanyPrefix,
           senderGln: configuration.senderGln,
           senderSgln: configuration.senderSgln,
@@ -1186,15 +1174,7 @@ function App() {
           shipperState: configuration.shipperState,
           shipperPostalCode: configuration.shipperPostalCode,
           shipperCountryCode: configuration.shipperCountryCode,
-          shipperSameAsSender: configuration.shipperSameAsSender,
-          // EPCClass data
-          productNdc: configuration.productNdc,
-          packageNdc: configuration.packageNdc,
-          regulatedProductName: configuration.regulatedProductName,
-          manufacturerName: configuration.manufacturerName,
-          dosageFormType: configuration.dosageFormType,
-          strengthDescription: configuration.strengthDescription,
-          netContentDescription: configuration.netContentDescription
+          shipperSameAsSender: configuration.shipperSameAsSender
         },
         current_step: 2,
         updated_at: new Date().toISOString()
