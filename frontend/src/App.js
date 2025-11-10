@@ -2499,8 +2499,9 @@ function App() {
   const calculateNextStep = (itemsToSkip = 0) => {
     const current = serialCollectionStep;
     // Use active serial product's totals, not global configuration
-    const totals = calculateCurrentProductTotals(activeSerialProductIndex);
-    const activeProduct = products[activeSerialProductIndex];
+    // Fall back to global configuration if products aren't loaded yet
+    const activeProduct = (products && products[activeSerialProductIndex]) ? products[activeSerialProductIndex] : configuration;
+    const totals = (products && products[activeSerialProductIndex]) ? calculateCurrentProductTotals(activeSerialProductIndex) : calculateTotals();
     
     // Helper function to find next unfinished item index
     const findNextItemIndex = (ssccIndex, caseIndex, innerCaseIndex) => {
