@@ -699,26 +699,48 @@ function App() {
     }
     
     // Load existing serial numbers if available
-    if (project.serial_numbers) {
+    // Try to load per-product serials first, fall back to legacy format
+    if (project.product_serials && Array.isArray(project.product_serials)) {
+      // New per-product format
+      setProductSerials(project.product_serials);
+      
+      // Load serials for the first/active product
+      const firstProductSerial = project.product_serials[0];
+      if (firstProductSerial) {
+        setHierarchicalSerials(firstProductSerial.hierarchicalSerials);
+        setActiveSerialProductIndex(firstProductSerial.productIndex || 0);
+        
+        // Restore serial collection step state
+        if ((project.status === 'Completed' || project.current_step === 2) && project.configuration) {
+          const currentPosition = findCurrentSerialPosition(
+            firstProductSerial.hierarchicalSerials,
+            project.configuration
+          );
+          setSerialCollectionStep({
+            ...currentPosition,
+            currentSerial: '',
+            isComplete: currentPosition.isComplete || project.status === 'Completed'
+          });
+        }
+      }
+    } else if (project.serial_numbers) {
+      // Legacy format - convert to per-product structure
+      const legacyProductSerial = {
+        productId: products[0]?.id || 'legacy-product',
+        productIndex: 0,
+        hierarchicalSerials: project.serial_numbers
+      };
+      setProductSerials([legacyProductSerial]);
       setHierarchicalSerials(project.serial_numbers);
       
       // For completed projects or projects on step 2, restore the serial collection step state
       if ((project.status === 'Completed' || project.current_step === 2) && project.configuration) {
-        // Find the current position in the serial collection
         const currentPosition = findCurrentSerialPosition(project.serial_numbers, project.configuration);
-        if (currentPosition.isComplete || project.status === 'Completed') {
-          // For completed projects, always set serial collection as complete
-          setSerialCollectionStep({
-            ...currentPosition,
-            isComplete: true
-          });
-        } else {
-          setSerialCollectionStep({
-            ...currentPosition,
-            currentSerial: '',
-            isComplete: false
-          });
-        }
+        setSerialCollectionStep({
+          ...currentPosition,
+          currentSerial: '',
+          isComplete: currentPosition.isComplete || project.status === 'Completed'
+        });
       }
     } else if (project.configuration && project.current_step >= 2) {
       // Initialize hierarchical serials if we're on step 2 or beyond but don't have saved serial numbers
