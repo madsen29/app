@@ -1330,6 +1330,8 @@ def generate_product_events(event_list, get_next_timestamp, read_point, biz_loca
     inner_case_epcs = [f"urn:epc:id:sgtin:{company_prefix}.{inner_case_indicator_digit}{inner_case_product_code}.{s}" for s in inner_case_serials if s] if use_inner_cases and not direct_sscc_items else []
     item_epcs = [f"urn:epc:id:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}.{s}" for s in item_serials if s]
     
+    print(f"  EPC Generation: {len(item_epcs)} item EPCs created from {len(item_serials)} serials")
+    
     # 1. Single Commissioning Event for All Items
     if item_epcs:
         object_event = ET.SubElement(event_list, "ObjectEvent")
