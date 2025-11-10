@@ -823,6 +823,10 @@ async def generate_epcis(project_id: str, request: EPCISGenerationRequest, curre
     product_serials = project.get("product_serials")
     serial_numbers = project.get("serial_numbers")
     
+    print(f"DEBUG EPCIS Endpoint: project has product_serials={product_serials is not None}, serial_numbers={serial_numbers is not None}")
+    if product_serials:
+        print(f"DEBUG: product_serials type={type(product_serials)}, length={len(product_serials) if isinstance(product_serials, list) else 'not list'}")
+    
     if not product_serials and not serial_numbers:
         raise HTTPException(status_code=400, detail="Project serial numbers not found")
     
