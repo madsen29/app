@@ -4813,9 +4813,9 @@ function App() {
             <div className="current-product-info">
               <div className="product-info-item">
                 <strong>Hierarchy:</strong> {products[activeSerialProductIndex].numberOfSscc} SSCC
-                {products[activeSerialProductIndex].casesPerSscc > 0 && ` → ${calculateCurrentProductTotals().totalCases} Cases`}
-                {products[activeSerialProductIndex].useInnerCases && ` → ${calculateCurrentProductTotals().totalInnerCases} Inner Cases`}
-                {` → ${calculateCurrentProductTotals().totalItems} Items`}
+                {products[activeSerialProductIndex].casesPerSscc > 0 && ` → ${calculateCurrentProductTotals(activeSerialProductIndex).totalCases} Cases`}
+                {products[activeSerialProductIndex].useInnerCases && ` → ${calculateCurrentProductTotals(activeSerialProductIndex).totalInnerCases} Inner Cases`}
+                {` → ${calculateCurrentProductTotals(activeSerialProductIndex).totalItems} Items`}
               </div>
             </div>
           </div>
