@@ -3920,7 +3920,7 @@ function App() {
         </div>
 
         <div className="inner-case-section">
-          <h3>Packaging Configuration {isPackagingConfigLocked && <span className="locked-indicator">(Locked - Serial Numbers Entered)</span>}</h3>
+          <h3>Packaging Configuration (Product {activeProductIndex + 1}) {isPackagingConfigLocked && <span className="locked-indicator">(Locked - Serial Numbers Entered)</span>}</h3>
           <div className="form-grid">
             <div className="form-group">
               <label htmlFor="numberOfSscc">Number of SSCCs:</label>
@@ -3931,17 +3931,14 @@ function App() {
                 pattern="[0-9]*"
                 min="1"
                 max="20"
-                value={configuration.numberOfSscc}
-                onChange={(e) =>
-                  setConfiguration({
-                    ...configuration,
-                    numberOfSscc: (() => {
-                      const value = e.target.value;
-                      const parsedValue = value === '' ? '' : parseInt(value);
-                      return isNaN(parsedValue) ? '' : parsedValue;
-                    })()
-                  })
-                }
+                value={getCurrentProduct().numberOfSscc}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const parsedValue = value === '' ? '' : parseInt(value);
+                  updateCurrentProduct({
+                    numberOfSscc: isNaN(parsedValue) ? '' : parsedValue
+                  });
+                }}
                 disabled={isPackagingConfigLocked}
                 placeholder="e.g., 1"
                 required
@@ -3956,11 +3953,11 @@ function App() {
                 pattern="[0-9]*"
                 min="0"
                 max="500000"
-                value={configuration.casesPerSscc}
+                value={getCurrentProduct().casesPerSscc}
                 onChange={(e) => {
                   const value = e.target.value;
                   const parsedValue = value === '' ? '' : parseInt(value);
-                  setConfiguration({...configuration, casesPerSscc: isNaN(parsedValue) ? '' : parsedValue});
+                  updateCurrentProduct({casesPerSscc: isNaN(parsedValue) ? '' : parsedValue});
                 }}
                 disabled={isPackagingConfigLocked}
                 placeholder="e.g., 5 (or 0 for direct SSCC → Items)"
