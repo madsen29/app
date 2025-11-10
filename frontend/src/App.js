@@ -2921,6 +2921,65 @@ function App() {
     setHierarchicalSerials(newSerials);
   };
   
+  // Check if ALL products have complete serial numbers
+  const areAllProductsComplete = () => {
+    if (products.length === 0) return false;
+    
+    for (let i = 0; i < products.length; i++) {
+      const product = products[i];
+      const productSerial = productSerials.find(ps => ps.productIndex === i);
+      
+      // Check if product has serials
+      if (!productSerial || !productSerial.hierarchicalSerials || productSerial.hierarchicalSerials.length === 0) {
+        return false;
+      }
+      
+      // Check if all serials are filled for this product
+      const serials = productSerial.hierarchicalSerials;
+      
+      for (const sscc of serials) {
+        if (!sscc.ssccSerial || !sscc.ssccSerial.trim()) {
+          return false;
+        }
+        
+        if (sscc.cases && sscc.cases.length > 0) {
+          for (const caseData of sscc.cases) {
+            if (!caseData.caseSerial || !caseData.caseSerial.trim()) {
+              return false;
+            }
+            
+            if (caseData.innerCases && caseData.innerCases.length > 0) {
+              for (const innerCase of caseData.innerCases) {
+                if (!innerCase.innerCaseSerial || !innerCase.innerCaseSerial.trim()) {
+                  return false;
+                }
+                for (const item of innerCase.items) {
+                  if (!item.itemSerial || !item.itemSerial.trim()) {
+                    return false;
+                  }
+                }
+              }
+            } else {
+              for (const item of caseData.items) {
+                if (!item.itemSerial || !item.itemSerial.trim()) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else if (sscc.items) {
+          for (const item of sscc.items) {
+            if (!item.itemSerial || !item.itemSerial.trim()) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+    
+    return true;
+  };
+  
   // Add new product
   const addProduct = () => {
     const newProduct = {
