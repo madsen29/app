@@ -4786,6 +4786,17 @@ function App() {
   };
 
   const renderStep2 = () => {
+    // Ensure hierarchical serials are initialized for current product
+    // This happens when user first enters Step 2 or when switching products
+    if (!hierarchicalSerials || hierarchicalSerials.length === 0) {
+      const activeProduct = products[activeSerialProductIndex];
+      if (activeProduct && activeProduct.numberOfSscc) {
+        console.log('Initializing hierarchical serials for active product:', activeSerialProductIndex);
+        initializeHierarchicalSerials(activeProduct);
+        return null; // Return early to allow re-render with initialized serials
+      }
+    }
+    
     // Re-initialize hierarchical serials ONLY for completed projects with missing data
     // Do NOT interfere with new projects or projects in progress
     if (currentProject && 
