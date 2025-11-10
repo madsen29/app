@@ -2433,6 +2433,24 @@ function App() {
       
       // Move to next step, accounting for multiple serials added
       const nextStep = calculateNextStep(serialLines.length - 1);
+      
+      // CRITICAL: If this product is now complete, save it to productSerials immediately
+      if (nextStep.isComplete) {
+        const updatedProductSerials = [...productSerials];
+        const existingIndex = updatedProductSerials.findIndex(ps => ps.productIndex === activeSerialProductIndex);
+        const currentProductSerial = {
+          productId: products[activeSerialProductIndex]?.id,
+          productIndex: activeSerialProductIndex,
+          hierarchicalSerials: updatedSerials
+        };
+        if (existingIndex >= 0) {
+          updatedProductSerials[existingIndex] = currentProductSerial;
+        } else {
+          updatedProductSerials.push(currentProductSerial);
+        }
+        setProductSerials(updatedProductSerials);
+      }
+      
       setSerialCollectionStep({
         ...nextStep,
         // Only clear serial when transitioning FROM item level to new containers
