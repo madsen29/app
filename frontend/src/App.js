@@ -2560,7 +2560,7 @@ function App() {
         const completedCount = allSerials.length;
         
         // If all items exist, start editing from index 0. Otherwise, continue from where left off
-        const allItemsExist = completedCount === configuration.itemsPerCase;
+        const allItemsExist = completedCount === activeProduct.itemsPerCase;
         const itemIndex = allItemsExist ? 0 : completedCount;
         
         return {
@@ -2611,7 +2611,7 @@ function App() {
         const completedCount = allSerials.length;
         
         // If all items exist, start editing from index 0. Otherwise, continue from where left off
-        const allItemsExist = completedCount === configuration.itemsPerCase;
+        const allItemsExist = completedCount === activeProduct.itemsPerCase;
         const itemIndex = allItemsExist ? 0 : completedCount;
         
         return {
