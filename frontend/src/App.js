@@ -2755,7 +2755,7 @@ function App() {
         } else {
           // Move to next SSCC
           const nextSSCCIndex = current.ssccIndex + 1;
-          if (nextSSCCIndex < configuration.numberOfSscc) {
+          if (nextSSCCIndex < activeProduct.numberOfSscc) {
             return {
               ...current,
               ssccIndex: nextSSCCIndex,
