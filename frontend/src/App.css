@@ -867,6 +867,67 @@ input:disabled {
   padding-bottom: 0.5rem;
 }
 
+/* Multi-Product Interface Styles */
+.product-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.product-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #e2e8f0;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #4a5568;
+  transition: all 0.2s;
+}
+
+.product-tab:hover {
+  background: #cbd5e0;
+  border-color: #a0aec0;
+}
+
+.product-tab.active {
+  background: #3182ce;
+  border-color: #2c5282;
+  color: white;
+}
+
+.remove-product-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  color: inherit;
+  transition: background 0.2s;
+}
+
+.remove-product-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.current-product-form {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
 .input-with-button {
   display: flex;
   gap: 0.5rem;
