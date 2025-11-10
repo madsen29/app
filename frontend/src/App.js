@@ -945,17 +945,34 @@ function App() {
       // Save serial numbers if we're on step 2 or beyond
       // Store per-product serials in new format
       if (currentStep >= 2) {
-        // Save current product's serials before storing
+        // Build updated product_serials array with current active product
+        let updatedProductSerials = [...productSerials];
+        
         if (hierarchicalSerials && hierarchicalSerials.length > 0) {
-          setActiveProductSerials(hierarchicalSerials);
+          // Update or add current product's serials
+          const existingIndex = updatedProductSerials.findIndex(
+            ps => ps.productIndex === activeSerialProductIndex
+          );
+          
+          const newProductSerial = {
+            productId: products[activeSerialProductIndex]?.id,
+            productIndex: activeSerialProductIndex,
+            hierarchicalSerials: hierarchicalSerials
+          };
+          
+          if (existingIndex >= 0) {
+            updatedProductSerials[existingIndex] = newProductSerial;
+          } else {
+            updatedProductSerials.push(newProductSerial);
+          }
         }
         
         // Store per-product serials
-        updateData.product_serials = productSerials;
+        updateData.product_serials = updatedProductSerials;
         
         // For backward compatibility, also store first product's serials in old format
-        if (productSerials.length > 0) {
-          updateData.serial_numbers = productSerials[0].hierarchicalSerials;
+        if (updatedProductSerials.length > 0) {
+          updateData.serial_numbers = updatedProductSerials[0].hierarchicalSerials;
         }
       }
 
