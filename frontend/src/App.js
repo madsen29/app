@@ -1423,6 +1423,16 @@ function App() {
         initializeHierarchicalSerials(configuration);
       }
       
+      // CRITICAL: Sync configuration with first product before entering Step 2
+      // This ensures the serial collection UI shows the correct hierarchy
+      setConfiguration({
+        ...configuration,
+        ...products[0]  // Merge first product's packaging config into configuration
+      });
+      
+      // Set active serial product to first product
+      setActiveSerialProductIndex(0);
+      
       // Navigate to step 2
       setCurrentStep(2);
       
