@@ -1419,6 +1419,88 @@ function App() {
       return;
     }
     
+    // CRITICAL: Save current product's serials before validation
+    if (hierarchicalSerials && hierarchicalSerials.length > 0) {
+      setActiveProductSerials(hierarchicalSerials);
+    }
+    
+    // CRITICAL: Validate that ALL products have complete serial numbers
+    const incompleteProducts = [];
+    
+    for (let i = 0; i < products.length; i++) {
+      const product = products[i];
+      const productSerial = productSerials.find(ps => ps.productIndex === i);
+      
+      // Check if product has serials
+      if (!productSerial || !productSerial.hierarchicalSerials || productSerial.hierarchicalSerials.length === 0) {
+        incompleteProducts.push(`Product ${i + 1} (${product.packageNdc || 'No NDC'})`);
+        continue;
+      }
+      
+      // Check if all serials are filled for this product
+      const serials = productSerial.hierarchicalSerials;
+      let hasEmptySerials = false;
+      
+      for (const sscc of serials) {
+        if (!sscc.ssccSerial || !sscc.ssccSerial.trim()) {
+          hasEmptySerials = true;
+          break;
+        }
+        
+        if (sscc.cases && sscc.cases.length > 0) {
+          for (const caseData of sscc.cases) {
+            if (!caseData.caseSerial || !caseData.caseSerial.trim()) {
+              hasEmptySerials = true;
+              break;
+            }
+            
+            if (caseData.innerCases && caseData.innerCases.length > 0) {
+              for (const innerCase of caseData.innerCases) {
+                if (!innerCase.innerCaseSerial || !innerCase.innerCaseSerial.trim()) {
+                  hasEmptySerials = true;
+                  break;
+                }
+                for (const item of innerCase.items) {
+                  if (!item.itemSerial || !item.itemSerial.trim()) {
+                    hasEmptySerials = true;
+                    break;
+                  }
+                }
+                if (hasEmptySerials) break;
+              }
+            } else {
+              for (const item of caseData.items) {
+                if (!item.itemSerial || !item.itemSerial.trim()) {
+                  hasEmptySerials = true;
+                  break;
+                }
+              }
+            }
+            if (hasEmptySerials) break;
+          }
+        } else if (sscc.items) {
+          for (const item of sscc.items) {
+            if (!item.itemSerial || !item.itemSerial.trim()) {
+              hasEmptySerials = true;
+              break;
+            }
+          }
+        }
+        
+        if (hasEmptySerials) break;
+      }
+      
+      if (hasEmptySerials) {
+        incompleteProducts.push(`Product ${i + 1} (${product.packageNdc || 'No NDC'})`);
+      }
+    }
+    
+    // If any products are incomplete, show error and don't proceed
+    if (incompleteProducts.length > 0) {
+      setError(`Cannot proceed to Step 3. The following products have incomplete serial numbers:\n${incompleteProducts.join('\n')}\n\nPlease complete all serial numbers for all products before proceeding.`);
+      return;
+    }
+    
     setIsLoading(true);
     setError('');
     
