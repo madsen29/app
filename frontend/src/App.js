@@ -2545,7 +2545,7 @@ function App() {
         
         // Build array of existing serials, preserving order and including empty slots
         const allSerials = [];
-        for (let i = 0; i < activeProduct.itemsPerCase; i++) {
+        for (let i = 0; i < configuration.itemsPerCase; i++) {
           const item = existingItems[i];
           const serial = item?.itemSerial || '';
           if (serial.trim()) {
@@ -2557,7 +2557,7 @@ function App() {
         const completedCount = allSerials.length;
         
         // If all items exist, start editing from index 0. Otherwise, continue from where left off
-        const allItemsExist = completedCount === activeProduct.itemsPerCase;
+        const allItemsExist = completedCount === configuration.itemsPerCase;
         const itemIndex = allItemsExist ? 0 : completedCount;
         
         return {
@@ -2596,7 +2596,7 @@ function App() {
         
         // Build array of existing serials, preserving order and including empty slots
         const allSerials = [];
-        for (let i = 0; i < activeProduct.itemsPerCase; i++) {
+        for (let i = 0; i < configuration.itemsPerCase; i++) {
           const item = existingItems[i];
           const serial = item?.itemSerial || '';
           if (serial.trim()) {
@@ -2608,7 +2608,7 @@ function App() {
         const completedCount = allSerials.length;
         
         // If all items exist, start editing from index 0. Otherwise, continue from where left off
-        const allItemsExist = completedCount === activeProduct.itemsPerCase;
+        const allItemsExist = completedCount === configuration.itemsPerCase;
         const itemIndex = allItemsExist ? 0 : completedCount;
         
         return {
@@ -2703,7 +2703,7 @@ function App() {
         }
       } else if (activeProduct.casesPerSscc > 0) {
         // Cases → Items
-        const itemsPerCase = activeProduct.itemsPerCase;
+        const itemsPerCase = configuration.itemsPerCase;
         if (nextItemIndex < itemsPerCase) {
           // More items in this case
           return {
@@ -2742,7 +2742,7 @@ function App() {
         }
       } else {
         // Direct SSCC → Items
-        const itemsPerSSCC = activeProduct.itemsPerCase;
+        const itemsPerSSCC = configuration.itemsPerCase;
         if (nextItemIndex < itemsPerSSCC) {
           // More items in this SSCC
           return {
