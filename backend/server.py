@@ -2271,6 +2271,22 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
                     biz_location_id.text = biz_location
             
     # 7. Shipping ObjectEvent (last event per GS1 Rx EPCIS guidelines)
+    # Collect all SSCCs for the shipping event
+    all_sscc_epcs = []
+    
+    if is_multi_product and product_serials and len(product_serials) > 0:
+        # Multi-product mode: collect SSCCs from all products
+        for product_serial_entry in product_serials:
+            product_hierarchical_serials = product_serial_entry.get("hierarchicalSerials", [])
+            for sscc_entry in product_hierarchical_serials:
+                sscc_serial = sscc_entry.get("ssccSerial", "")
+                if sscc_serial:
+                    sscc_epc = f"urn:epc:id:sscc:{shipper_company_prefix}.{sscc_extension_digit}{sscc_serial}"
+                    all_sscc_epcs.append(sscc_epc)
+    else:
+        # Legacy mode: use sscc_epcs from else block
+        all_sscc_epcs = sscc_epcs if 'sscc_epcs' in locals() else []
+    
     shipping_event = ET.SubElement(event_list, "ObjectEvent")
     
     event_time = ET.SubElement(shipping_event, "eventTime")
@@ -2281,7 +2297,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
     
     # Add all SSCCs to the shipping event
     epc_list = ET.SubElement(shipping_event, "epcList")
-    for sscc_epc in sscc_epcs:
+    for sscc_epc in all_sscc_epcs:
         epc = ET.SubElement(epc_list, "epc")
         epc.text = sscc_epc
     
