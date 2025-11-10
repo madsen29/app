@@ -101,6 +101,7 @@ class Project(BaseModel):
     current_step: int = 1
     configuration: Optional[dict] = None
     serial_numbers: Optional[list] = None  # Allow list for hierarchical structure
+    product_serials: Optional[list] = None  # Multi-product serial numbers
     epcis_file_content: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
