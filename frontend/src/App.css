@@ -50,6 +50,23 @@ input:disabled {
   opacity: 0.7;
 }
 
+/* Utility Classes */
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
