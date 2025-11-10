@@ -2500,6 +2500,7 @@ function App() {
     const current = serialCollectionStep;
     // Use active serial product's totals, not global configuration
     const totals = calculateCurrentProductTotals(activeSerialProductIndex);
+    const activeProduct = products[activeSerialProductIndex];
     
     // Helper function to find next unfinished item index
     const findNextItemIndex = (ssccIndex, caseIndex, innerCaseIndex) => {
