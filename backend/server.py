@@ -1601,6 +1601,17 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
         read_point = read_point
         biz_location = biz_location
     
+    # Get hierarchy configuration (for legacy single-product mode)
+    # For multi-product, this will be overridden per product
+    if not is_multi_product:
+        use_inner_cases = get_config_value("use_inner_cases", "useInnerCases", False)
+        cases_per_sscc = get_config_value("cases_per_sscc", "casesPerSscc", 0)
+    else:
+        # For multi-product, use first product's config as default
+        # (will be overridden when processing each product's serials)
+        use_inner_cases = products_list[0].get("useInnerCases", False) if products_list else False
+        cases_per_sscc = products_list[0].get("casesPerSscc", 0) if products_list else 0
+    
     # Check if we have direct SSCC → Items aggregation
     direct_sscc_items = cases_per_sscc == 0
     
