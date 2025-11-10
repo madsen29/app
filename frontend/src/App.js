@@ -2499,6 +2499,7 @@ function App() {
   const calculateNextStep = (itemsToSkip = 0) => {
     const current = serialCollectionStep;
     const totals = calculateTotals();
+    const activeProduct = products[activeSerialProductIndex];
     
     // Helper function to find next unfinished item index
     const findNextItemIndex = (ssccIndex, caseIndex, innerCaseIndex) => {
