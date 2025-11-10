@@ -3362,9 +3362,9 @@ function App() {
     }
   };
 
-  // Calculate totals based on current product
-  const calculateCurrentProductTotals = () => {
-    const product = getCurrentProduct();
+  // Calculate totals based on current product (or specific product index)
+  const calculateCurrentProductTotals = (productIndex = null) => {
+    const product = productIndex !== null ? products[productIndex] : getCurrentProduct();
     const numberOfSscc = parseInt(product.numberOfSscc) || 0;
     const casesPerSscc = parseInt(product.casesPerSscc) || 0;
     const itemsPerCase = parseInt(product.itemsPerCase) || 0;
