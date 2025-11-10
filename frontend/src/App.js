@@ -121,8 +121,12 @@ function App() {
   });
   const [configurationId, setConfigurationId] = useState('');
   
-  // New hierarchical serial number collection state
+  // New hierarchical serial number collection state (per-product)
+  const [productSerials, setProductSerials] = useState([]);
+  
+  // Legacy hierarchical serials (for backward compatibility)
   const [hierarchicalSerials, setHierarchicalSerials] = useState([]);
+  
   const [serialCollectionStep, setSerialCollectionStep] = useState({
     ssccIndex: 0,
     caseIndex: 0,
