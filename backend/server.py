@@ -1654,11 +1654,83 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
     else:
         items_per_case = get_config_value("items_per_case", "itemsPerCase")
     
-    # Normalize serial numbers data structure to handle both formats
-    sscc_serials = []
-    case_serials = []
-    inner_case_serials = []
-    item_serials = []
+    # === MULTI-PRODUCT EVENT GENERATION ===
+    # Determine which products to process
+    if is_multi_product and product_serials and len(product_serials) > 0:
+        # Multi-product mode: Generate events for each product
+        for product_serial_entry in product_serials:
+            product_index = product_serial_entry.get("productIndex", 0)
+            product_hierarchical_serials = product_serial_entry.get("hierarchicalSerials", [])
+            
+            # Get product configuration
+            if product_index < len(products_list):
+                product = products_list[product_index]
+                
+                # Override config variables with product-specific values
+                company_prefix = product.get("companyPrefix", "")
+                product_code = product.get("productCode", "")
+                item_product_code = product_code
+                case_product_code = product_code
+                inner_case_product_code = product_code
+                
+                item_indicator_digit = product.get("itemIndicatorDigit", "0")
+                case_indicator_digit = product.get("caseIndicatorDigit", "0")
+                inner_case_indicator_digit = product.get("innerCaseIndicatorDigit", "0")
+                
+                use_inner_cases = product.get("useInnerCases", False)
+                cases_per_sscc = product.get("casesPerSscc", 0)
+                direct_sscc_items = cases_per_sscc == 0
+                
+                lot_number = product.get("lotNumber", "")
+                expiration_date = product.get("expirationDate", "")
+                
+                # Extract serials from hierarchical structure
+                sscc_serials = []
+                case_serials = []
+                inner_case_serials = []
+                item_serials = []
+                
+                for sscc_entry in product_hierarchical_serials:
+                    sscc_serials.append(sscc_entry.get("ssccSerial", ""))
+                    
+                    if "cases" in sscc_entry:
+                        for case_entry in sscc_entry["cases"]:
+                            case_serials.append(case_entry.get("caseSerial", ""))
+                            
+                            if "innerCases" in case_entry and case_entry["innerCases"]:
+                                for inner_case_entry in case_entry["innerCases"]:
+                                    inner_case_serials.append(inner_case_entry.get("innerCaseSerial", ""))
+                                    if "items" in inner_case_entry:
+                                        for item_entry in inner_case_entry["items"]:
+                                            item_serials.append(item_entry.get("itemSerial", ""))
+                            
+                            if "items" in case_entry:
+                                for item_entry in case_entry["items"]:
+                                    item_serials.append(item_entry.get("itemSerial", ""))
+                    
+                    if "items" in sscc_entry:
+                        for item_entry in sscc_entry["items"]:
+                            item_serials.append(item_entry.get("itemSerial", ""))
+                
+                # Generate events for this product
+                generate_product_events(
+                    event_list, get_next_timestamp, read_point, biz_location,
+                    sscc_serials, case_serials, inner_case_serials, item_serials,
+                    shipper_company_prefix, sscc_extension_digit,
+                    company_prefix, item_product_code, case_product_code, inner_case_product_code,
+                    item_indicator_digit, case_indicator_digit, inner_case_indicator_digit,
+                    use_inner_cases, direct_sscc_items, lot_number, expiration_date
+                )
+        
+        # Skip legacy single-product processing
+        pass
+    else:
+        # Legacy single-product mode
+        # Normalize serial numbers data structure to handle both formats
+        sscc_serials = []
+        case_serials = []
+        inner_case_serials = []
+        item_serials = []
     
     # Check if serial_numbers is in the new list format with "type" fields
     if serial_numbers and isinstance(serial_numbers, list) and len(serial_numbers) > 0 and isinstance(serial_numbers[0], dict) and "type" in serial_numbers[0]:
