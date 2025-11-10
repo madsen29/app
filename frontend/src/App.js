@@ -5480,8 +5480,6 @@ function App() {
   };
 
   const renderStep3 = () => {
-    const totals = calculateTotals();
-    
     return (
       <div className="step-container">
         <h2 className="step-title">Step 3: Generate EPCIS File</h2>
@@ -5489,65 +5487,88 @@ function App() {
         <div className="summary-section">
           <h3>Configuration Summary</h3>
           
-          {/* Package Hierarchy */}
-          <div className="summary-card">
-            <h4>Package Hierarchy</h4>
-            <div className="hierarchy-summary">
-              <div className="hierarchy-item">
-                <span className="hierarchy-label">SSCCs</span>
-                <span className="hierarchy-value">{configuration.numberOfSscc}</span>
-              </div>
-              
-              {configuration.casesPerSscc > 0 && (
-                <>
-                  <div className="hierarchy-arrow">→</div>
-                  <div className="hierarchy-item">
-                    <span className="hierarchy-label">Cases</span>
-                    <span className="hierarchy-value">{totals.totalCases}</span>
+          {/* Multi-Product Configuration */}
+          {products.map((product, index) => {
+            const productTotals = calculateCurrentProductTotals(index);
+            
+            return (
+              <div key={product.id} className="summary-card" style={{marginBottom: '1.5rem', borderLeft: '4px solid #3182ce'}}>
+                <h4>Product {index + 1}: {product.regulatedProductName || 'Unnamed Product'}</h4>
+                
+                {/* Product Details */}
+                <div className="config-details" style={{marginBottom: '1rem'}}>
+                  <div className="config-row">
+                    <span className="config-label">Package NDC</span>
+                    <span className="config-value">{product.packageNdc || 'N/A'}</span>
                   </div>
-                </>
-              )}
-              
-              {configuration.useInnerCases && (
-                <>
-                  <div className="hierarchy-arrow">→</div>
-                  <div className="hierarchy-item">
-                    <span className="hierarchy-label">Inner Cases</span>
-                    <span className="hierarchy-value">{totals.totalInnerCases}</span>
+                  <div className="config-row">
+                    <span className="config-label">Manufacturer</span>
+                    <span className="config-value">{product.manufacturerName || 'N/A'}</span>
                   </div>
-                </>
-              )}
-              
-              <div className="hierarchy-arrow">→</div>
-              <div className="hierarchy-item">
-                <span className="hierarchy-label">Items</span>
-                <span className="hierarchy-value">{totals.totalItems}</span>
-              </div>
-            </div>
-          </div>
+                </div>
+                
+                {/* Package Hierarchy */}
+                <div style={{marginBottom: '1rem'}}>
+                  <strong style={{display: 'block', marginBottom: '0.5rem'}}>Package Hierarchy:</strong>
+                  <div className="hierarchy-summary">
+                    <div className="hierarchy-item">
+                      <span className="hierarchy-label">SSCCs</span>
+                      <span className="hierarchy-value">{product.numberOfSscc}</span>
+                    </div>
+                    
+                    {product.casesPerSscc > 0 && (
+                      <>
+                        <div className="hierarchy-arrow">→</div>
+                        <div className="hierarchy-item">
+                          <span className="hierarchy-label">Cases</span>
+                          <span className="hierarchy-value">{productTotals.totalCases}</span>
+                        </div>
+                      </>
+                    )}
+                    
+                    {product.useInnerCases && (
+                      <>
+                        <div className="hierarchy-arrow">→</div>
+                        <div className="hierarchy-item">
+                          <span className="hierarchy-label">Inner Cases</span>
+                          <span className="hierarchy-value">{productTotals.totalInnerCases}</span>
+                        </div>
+                      </>
+                    )}
+                    
+                    <div className="hierarchy-arrow">→</div>
+                    <div className="hierarchy-item">
+                      <span className="hierarchy-label">Items</span>
+                      <span className="hierarchy-value">{productTotals.totalItems}</span>
+                    </div>
+                  </div>
+                </div>
 
-          {/* GS1 Configuration */}
-          <div className="summary-card">
-            <h4>GS1 Configuration</h4>
-            <div className="config-details">
-              <div className="config-row">
-                <span className="config-label">Company Prefix</span>
-                <span className="config-value">{configuration.companyPrefix}</span>
+                {/* GS1 Configuration */}
+                <div>
+                  <strong style={{display: 'block', marginBottom: '0.5rem'}}>GS1 Configuration:</strong>
+                  <div className="config-details">
+                    <div className="config-row">
+                      <span className="config-label">Company Prefix</span>
+                      <span className="config-value">{product.companyPrefix}</span>
+                    </div>
+                    <div className="config-row">
+                      <span className="config-label">Product Code</span>
+                      <span className="config-value">{product.productCode}</span>
+                    </div>
+                    <div className="config-row">
+                      <span className="config-label">Lot Number</span>
+                      <span className="config-value">{product.lotNumber}</span>
+                    </div>
+                    <div className="config-row">
+                      <span className="config-label">Expiration Date</span>
+                      <span className="config-value">{product.expirationDate}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="config-row">
-                <span className="config-label">Product Code</span>
-                <span className="config-value">{configuration.productCode}</span>
-              </div>
-              <div className="config-row">
-                <span className="config-label">Lot Number</span>
-                <span className="config-value">{configuration.lotNumber}</span>
-              </div>
-              <div className="config-row">
-                <span className="config-label">Expiration Date</span>
-                <span className="config-value">{configuration.expirationDate}</span>
-              </div>
-            </div>
-          </div>
+            );
+          })}
 
           {/* EPCIS Details */}
           <div className="summary-card epcis-card">
