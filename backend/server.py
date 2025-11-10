@@ -1845,6 +1845,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
                             item_serials.append(item_entry.get("itemSerial", ""))
                 
                 # Generate events for this product
+                print(f"DEBUG: Generating events for product {product_index}, {len(item_serials)} items")
                 generate_product_events(
                     event_list, get_next_timestamp, read_point, biz_location,
                     sscc_serials, case_serials, inner_case_serials, item_serials,
