@@ -1074,24 +1074,27 @@ function App() {
       }
     }
     
+    // For backward compatibility, use first product's data for the legacy configuration endpoint
+    const firstProduct = products[0];
+    
     try {
       const response = await axios.post(`${API}/projects/${currentProject.id}/configuration`, {
-        items_per_case: configuration.casesPerSscc === 0 ? configuration.itemsPerCase : (configuration.useInnerCases ? 0 : configuration.itemsPerCase),
-        cases_per_sscc: configuration.casesPerSscc,
-        number_of_sscc: configuration.numberOfSscc,
-        use_inner_cases: configuration.casesPerSscc === 0 ? false : configuration.useInnerCases,
-        inner_cases_per_case: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.innerCasesPerCase : 0,
-        items_per_inner_case: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.itemsPerInnerCase : 0,
-        company_prefix: configuration.companyPrefix,
-        item_product_code: configuration.productCode,
-        case_product_code: configuration.productCode,
-        inner_case_product_code: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.productCode : '',
-        lot_number: configuration.lotNumber,
-        expiration_date: configuration.expirationDate,
-        sscc_extension_digit: configuration.ssccExtensionDigit,
-        case_indicator_digit: configuration.caseIndicatorDigit,
-        inner_case_indicator_digit: configuration.useInnerCases && configuration.casesPerSscc > 0 ? configuration.innerCaseIndicatorDigit : '',
-        item_indicator_digit: configuration.itemIndicatorDigit,
+        items_per_case: firstProduct.casesPerSscc === 0 ? firstProduct.itemsPerCase : (firstProduct.useInnerCases ? 0 : firstProduct.itemsPerCase),
+        cases_per_sscc: firstProduct.casesPerSscc,
+        number_of_sscc: firstProduct.numberOfSscc,
+        use_inner_cases: firstProduct.casesPerSscc === 0 ? false : firstProduct.useInnerCases,
+        inner_cases_per_case: firstProduct.useInnerCases && firstProduct.casesPerSscc > 0 ? firstProduct.innerCasesPerCase : 0,
+        items_per_inner_case: firstProduct.useInnerCases && firstProduct.casesPerSscc > 0 ? firstProduct.itemsPerInnerCase : 0,
+        company_prefix: firstProduct.companyPrefix,
+        item_product_code: firstProduct.productCode,
+        case_product_code: firstProduct.productCode,
+        inner_case_product_code: firstProduct.useInnerCases && firstProduct.casesPerSscc > 0 ? firstProduct.productCode : '',
+        lot_number: firstProduct.lotNumber,
+        expiration_date: firstProduct.expirationDate,
+        sscc_extension_digit: firstProduct.ssccExtensionDigit,
+        case_indicator_digit: firstProduct.caseIndicatorDigit,
+        inner_case_indicator_digit: firstProduct.useInnerCases && firstProduct.casesPerSscc > 0 ? firstProduct.innerCaseIndicatorDigit : '',
+        item_indicator_digit: firstProduct.itemIndicatorDigit,
         // Business Document Information
         sender_company_prefix: configuration.senderCompanyPrefix,
         sender_gln: configuration.senderGln,
@@ -1124,13 +1127,13 @@ function App() {
         shipper_country_code: configuration.shipperCountryCode,
         shipper_same_as_sender: configuration.shipperSameAsSender,
         // EPCClass data
-        product_ndc: configuration.productNdc,
-        package_ndc: configuration.packageNdc,
-        regulated_product_name: configuration.regulatedProductName,
-        manufacturer_name: configuration.manufacturerName,
-        dosage_form_type: configuration.dosageFormType,
-        strength_description: configuration.strengthDescription,
-        net_content_description: configuration.netContentDescription
+        product_ndc: firstProduct.productNdc,
+        package_ndc: firstProduct.packageNdc,
+        regulated_product_name: firstProduct.regulatedProductName,
+        manufacturer_name: firstProduct.manufacturerName,
+        dosage_form_type: firstProduct.dosageFormType,
+        strength_description: firstProduct.strengthDescription,
+        net_content_description: firstProduct.netContentDescription
       }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
