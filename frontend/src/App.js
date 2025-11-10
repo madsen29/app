@@ -2625,7 +2625,7 @@ function App() {
       
       // Build array of existing serials, preserving order and including empty slots
       const allSerials = [];
-      for (let i = 0; i < activeProduct.itemsPerInnerCase; i++) {
+      for (let i = 0; i < configuration.itemsPerInnerCase; i++) {
         const item = existingItems[i];
         const serial = item?.itemSerial || '';
         if (serial.trim()) {
@@ -2637,7 +2637,7 @@ function App() {
       const completedCount = allSerials.length;
       
       // If all items exist, start editing from index 0. Otherwise, continue from where left off
-      const allItemsExist = completedCount === activeProduct.itemsPerInnerCase;
+      const allItemsExist = completedCount === configuration.itemsPerInnerCase;
       const itemIndex = allItemsExist ? 0 : completedCount;
       
       return {
@@ -2651,7 +2651,7 @@ function App() {
       const nextItemIndex = current.itemIndex + 1 + itemsToSkip;
       
       if (configuration.useInnerCases) {
-        const itemsPerInnerCase = activeProduct.itemsPerInnerCase;
+        const itemsPerInnerCase = configuration.itemsPerInnerCase;
         if (nextItemIndex < itemsPerInnerCase) {
           // More items in this inner case
           return {
