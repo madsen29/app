@@ -437,6 +437,93 @@ function App() {
     setIsPackagingConfigLocked(false);
     setOriginalPackagingConfig(null);
     
+    // Reset product state for new projects
+    if (!project.configuration) {
+      // New project - start with clean single product
+      const initialProduct = {
+        id: 'product-1',
+        manufacturerName: '',
+        regulatedProductName: '',
+        packageNdc: '',
+        productNdc: '',
+        dosageFormType: '',
+        strengthDescription: '',
+        netContentDescription: '',
+        companyPrefix: '',
+        productCode: '',
+        lotNumber: '',
+        expirationDate: '',
+        itemsPerCase: '',
+        casesPerSscc: '',
+        numberOfSscc: 1,
+        useInnerCases: false,
+        innerCasesPerCase: '',
+        itemsPerInnerCase: '',
+        ssccExtensionDigit: '0',
+        caseIndicatorDigit: '0',
+        innerCaseIndicatorDigit: '0',
+        itemIndicatorDigit: '0'
+      };
+      setProducts([initialProduct]);
+      setActiveProductIndex(0);
+      setActiveSerialProductIndex(0);
+      
+      // Reset configuration to empty
+      setConfiguration({
+        itemsPerCase: '',
+        casesPerSscc: '',
+        numberOfSscc: '',
+        useInnerCases: false,
+        innerCasesPerCase: '',
+        itemsPerInnerCase: '',
+        companyPrefix: '',
+        productCode: '',
+        lotNumber: '',
+        expirationDate: '',
+        ssccExtensionDigit: '0',
+        caseIndicatorDigit: '0',
+        innerCaseIndicatorDigit: '0',
+        itemIndicatorDigit: '0',
+        senderCompanyPrefix: '',
+        senderGln: '',
+        senderSgln: '',
+        senderName: '',
+        senderStreetAddress: '',
+        senderCity: '',
+        senderState: '',
+        senderPostalCode: '',
+        senderCountryCode: '',
+        senderDespatchAdviceNumber: '',
+        receiverCompanyPrefix: '',
+        receiverGln: '',
+        receiverSgln: '',
+        receiverName: '',
+        receiverStreetAddress: '',
+        receiverCity: '',
+        receiverState: '',
+        receiverPostalCode: '',
+        receiverCountryCode: '',
+        receiverPoNumber: '',
+        shipperCompanyPrefix: '',
+        shipperGln: '',
+        shipperSgln: '',
+        shipperName: '',
+        shipperStreetAddress: '',
+        shipperCity: '',
+        shipperState: '',
+        shipperPostalCode: '',
+        shipperCountryCode: '',
+        shipperSameAsSender: false,
+        productNdc: '',
+        packageNdc: '',
+        regulatedProductName: '',
+        manufacturerName: '',
+        dosageFormType: '',
+        strengthDescription: '',
+        netContentDescription: ''
+      });
+    }
+    
     // Helper function to get configuration value (handles both camelCase and snake_case)
     const getConfigValue = (config, camelKey, snakeKey, defaultValue) => {
       // Properly handle falsy values by checking for undefined/null instead of using ||
