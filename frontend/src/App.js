@@ -3971,13 +3971,13 @@ function App() {
             <label className="checkbox-label">
               <input
                 type="checkbox"
-                checked={configuration.useInnerCases}
-                onChange={(e) => setConfiguration({...configuration, useInnerCases: e.target.checked})}
-                disabled={configuration.casesPerSscc === 0 || configuration.casesPerSscc === '' || isPackagingConfigLocked}
+                checked={getCurrentProduct().useInnerCases}
+                onChange={(e) => updateCurrentProduct({useInnerCases: e.target.checked})}
+                disabled={getCurrentProduct().casesPerSscc === 0 || getCurrentProduct().casesPerSscc === '' || isPackagingConfigLocked}
               />
               <span className="checkbox-text">
                 <strong>Enable Inner Cases</strong>
-                <small>{(configuration.casesPerSscc === 0 || configuration.casesPerSscc === '') ? 'Not available when Cases per SSCC = 0 or empty' : 'Add an intermediate packaging level between cases and items'}</small>
+                <small>{(getCurrentProduct().casesPerSscc === 0 || getCurrentProduct().casesPerSscc === '') ? 'Not available when Cases per SSCC = 0 or empty' : 'Add an intermediate packaging level between cases and items'}</small>
               </span>
             </label>
           </div>
