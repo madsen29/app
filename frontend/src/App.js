@@ -5019,7 +5019,8 @@ function App() {
                 
                 // Load serials for the newly selected product
                 const productSerial = productSerials.find(ps => ps.productIndex === newIndex);
-                if (productSerial) {
+                if (productSerial && productSerial.hierarchicalSerials && productSerial.hierarchicalSerials.length > 0) {
+                  // Product has existing serials - load them
                   setHierarchicalSerials(productSerial.hierarchicalSerials);
                   // Find current position in serial collection
                   const currentPosition = findCurrentSerialPosition(
@@ -5032,9 +5033,20 @@ function App() {
                     isComplete: currentPosition.isComplete
                   });
                 } else {
-                  // No serials yet for this product - initialize fresh
+                  // No serials yet for this product - initialize fresh structure
+                  console.log('Initializing new hierarchical structure for product', newIndex);
                   setHierarchicalSerials([]);
-                  initializeHierarchicalSerials(products[newIndex]);
+                  // Reset serial collection step to start
+                  setSerialCollectionStep({
+                    ssccIndex: 0,
+                    caseIndex: 0,
+                    innerCaseIndex: 0,
+                    itemIndex: 0,
+                    currentLevel: 'sscc',
+                    currentSerial: '',
+                    isComplete: false
+                  });
+                  // Initialize will happen in renderStep2
                 }
               }}
               className="product-selector-dropdown"
