@@ -2653,8 +2653,8 @@ function App() {
       // Move to next item, inner case, case, or SSCC
       const nextItemIndex = current.itemIndex + 1 + itemsToSkip;
       
-      if (configuration.useInnerCases) {
-        const itemsPerInnerCase = configuration.itemsPerInnerCase;
+      if (activeProduct.useInnerCases) {
+        const itemsPerInnerCase = activeProduct.itemsPerInnerCase;
         if (nextItemIndex < itemsPerInnerCase) {
           // More items in this inner case
           return {
