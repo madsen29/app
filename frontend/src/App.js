@@ -5356,6 +5356,29 @@ function App() {
               value={activeSerialProductIndex}
               onChange={(e) => {
                 const newIndex = parseInt(e.target.value);
+                
+                // CRITICAL: Save current product's serials BEFORE switching
+                if (hierarchicalSerials && hierarchicalSerials.length > 0) {
+                  const updatedProductSerials = [...productSerials];
+                  const existingIndex = updatedProductSerials.findIndex(
+                    ps => ps.productIndex === activeSerialProductIndex
+                  );
+                  
+                  const currentProductSerial = {
+                    productId: products[activeSerialProductIndex]?.id,
+                    productIndex: activeSerialProductIndex,
+                    hierarchicalSerials: hierarchicalSerials
+                  };
+                  
+                  if (existingIndex >= 0) {
+                    updatedProductSerials[existingIndex] = currentProductSerial;
+                  } else {
+                    updatedProductSerials.push(currentProductSerial);
+                  }
+                  
+                  setProductSerials(updatedProductSerials);
+                }
+                
                 setActiveSerialProductIndex(newIndex);
                 
                 // Update configuration to match selected product for serial collection
