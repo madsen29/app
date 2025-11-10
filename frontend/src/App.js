@@ -3747,10 +3747,10 @@ function App() {
                   <button
                     type="button"
                     onClick={() => searchFDAForProduct(activeProductIndex)}
-                    disabled={fdaLoading}
+                    disabled={fdaModal.isLoading}
                     className="fda-search-button"
                   >
-                    {fdaLoading ? 'Searching...' : 'Search FDA'}
+                    {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
                   </button>
                 </div>
               </div>
