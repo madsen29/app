@@ -5035,6 +5035,46 @@ function App() {
     // Check if current product is complete AND all products are complete
     const allProductsComplete = areAllProductsComplete();
     
+    // If current product is complete but not all products, show reminder
+    if (serialCollectionStep.isComplete && !allProductsComplete && products.length > 1) {
+      return (
+        <div className="step-container">
+          <h2 className="step-title">Step 2: Serial Numbers</h2>
+          
+          <div className="completion-summary" style={{background: '#fef3c7', borderLeft: '4px solid #f59e0b'}}>
+            <h3>⚠️ Current Product Complete - More Products Remaining</h3>
+            <p>You have completed serial number entry for Product {activeSerialProductIndex + 1}.</p>
+            <p><strong>However, you must complete serial numbers for ALL {products.length} products before proceeding to Step 3.</strong></p>
+            
+            <div style={{marginTop: '1rem'}}>
+              <p>Use the product selector above to switch to other products and enter their serial numbers.</p>
+            </div>
+          </div>
+          
+          <div className="button-group">
+            <button 
+              type="button" 
+              onClick={() => {
+                setCurrentStep(1);
+                scrollToTop();
+              }} 
+              className="btn-secondary"
+            >
+              Back to Step 1
+            </button>
+            <button 
+              type="button" 
+              onClick={handleSaveAndExit} 
+              disabled={isLoading} 
+              className="btn-outline"
+            >
+              Save & Exit
+            </button>
+          </div>
+        </div>
+      );
+    }
+    
     if (serialCollectionStep.isComplete && allProductsComplete) {
       // Show summary and submit button
       return (
