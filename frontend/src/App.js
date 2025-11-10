@@ -3826,7 +3826,7 @@ function App() {
                   />
                   <button
                     type="button"
-                    onClick={() => searchFDAForProduct(activeProductIndex)}
+                    onClick={handleFdaSearch}
                     disabled={fdaModal.isLoading}
                     className="fda-search-button"
                   >
