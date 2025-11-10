@@ -4182,51 +4182,51 @@ function App() {
         </div>
         
         <div className="hierarchy-section">
-          <h3>Packaging Hierarchy</h3>
+          <h3>Packaging Hierarchy (Product {activeProductIndex + 1})</h3>
           <div className="hierarchy-visual">
             <div className="hierarchy-level">
-              <strong>SSCCs:</strong> {configuration.numberOfSscc}
+              <strong>SSCCs:</strong> {getCurrentProduct().numberOfSscc}
             </div>
-            {configuration.casesPerSscc === 0 ? (
+            {getCurrentProduct().casesPerSscc === 0 ? (
               <>
                 <div className="hierarchy-arrow">↓</div>
                 <div className="hierarchy-level">
-                  <strong>Items per SSCC:</strong> {configuration.itemsPerCase}
+                  <strong>Items per SSCC:</strong> {getCurrentProduct().itemsPerCase}
                 </div>
                 <div className="hierarchy-arrow">↓</div>
                 <div className="hierarchy-level">
-                  <strong>Total Items:</strong> {calculateTotals().totalItems}
+                  <strong>Total Items:</strong> {calculateCurrentProductTotals().totalItems}
                 </div>
               </>
             ) : (
               <>
                 <div className="hierarchy-arrow">↓</div>
                 <div className="hierarchy-level">
-                  <strong>Cases:</strong> {calculateTotals().totalCases}
+                  <strong>Cases:</strong> {calculateCurrentProductTotals().totalCases}
                 </div>
-                {configuration.useInnerCases && (
+                {getCurrentProduct().useInnerCases && (
                   <>
                     <div className="hierarchy-arrow">↓</div>
                     <div className="hierarchy-level">
-                      <strong>Inner Cases:</strong> {calculateTotals().totalInnerCases}
+                      <strong>Inner Cases:</strong> {calculateCurrentProductTotals().totalInnerCases}
                     </div>
                     <div className="hierarchy-arrow">↓</div>
                     <div className="hierarchy-level">
-                      <strong>Items per Inner Case:</strong> {configuration.itemsPerInnerCase}
+                      <strong>Items per Inner Case:</strong> {getCurrentProduct().itemsPerInnerCase}
                     </div>
                   </>
                 )}
-                {!configuration.useInnerCases && (
+                {!getCurrentProduct().useInnerCases && (
                   <>
                     <div className="hierarchy-arrow">↓</div>
                     <div className="hierarchy-level">
-                      <strong>Items per Case:</strong> {configuration.itemsPerCase}
+                      <strong>Items per Case:</strong> {getCurrentProduct().itemsPerCase}
                     </div>
                   </>
                 )}
                 <div className="hierarchy-arrow">↓</div>
                 <div className="hierarchy-level">
-                  <strong>Total Items:</strong> {calculateTotals().totalItems}
+                  <strong>Total Items:</strong> {calculateCurrentProductTotals().totalItems}
                 </div>
               </>
             )}
