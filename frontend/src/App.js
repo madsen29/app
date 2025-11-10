@@ -2682,7 +2682,7 @@ function App() {
             } else {
               // Move to next SSCC
               const nextSSCCIndex = current.ssccIndex + 1;
-              if (nextSSCCIndex < activeProduct.numberOfSscc) {
+              if (nextSSCCIndex < configuration.numberOfSscc) {
                 return {
                   ...current,
                   ssccIndex: nextSSCCIndex,
@@ -2723,7 +2723,7 @@ function App() {
           } else {
             // Move to next SSCC
             const nextSSCCIndex = current.ssccIndex + 1;
-            if (nextSSCCIndex < activeProduct.numberOfSscc) {
+            if (nextSSCCIndex < configuration.numberOfSscc) {
               return {
                 ...current,
                 ssccIndex: nextSSCCIndex,
@@ -2752,7 +2752,7 @@ function App() {
         } else {
           // Move to next SSCC
           const nextSSCCIndex = current.ssccIndex + 1;
-          if (nextSSCCIndex < activeProduct.numberOfSscc) {
+          if (nextSSCCIndex < configuration.numberOfSscc) {
             return {
               ...current,
               ssccIndex: nextSSCCIndex,
@@ -5055,7 +5055,7 @@ function App() {
     // This happens when user first enters Step 2 or when switching products
     if (!hierarchicalSerials || hierarchicalSerials.length === 0) {
       const activeProduct = products[activeSerialProductIndex];
-      if (activeProduct && activeProduct.numberOfSscc) {
+      if (activeProduct && configuration.numberOfSscc) {
         console.log('Initializing hierarchical serials for active product:', activeSerialProductIndex);
         initializeHierarchicalSerials(activeProduct);
         return null; // Return early to allow re-render with initialized serials
