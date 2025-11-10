@@ -2716,7 +2716,7 @@ function App() {
         } else {
           // Move to next case
           const nextCaseIndex = current.caseIndex + 1;
-          if (nextCaseIndex < configuration.casesPerSscc) {
+          if (nextCaseIndex < activeProduct.casesPerSscc) {
             return {
               ...current,
               caseIndex: nextCaseIndex,
