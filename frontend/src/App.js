@@ -63,6 +63,16 @@ function App() {
   // Active product index for serial collection (Step 2)
   const [activeSerialProductIndex, setActiveSerialProductIndex] = useState(0);
   
+  // CRITICAL: Keep configuration synced with active serial product
+  useEffect(() => {
+    if (products && products[activeSerialProductIndex] && currentStep === 2) {
+      setConfiguration({
+        ...configuration,
+        ...products[activeSerialProductIndex]
+      });
+    }
+  }, [activeSerialProductIndex]);
+  
   // Legacy configuration state (for backward compatibility)
   const [configuration, setConfiguration] = useState({
     itemsPerCase: '',
