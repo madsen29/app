@@ -5054,10 +5054,9 @@ function App() {
     // Ensure hierarchical serials are initialized for current product
     // This happens when user first enters Step 2 or when switching products
     if (!hierarchicalSerials || hierarchicalSerials.length === 0) {
-      const activeProduct = products[activeSerialProductIndex];
-      if (activeProduct && configuration.numberOfSscc) {
+      if (configuration.numberOfSscc) {
         console.log('Initializing hierarchical serials for active product:', activeSerialProductIndex);
-        initializeHierarchicalSerials(activeProduct);
+        initializeHierarchicalSerials(configuration);
         return null; // Return early to allow re-render with initialized serials
       }
     }
