@@ -2507,7 +2507,6 @@ function App() {
       const sscc = hierarchicalSerials[ssccIndex];
       if (!sscc) return 0;
       
-      const activeProduct = products[activeSerialProductIndex];
       if (activeProduct.useInnerCases) {
         const innerCase = sscc.cases?.[caseIndex]?.innerCases?.[innerCaseIndex];
         if (!innerCase?.items) return 0;
