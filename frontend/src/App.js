@@ -2650,15 +2650,64 @@ function App() {
     }
   };
 
+  // ===== FDA SEARCH FUNCTIONS =====
+  
   // Search FDA for specific product
-  const searchFDAForProduct = (productIndex) => {
+  const searchFDAForProduct = async (productIndex) => {
     const product = products[productIndex];
-    if (product && product.productNdc) {
-      searchFdaApi(product.productNdc);
-    } else {
-      setError('Please enter a Product NDC number for this product');
+    if (!product.productNdc) {
+      setError('Please enter a Product NDC to search');
+      return;
+    }
+
+    setFdaModal({ ...fdaModal, isLoading: true });
+    setError('');
+
+    try {
+      const response = await axios.get(
+        `https://api.fda.gov/drug/ndc.json?search=product_ndc:"${product.productNdc}"&limit=1`,
+        { timeout: 10000 }
+      );
+
+      if (response.data.results && response.data.results.length > 0) {
+        const result = response.data.results[0];
+        
+        // Update the specific product
+        const updatedProducts = [...products];
+        updatedProducts[productIndex] = {
+          ...updatedProducts[productIndex],
+          manufacturerName: result.labeler_name || '',
+          regulatedProductName: result.generic_name || result.brand_name || '',
+          packageNdc: result.package_ndc || '',
+          dosageFormType: result.dosage_form || '',
+          strengthDescription: result.active_ingredients?.[0]?.strength || '',
+          netContentDescription: result.packaging?.[0]?.description || ''
+        };
+        
+        setProducts(updatedProducts);
+        
+        // Sync with legacy configuration if this is the active product
+        if (productIndex === activeProductIndex) {
+          setConfiguration({...updatedProducts[productIndex]});
+        }
+        
+        setSuccess('FDA data populated successfully!');
+      } else {
+        setError('No FDA data found for this Product NDC');
+      }
+    } catch (error) {
+      console.error('FDA API Error:', error);
+      if (error.code === 'ECONNABORTED') {
+        setError('FDA search timed out. Please try again.');
+      } else {
+        setError('Error searching FDA database. Please check the Product NDC and try again.');
+      }
+    } finally {
+      setFdaModal({ ...fdaModal, isLoading: false });
     }
   };
+
+  // ===== FDA SEARCH FUNCTIONS =====
 
   // ===== GS1 DATA MATRIX PARSING =====
   
