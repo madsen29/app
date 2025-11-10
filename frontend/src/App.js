@@ -4919,11 +4919,32 @@ function App() {
               onChange={(e) => {
                 const newIndex = parseInt(e.target.value);
                 setActiveSerialProductIndex(newIndex);
+                
                 // Update configuration to match selected product for serial collection
                 setConfiguration({
                   ...configuration,
                   ...products[newIndex]
                 });
+                
+                // Load serials for the newly selected product
+                const productSerial = productSerials.find(ps => ps.productIndex === newIndex);
+                if (productSerial) {
+                  setHierarchicalSerials(productSerial.hierarchicalSerials);
+                  // Find current position in serial collection
+                  const currentPosition = findCurrentSerialPosition(
+                    productSerial.hierarchicalSerials,
+                    products[newIndex]
+                  );
+                  setSerialCollectionStep({
+                    ...currentPosition,
+                    currentSerial: '',
+                    isComplete: currentPosition.isComplete
+                  });
+                } else {
+                  // No serials yet for this product - initialize fresh
+                  setHierarchicalSerials([]);
+                  initializeHierarchicalSerials(products[newIndex]);
+                }
               }}
               className="product-selector-dropdown"
             >
