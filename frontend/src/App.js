@@ -2552,6 +2552,81 @@ function App() {
     setFdaModal({ isOpen: false, searchResults: [], isLoading: false });
   };
 
+  // ===== MULTI-PRODUCT HELPER FUNCTIONS =====
+  
+  // Get current active product
+  const getCurrentProduct = () => {
+    return products[activeProductIndex] || products[0];
+  };
+  
+  // Update current product
+  const updateCurrentProduct = (updates) => {
+    const updatedProducts = [...products];
+    updatedProducts[activeProductIndex] = {
+      ...updatedProducts[activeProductIndex],
+      ...updates
+    };
+    setProducts(updatedProducts);
+  };
+  
+  // Add new product
+  const addProduct = () => {
+    const newProduct = {
+      id: `product-${Date.now()}`,
+      // Product Information (EPCClass)
+      manufacturerName: '',
+      regulatedProductName: '',
+      packageNdc: '',
+      productNdc: '',
+      dosageFormType: '',
+      strengthDescription: '',
+      netContentDescription: '',
+      companyPrefix: '',
+      productCode: '',
+      lotNumber: '',
+      expirationDate: '',
+      
+      // Packaging Configuration (per product)
+      itemsPerCase: '',
+      casesPerSscc: '',
+      numberOfSscc: 1,
+      useInnerCases: false,
+      innerCasesPerCase: '',
+      itemsPerInnerCase: '',
+      ssccExtensionDigit: '0',
+      caseIndicatorDigit: '0',
+      innerCaseIndicatorDigit: '0',
+      itemIndicatorDigit: '0'
+    };
+    
+    const updatedProducts = [...products, newProduct];
+    setProducts(updatedProducts);
+    setActiveProductIndex(updatedProducts.length - 1);
+  };
+  
+  // Remove product
+  const removeProduct = (index) => {
+    if (products.length <= 1) return; // Don't allow removing the last product
+    
+    const updatedProducts = products.filter((_, i) => i !== index);
+    setProducts(updatedProducts);
+    
+    // Adjust active index if needed
+    if (activeProductIndex >= updatedProducts.length) {
+      setActiveProductIndex(updatedProducts.length - 1);
+    } else if (activeProductIndex > index) {
+      setActiveProductIndex(activeProductIndex - 1);
+    }
+  };
+  
+  // Sync legacy configuration with current product (for backward compatibility)
+  const syncLegacyConfiguration = () => {
+    const currentProduct = getCurrentProduct();
+    if (currentProduct) {
+      setConfiguration({...currentProduct});
+    }
+  };
+
   // ===== GS1 DATA MATRIX PARSING =====
   
   /**
