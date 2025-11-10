@@ -1424,8 +1424,157 @@ def generate_product_events(event_list, get_next_timestamp, read_point, biz_loca
         biz_location_id = ET.SubElement(biz_location_elem, "id")
         biz_location_id.text = biz_location
     
-    # Note: Aggregation events would be added here but are omitted for brevity
-    # The original code had aggregation logic that should be preserved
+    # Calculate hierarchy values needed for aggregation
+    items_per_sscc = len(item_serials) // len(sscc_serials) if sscc_serials else 0
+    items_per_case = len(item_serials) // len(case_serials) if case_serials and not use_inner_cases else 0
+    items_per_inner_case = len(item_serials) // len(inner_case_serials) if inner_case_serials else 0
+    inner_cases_per_case = len(inner_case_serials) // len(case_serials) if inner_case_serials and case_serials else 0
+    cases_per_sscc = len(case_serials) // len(sscc_serials) if case_serials and sscc_serials else 0
+    
+    # 5. Aggregation Events
+    if direct_sscc_items:
+        # Direct SSCC → Items aggregation
+        for sscc_index, sscc_epc in enumerate(sscc_epcs):
+            aggregation_event = ET.SubElement(event_list, "AggregationEvent")
+            event_time = ET.SubElement(aggregation_event, "eventTime")
+            event_time.text = get_next_timestamp()
+            event_timezone = ET.SubElement(aggregation_event, "eventTimeZoneOffset")
+            event_timezone.text = "+00:00"
+            parent_id = ET.SubElement(aggregation_event, "parentID")
+            parent_id.text = sscc_epc
+            child_epcs_elem = ET.SubElement(aggregation_event, "childEPCs")
+            start_idx = sscc_index * items_per_sscc
+            end_idx = start_idx + items_per_sscc
+            for item_epc in item_epcs[start_idx:end_idx]:
+                child_epc = ET.SubElement(child_epcs_elem, "epc")
+                child_epc.text = item_epc
+            action = ET.SubElement(aggregation_event, "action")
+            action.text = "ADD"
+            biz_step = ET.SubElement(aggregation_event, "bizStep")
+            biz_step.text = "urn:epcglobal:cbv:bizstep:packing"
+            disposition = ET.SubElement(aggregation_event, "disposition")
+            disposition.text = "urn:epcglobal:cbv:disp:active"
+            read_point_elem = ET.SubElement(aggregation_event, "readPoint")
+            read_point_id = ET.SubElement(read_point_elem, "id")
+            read_point_id.text = read_point
+            biz_location_elem = ET.SubElement(aggregation_event, "bizLocation")
+            biz_location_id = ET.SubElement(biz_location_elem, "id")
+            biz_location_id.text = biz_location
+    
+    elif use_inner_cases:
+        # Items into Inner Cases
+        for inner_case_index, inner_case_epc in enumerate(inner_case_epcs):
+            aggregation_event = ET.SubElement(event_list, "AggregationEvent")
+            event_time = ET.SubElement(aggregation_event, "eventTime")
+            event_time.text = get_next_timestamp()
+            event_timezone = ET.SubElement(aggregation_event, "eventTimeZoneOffset")
+            event_timezone.text = "+00:00"
+            parent_id = ET.SubElement(aggregation_event, "parentID")
+            parent_id.text = inner_case_epc
+            child_epcs_elem = ET.SubElement(aggregation_event, "childEPCs")
+            start_idx = inner_case_index * items_per_inner_case
+            end_idx = start_idx + items_per_inner_case
+            for item_epc in item_epcs[start_idx:end_idx]:
+                child_epc = ET.SubElement(child_epcs_elem, "epc")
+                child_epc.text = item_epc
+            action = ET.SubElement(aggregation_event, "action")
+            action.text = "ADD"
+            biz_step = ET.SubElement(aggregation_event, "bizStep")
+            biz_step.text = "urn:epcglobal:cbv:bizstep:packing"
+            disposition = ET.SubElement(aggregation_event, "disposition")
+            disposition.text = "urn:epcglobal:cbv:disp:active"
+            read_point_elem = ET.SubElement(aggregation_event, "readPoint")
+            read_point_id = ET.SubElement(read_point_elem, "id")
+            read_point_id.text = read_point
+            biz_location_elem = ET.SubElement(aggregation_event, "bizLocation")
+            biz_location_id = ET.SubElement(biz_location_elem, "id")
+            biz_location_id.text = biz_location
+        
+        # Inner Cases into Cases
+        for case_index, case_epc in enumerate(case_epcs):
+            aggregation_event = ET.SubElement(event_list, "AggregationEvent")
+            event_time = ET.SubElement(aggregation_event, "eventTime")
+            event_time.text = get_next_timestamp()
+            event_timezone = ET.SubElement(aggregation_event, "eventTimeZoneOffset")
+            event_timezone.text = "+00:00"
+            parent_id = ET.SubElement(aggregation_event, "parentID")
+            parent_id.text = case_epc
+            child_epcs_elem = ET.SubElement(aggregation_event, "childEPCs")
+            start_idx = case_index * inner_cases_per_case
+            end_idx = start_idx + inner_cases_per_case
+            for inner_case_epc in inner_case_epcs[start_idx:end_idx]:
+                child_epc = ET.SubElement(child_epcs_elem, "epc")
+                child_epc.text = inner_case_epc
+            action = ET.SubElement(aggregation_event, "action")
+            action.text = "ADD"
+            biz_step = ET.SubElement(aggregation_event, "bizStep")
+            biz_step.text = "urn:epcglobal:cbv:bizstep:packing"
+            disposition = ET.SubElement(aggregation_event, "disposition")
+            disposition.text = "urn:epcglobal:cbv:disp:active"
+            read_point_elem = ET.SubElement(aggregation_event, "readPoint")
+            read_point_id = ET.SubElement(read_point_elem, "id")
+            read_point_id.text = read_point
+            biz_location_elem = ET.SubElement(aggregation_event, "bizLocation")
+            biz_location_id = ET.SubElement(biz_location_elem, "id")
+            biz_location_id.text = biz_location
+    
+    else:
+        # Direct: Items into Cases (no inner cases)
+        for case_index, case_epc in enumerate(case_epcs):
+            aggregation_event = ET.SubElement(event_list, "AggregationEvent")
+            event_time = ET.SubElement(aggregation_event, "eventTime")
+            event_time.text = get_next_timestamp()
+            event_timezone = ET.SubElement(aggregation_event, "eventTimeZoneOffset")
+            event_timezone.text = "+00:00"
+            parent_id = ET.SubElement(aggregation_event, "parentID")
+            parent_id.text = case_epc
+            child_epcs_elem = ET.SubElement(aggregation_event, "childEPCs")
+            start_idx = case_index * items_per_case
+            end_idx = start_idx + items_per_case
+            for item_epc in item_epcs[start_idx:end_idx]:
+                child_epc = ET.SubElement(child_epcs_elem, "epc")
+                child_epc.text = item_epc
+            action = ET.SubElement(aggregation_event, "action")
+            action.text = "ADD"
+            biz_step = ET.SubElement(aggregation_event, "bizStep")
+            biz_step.text = "urn:epcglobal:cbv:bizstep:packing"
+            disposition = ET.SubElement(aggregation_event, "disposition")
+            disposition.text = "urn:epcglobal:cbv:disp:active"
+            read_point_elem = ET.SubElement(aggregation_event, "readPoint")
+            read_point_id = ET.SubElement(read_point_elem, "id")
+            read_point_id.text = read_point
+            biz_location_elem = ET.SubElement(aggregation_event, "bizLocation")
+            biz_location_id = ET.SubElement(biz_location_elem, "id")
+            biz_location_id.text = biz_location
+    
+    # 6. Cases into SSCCs (only if cases exist)
+    if not direct_sscc_items:
+        for sscc_index, sscc_epc in enumerate(sscc_epcs):
+            aggregation_event = ET.SubElement(event_list, "AggregationEvent")
+            event_time = ET.SubElement(aggregation_event, "eventTime")
+            event_time.text = get_next_timestamp()
+            event_timezone = ET.SubElement(aggregation_event, "eventTimeZoneOffset")
+            event_timezone.text = "+00:00"
+            parent_id = ET.SubElement(aggregation_event, "parentID")
+            parent_id.text = sscc_epc
+            child_epcs_elem = ET.SubElement(aggregation_event, "childEPCs")
+            start_idx = sscc_index * cases_per_sscc
+            end_idx = start_idx + cases_per_sscc
+            for case_epc in case_epcs[start_idx:end_idx]:
+                child_epc = ET.SubElement(child_epcs_elem, "epc")
+                child_epc.text = case_epc
+            action = ET.SubElement(aggregation_event, "action")
+            action.text = "ADD"
+            biz_step = ET.SubElement(aggregation_event, "bizStep")
+            biz_step.text = "urn:epcglobal:cbv:bizstep:packing"
+            disposition = ET.SubElement(aggregation_event, "disposition")
+            disposition.text = "urn:epcglobal:cbv:disp:active"
+            read_point_elem = ET.SubElement(aggregation_event, "readPoint")
+            read_point_id = ET.SubElement(read_point_elem, "id")
+            read_point_id.text = read_point
+            biz_location_elem = ET.SubElement(aggregation_event, "bizLocation")
+            biz_location_id = ET.SubElement(biz_location_elem, "id")
+            biz_location_id.text = biz_location
 
 def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product_serials=None):
     """Generate GS1 EPCIS 1.2 XML with SBDH for pharmaceutical aggregation (multi-product aware)"""
