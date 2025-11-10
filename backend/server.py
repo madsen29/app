@@ -1789,6 +1789,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
     print(f"DEBUG: is_multi_product={is_multi_product}, product_serials={product_serials is not None}, len={len(product_serials) if product_serials else 0}")
     if is_multi_product and product_serials and len(product_serials) > 0:
         # Multi-product mode: Generate events for each product
+        print(f"DEBUG: Multi-product mode activated. Processing {len(product_serials)} products")
         for product_serial_entry in product_serials:
             product_index = product_serial_entry.get("productIndex", 0)
             product_hierarchical_serials = product_serial_entry.get("hierarchicalSerials", [])
