@@ -2514,7 +2514,7 @@ function App() {
           }
         }
         return innerCase.items.length;
-      } else if (activeProduct.casesPerSscc > 0) {
+      } else if (configuration.casesPerSscc > 0) {
         const caseData = sscc.cases?.[caseIndex];
         if (!caseData?.items) return 0;
         
