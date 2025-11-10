@@ -5035,7 +5035,7 @@ function App() {
     // Check if current product is complete AND all products are complete
     const allProductsComplete = areAllProductsComplete();
     
-    // If current product is complete but not all products, show reminder
+    // If current product is complete but not all products, show reminder and allow switching
     if (serialCollectionStep.isComplete && !allProductsComplete && products.length > 1) {
       return (
         <div className="step-container">
@@ -5045,13 +5045,73 @@ function App() {
             <h3>⚠️ Current Product Complete - More Products Remaining</h3>
             <p>You have completed serial number entry for Product {activeSerialProductIndex + 1}.</p>
             <p><strong>However, you must complete serial numbers for ALL {products.length} products before proceeding to Step 3.</strong></p>
-            
-            <div style={{marginTop: '1rem'}}>
-              <p>Use the product selector above to switch to other products and enter their serial numbers.</p>
-            </div>
           </div>
           
-          <div className="button-group">
+          {/* Product Selector to switch to incomplete products */}
+          <div className="product-selector-section" style={{marginTop: '1.5rem'}}>
+            <label htmlFor="continue-product-selector">
+              <strong>Select Product to Continue:</strong>
+            </label>
+            <select
+              id="continue-product-selector"
+              value={activeSerialProductIndex}
+              onChange={(e) => {
+                const newIndex = parseInt(e.target.value);
+                setActiveSerialProductIndex(newIndex);
+                
+                // Update configuration to match selected product
+                setConfiguration({
+                  ...configuration,
+                  ...products[newIndex]
+                });
+                
+                // Load serials for the selected product
+                const productSerial = productSerials.find(ps => ps.productIndex === newIndex);
+                if (productSerial && productSerial.hierarchicalSerials && productSerial.hierarchicalSerials.length > 0) {
+                  // Product has existing serials - load them
+                  setHierarchicalSerials(productSerial.hierarchicalSerials);
+                  const currentPosition = findCurrentSerialPosition(
+                    productSerial.hierarchicalSerials,
+                    products[newIndex]
+                  );
+                  setSerialCollectionStep({
+                    ...currentPosition,
+                    currentSerial: '',
+                    isComplete: currentPosition.isComplete
+                  });
+                } else {
+                  // No serials yet - initialize fresh
+                  setHierarchicalSerials([]);
+                  setSerialCollectionStep({
+                    ssccIndex: 0,
+                    caseIndex: 0,
+                    innerCaseIndex: 0,
+                    itemIndex: 0,
+                    currentLevel: 'sscc',
+                    currentSerial: '',
+                    isComplete: false
+                  });
+                }
+              }}
+              className="product-selector-dropdown"
+            >
+              {products.map((product, index) => {
+                const productSerial = productSerials.find(ps => ps.productIndex === index);
+                const isComplete = productSerial && productSerial.hierarchicalSerials && productSerial.hierarchicalSerials.length > 0;
+                
+                return (
+                  <option key={product.id} value={index}>
+                    Product {index + 1}
+                    {product.packageNdc && ` - Package NDC: ${product.packageNdc}`}
+                    {product.regulatedProductName && ` - ${product.regulatedProductName}`}
+                    {isComplete ? ' ✓' : ' (Incomplete)'}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          
+          <div className="button-group" style={{marginTop: '1.5rem'}}>
             <button 
               type="button" 
               onClick={() => {
