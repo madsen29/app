@@ -3322,6 +3322,33 @@ function App() {
     }
   };
 
+  // Calculate totals based on current product
+  const calculateCurrentProductTotals = () => {
+    const product = getCurrentProduct();
+    const numberOfSscc = parseInt(product.numberOfSscc) || 0;
+    const casesPerSscc = parseInt(product.casesPerSscc) || 0;
+    const itemsPerCase = parseInt(product.itemsPerCase) || 0;
+    const useInnerCases = product.useInnerCases;
+    const innerCasesPerCase = parseInt(product.innerCasesPerCase) || 0;
+    const itemsPerInnerCase = parseInt(product.itemsPerInnerCase) || 0;
+    
+    // If no cases, items go directly in SSCC
+    if (casesPerSscc === 0) {
+      const totalItems = itemsPerCase * numberOfSscc;
+      return { totalCases: 0, totalInnerCases: 0, totalItems };
+    }
+    
+    const totalCases = casesPerSscc * numberOfSscc;
+    if (useInnerCases) {
+      const totalInnerCases = innerCasesPerCase * totalCases;
+      const totalItems = itemsPerInnerCase * totalInnerCases;
+      return { totalCases, totalInnerCases, totalItems };
+    } else {
+      const totalItems = itemsPerCase * totalCases;
+      return { totalCases, totalInnerCases: 0, totalItems };
+    }
+  };
+
   const renderStep1 = () => (
     <div className="step-container">
       <h2 className="step-title">Step 1: Configuration</h2>
