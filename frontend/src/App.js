@@ -2538,7 +2538,7 @@ function App() {
     
     if (current.currentLevel === 'sscc') {
       // Move to the current case or first item (if direct SSCC→Items)
-      if (activeProduct.casesPerSscc === 0) {
+      if (configuration.casesPerSscc === 0) {
         // Direct SSCC → Items: Load existing item serials if they exist
         const currentSSCC = hierarchicalSerials[current.ssccIndex];
         const existingItems = currentSSCC?.items || [];
