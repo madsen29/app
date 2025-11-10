@@ -1035,38 +1035,42 @@ function App() {
     setIsLoading(true);
     setError('');
     
-    // Validate required fields
-    const requiredFields = [
-      { field: 'numberOfSscc', value: configuration.numberOfSscc, name: 'Number of SSCC' },
-      { field: 'companyPrefix', value: configuration.companyPrefix, name: 'Company Prefix' },
-      { field: 'productCode', value: configuration.productCode, name: 'Product Code' },
-      { field: 'ssccExtensionDigit', value: configuration.ssccExtensionDigit, name: 'SSCC Extension Digit' },
-      { field: 'caseIndicatorDigit', value: configuration.caseIndicatorDigit, name: 'Case Indicator Digit' },
-      { field: 'itemIndicatorDigit', value: configuration.itemIndicatorDigit, name: 'Item Indicator Digit' }
-    ];
-    
-    // Special validation for casesPerSscc - it can be 0 (for direct SSCC→Items) but not empty
-    if (configuration.casesPerSscc === '' || configuration.casesPerSscc === null || configuration.casesPerSscc === undefined) {
-      setError('Please fill in the following required fields: Cases per SSCC');
-      setIsLoading(false);
-      return;
-    }
-    
-    const emptyFields = requiredFields.filter(field => !field.value || field.value === '');
-    
-    if (emptyFields.length > 0) {
-      const fieldNames = emptyFields.map(field => field.name).join(', ');
-      setError(`Please fill in the following required fields: ${fieldNames}`);
-      setIsLoading(false);
-      return;
-    }
-    
-    // Additional validation for inner cases
-    if (configuration.useInnerCases && configuration.casesPerSscc > 0) {
-      if (!configuration.innerCaseIndicatorDigit || configuration.innerCaseIndicatorDigit === '') {
-        setError('Please fill in the Inner Case Indicator Digit when using inner cases.');
+    // Validate all products
+    for (let i = 0; i < products.length; i++) {
+      const product = products[i];
+      
+      const requiredFields = [
+        { field: 'numberOfSscc', value: product.numberOfSscc, name: `Product ${i + 1}: Number of SSCC` },
+        { field: 'companyPrefix', value: product.companyPrefix, name: `Product ${i + 1}: Company Prefix` },
+        { field: 'productCode', value: product.productCode, name: `Product ${i + 1}: Product Code` },
+        { field: 'ssccExtensionDigit', value: product.ssccExtensionDigit, name: `Product ${i + 1}: SSCC Extension Digit` },
+        { field: 'caseIndicatorDigit', value: product.caseIndicatorDigit, name: `Product ${i + 1}: Case Indicator Digit` },
+        { field: 'itemIndicatorDigit', value: product.itemIndicatorDigit, name: `Product ${i + 1}: Item Indicator Digit` }
+      ];
+      
+      // Special validation for casesPerSscc - it can be 0 (for direct SSCC→Items) but not empty
+      if (product.casesPerSscc === '' || product.casesPerSscc === null || product.casesPerSscc === undefined) {
+        setError(`Product ${i + 1}: Please fill in Cases per SSCC`);
         setIsLoading(false);
         return;
+      }
+      
+      const emptyFields = requiredFields.filter(field => !field.value || field.value === '');
+      
+      if (emptyFields.length > 0) {
+        const fieldNames = emptyFields.map(field => field.name).join(', ');
+        setError(`Please fill in the following required fields: ${fieldNames}`);
+        setIsLoading(false);
+        return;
+      }
+      
+      // Additional validation for inner cases
+      if (product.useInnerCases && product.casesPerSscc > 0) {
+        if (!product.innerCaseIndicatorDigit || product.innerCaseIndicatorDigit === '') {
+          setError(`Product ${i + 1}: Please fill in the Inner Case Indicator Digit when using inner cases.`);
+          setIsLoading(false);
+          return;
+        }
       }
     }
     
