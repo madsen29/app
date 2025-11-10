@@ -2495,8 +2495,9 @@ function App() {
   };
 
   const handleFdaSearch = () => {
-    if (configuration.productNdc) {
-      searchFdaApi(configuration.productNdc);
+    const currentProduct = getCurrentProduct();
+    if (currentProduct.productNdc) {
+      searchFdaApi(currentProduct.productNdc);
     } else {
       setError('Please enter a Product NDC number');
     }
@@ -2539,12 +2540,28 @@ function App() {
     // Store the normalized 11-digit NDC without hyphens for backend processing
     const packageNdcForStorage = normalizedPackageNdc.replace(/-/g, '');
     
-    setConfiguration({
-      ...configuration,
+    // Update the current product with FDA data
+    updateCurrentProduct({
       productNdc: productOption.productNdc, // Store the original product NDC
       packageNdc: packageNdcForStorage, // Store the normalized 11-digit package NDC without hyphens
       companyPrefix: companyPrefix, // "03" + first segment (without padding)
       productCode: productCodeForGS1, // Last 2 segments concatenated (without padding)
+      regulatedProductName: productOption.brand_name || productOption.generic_name || '',
+      manufacturerName: productOption.labeler_name || '',
+      dosageFormType: productOption.dosage_form || '',
+      strengthDescription: productOption.active_ingredients?.map(ing => 
+        `${ing.name} ${ing.strength}`
+      ).join(', ') || '',
+      netContentDescription: productOption.packageDescription || ''
+    });
+    
+    // Also update legacy configuration for backward compatibility
+    setConfiguration({
+      ...configuration,
+      productNdc: productOption.productNdc,
+      packageNdc: packageNdcForStorage,
+      companyPrefix: companyPrefix,
+      productCode: productCodeForGS1,
       regulatedProductName: productOption.brand_name || productOption.generic_name || '',
       manufacturerName: productOption.labeler_name || '',
       dosageFormType: productOption.dosage_form || '',
