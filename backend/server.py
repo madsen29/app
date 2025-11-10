@@ -114,6 +114,7 @@ class ProjectUpdate(BaseModel):
     current_step: Optional[int] = None
     configuration: Optional[dict] = None
     serial_numbers: Optional[list] = None  # Allow list for hierarchical structure
+    product_serials: Optional[list] = None  # Multi-product serial numbers
     epcis_file_content: Optional[str] = None
 
 # Location model for saved locations
