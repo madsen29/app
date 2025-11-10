@@ -1297,8 +1297,8 @@ def add_ilmd_extension(event_element, lot_number, expiration_date):
             exp_elem = ET.SubElement(ilmd, "{urn:epcglobal:cbv:mda}itemExpirationDate")
             exp_elem.text = expiration_date
 
-def generate_epcis_xml(config, serial_numbers, read_point, biz_location):
-    """Generate GS1 EPCIS 1.2 XML with SBDH for pharmaceutical aggregation"""
+def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product_serials=None):
+    """Generate GS1 EPCIS 1.2 XML with SBDH for pharmaceutical aggregation (multi-product aware)"""
     
     # Initialize base timestamp and counter for incremental timestamps
     base_timestamp = datetime.now(timezone.utc)
