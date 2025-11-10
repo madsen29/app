@@ -2579,7 +2579,7 @@ function App() {
       }
     } else if (current.currentLevel === 'case') {
       // Move to the current inner case or first item
-      if (activeProduct.useInnerCases) {
+      if (configuration.useInnerCases) {
         // Continue with the inner case they were working on, and load its existing serial
         const currentSSCC = hierarchicalSerials[current.ssccIndex];
         const currentInnerCase = currentSSCC?.cases?.[current.caseIndex]?.innerCases?.[current.innerCaseIndex];
@@ -2650,7 +2650,7 @@ function App() {
       // Move to next item, inner case, case, or SSCC
       const nextItemIndex = current.itemIndex + 1 + itemsToSkip;
       
-      if (activeProduct.useInnerCases) {
+      if (configuration.useInnerCases) {
         const itemsPerInnerCase = activeProduct.itemsPerInnerCase;
         if (nextItemIndex < itemsPerInnerCase) {
           // More items in this inner case
