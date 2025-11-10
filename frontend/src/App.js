@@ -3982,7 +3982,7 @@ function App() {
             </label>
           </div>
           
-          {configuration.casesPerSscc === 0 ? (
+          {getCurrentProduct().casesPerSscc === 0 ? (
             <div className="packaging-config">
               <div className="form-group">
                 <label htmlFor="itemsPerCase">Items per SSCC:</label>
@@ -3993,11 +3993,11 @@ function App() {
                   pattern="[0-9]*"
                   min="1"
                   max="100000000"
-                  value={configuration.itemsPerCase}
+                  value={getCurrentProduct().itemsPerCase}
                   onChange={(e) => {
                     const value = e.target.value;
                     const parsedValue = value === '' ? '' : parseInt(value);
-                    setConfiguration({...configuration, itemsPerCase: isNaN(parsedValue) ? '' : parsedValue});
+                    updateCurrentProduct({itemsPerCase: isNaN(parsedValue) ? '' : parsedValue});
                   }}
                   disabled={isPackagingConfigLocked}
                   placeholder="e.g., 10"
@@ -4008,7 +4008,7 @@ function App() {
                 <p><strong>2-Level Hierarchy:</strong> SSCC → Items</p>
               </div>
             </div>
-          ) : configuration.useInnerCases ? (
+          ) : getCurrentProduct().useInnerCases ? (
             <div className="packaging-config">
               <div className="grid grid-cols-2 gap-4 mb-0">
                 <div className="form-group">
@@ -4020,11 +4020,11 @@ function App() {
                     pattern="[0-9]*"
                     min="1"
                     max="50000"
-                    value={configuration.innerCasesPerCase}
+                    value={getCurrentProduct().innerCasesPerCase}
                     onChange={(e) => {
                       const value = e.target.value;
                       const parsedValue = value === '' ? '' : parseInt(value);
-                      setConfiguration({...configuration, innerCasesPerCase: isNaN(parsedValue) ? '' : parsedValue});
+                      updateCurrentProduct({innerCasesPerCase: isNaN(parsedValue) ? '' : parsedValue});
                     }}
                     disabled={isPackagingConfigLocked}
                     placeholder="e.g., 2"
@@ -4040,11 +4040,11 @@ function App() {
                     pattern="[0-9]*"
                     min="1"
                     max="100000"
-                    value={configuration.itemsPerInnerCase}
+                    value={getCurrentProduct().itemsPerInnerCase}
                     onChange={(e) => {
                       const value = e.target.value;
                       const parsedValue = value === '' ? '' : parseInt(value);
-                      setConfiguration({...configuration, itemsPerInnerCase: isNaN(parsedValue) ? '' : parsedValue});
+                      updateCurrentProduct({itemsPerInnerCase: isNaN(parsedValue) ? '' : parsedValue});
                     }}
                     disabled={isPackagingConfigLocked}
                     placeholder="e.g., 5"
@@ -4068,11 +4068,11 @@ function App() {
                   pattern="[0-9]*"
                   min="1"
                   max="100"
-                  value={configuration.itemsPerCase}
+                  value={getCurrentProduct().itemsPerCase}
                   onChange={(e) => {
                     const value = e.target.value;
                     const parsedValue = value === '' ? '' : parseInt(value);
-                    setConfiguration({...configuration, itemsPerCase: isNaN(parsedValue) ? '' : parsedValue});
+                    updateCurrentProduct({itemsPerCase: isNaN(parsedValue) ? '' : parsedValue});
                   }}
                   disabled={isPackagingConfigLocked}
                   placeholder="e.g., 10"
