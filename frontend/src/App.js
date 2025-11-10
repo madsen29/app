@@ -2582,7 +2582,7 @@ function App() {
       }
     } else if (current.currentLevel === 'case') {
       // Move to the current inner case or first item
-      if (configuration.useInnerCases) {
+      if (activeProduct.useInnerCases) {
         // Continue with the inner case they were working on, and load its existing serial
         const currentSSCC = hierarchicalSerials[current.ssccIndex];
         const currentInnerCase = currentSSCC?.cases?.[current.caseIndex]?.innerCases?.[current.innerCaseIndex];
