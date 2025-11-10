@@ -2704,9 +2704,9 @@ function App() {
             }
           }
         }
-      } else if (configuration.casesPerSscc > 0) {
+      } else if (activeProduct.casesPerSscc > 0) {
         // Cases → Items
-        const itemsPerCase = configuration.itemsPerCase;
+        const itemsPerCase = activeProduct.itemsPerCase;
         if (nextItemIndex < itemsPerCase) {
           // More items in this case
           return {
