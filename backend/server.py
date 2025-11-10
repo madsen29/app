@@ -1331,9 +1331,12 @@ def generate_product_events(event_list, get_next_timestamp, read_point, biz_loca
     item_epcs = [f"urn:epc:id:sgtin:{company_prefix}.{item_indicator_digit}{item_product_code}.{s}" for s in item_serials if s]
     
     print(f"  EPC Generation: {len(item_epcs)} item EPCs created from {len(item_serials)} serials")
+    if len(item_epcs) > 0:
+        print(f"    Sample item EPCs: {item_epcs[:2]}")
     
     # 1. Single Commissioning Event for All Items
     if item_epcs:
+        print(f"    Creating commissioning event with {len(item_epcs)} items")
         object_event = ET.SubElement(event_list, "ObjectEvent")
         event_time = ET.SubElement(object_event, "eventTime")
         event_time.text = get_next_timestamp()
