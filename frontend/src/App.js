@@ -5168,6 +5168,39 @@ function App() {
           {/* Visual Tree Component */}
           <div className="serial-tree-container">
             <h3>Serial Number Overview</h3>
+            
+            {/* Product Selector for Multi-Product Overview */}
+            {products.length > 1 && (
+              <div className="product-selector-section" style={{marginBottom: '1rem'}}>
+                <label htmlFor="overview-product-selector">
+                  <strong>Select Product to Review:</strong>
+                </label>
+                <select
+                  id="overview-product-selector"
+                  value={activeSerialProductIndex}
+                  onChange={(e) => {
+                    const newIndex = parseInt(e.target.value);
+                    setActiveSerialProductIndex(newIndex);
+                    
+                    // Load serials for the selected product
+                    const productSerial = productSerials.find(ps => ps.productIndex === newIndex);
+                    if (productSerial && productSerial.hierarchicalSerials) {
+                      setHierarchicalSerials(productSerial.hierarchicalSerials);
+                    }
+                  }}
+                  className="product-selector-dropdown"
+                >
+                  {products.map((product, index) => (
+                    <option key={product.id} value={index}>
+                      Product {index + 1}
+                      {product.packageNdc && ` - Package NDC: ${product.packageNdc}`}
+                      {product.regulatedProductName && ` - ${product.regulatedProductName}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            
             <div className="serial-tree">
               {renderSerialTree()}
             </div>
