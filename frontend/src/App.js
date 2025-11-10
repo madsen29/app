@@ -5195,7 +5195,12 @@ function App() {
             >
               {products.map((product, index) => {
                 const productSerial = productSerials.find(ps => ps.productIndex === index);
-                const isComplete = productSerial && productSerial.hierarchicalSerials && productSerial.hierarchicalSerials.length > 0;
+                // Check if product's serials are actually complete by validating against its hierarchy
+                let isComplete = false;
+                if (productSerial && productSerial.hierarchicalSerials && productSerial.hierarchicalSerials.length > 0) {
+                  const position = findCurrentSerialPosition(productSerial.hierarchicalSerials, products[index]);
+                  isComplete = position.isComplete;
+                }
                 
                 return (
                   <option key={product.id} value={index}>
