@@ -2259,13 +2259,32 @@ function App() {
       
       switch (serialCollectionStep.currentLevel) {
         case 'sscc':
-          currentSSCC.ssccSerial = serialCollectionStep.currentSerial;
+          if (currentSSCC) {
+            currentSSCC.ssccSerial = serialCollectionStep.currentSerial;
+          } else {
+            setError('Error: SSCC container not found. Please refresh and try again.');
+            return;
+          }
           break;
         case 'case':
-          currentSSCC.cases[serialCollectionStep.caseIndex].caseSerial = serialCollectionStep.currentSerial;
+          if (currentSSCC && currentSSCC.cases && currentSSCC.cases[serialCollectionStep.caseIndex]) {
+            currentSSCC.cases[serialCollectionStep.caseIndex].caseSerial = serialCollectionStep.currentSerial;
+          } else {
+            setError('Error: Case container not found. Please refresh and try again.');
+            return;
+          }
           break;
         case 'innerCase':
-          currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].innerCaseSerial = serialCollectionStep.currentSerial;
+          if (currentSSCC && 
+              currentSSCC.cases && 
+              currentSSCC.cases[serialCollectionStep.caseIndex] &&
+              currentSSCC.cases[serialCollectionStep.caseIndex].innerCases &&
+              currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex]) {
+            currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].innerCaseSerial = serialCollectionStep.currentSerial;
+          } else {
+            setError('Error: Inner case container not found. Please refresh and try again.');
+            return;
+          }
           break;
       }
       
