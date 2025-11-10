@@ -339,6 +339,18 @@ backend:
         agent: "testing"
         comment: "COMPREHENSIVE BACKEND BASELINE TESTING COMPLETED - SERIAL NUMBERS API: ✅ ALL SERIAL NUMBERS FUNCTIONALITY VERIFIED AND WORKING PERFECTLY: 1) ✅ SERIAL NUMBERS CREATION: POST /api/projects/{project_id}/serial-numbers endpoint working perfectly with review request configuration (1 SSCC: BASELINE_SSCC_001, 1 Case: BASELINE_CASE_001, 2 Items: BASELINE_ITEM_001, BASELINE_ITEM_002) - proper validation against configuration, correct serial count verification, returns complete serial numbers object 2) ✅ SERIAL NUMBERS VALIDATION: Proper error handling for incorrect serial counts - correctly rejects wrong item counts (expected 2 items) with 400 status and descriptive error messages, validates against stored configuration parameters 3) ✅ HIERARCHICAL STRUCTURE: Backend properly handles serial number input and stores in appropriate format, supports all hierarchy levels ✅ Test Results: 3/3 serial numbers tests passed (100% success rate) ✅ SCANDIT INTEGRATION IMPACT: ScandIt changes are frontend-only and have NOT affected backend serial numbers APIs ✅ Serial numbers API is 100% functional after ScandIt integration"
   
+  - task: "Product Serials Multi-Product Support"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "PRODUCT_SERIALS FIELD INVESTIGATION COMPLETED: ❌ CRITICAL API RESPONSE MODEL ISSUE IDENTIFIED: The product_serials field functionality is partially implemented but has a critical flaw in the API response model ✅ DATABASE STORAGE WORKING: Successfully verified that product_serials data IS being stored correctly in MongoDB with proper hierarchical structure including productIndex, productName, ssccSerial, cases array with caseSerial and items arrays ✅ BACKEND LOGIC IMPLEMENTED: ProjectUpdate model (line 117) includes product_serials field and update endpoint accepts and stores the data correctly ✅ EPCIS GENERATION SUPPORT: generate_epcis_xml function includes full multi-product support with product_serials parameter for processing multiple products ❌ API RESPONSE MODEL MISSING FIELD: Project response model (lines 96-106) does NOT include product_serials field, causing stored data to be invisible to API consumers even though it exists in database ✅ HIERARCHICAL STRUCTURE VERIFIED: All item serial numbers are properly stored as non-empty strings within cases array structure, maintaining complete product hierarchy ✅ TEST PROJECT CREATED: Successfully created test project (ID: a57661ea-634c-44b3-8d4e-08eb72f9c23a) with product_serials data to demonstrate functionality ❌ ROOT CAUSE: Data storage works but API retrieval fails due to missing field in Project model - this prevents frontend from accessing stored product_serials data ✅ SOLUTION IDENTIFIED: Add product_serials field to Project model (line 103) to match ProjectUpdate model and enable API responses to include the stored data"
+
   - task: "EPCIS XML generation"
     implemented: true
     working: true
