@@ -5032,15 +5032,18 @@ function App() {
     }
     const totals = calculateTotals();
     
-    if (serialCollectionStep.isComplete) {
+    // Check if current product is complete AND all products are complete
+    const allProductsComplete = areAllProductsComplete();
+    
+    if (serialCollectionStep.isComplete && allProductsComplete) {
       // Show summary and submit button
       return (
         <div className="step-container">
           <h2 className="step-title">Step 2: Serial Numbers - Complete</h2>
           
           <div className="completion-summary">
-            <h3>✅ All Serial Numbers Collected</h3>
-            <p>You have successfully entered all {totals.totalItems} item serial numbers and their parent container serial numbers.</p>
+            <h3>✅ All Serial Numbers Collected for All Products</h3>
+            <p>You have successfully entered all serial numbers for all {products.length} product(s).</p>
             
             <div className="summary-stats">
               <div className="stat">
