@@ -26,6 +26,41 @@ function App() {
   // Existing state
   const [currentStep, setCurrentStep] = useState(1);
   
+  // Multi-product configuration state
+  const [products, setProducts] = useState([
+    {
+      id: 'product-1',
+      // Product Information (EPCClass)
+      manufacturerName: '',
+      regulatedProductName: '',
+      packageNdc: '',
+      productNdc: '',
+      dosageFormType: '',
+      strengthDescription: '',
+      netContentDescription: '',
+      companyPrefix: '',
+      productCode: '',
+      lotNumber: '',
+      expirationDate: '',
+      
+      // Packaging Configuration (per product)
+      itemsPerCase: '',
+      casesPerSscc: '',
+      numberOfSscc: 1,
+      useInnerCases: false,
+      innerCasesPerCase: '',
+      itemsPerInnerCase: '',
+      ssccExtensionDigit: '0',
+      caseIndicatorDigit: '0',
+      innerCaseIndicatorDigit: '0',
+      itemIndicatorDigit: '0'
+    }
+  ]);
+  
+  // Active product index for UI
+  const [activeProductIndex, setActiveProductIndex] = useState(0);
+  
+  // Legacy configuration state (for backward compatibility)
   const [configuration, setConfiguration] = useState({
     itemsPerCase: '',
     casesPerSscc: '',
