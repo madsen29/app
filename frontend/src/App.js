@@ -4096,8 +4096,8 @@ function App() {
                   inputMode="numeric"
                   pattern="[0-9]*"
                   maxLength="1"
-                  value={configuration.ssccExtensionDigit}
-                  onChange={(e) => setConfiguration({...configuration, ssccExtensionDigit: e.target.value})}
+                  value={getCurrentProduct().ssccExtensionDigit}
+                  onChange={(e) => updateCurrentProduct({ssccExtensionDigit: e.target.value})}
                   placeholder="0"
                   required
                 />
@@ -4111,14 +4111,14 @@ function App() {
                   inputMode="numeric"
                   pattern="[0-9]*"
                   maxLength="1"
-                  value={configuration.caseIndicatorDigit}
-                  onChange={(e) => setConfiguration({...configuration, caseIndicatorDigit: e.target.value})}
+                  value={getCurrentProduct().caseIndicatorDigit}
+                  onChange={(e) => updateCurrentProduct({caseIndicatorDigit: e.target.value})}
                   placeholder="0"
                   required
                 />
                 <small className="form-hint">Single digit (0-9) for case SGTINs</small>
               </div>
-              {configuration.useInnerCases && (
+              {getCurrentProduct().useInnerCases && (
                 <div className="form-group">
                   <label htmlFor="innerCaseIndicatorDigit">Inner Case Indicator Digit:</label>
                   <input
@@ -4127,8 +4127,8 @@ function App() {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength="1"
-                    value={configuration.innerCaseIndicatorDigit}
-                    onChange={(e) => setConfiguration({...configuration, innerCaseIndicatorDigit: e.target.value})}
+                    value={getCurrentProduct().innerCaseIndicatorDigit}
+                    onChange={(e) => updateCurrentProduct({innerCaseIndicatorDigit: e.target.value})}
                     placeholder="0"
                     required
                   />
@@ -4143,8 +4143,8 @@ function App() {
                   inputMode="numeric"
                   pattern="[0-9]*"
                   maxLength="1"
-                  value={configuration.itemIndicatorDigit}
-                  onChange={(e) => setConfiguration({...configuration, itemIndicatorDigit: e.target.value})}
+                  value={getCurrentProduct().itemIndicatorDigit}
+                  onChange={(e) => updateCurrentProduct({itemIndicatorDigit: e.target.value})}
                   placeholder="0"
                   required
                 />
