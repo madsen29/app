@@ -2004,7 +2004,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
                 generate_product_events(
                     event_list, get_next_timestamp, read_point, biz_location,
                     sscc_serials, case_serials, inner_case_serials, item_serials,
-                    shipper_company_prefix, sscc_extension_digit,
+                    shipper_company_prefix, sscc_extension_digit_product,
                     company_prefix, item_product_code, case_product_code, inner_case_product_code,
                     item_indicator_digit, case_indicator_digit, inner_case_indicator_digit,
                     use_inner_cases, direct_sscc_items, lot_number, expiration_date
