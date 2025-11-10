@@ -1617,16 +1617,20 @@ function App() {
         }
       });
       
-      await axios.post(`${API}/projects/${currentProject.id}/serial-numbers`, {
-        sscc_serial_numbers: ssccArray,
-        case_serial_numbers: caseArray,
-        inner_case_serial_numbers: innerCaseArray,
-        item_serial_numbers: itemArray
-      }, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      // Legacy endpoint call for backward compatibility (only for single-product projects)
+      // Multi-product projects already saved via product_serials above
+      if (products.length === 1) {
+        await axios.post(`${API}/projects/${currentProject.id}/serial-numbers`, {
+          sscc_serial_numbers: ssccArray,
+          case_serial_numbers: caseArray,
+          inner_case_serial_numbers: innerCaseArray,
+          item_serial_numbers: itemArray
+        }, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+      }
       
       // Navigate to step 3
       setCurrentStep(3);
