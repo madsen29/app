@@ -921,8 +921,20 @@ function App() {
       }
 
       // Save serial numbers if we're on step 2 or beyond
-      if (currentStep >= 2 && hierarchicalSerials) {
-        updateData.serial_numbers = hierarchicalSerials;
+      // Store per-product serials in new format
+      if (currentStep >= 2) {
+        // Save current product's serials before storing
+        if (hierarchicalSerials && hierarchicalSerials.length > 0) {
+          setActiveProductSerials(hierarchicalSerials);
+        }
+        
+        // Store per-product serials
+        updateData.product_serials = productSerials;
+        
+        // For backward compatibility, also store first product's serials in old format
+        if (productSerials.length > 0) {
+          updateData.serial_numbers = productSerials[0].hierarchicalSerials;
+        }
       }
 
       await axios.put(`${API}/projects/${currentProject.id}`, updateData, {
