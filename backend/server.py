@@ -2000,7 +2000,12 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
                             item_serials.append(item_entry.get("itemSerial", ""))
                 
                 # Generate events for this product
-                print(f"DEBUG: Generating events for product {product_index}, {len(item_serials)} items")
+                print(f"DEBUG: Generating events for product {product_index}")
+                print(f"  - SSCC serials: {len(sscc_serials)}")
+                print(f"  - Case serials: {len(case_serials)}")
+                print(f"  - Inner case serials: {len(inner_case_serials)}")
+                print(f"  - Item serials: {len(item_serials)}")
+                print(f"  - Item serials list: {item_serials[:3]}")  # Show first 3
                 generate_product_events(
                     event_list, get_next_timestamp, read_point, biz_location,
                     sscc_serials, case_serials, inner_case_serials, item_serials,
