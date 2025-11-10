@@ -2661,7 +2661,7 @@ function App() {
         } else {
           // Move to next inner case
           const nextInnerCaseIndex = current.innerCaseIndex + 1;
-          if (nextInnerCaseIndex < activeProduct.innerCasesPerCase) {
+          if (nextInnerCaseIndex < configuration.innerCasesPerCase) {
             return {
               ...current,
               innerCaseIndex: nextInnerCaseIndex,
