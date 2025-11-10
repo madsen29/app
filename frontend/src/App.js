@@ -2548,7 +2548,7 @@ function App() {
         
         // Build array of existing serials, preserving order and including empty slots
         const allSerials = [];
-        for (let i = 0; i < configuration.itemsPerCase; i++) {
+        for (let i = 0; i < activeProduct.itemsPerCase; i++) {
           const item = existingItems[i];
           const serial = item?.itemSerial || '';
           if (serial.trim()) {
