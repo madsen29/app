@@ -4780,6 +4780,47 @@ function App() {
       <div className="step-container">
         <h2 className="step-title">Step 2: Serial Numbers</h2>
         
+        {/* Product Selector */}
+        {products.length > 1 && (
+          <div className="product-selector-section">
+            <label htmlFor="serial-product-selector">
+              <strong>Select Product for Serialization:</strong>
+            </label>
+            <select
+              id="serial-product-selector"
+              value={activeSerialProductIndex}
+              onChange={(e) => {
+                const newIndex = parseInt(e.target.value);
+                setActiveSerialProductIndex(newIndex);
+                // Update configuration to match selected product for serial collection
+                setConfiguration({
+                  ...configuration,
+                  ...products[newIndex]
+                });
+              }}
+              className="product-selector-dropdown"
+            >
+              {products.map((product, index) => (
+                <option key={product.id} value={index}>
+                  Product {index + 1}
+                  {product.productNdc && ` - NDC: ${product.productNdc}`}
+                  {product.regulatedProductName && ` - ${product.regulatedProductName}`}
+                </option>
+              ))}
+            </select>
+            
+            {/* Current Product Info */}
+            <div className="current-product-info">
+              <div className="product-info-item">
+                <strong>Hierarchy:</strong> {products[activeSerialProductIndex].numberOfSscc} SSCC
+                {products[activeSerialProductIndex].casesPerSscc > 0 && ` → ${calculateCurrentProductTotals().totalCases} Cases`}
+                {products[activeSerialProductIndex].useInnerCases && ` → ${calculateCurrentProductTotals().totalInnerCases} Inner Cases`}
+                {` → ${calculateCurrentProductTotals().totalItems} Items`}
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div className="hierarchical-input">
           <div className="current-input">
             <div className="context-path">
