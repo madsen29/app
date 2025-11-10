@@ -4803,7 +4803,7 @@ function App() {
               {products.map((product, index) => (
                 <option key={product.id} value={index}>
                   Product {index + 1}
-                  {product.productNdc && ` - NDC: ${product.productNdc}`}
+                  {product.packageNdc && ` - Package NDC: ${product.packageNdc}`}
                   {product.regulatedProductName && ` - ${product.regulatedProductName}`}
                 </option>
               ))}
