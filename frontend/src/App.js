@@ -1446,17 +1446,37 @@ function App() {
       return;
     }
     
-    // CRITICAL: Save current product's serials before validation
+    // CRITICAL: Build updated productSerials array with current active product FIRST
+    let updatedProductSerials = [...productSerials];
+    
     if (hierarchicalSerials && hierarchicalSerials.length > 0) {
-      setActiveProductSerials(hierarchicalSerials);
+      const existingIndex = updatedProductSerials.findIndex(
+        ps => ps.productIndex === activeSerialProductIndex
+      );
+      
+      const newProductSerial = {
+        productId: products[activeSerialProductIndex]?.id,
+        productIndex: activeSerialProductIndex,
+        hierarchicalSerials: hierarchicalSerials
+      };
+      
+      if (existingIndex >= 0) {
+        updatedProductSerials[existingIndex] = newProductSerial;
+      } else {
+        updatedProductSerials.push(newProductSerial);
+      }
     }
     
+    // Now update the state (for UI)
+    setProductSerials(updatedProductSerials);
+    
     // CRITICAL: Validate that ALL products have complete serial numbers
+    // Use the UPDATED array, not the old state
     const incompleteProducts = [];
     
     for (let i = 0; i < products.length; i++) {
       const product = products[i];
-      const productSerial = productSerials.find(ps => ps.productIndex === i);
+      const productSerial = updatedProductSerials.find(ps => ps.productIndex === i);
       
       // Check if product has serials
       if (!productSerial || !productSerial.hierarchicalSerials || productSerial.hierarchicalSerials.length === 0) {
