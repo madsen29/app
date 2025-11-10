@@ -1557,7 +1557,20 @@ function App() {
     setError('');
     
     try {
-      // Convert hierarchical structure to flat arrays for backend
+      // Save the updated product serials to the backend
+      await axios.put(`${API}/projects/${currentProject.id}`, {
+        product_serials: updatedProductSerials,
+        current_step: 3,
+        updated_at: new Date().toISOString()
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      console.log('✅ Saved all product serials to database');
+      
+      // Convert hierarchical structure to flat arrays for backend (legacy format for backward compatibility)
       const ssccArray = [];
       const caseArray = [];
       const innerCaseArray = [];
