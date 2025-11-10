@@ -430,8 +430,18 @@ function App() {
 
   // Project management functions
   const handleSelectProject = (project) => {
-    // CRITICAL: Clear any existing serial state to prevent cross-project contamination
+    // CRITICAL: Clear ALL serial state to prevent cross-project contamination
     setHierarchicalSerials([]);
+    setProductSerials([]);  // Clear multi-product serials
+    setSerialCollectionStep({
+      ssccIndex: 0,
+      caseIndex: 0,
+      innerCaseIndex: 0,
+      itemIndex: 0,
+      currentLevel: 'sscc',
+      currentSerial: '',
+      isComplete: false
+    });
     
     setCurrentProject(project);
     setShowDashboard(false);
