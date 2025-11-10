@@ -1962,6 +1962,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
                 item_indicator_digit = product.get("itemIndicatorDigit", "0")
                 case_indicator_digit = product.get("caseIndicatorDigit", "0")
                 inner_case_indicator_digit = product.get("innerCaseIndicatorDigit", "0")
+                sscc_extension_digit_product = product.get("ssccExtensionDigit", "0")
                 
                 use_inner_cases = product.get("useInnerCases", False)
                 cases_per_sscc = product.get("casesPerSscc", 0)
