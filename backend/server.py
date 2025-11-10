@@ -1861,9 +1861,9 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
         case_serials = []
         inner_case_serials = []
         item_serials = []
-    
-    # Check if serial_numbers is in the new list format with "type" fields
-    if serial_numbers and isinstance(serial_numbers, list) and len(serial_numbers) > 0 and isinstance(serial_numbers[0], dict) and "type" in serial_numbers[0]:
+        
+        # Check if serial_numbers is in the new list format with "type" fields
+        if serial_numbers and isinstance(serial_numbers, list) and len(serial_numbers) > 0 and isinstance(serial_numbers[0], dict) and "type" in serial_numbers[0]:
         # Handle new list format with "type" and "serial" fields
         for serial_entry in serial_numbers:
             if serial_entry["type"] == "sscc":
