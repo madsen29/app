@@ -1864,17 +1864,17 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
         
         # Check if serial_numbers is in the new list format with "type" fields
         if serial_numbers and isinstance(serial_numbers, list) and len(serial_numbers) > 0 and isinstance(serial_numbers[0], dict) and "type" in serial_numbers[0]:
-        # Handle new list format with "type" and "serial" fields
-        for serial_entry in serial_numbers:
-            if serial_entry["type"] == "sscc":
-                sscc_serials.append(serial_entry["serial"])
-            elif serial_entry["type"] == "case":
-                case_serials.append(serial_entry["serial"])
-            elif serial_entry["type"] == "inner_case":
-                inner_case_serials.append(serial_entry["serial"])
-            elif serial_entry["type"] == "item":
-                item_serials.append(serial_entry["serial"])
-    elif serial_numbers and isinstance(serial_numbers, list) and len(serial_numbers) > 0 and isinstance(serial_numbers[0], dict) and "ssccIndex" in serial_numbers[0]:
+            # Handle new list format with "type" and "serial" fields
+            for serial_entry in serial_numbers:
+                if serial_entry["type"] == "sscc":
+                    sscc_serials.append(serial_entry["serial"])
+                elif serial_entry["type"] == "case":
+                    case_serials.append(serial_entry["serial"])
+                elif serial_entry["type"] == "inner_case":
+                    inner_case_serials.append(serial_entry["serial"])
+                elif serial_entry["type"] == "item":
+                    item_serials.append(serial_entry["serial"])
+        elif serial_numbers and isinstance(serial_numbers, list) and len(serial_numbers) > 0 and isinstance(serial_numbers[0], dict) and "ssccIndex" in serial_numbers[0]:
         # Handle frontend hierarchical format (from auto-save)
         for sscc_entry in serial_numbers:
             sscc_serials.append(sscc_entry.get("ssccSerial", ""))
