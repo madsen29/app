@@ -463,68 +463,87 @@ function App() {
       return !isNaN(parsed) ? parsed : defaultValue;
     };
     
-    // Load project configuration
+    // Load project configuration - handle both multi-product and legacy formats
     if (project.configuration) {
       const config = project.configuration;
       console.log('Loading project configuration:', config);
-      console.log('casesPerSscc value from DB:', config.casesPerSscc, 'type:', typeof config.casesPerSscc);
-      console.log('cases_per_sscc value from DB:', config.cases_per_sscc, 'type:', typeof config.cases_per_sscc);
       
-      setConfiguration({
-        itemsPerCase: getNumericConfigValue(config, 'itemsPerCase', 'items_per_case', ''),
-        casesPerSscc: getNumericConfigValue(config, 'casesPerSscc', 'cases_per_sscc', ''),
-        numberOfSscc: getNumericConfigValue(config, 'numberOfSscc', 'number_of_sscc', ''),
-        useInnerCases: getConfigValue(config, 'useInnerCases', 'use_inner_cases', false),
-        innerCasesPerCase: getNumericConfigValue(config, 'innerCasesPerCase', 'inner_cases_per_case', ''),
-        itemsPerInnerCase: getNumericConfigValue(config, 'itemsPerInnerCase', 'items_per_inner_case', ''),
-        companyPrefix: getConfigValue(config, 'companyPrefix', 'company_prefix', ''),
-        productCode: getConfigValue(config, 'productCode', 'product_code', ''),
-        lotNumber: getConfigValue(config, 'lotNumber', 'lot_number', ''),
-        expirationDate: getConfigValue(config, 'expirationDate', 'expiration_date', ''),
-        ssccExtensionDigit: getConfigValue(config, 'ssccExtensionDigit', 'sscc_extension_digit', '0'),
-        caseIndicatorDigit: getConfigValue(config, 'caseIndicatorDigit', 'case_indicator_digit', '0'),
-        innerCaseIndicatorDigit: getConfigValue(config, 'innerCaseIndicatorDigit', 'inner_case_indicator_digit', '0'),
-        itemIndicatorDigit: getConfigValue(config, 'itemIndicatorDigit', 'item_indicator_digit', '0'),
-        // Business Document Information
-        senderCompanyPrefix: getConfigValue(config, 'senderCompanyPrefix', 'sender_company_prefix', ''),
-        senderGln: getConfigValue(config, 'senderGln', 'sender_gln', ''),
-        senderSgln: getConfigValue(config, 'senderSgln', 'sender_sgln', ''),
-        senderName: getConfigValue(config, 'senderName', 'sender_name', ''),
-        senderStreetAddress: getConfigValue(config, 'senderStreetAddress', 'sender_street_address', ''),
-        senderCity: getConfigValue(config, 'senderCity', 'sender_city', ''),
-        senderState: getConfigValue(config, 'senderState', 'sender_state', ''),
-        senderPostalCode: getConfigValue(config, 'senderPostalCode', 'sender_postal_code', ''),
-        senderCountryCode: getConfigValue(config, 'senderCountryCode', 'sender_country_code', ''),
-        senderDespatchAdviceNumber: getConfigValue(config, 'senderDespatchAdviceNumber', 'sender_despatch_advice_number', ''),
-        receiverCompanyPrefix: getConfigValue(config, 'receiverCompanyPrefix', 'receiver_company_prefix', ''),
-        receiverGln: getConfigValue(config, 'receiverGln', 'receiver_gln', ''),
-        receiverSgln: getConfigValue(config, 'receiverSgln', 'receiver_sgln', ''),
-        receiverName: getConfigValue(config, 'receiverName', 'receiver_name', ''),
-        receiverStreetAddress: getConfigValue(config, 'receiverStreetAddress', 'receiver_street_address', ''),
-        receiverCity: getConfigValue(config, 'receiverCity', 'receiver_city', ''),
-        receiverState: getConfigValue(config, 'receiverState', 'receiver_state', ''),
-        receiverPostalCode: getConfigValue(config, 'receiverPostalCode', 'receiver_postal_code', ''),
-        receiverCountryCode: getConfigValue(config, 'receiverCountryCode', 'receiver_country_code', ''),
-        receiverPoNumber: getConfigValue(config, 'receiverPoNumber', 'receiver_po_number', ''),
-        shipperCompanyPrefix: getConfigValue(config, 'shipperCompanyPrefix', 'shipper_company_prefix', ''),
-        shipperGln: getConfigValue(config, 'shipperGln', 'shipper_gln', ''),
-        shipperSgln: getConfigValue(config, 'shipperSgln', 'shipper_sgln', ''),
-        shipperName: getConfigValue(config, 'shipperName', 'shipper_name', ''),
-        shipperStreetAddress: getConfigValue(config, 'shipperStreetAddress', 'shipper_street_address', ''),
-        shipperCity: getConfigValue(config, 'shipperCity', 'shipper_city', ''),
-        shipperState: getConfigValue(config, 'shipperState', 'shipper_state', ''),
-        shipperPostalCode: getConfigValue(config, 'shipperPostalCode', 'shipper_postal_code', ''),
-        shipperCountryCode: getConfigValue(config, 'shipperCountryCode', 'shipper_country_code', ''),
-        shipperSameAsSender: getConfigValue(config, 'shipperSameAsSender', 'shipper_same_as_sender', false),
-        // EPCClass data
-        productNdc: getConfigValue(config, 'productNdc', 'product_ndc', ''),
-        packageNdc: getConfigValue(config, 'packageNdc', 'package_ndc', ''),
-        regulatedProductName: getConfigValue(config, 'regulatedProductName', 'regulated_product_name', ''),
-        manufacturerName: getConfigValue(config, 'manufacturerName', 'manufacturer_name', ''),
-        dosageFormType: getConfigValue(config, 'dosageFormType', 'dosage_form_type', ''),
-        strengthDescription: getConfigValue(config, 'strengthDescription', 'strength_description', ''),
-        netContentDescription: getConfigValue(config, 'netContentDescription', 'net_content_description', '')
-      });
+      // Check if this is a multi-product configuration
+      if (config.products && Array.isArray(config.products)) {
+        // Multi-product format
+        console.log('Loading multi-product configuration');
+        setProducts(config.products);
+        setActiveProductIndex(0);
+        
+        // Sync legacy configuration with first product for backward compatibility
+        if (config.products.length > 0) {
+          setConfiguration({...config.products[0]});
+        }
+      } else {
+        // Legacy single-product format - convert to multi-product
+        console.log('Converting legacy single-product to multi-product format');
+        const legacyProduct = {
+          id: 'legacy-product',
+          itemsPerCase: getNumericConfigValue(config, 'itemsPerCase', 'items_per_case', ''),
+          casesPerSscc: getNumericConfigValue(config, 'casesPerSscc', 'cases_per_sscc', ''),
+          numberOfSscc: getNumericConfigValue(config, 'numberOfSscc', 'number_of_sscc', ''),
+          useInnerCases: getConfigValue(config, 'useInnerCases', 'use_inner_cases', false),
+          innerCasesPerCase: getNumericConfigValue(config, 'innerCasesPerCase', 'inner_cases_per_case', ''),
+          itemsPerInnerCase: getNumericConfigValue(config, 'itemsPerInnerCase', 'items_per_inner_case', ''),
+          companyPrefix: getConfigValue(config, 'companyPrefix', 'company_prefix', ''),
+          productCode: getConfigValue(config, 'productCode', 'product_code', ''),
+          lotNumber: getConfigValue(config, 'lotNumber', 'lot_number', ''),
+          expirationDate: getConfigValue(config, 'expirationDate', 'expiration_date', ''),
+          ssccExtensionDigit: getConfigValue(config, 'ssccExtensionDigit', 'sscc_extension_digit', '0'),
+          caseIndicatorDigit: getConfigValue(config, 'caseIndicatorDigit', 'case_indicator_digit', '0'),
+          innerCaseIndicatorDigit: getConfigValue(config, 'innerCaseIndicatorDigit', 'inner_case_indicator_digit', '0'),
+          itemIndicatorDigit: getConfigValue(config, 'itemIndicatorDigit', 'item_indicator_digit', '0'),
+          manufacturerName: getConfigValue(config, 'manufacturerName', 'manufacturer_name', ''),
+          regulatedProductName: getConfigValue(config, 'regulatedProductName', 'regulated_product_name', ''),
+          packageNdc: getConfigValue(config, 'packageNdc', 'package_ndc', ''),
+          productNdc: getConfigValue(config, 'productNdc', 'product_ndc', ''),
+          dosageFormType: getConfigValue(config, 'dosageFormType', 'dosage_form_type', ''),
+          strengthDescription: getConfigValue(config, 'strengthDescription', 'strength_description', ''),
+          netContentDescription: getConfigValue(config, 'netContentDescription', 'net_content_description', '')
+        };
+        
+        setProducts([legacyProduct]);
+        setActiveProductIndex(0);
+        setConfiguration({
+          ...legacyProduct,
+          // Business Document Information
+          senderCompanyPrefix: getConfigValue(config, 'senderCompanyPrefix', 'sender_company_prefix', ''),
+          senderGln: getConfigValue(config, 'senderGln', 'sender_gln', ''),
+          senderSgln: getConfigValue(config, 'senderSgln', 'sender_sgln', ''),
+          senderName: getConfigValue(config, 'senderName', 'sender_name', ''),
+          senderStreetAddress: getConfigValue(config, 'senderStreetAddress', 'sender_street_address', ''),
+          senderCity: getConfigValue(config, 'senderCity', 'sender_city', ''),
+          senderState: getConfigValue(config, 'senderState', 'sender_state', ''),
+          senderPostalCode: getConfigValue(config, 'senderPostalCode', 'sender_postal_code', ''),
+          senderCountryCode: getConfigValue(config, 'senderCountryCode', 'sender_country_code', ''),
+          senderDespatchAdviceNumber: getConfigValue(config, 'senderDespatchAdviceNumber', 'sender_despatch_advice_number', ''),
+          receiverCompanyPrefix: getConfigValue(config, 'receiverCompanyPrefix', 'receiver_company_prefix', ''),
+          receiverGln: getConfigValue(config, 'receiverGln', 'receiver_gln', ''),
+          receiverSgln: getConfigValue(config, 'receiverSgln', 'receiver_sgln', ''),
+          receiverName: getConfigValue(config, 'receiverName', 'receiver_name', ''),
+          receiverStreetAddress: getConfigValue(config, 'receiverStreetAddress', 'receiver_street_address', ''),
+          receiverCity: getConfigValue(config, 'receiverCity', 'receiver_city', ''),
+          receiverState: getConfigValue(config, 'receiverState', 'receiver_state', ''),
+          receiverPostalCode: getConfigValue(config, 'receiverPostalCode', 'receiver_postal_code', ''),
+          receiverCountryCode: getConfigValue(config, 'receiverCountryCode', 'receiver_country_code', ''),
+          receiverPoNumber: getConfigValue(config, 'receiverPoNumber', 'receiver_po_number', ''),
+          shipperCompanyPrefix: getConfigValue(config, 'shipperCompanyPrefix', 'shipper_company_prefix', ''),
+          shipperGln: getConfigValue(config, 'shipperGln', 'shipper_gln', ''),
+          shipperSgln: getConfigValue(config, 'shipperSgln', 'shipper_sgln', ''),
+          shipperName: getConfigValue(config, 'shipperName', 'shipper_name', ''),
+          shipperStreetAddress: getConfigValue(config, 'shipperStreetAddress', 'shipper_street_address', ''),
+          shipperCity: getConfigValue(config, 'shipperCity', 'shipper_city', ''),
+          shipperState: getConfigValue(config, 'shipperState', 'shipper_state', ''),
+          shipperPostalCode: getConfigValue(config, 'shipperPostalCode', 'shipper_postal_code', ''),
+          shipperCountryCode: getConfigValue(config, 'shipperCountryCode', 'shipper_country_code', ''),
+          shipperSameAsSender: getConfigValue(config, 'shipperSameAsSender', 'shipper_same_as_sender', false)
+        });
+      }
     }
     
     // Set current step based on project state
