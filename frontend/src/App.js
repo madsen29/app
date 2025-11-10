@@ -980,11 +980,16 @@ function App() {
         // Store per-product serials
         updateData.product_serials = updatedProductSerials;
         
+        console.log('SAVE DEBUG: Saving product_serials:', JSON.stringify(updatedProductSerials).substring(0, 200));
+        
         // For backward compatibility, also store first product's serials in old format
         if (updatedProductSerials.length > 0) {
           updateData.serial_numbers = updatedProductSerials[0].hierarchicalSerials;
         }
       }
+
+      console.log('SAVE DEBUG: updateData keys:', Object.keys(updateData));
+      console.log('SAVE DEBUG: product_serials length:', updateData.product_serials?.length || 0);
 
       await axios.put(`${API}/projects/${currentProject.id}`, updateData, {
         headers: {
