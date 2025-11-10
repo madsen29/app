@@ -475,9 +475,42 @@ function App() {
         setProducts(config.products);
         setActiveProductIndex(0);
         
-        // Sync legacy configuration with first product for backward compatibility
+        // Sync legacy configuration with first product AND Business Document Information
         if (config.products.length > 0) {
-          setConfiguration({...config.products[0]});
+          setConfiguration({
+            ...config.products[0],
+            // Business Document Information (stored at config root level)
+            senderCompanyPrefix: getConfigValue(config, 'senderCompanyPrefix', 'sender_company_prefix', ''),
+            senderGln: getConfigValue(config, 'senderGln', 'sender_gln', ''),
+            senderSgln: getConfigValue(config, 'senderSgln', 'sender_sgln', ''),
+            senderName: getConfigValue(config, 'senderName', 'sender_name', ''),
+            senderStreetAddress: getConfigValue(config, 'senderStreetAddress', 'sender_street_address', ''),
+            senderCity: getConfigValue(config, 'senderCity', 'sender_city', ''),
+            senderState: getConfigValue(config, 'senderState', 'sender_state', ''),
+            senderPostalCode: getConfigValue(config, 'senderPostalCode', 'sender_postal_code', ''),
+            senderCountryCode: getConfigValue(config, 'senderCountryCode', 'sender_country_code', ''),
+            senderDespatchAdviceNumber: getConfigValue(config, 'senderDespatchAdviceNumber', 'sender_despatch_advice_number', ''),
+            receiverCompanyPrefix: getConfigValue(config, 'receiverCompanyPrefix', 'receiver_company_prefix', ''),
+            receiverGln: getConfigValue(config, 'receiverGln', 'receiver_gln', ''),
+            receiverSgln: getConfigValue(config, 'receiverSgln', 'receiver_sgln', ''),
+            receiverName: getConfigValue(config, 'receiverName', 'receiver_name', ''),
+            receiverStreetAddress: getConfigValue(config, 'receiverStreetAddress', 'receiver_street_address', ''),
+            receiverCity: getConfigValue(config, 'receiverCity', 'receiver_city', ''),
+            receiverState: getConfigValue(config, 'receiverState', 'receiver_state', ''),
+            receiverPostalCode: getConfigValue(config, 'receiverPostalCode', 'receiver_postal_code', ''),
+            receiverCountryCode: getConfigValue(config, 'receiverCountryCode', 'receiver_country_code', ''),
+            receiverPoNumber: getConfigValue(config, 'receiverPoNumber', 'receiver_po_number', ''),
+            shipperCompanyPrefix: getConfigValue(config, 'shipperCompanyPrefix', 'shipper_company_prefix', ''),
+            shipperGln: getConfigValue(config, 'shipperGln', 'shipper_gln', ''),
+            shipperSgln: getConfigValue(config, 'shipperSgln', 'shipper_sgln', ''),
+            shipperName: getConfigValue(config, 'shipperName', 'shipper_name', ''),
+            shipperStreetAddress: getConfigValue(config, 'shipperStreetAddress', 'shipper_street_address', ''),
+            shipperCity: getConfigValue(config, 'shipperCity', 'shipper_city', ''),
+            shipperState: getConfigValue(config, 'shipperState', 'shipper_state', ''),
+            shipperPostalCode: getConfigValue(config, 'shipperPostalCode', 'shipper_postal_code', ''),
+            shipperCountryCode: getConfigValue(config, 'shipperCountryCode', 'shipper_country_code', ''),
+            shipperSameAsSender: getConfigValue(config, 'shipperSameAsSender', 'shipper_same_as_sender', false)
+          });
         }
       } else {
         // Legacy single-product format - convert to multi-product
