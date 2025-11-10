@@ -2723,6 +2723,42 @@ function App() {
     setProducts(updatedProducts);
   };
   
+  // Get serials for active serial product
+  const getActiveProductSerials = () => {
+    const productSerial = productSerials.find(
+      ps => ps.productIndex === activeSerialProductIndex
+    );
+    return productSerial ? productSerial.hierarchicalSerials : [];
+  };
+  
+  // Set serials for active serial product
+  const setActiveProductSerials = (newSerials) => {
+    setProductSerials(prevProductSerials => {
+      const existingIndex = prevProductSerials.findIndex(
+        ps => ps.productIndex === activeSerialProductIndex
+      );
+      
+      const newProductSerial = {
+        productId: products[activeSerialProductIndex]?.id,
+        productIndex: activeSerialProductIndex,
+        hierarchicalSerials: newSerials
+      };
+      
+      if (existingIndex >= 0) {
+        // Update existing
+        const updated = [...prevProductSerials];
+        updated[existingIndex] = newProductSerial;
+        return updated;
+      } else {
+        // Add new
+        return [...prevProductSerials, newProductSerial];
+      }
+    });
+    
+    // Also update legacy hierarchicalSerials for backward compatibility
+    setHierarchicalSerials(newSerials);
+  };
+  
   // Add new product
   const addProduct = () => {
     const newProduct = {
