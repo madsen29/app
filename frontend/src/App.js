@@ -2650,6 +2650,16 @@ function App() {
     }
   };
 
+  // Search FDA for specific product
+  const searchFDAForProduct = (productIndex) => {
+    const product = products[productIndex];
+    if (product && product.productNdc) {
+      searchFdaApi(product.productNdc);
+    } else {
+      setError('Please enter a Product NDC number for this product');
+    }
+  };
+
   // ===== GS1 DATA MATRIX PARSING =====
   
   /**
