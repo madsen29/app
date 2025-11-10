@@ -1604,13 +1604,44 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
     # Get hierarchy configuration (for legacy single-product mode)
     # For multi-product, this will be overridden per product
     if not is_multi_product:
+        # Legacy single-product mode
+        company_prefix = get_config_value("company_prefix", "companyPrefix")
         use_inner_cases = get_config_value("use_inner_cases", "useInnerCases", False)
         cases_per_sscc = get_config_value("cases_per_sscc", "casesPerSscc", 0)
+        
+        # Get product code
+        base_product_code = get_config_value("product_code", "productCode", "")
+        if not base_product_code:
+            item_product_code = get_config_value("item_product_code", "itemProductCode", "")
+            case_product_code = get_config_value("case_product_code", "caseProductCode", "")
+            inner_case_product_code = get_config_value("inner_case_product_code", "innerCaseProductCode", "")
+        else:
+            item_product_code = base_product_code
+            case_product_code = base_product_code
+            inner_case_product_code = base_product_code
+        
+        # Get indicator digits
+        item_indicator_digit = get_config_value("item_indicator_digit", "itemIndicatorDigit", "")
+        case_indicator_digit = get_config_value("case_indicator_digit", "caseIndicatorDigit", "")
+        inner_case_indicator_digit = get_config_value("inner_case_indicator_digit", "innerCaseIndicatorDigit", "")
     else:
         # For multi-product, use first product's config as default
         # (will be overridden when processing each product's serials)
-        use_inner_cases = products_list[0].get("useInnerCases", False) if products_list else False
-        cases_per_sscc = products_list[0].get("casesPerSscc", 0) if products_list else 0
+        first_product = products_list[0] if products_list else {}
+        company_prefix = first_product.get("companyPrefix", "")
+        use_inner_cases = first_product.get("useInnerCases", False)
+        cases_per_sscc = first_product.get("casesPerSscc", 0)
+        
+        # Product codes
+        product_code = first_product.get("productCode", "")
+        item_product_code = product_code
+        case_product_code = product_code
+        inner_case_product_code = product_code
+        
+        # Indicator digits
+        item_indicator_digit = first_product.get("itemIndicatorDigit", "0")
+        case_indicator_digit = first_product.get("caseIndicatorDigit", "0")
+        inner_case_indicator_digit = first_product.get("innerCaseIndicatorDigit", "0")
     
     # Check if we have direct SSCC → Items aggregation
     direct_sscc_items = cases_per_sscc == 0
