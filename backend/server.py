@@ -1383,30 +1383,16 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
     
     vocabulary_element_list = ET.SubElement(vocabulary, "VocabularyElementList")
     
-    # Get configuration parameters
-    company_prefix = get_config_value("company_prefix", "companyPrefix")
-    shipper_company_prefix = get_config_value("shipper_company_prefix", "shipperCompanyPrefix") or company_prefix  # Use shipper's company prefix for SSCCs
+    # Determine if we have multi-product configuration
+    products_list = config.get("products", [])
+    is_multi_product = len(products_list) > 0
     
-    # Get product code - use single productCode field if available, otherwise fall back to separate fields
-    base_product_code = get_config_value("product_code", "productCode", "")
-    if not base_product_code:
-        # Fall back to separate product code fields for backward compatibility
-        item_product_code = get_config_value("item_product_code", "itemProductCode", "")
-        case_product_code = get_config_value("case_product_code", "caseProductCode", "")
-        inner_case_product_code = get_config_value("inner_case_product_code", "innerCaseProductCode", "")
-    else:
-        # Use single product code for all packaging levels
-        item_product_code = base_product_code
-        case_product_code = base_product_code
-        inner_case_product_code = base_product_code
-    
-    # Get indicator digits
-    item_indicator_digit = get_config_value("item_indicator_digit", "itemIndicatorDigit", "")
-    case_indicator_digit = get_config_value("case_indicator_digit", "caseIndicatorDigit", "")
-    inner_case_indicator_digit = get_config_value("inner_case_indicator_digit", "innerCaseIndicatorDigit", "")
-    
-    use_inner_cases = get_config_value("use_inner_cases", "useInnerCases")
-    cases_per_sscc = get_config_value("cases_per_sscc", "casesPerSscc")
+    # Get shipper company prefix (used for SSCCs across all products)
+    shipper_company_prefix = get_config_value("shipper_company_prefix", "shipperCompanyPrefix")
+    if not shipper_company_prefix and is_multi_product and len(products_list) > 0:
+        shipper_company_prefix = products_list[0].get("companyPrefix")
+    elif not shipper_company_prefix:
+        shipper_company_prefix = get_config_value("company_prefix", "companyPrefix")
     
     # Helper function to add EPCClass attributes
     def add_epcclass_attributes(vocab_element, config):
