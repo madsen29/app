@@ -2217,13 +2217,40 @@ function App() {
             return;
           }
           
-          // Save the serial
+          // Save the serial with defensive checks
           if (configuration.useInnerCases) {
-            currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[currentItemIndex].itemSerial = serial;
+            if (currentSSCC && 
+                currentSSCC.cases && 
+                currentSSCC.cases[serialCollectionStep.caseIndex] &&
+                currentSSCC.cases[serialCollectionStep.caseIndex].innerCases &&
+                currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex] &&
+                currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items &&
+                currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[currentItemIndex]) {
+              currentSSCC.cases[serialCollectionStep.caseIndex].innerCases[serialCollectionStep.innerCaseIndex].items[currentItemIndex].itemSerial = serial;
+            } else {
+              setError(`Error: Item container not found at position ${currentItemIndex}. Please refresh and try again.`);
+              return;
+            }
           } else if (configuration.casesPerSscc > 0) {
-            currentSSCC.cases[serialCollectionStep.caseIndex].items[currentItemIndex].itemSerial = serial;
+            if (currentSSCC && 
+                currentSSCC.cases && 
+                currentSSCC.cases[serialCollectionStep.caseIndex] &&
+                currentSSCC.cases[serialCollectionStep.caseIndex].items &&
+                currentSSCC.cases[serialCollectionStep.caseIndex].items[currentItemIndex]) {
+              currentSSCC.cases[serialCollectionStep.caseIndex].items[currentItemIndex].itemSerial = serial;
+            } else {
+              setError(`Error: Item container not found at position ${currentItemIndex}. Please refresh and try again.`);
+              return;
+            }
           } else {
-            currentSSCC.items[currentItemIndex].itemSerial = serial;
+            if (currentSSCC && 
+                currentSSCC.items && 
+                currentSSCC.items[currentItemIndex]) {
+              currentSSCC.items[currentItemIndex].itemSerial = serial;
+            } else {
+              setError(`Error: Item container not found at position ${currentItemIndex}. Please refresh and try again.`);
+              return;
+            }
           }
         }
       }
