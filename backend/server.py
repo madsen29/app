@@ -819,16 +819,20 @@ async def generate_epcis(project_id: str, request: EPCISGenerationRequest, curre
     if not config:
         raise HTTPException(status_code=400, detail="Project configuration not found")
     
+    # Check for multi-product serials first, fall back to legacy format
+    product_serials = project.get("product_serials")
     serial_numbers = project.get("serial_numbers")
-    if not serial_numbers:
+    
+    if not product_serials and not serial_numbers:
         raise HTTPException(status_code=400, detail="Project serial numbers not found")
     
-    # Generate EPCIS XML
+    # Generate EPCIS XML (multi-product aware)
     xml_content = generate_epcis_xml(
         config, 
-        serial_numbers, 
+        serial_numbers,
         request.read_point,
-        request.biz_location
+        request.biz_location,
+        product_serials=product_serials
     )
     
     # Generate filename based on new naming convention
