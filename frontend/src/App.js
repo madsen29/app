@@ -57,8 +57,11 @@ function App() {
     }
   ]);
   
-  // Active product index for UI
+  // Active product index for UI (Step 1)
   const [activeProductIndex, setActiveProductIndex] = useState(0);
+  
+  // Active product index for serial collection (Step 2)
+  const [activeSerialProductIndex, setActiveSerialProductIndex] = useState(0);
   
   // Legacy configuration state (for backward compatibility)
   const [configuration, setConfiguration] = useState({
