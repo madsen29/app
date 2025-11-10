@@ -18,7 +18,7 @@ import sys
 import os
 
 # Get backend URL from environment
-BACKEND_URL = "https://serial-tracker-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
 
 class SBDHLocationTester:
     def __init__(self):

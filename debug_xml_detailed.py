@@ -8,7 +8,7 @@ import json
 import xml.etree.ElementTree as ET
 
 # Get backend URL from environment
-BACKEND_URL = "https://serial-tracker-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
 
 def debug_xml_step_by_step():
     session = requests.Session()

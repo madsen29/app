@@ -16,7 +16,7 @@ import requests
 import json
 import xml.etree.ElementTree as ET
 
-BACKEND_URL = "https://serial-tracker-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
 
 def test_review_request_configuration():
     """Test with exact configuration from review request"""

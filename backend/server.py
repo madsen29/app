@@ -2069,7 +2069,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*", "https://serial-tracker-1.preview.emergentagent.com"],
+    allow_origins=["*", "https://scandit-epcis.preview.emergentagent.com"],
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["Content-Disposition"],
