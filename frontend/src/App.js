@@ -3680,158 +3680,182 @@ function App() {
         </div>
         
         <div className="epcclass-section">
-          <h3>Product Information (EPCClass)</h3>
-          <div className="form-grid search-fda-wrapper">
-            <div className="form-group fda-search-group">
-              <label htmlFor="productNdc">Search FDA by Product NDC:</label>
-              <div className="fda-search-container">
+          <div className="flex justify-between items-center mb-4">
+            <h3>Product Information (EPCClass)</h3>
+            <button
+              type="button"
+              onClick={addProduct}
+              className="btn-secondary"
+            >
+              + Add Product
+            </button>
+          </div>
+          
+          {/* Product Tabs */}
+          {products.length > 1 && (
+            <div className="product-tabs">
+              {products.map((product, index) => (
+                <button
+                  key={product.id}
+                  type="button"
+                  onClick={() => setActiveProductIndex(index)}
+                  className={`product-tab ${index === activeProductIndex ? 'active' : ''}`}
+                >
+                  Product {index + 1}
+                  {product.productNdc && ` (NDC: ${product.productNdc})`}
+                  {products.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeProduct(index);
+                      }}
+                      className="remove-product-btn"
+                    >
+                      ×
+                    </button>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+          
+          {/* Current Product Form */}
+          <div className="current-product-form">
+            <div className="form-grid search-fda-wrapper">
+              <div className="form-group fda-search-group">
+                <label htmlFor="productNdc">Search FDA by Product NDC:</label>
+                <div className="fda-search-container">
+                  <input
+                    type="text"
+                    id="productNdc"
+                    value={getCurrentProduct().productNdc || ''}
+                    onChange={(e) => updateCurrentProduct({productNdc: e.target.value})}
+                    placeholder="Enter Product NDC (format: 12345-678-90)"
+                    className="fda-search-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => searchFDAForProduct(activeProductIndex)}
+                    disabled={fdaLoading}
+                    className="fda-search-button"
+                  >
+                    {fdaLoading ? 'Searching...' : 'Search FDA'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="form-grid">
+              <div className="form-group">
+                <label htmlFor="companyPrefix">GS1 Company Prefix:</label>
                 <input
                   type="text"
-                  id="productNdc"
-                  value={configuration.productNdc}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^0-9-]/g, '');
-                    setConfiguration({ ...configuration, productNdc: value });
-                  }}
-                  inputMode="text"
-                  placeholder="e.g., 45802-466"
+                  id="companyPrefix"
+                  value={getCurrentProduct().companyPrefix || ''}
+                  onChange={(e) => updateCurrentProduct({companyPrefix: e.target.value})}
+                  placeholder="e.g., 0345802"
+                  required
                 />
-                <button 
-                  type="button" 
-                  className="fda-search-button"
-                  onClick={handleFdaSearch}
-                  disabled={fdaModal.isLoading}
-                >
-                  {fdaModal.isLoading ? 'Searching...' : 'Search FDA'}
-                </button>
               </div>
-              <small className="form-hint">Enter 8-digit NDC (with hyphen) to search FDA and fill details below</small>
-            </div>
-          </div>
-          
-          <div className="form-grid">
-            <div className="form-group">
-              <label htmlFor="packageNdc">Package NDC (11-digit):</label>
-              <input
-                type="text"
-                id="packageNdc"
-                value={formatPackageNdc(configuration.packageNdc)}
-                onChange={handlePackageNdcChange}
-                placeholder="e.g., 45802-0466-53"
-                maxLength="13"
-                required
-              />
-              <small className="form-hint">11-digit NDC with hyphens for readability</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="regulatedProductName">Regulated Product Name:</label>
-              <input
-                type="text"
-                id="regulatedProductName"
-                value={configuration.regulatedProductName}
-                onChange={(e) => setConfiguration({...configuration, regulatedProductName: e.target.value})}
-                placeholder="e.g., RX ECONAZOLE NITRATE 1% CRM 85G"
-                required
-              />
-              <small className="form-hint">Official product name</small>
-            </div>
-          </div>
-          
-          <div className="form-grid">
-            <div className="form-group">
-              <label htmlFor="manufacturerName">Manufacturer Name:</label>
-              <input
-                type="text"
-                id="manufacturerName"
-                value={configuration.manufacturerName}
-                onChange={(e) => setConfiguration({...configuration, manufacturerName: e.target.value})}
-                placeholder="e.g., Padagis LLC"
-                required
-              />
-              <small className="form-hint">Manufacturer or labeler name</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="dosageFormType">Dosage Form Type:</label>
-              <input
-                type="text"
-                id="dosageFormType"
-                value={configuration.dosageFormType}
-                onChange={(e) => setConfiguration({...configuration, dosageFormType: e.target.value})}
-                placeholder="e.g., CREAM"
-                required
-              />
-              <small className="form-hint">Dosage form (e.g., TABLET, CREAM, INJECTION)</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="strengthDescription">Strength Description:</label>
-              <input
-                type="text"
-                id="strengthDescription"
-                value={configuration.strengthDescription}
-                onChange={(e) => setConfiguration({...configuration, strengthDescription: e.target.value})}
-                placeholder="e.g., 10 mg/g"
-                required
-              />
-              <small className="form-hint">Active ingredient strength</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="netContentDescription">Net Content Description:</label>
-              <input
-                type="text"
-                id="netContentDescription"
-                value={configuration.netContentDescription}
-                onChange={(e) => setConfiguration({...configuration, netContentDescription: e.target.value})}
-                placeholder="e.g., 85GM Wgt"
-                required
-              />
-              <small className="form-hint">Package size and weight</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="companyPrefix">GS1 Company Prefix:</label>
-              <input
-                type="text"
-                id="companyPrefix"
-                value={configuration.companyPrefix}
-                onChange={(e) => setConfiguration({...configuration, companyPrefix: e.target.value})}
-                placeholder="e.g., 0345802"
-                required
-              />
-              <small className="form-hint">Manufacturer GS1 Company Prefix</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="productCode">Product Code:</label>
-              <input
-                type="text"
-                id="productCode"
-                value={configuration.productCode}
-                onChange={(e) => setConfiguration({...configuration, productCode: e.target.value})}
-                placeholder="e.g., 46653"
-                required
-              />
-              <small className="form-hint">Product code from selected Package NDC</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="lotNumber">Lot Number:</label>
-              <input
-                type="text"
-                id="lotNumber"
-                value={configuration.lotNumber}
-                onChange={(e) => setConfiguration({...configuration, lotNumber: e.target.value})}
-                placeholder="e.g., 4JT0482"
-                required
-              />
-              <small className="form-hint">Lot number applied to Case, Inner Case, and Item levels</small>
-            </div>
-            <div className="form-group">
-              <label htmlFor="expirationDate">Expiration Date:</label>
-              <input
-                type="date"
-                id="expirationDate"
-                value={configuration.expirationDate}
-                onChange={(e) => setConfiguration({...configuration, expirationDate: e.target.value})}
-                required
-              />
-              <small className="form-hint">Expiration date applied to Case, Inner Case, and Item levels</small>
+              <div className="form-group">
+                <label htmlFor="productCode">Product Code:</label>
+                <input
+                  type="text"
+                  id="productCode"
+                  value={getCurrentProduct().productCode || ''}
+                  onChange={(e) => updateCurrentProduct({productCode: e.target.value})}
+                  placeholder="e.g., 46611"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="manufacturerName">Manufacturer Name:</label>
+                <input
+                  type="text"
+                  id="manufacturerName"
+                  value={getCurrentProduct().manufacturerName || ''}
+                  onChange={(e) => updateCurrentProduct({manufacturerName: e.target.value})}
+                  placeholder="e.g., Padagis Israel Pharmaceuticals Ltd"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="regulatedProductName">Regulated Product Name:</label>
+                <input
+                  type="text"
+                  id="regulatedProductName"
+                  value={getCurrentProduct().regulatedProductName || ''}
+                  onChange={(e) => updateCurrentProduct({regulatedProductName: e.target.value})}
+                  placeholder="e.g., Econazole Nitrate"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="packageNdc">Package NDC:</label>
+                <input
+                  type="text"
+                  id="packageNdc"
+                  value={getCurrentProduct().packageNdc || ''}
+                  onChange={(e) => updateCurrentProduct({packageNdc: e.target.value})}
+                  placeholder="e.g., 45802046611"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="dosageFormType">Dosage Form Type:</label>
+                <input
+                  type="text"
+                  id="dosageFormType"
+                  value={getCurrentProduct().dosageFormType || ''}
+                  onChange={(e) => updateCurrentProduct({dosageFormType: e.target.value})}
+                  placeholder="e.g., CREAM"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="strengthDescription">Strength Description:</label>
+                <input
+                  type="text"
+                  id="strengthDescription"
+                  value={getCurrentProduct().strengthDescription || ''}
+                  onChange={(e) => updateCurrentProduct({strengthDescription: e.target.value})}
+                  placeholder="e.g., ECONAZOLE NITRATE 10 mg/g"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="netContentDescription">Net Content Description:</label>
+                <input
+                  type="text"
+                  id="netContentDescription"
+                  value={getCurrentProduct().netContentDescription || ''}
+                  onChange={(e) => updateCurrentProduct({netContentDescription: e.target.value})}
+                  placeholder="e.g., 1 TUBE in 1 CARTON (45802-466-11) / 30 g in 1 TUBE"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="lotNumber">Lot Number:</label>
+                <input
+                  type="text"
+                  id="lotNumber"
+                  value={getCurrentProduct().lotNumber || ''}
+                  onChange={(e) => updateCurrentProduct({lotNumber: e.target.value})}
+                  placeholder="e.g., LOT123"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="expirationDate">Expiration Date:</label>
+                <input
+                  type="date"
+                  id="expirationDate"
+                  value={getCurrentProduct().expirationDate || ''}
+                  onChange={(e) => updateCurrentProduct({expirationDate: e.target.value})}
+                  required
+                />
+              </div>
             </div>
           </div>
         </div>
