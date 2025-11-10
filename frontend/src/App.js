@@ -2671,7 +2671,7 @@ function App() {
           } else {
             // Move to next case
             const nextCaseIndex = current.caseIndex + 1;
-            if (nextCaseIndex < activeProduct.casesPerSscc) {
+            if (nextCaseIndex < configuration.casesPerSscc) {
               return {
                 ...current,
                 caseIndex: nextCaseIndex,
@@ -2701,7 +2701,7 @@ function App() {
             }
           }
         }
-      } else if (activeProduct.casesPerSscc > 0) {
+      } else if (configuration.casesPerSscc > 0) {
         // Cases → Items
         const itemsPerCase = configuration.itemsPerCase;
         if (nextItemIndex < itemsPerCase) {
@@ -2713,7 +2713,7 @@ function App() {
         } else {
           // Move to next case
           const nextCaseIndex = current.caseIndex + 1;
-          if (nextCaseIndex < activeProduct.casesPerSscc) {
+          if (nextCaseIndex < configuration.casesPerSscc) {
             return {
               ...current,
               caseIndex: nextCaseIndex,
