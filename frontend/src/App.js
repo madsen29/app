@@ -4329,7 +4329,7 @@ function App() {
                     id="productNdc"
                     value={getCurrentProduct().productNdc || ''}
                     onChange={(e) => updateCurrentProduct({productNdc: e.target.value})}
-                    placeholder="Enter Product NDC (format: 12345-678-90)"
+                    placeholder="Enter Product NDC (format: 12345-678)"
                     className="fda-search-input"
                   />
                   <button
