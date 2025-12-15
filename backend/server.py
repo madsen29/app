@@ -1617,18 +1617,15 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
     # Create root element as EPCISDocument (not StandardBusinessDocument)
     root = ET.Element("epcis:EPCISDocument")
     root.set("xmlns:epcis", "urn:epcglobal:epcis:xsd:1")
-    root.set("xmlns", "urn:epcglobal:epcis:xsd:1")
-    root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    root.set("xmlns:cbvmd", "urn:epcglobal:cbv:mda")
+    root.set("xmlns:cbvmda", "urn:epcglobal:cbv:mda")
     root.set("xmlns:gs1ushc", "http://epcis.gs1us.org/hc/ns")
+    root.set("xmlns:sbdh", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
     root.set("schemaVersion", "1.2")
     root.set("creationDate", get_next_timestamp())
     
     # Create EPCISHeader
     epcis_header = ET.SubElement(root, "EPCISHeader")
-    
-    # Add SBDH namespaces to the root element
-    root.set("xmlns:sbdh", "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader")
-    # Note: cbvmda namespace is already registered globally via ET.register_namespace
     
     # Create SBDH Header directly under EPCISHeader (no StandardBusinessDocument wrapper)
     sbdh = ET.SubElement(epcis_header, "sbdh:StandardBusinessDocumentHeader")
