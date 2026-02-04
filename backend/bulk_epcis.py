@@ -955,7 +955,29 @@ def process_bulk_epcis(
             job_id=job_id
         ), validation
     
-    # Step 7: Generate EPCIS XML
+    # Step 7: Validate and parse SGTINs for all nodes
+    sgtin_validation, sgtin_success_count, sgtin_failure_count = validate_and_parse_sgtins(nodes)
+    validation.merge(sgtin_validation)
+    
+    if not validation.is_valid:
+        return None, BulkEPCISSummary(
+            total_records_processed=len(json_data),
+            commissioning_events_created=0,
+            aggregation_events_created=0,
+            root_epcs_aggregated=len(root_nodes),
+            max_hierarchy_depth=get_max_depth(root_nodes),
+            sender_sgln=sender_location.sgln,
+            receiver_sgln=receiver_location.sgln,
+            validation_warnings_count=len(validation.warnings),
+            validation_warnings=validation.warnings,
+            generation_status="FAILED",
+            filename="",
+            job_id=job_id,
+            sgtins_successfully_parsed=sgtin_success_count,
+            sgtin_parse_failures=sgtin_failure_count
+        ), validation
+    
+    # Step 8: Generate EPCIS XML
     xml_content, commissioning_count, aggregation_count = generate_bulk_epcis_xml(
         nodes, root_nodes, shipping_sscc, sender_location, receiver_location
     )
@@ -976,7 +998,9 @@ def process_bulk_epcis(
         validation_warnings=validation.warnings,
         generation_status="SUCCESS",
         filename=filename,
-        job_id=job_id
+        job_id=job_id,
+        sgtins_successfully_parsed=sgtin_success_count,
+        sgtin_parse_failures=sgtin_failure_count
     )
     
     return xml_content, summary, validation
