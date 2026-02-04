@@ -547,43 +547,52 @@ def generate_bulk_epcis_xml(
     epcclass_vocabulary.set("type", "urn:epcglobal:epcis:vtype:EPCClass")
     epcclass_element_list = ET.SubElement(epcclass_vocabulary, "VocabularyElementList")
     
-    # Deduplicate EPCClass entries by additionalTradeItemIdentification
-    seen_trade_item_ids = set()
+    # Deduplicate EPCClass entries by gs1Prefix + productCode combination
+    # This creates the SGTIN pattern: gs1Prefix.indicatorDigit+productCode.*
+    seen_epcclass_patterns = set()
     all_nodes = collect_all_nodes(root_nodes)
     
     for node in all_nodes:
-        trade_item_id = node.additional_trade_item_id
-        if trade_item_id and trade_item_id not in seen_trade_item_ids:
-            seen_trade_item_ids.add(trade_item_id)
-            
-            vocab_element = ET.SubElement(epcclass_element_list, "VocabularyElement")
-            vocab_element.set("id", f"urn:epc:idpat:sgtin:{trade_item_id}.*")
-            
-            # Add attributes
-            if trade_item_id:
-                attr = ET.SubElement(vocab_element, "attribute")
-                attr.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentification")
-                attr.text = trade_item_id
-            
-            if node.regulated_product_name:
-                attr = ET.SubElement(vocab_element, "attribute")
-                attr.set("id", "urn:epcglobal:cbv:mda#regulatedProductName")
-                attr.text = node.regulated_product_name
-            
-            if node.manufacturer_name:
-                attr = ET.SubElement(vocab_element, "attribute")
-                attr.set("id", "urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName")
-                attr.text = node.manufacturer_name
-            
-            if node.dosage_form:
-                attr = ET.SubElement(vocab_element, "attribute")
-                attr.set("id", "urn:epcglobal:cbv:mda#dosageFormType")
-                attr.text = node.dosage_form
-            
-            if node.strength:
-                attr = ET.SubElement(vocab_element, "attribute")
-                attr.set("id", "urn:epcglobal:cbv:mda#strengthDescription")
-                attr.text = node.strength
+        # Use the SGTIN pattern (without serial number, replaced with *)
+        # Format: gs1Prefix.indicatorDigit+productCode.*
+        if node.sgtin:
+            # Extract the pattern portion (everything before the last dot + serial)
+            # node.sgtin format: gs1Prefix.indicatorDigit+productCode.serialNumber
+            sgtin_parts = node.sgtin.rsplit('.', 1)  # Split on last dot
+            if len(sgtin_parts) == 2:
+                epcclass_pattern = sgtin_parts[0]  # gs1Prefix.indicatorDigit+productCode
+                
+                if epcclass_pattern not in seen_epcclass_patterns:
+                    seen_epcclass_patterns.add(epcclass_pattern)
+                    
+                    vocab_element = ET.SubElement(epcclass_element_list, "VocabularyElement")
+                    vocab_element.set("id", f"urn:epc:idpat:sgtin:{epcclass_pattern}.*")
+                    
+                    # Add attributes
+                    if node.additional_trade_item_id:
+                        attr = ET.SubElement(vocab_element, "attribute")
+                        attr.set("id", "urn:epcglobal:cbv:mda#additionalTradeItemIdentification")
+                        attr.text = node.additional_trade_item_id
+                    
+                    if node.regulated_product_name:
+                        attr = ET.SubElement(vocab_element, "attribute")
+                        attr.set("id", "urn:epcglobal:cbv:mda#regulatedProductName")
+                        attr.text = node.regulated_product_name
+                    
+                    if node.manufacturer_name:
+                        attr = ET.SubElement(vocab_element, "attribute")
+                        attr.set("id", "urn:epcglobal:cbv:mda#manufacturerOfTradeItemPartyName")
+                        attr.text = node.manufacturer_name
+                    
+                    if node.dosage_form:
+                        attr = ET.SubElement(vocab_element, "attribute")
+                        attr.set("id", "urn:epcglobal:cbv:mda#dosageFormType")
+                        attr.text = node.dosage_form
+                    
+                    if node.strength:
+                        attr = ET.SubElement(vocab_element, "attribute")
+                        attr.set("id", "urn:epcglobal:cbv:mda#strengthDescription")
+                        attr.text = node.strength
     
     # Location Vocabulary
     location_vocabulary = ET.SubElement(vocabulary_list, "Vocabulary")
