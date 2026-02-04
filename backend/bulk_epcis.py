@@ -263,23 +263,16 @@ def validate_and_parse_sgtins(nodes: Dict[str, 'HierarchyNode']) -> Tuple[Valida
 
 
 def validate_sscc_format(sscc: str) -> ValidationResult:
-    """Validate SSCC format"""
+    """Validate SSCC format - accepts SSCC as entered by user"""
     result = ValidationResult()
     
     if not sscc or not isinstance(sscc, str):
         result.add_error("SSCC is required and must be a string")
         return result
     
-    # Remove any separators
-    clean_sscc = sscc.replace(' ', '').replace('-', '').replace('.', '')
-    
-    # Should be 18 digits for a valid SSCC
-    if not clean_sscc.isdigit():
-        result.add_error("SSCC must contain only digits (after removing separators)")
-        return result
-    
-    if len(clean_sscc) != 18:
-        result.add_error(f"SSCC must be exactly 18 digits, got {len(clean_sscc)}")
+    # Just ensure it's not empty after trimming
+    if not sscc.strip():
+        result.add_error("SSCC cannot be empty")
         return result
     
     return result
