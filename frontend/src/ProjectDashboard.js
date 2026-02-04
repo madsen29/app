@@ -476,13 +476,23 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                   Projects ({projects.length})
                 </h3>
                 </div>
-                <button
-                onClick={handleCreateProjectClick}
-                className="btn-new-project bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <FiPlus size={16} />
-                New Project
-              </button>
+                <div className="flex items-center space-x-3">
+                  <a
+                    href="/epcis/bulk-create"
+                    className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-slate-500 flex items-center space-x-2"
+                    data-testid="bulk-epcis-nav-link"
+                  >
+                    <FiPackage size={16} />
+                    <span>Bulk EPCIS Creation</span>
+                  </a>
+                  <button
+                    onClick={handleCreateProjectClick}
+                    className="btn-new-project bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <FiPlus size={16} />
+                    New Project
+                  </button>
+                </div>
               </div>
               
 
