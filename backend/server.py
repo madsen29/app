@@ -2543,7 +2543,7 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
 # ============================================================
 
 from fastapi import File, UploadFile, Form
-from bulk_epcis import (
+from backend.bulk_epcis import (
     BulkLocation, BulkEPCISRequest, BulkEPCISSummary, BulkJobAudit,
     process_bulk_epcis, validate_json_structure, calculate_file_checksum
 )
