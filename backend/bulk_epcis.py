@@ -57,6 +57,9 @@ class BulkEPCISSummary(BaseModel):
     generation_status: str
     filename: str
     job_id: str
+    # SGTIN parsing stats
+    sgtins_successfully_parsed: int = 0
+    sgtin_parse_failures: int = 0
 
 
 class BulkJobAudit(BaseModel):
