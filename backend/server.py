@@ -2538,6 +2538,166 @@ def generate_epcis_xml(config, serial_numbers, read_point, biz_location, product
     ET.indent(root, space="  ")
     return ET.tostring(root, encoding="unicode", xml_declaration=True)
 
+# ============================================================
+# BULK EPCIS CREATION ENDPOINTS
+# ============================================================
+
+from fastapi import File, UploadFile, Form
+from bulk_epcis import (
+    BulkLocation, BulkEPCISRequest, BulkEPCISSummary, BulkJobAudit,
+    process_bulk_epcis, validate_json_structure, calculate_file_checksum
+)
+import json as json_module
+
+class BulkLocationModel(BaseModel):
+    """Location data for sender/receiver"""
+    model_config = {"populate_by_name": True}
+    
+    name: str
+    street_address_one: str = Field(default="", alias="streetAddressOne")
+    city: str
+    state: str = ""
+    postal_code: str = Field(default="", alias="postalCode")
+    country_code: str = Field(default="", alias="countryCode")
+    sgln: str
+
+
+class BulkEPCISRequestModel(BaseModel):
+    """Request model for bulk EPCIS creation"""
+    model_config = {"populate_by_name": True}
+    
+    shipping_sscc: str = Field(alias="shippingSSCC")
+    sender_location: BulkLocationModel = Field(alias="senderLocation")
+    receiver_location: BulkLocationModel = Field(alias="receiverLocation")
+
+
+@api_router.post("/epcis/bulk-create")
+async def bulk_create_epcis(
+    file: UploadFile = File(...),
+    shipping_sscc: str = Form(...),
+    sender_name: str = Form(...),
+    sender_street_address: str = Form(default=""),
+    sender_city: str = Form(...),
+    sender_state: str = Form(default=""),
+    sender_postal_code: str = Form(default=""),
+    sender_country_code: str = Form(...),
+    sender_sgln: str = Form(...),
+    receiver_name: str = Form(...),
+    receiver_street_address: str = Form(default=""),
+    receiver_city: str = Form(...),
+    receiver_state: str = Form(default=""),
+    receiver_postal_code: str = Form(default=""),
+    receiver_country_code: str = Form(...),
+    receiver_sgln: str = Form(...),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Bulk EPCIS creation endpoint
+    Accepts JSON file upload and form data for metadata
+    """
+    # Validate file type
+    if not file.filename.endswith('.json'):
+        raise HTTPException(status_code=400, detail="Only .json files are accepted")
+    
+    # Read file content
+    try:
+        file_content = await file.read()
+        json_data = json_module.loads(file_content.decode('utf-8'))
+    except json_module.JSONDecodeError as e:
+        raise HTTPException(status_code=400, detail=f"Invalid JSON format: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error reading file: {str(e)}")
+    
+    # Build location objects
+    sender_location = BulkLocation(
+        name=sender_name,
+        streetAddressOne=sender_street_address,
+        city=sender_city,
+        state=sender_state,
+        postalCode=sender_postal_code,
+        countryCode=sender_country_code,
+        sgln=sender_sgln
+    )
+    
+    receiver_location = BulkLocation(
+        name=receiver_name,
+        streetAddressOne=receiver_street_address,
+        city=receiver_city,
+        state=receiver_state,
+        postalCode=receiver_postal_code,
+        countryCode=receiver_country_code,
+        sgln=receiver_sgln
+    )
+    
+    # Process bulk EPCIS
+    xml_content, summary, validation = process_bulk_epcis(
+        json_data=json_data,
+        shipping_sscc=shipping_sscc,
+        sender_location=sender_location,
+        receiver_location=receiver_location,
+        input_filename=file.filename,
+        file_content=file_content
+    )
+    
+    # If validation failed, return error
+    if not validation.is_valid:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "Validation failed",
+                "errors": validation.errors,
+                "warnings": validation.warnings
+            }
+        )
+    
+    # Store audit record
+    audit_record = BulkJobAudit(
+        user_id=current_user.id,
+        input_filename=file.filename,
+        input_checksum=calculate_file_checksum(file_content),
+        shipping_sscc=shipping_sscc,
+        sender_sgln=sender_sgln,
+        receiver_sgln=receiver_sgln,
+        total_records=summary.total_records_processed,
+        commissioning_events=summary.commissioning_events_created,
+        aggregation_events=summary.aggregation_events_created,
+        warnings=summary.validation_warnings,
+        status=summary.generation_status
+    )
+    
+    await db.bulk_epcis_jobs.insert_one(audit_record.model_dump())
+    
+    # Return summary with download info
+    return {
+        "summary": {
+            "totalRecordsProcessed": summary.total_records_processed,
+            "commissioningEventsCreated": summary.commissioning_events_created,
+            "aggregationEventsCreated": summary.aggregation_events_created,
+            "rootEpcsAggregated": summary.root_epcs_aggregated,
+            "maxHierarchyDepth": summary.max_hierarchy_depth,
+            "senderSgln": summary.sender_sgln,
+            "receiverSgln": summary.receiver_sgln,
+            "validationWarningsCount": summary.validation_warnings_count,
+            "validationWarnings": summary.validation_warnings,
+            "generationStatus": summary.generation_status,
+            "filename": summary.filename,
+            "jobId": summary.job_id
+        },
+        "xmlContent": xml_content
+    }
+
+
+@api_router.get("/epcis/bulk-jobs")
+async def get_bulk_epcis_jobs(current_user: User = Depends(get_current_user)):
+    """Get all bulk EPCIS jobs for the current user"""
+    jobs = await db.bulk_epcis_jobs.find(
+        {"user_id": current_user.id},
+        {"_id": 0}
+    ).sort("timestamp", -1).to_list(100)
+    
+    return {"jobs": jobs}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
