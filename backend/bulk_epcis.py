@@ -81,12 +81,88 @@ class BulkJobAudit(BaseModel):
 # HIERARCHY CLASSES
 # ============================================================
 
+class SGTINParseError(Exception):
+    """Exception raised when SGTIN parsing fails"""
+    pass
+
+
+def parse_sgtin(serial_number: str, gs1_prefix: str, product_code: str) -> str:
+    """
+    Parse serialNumber and construct proper EPC SGTIN.
+    
+    serialNumber anatomy:
+        indicator_digit + gs1Prefix + productCode + check_digit + serial_number
+    
+    EPC SGTIN construction:
+        gs1Prefix . indicator_digit + productCode . serial_number
+    
+    Args:
+        serial_number: Raw serialNumber from JSON
+        gs1_prefix: GS1 company prefix
+        product_code: Product/item reference code
+    
+    Returns:
+        Properly formatted SGTIN string (without urn:epc:id:sgtin: prefix)
+    
+    Raises:
+        SGTINParseError: If parsing fails
+    """
+    if not serial_number or len(serial_number) < 2:
+        raise SGTINParseError("serialNumber is empty or too short")
+    
+    if not gs1_prefix:
+        raise SGTINParseError("gs1Prefix is required")
+    
+    if not product_code:
+        raise SGTINParseError("productCode is required")
+    
+    # Extract indicator digit (first character)
+    indicator_digit = serial_number[0]
+    
+    # Calculate expected prefix length: indicator(1) + gs1Prefix + productCode + checkDigit(1)
+    prefix_length = 1 + len(gs1_prefix) + len(product_code) + 1
+    
+    if len(serial_number) <= prefix_length:
+        raise SGTINParseError(
+            f"serialNumber '{serial_number}' is too short to contain indicator + gs1Prefix + productCode + checkDigit + serial"
+        )
+    
+    # Validate that serialNumber contains the expected gs1Prefix after indicator
+    expected_prefix_start = serial_number[1:1 + len(gs1_prefix)]
+    if expected_prefix_start != gs1_prefix:
+        raise SGTINParseError(
+            f"serialNumber does not contain expected gs1Prefix '{gs1_prefix}' at position 1 (found '{expected_prefix_start}')"
+        )
+    
+    # Validate that serialNumber contains the expected productCode after gs1Prefix
+    product_code_start = 1 + len(gs1_prefix)
+    expected_product_code = serial_number[product_code_start:product_code_start + len(product_code)]
+    if expected_product_code != product_code:
+        raise SGTINParseError(
+            f"serialNumber does not contain expected productCode '{product_code}' at position {product_code_start} (found '{expected_product_code}')"
+        )
+    
+    # Extract serial number (everything after indicator + gs1Prefix + productCode + checkDigit)
+    serial_start = prefix_length
+    extracted_serial = serial_number[serial_start:]
+    
+    if not extracted_serial:
+        raise SGTINParseError("Extracted serial_number is empty after parsing")
+    
+    # Construct EPC SGTIN: gs1Prefix.indicatorDigit+productCode.serialNumber
+    sgtin = f"{gs1_prefix}.{indicator_digit}{product_code}.{extracted_serial}"
+    
+    return sgtin
+
+
 class HierarchyNode:
     """Represents a node in the packaging hierarchy"""
     def __init__(self, record: Dict[str, Any]):
         self.id = record['_id']
         self.type = record.get('type', '')
-        self.serial_number = record['serialNumber']
+        self.raw_serial_number = record['serialNumber']  # Keep raw value for reference
+        self.gs1_prefix = record.get('gs1Prefix', '')
+        self.product_code = record.get('productCode', '')
         self.lot = record['lot']
         self.expiration = record['expiration']
         self.parent_id = record.get('parentPackagingId')
@@ -97,6 +173,10 @@ class HierarchyNode:
         self.strength = record.get('strengthDescription', '')
         self.children: List['HierarchyNode'] = []
         self.depth = 0
+        
+        # Parsed SGTIN (set during validation)
+        self.sgtin: Optional[str] = None
+        self.sgtin_parse_error: Optional[str] = None
 
 
 class ValidationResult:
