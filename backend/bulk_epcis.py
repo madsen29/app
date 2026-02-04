@@ -713,12 +713,14 @@ def generate_bulk_epcis_xml(
             event_timezone.text = "+00:00"
             
             parent_id = ET.SubElement(aggregation_event, "parentID")
-            parent_id.text = f"urn:epc:id:sgtin:{node.serial_number}"
+            # Use parsed SGTIN instead of raw serial number
+            parent_id.text = f"urn:epc:id:sgtin:{node.sgtin}"
             
             child_epcs = ET.SubElement(aggregation_event, "childEPCs")
             for child in node.children:
                 child_epc = ET.SubElement(child_epcs, "epc")
-                child_epc.text = f"urn:epc:id:sgtin:{child.serial_number}"
+                # Use parsed SGTIN instead of raw serial number
+                child_epc.text = f"urn:epc:id:sgtin:{child.sgtin}"
             
             action = ET.SubElement(aggregation_event, "action")
             action.text = "ADD"
@@ -764,7 +766,8 @@ def generate_bulk_epcis_xml(
         child_epcs = ET.SubElement(mass_aggregation_event, "childEPCs")
         for root_node in root_nodes:
             child_epc = ET.SubElement(child_epcs, "epc")
-            child_epc.text = f"urn:epc:id:sgtin:{root_node.serial_number}"
+            # Use parsed SGTIN instead of raw serial number
+            child_epc.text = f"urn:epc:id:sgtin:{root_node.sgtin}"
         
         action = ET.SubElement(mass_aggregation_event, "action")
         action.text = "ADD"
