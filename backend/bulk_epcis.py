@@ -194,6 +194,11 @@ def build_hierarchy(records: List[Dict[str, Any]]) -> Tuple[Dict[str, HierarchyN
     """
     Build hierarchy from records based on parentPackagingId
     Returns: (nodes_dict, root_nodes, validation_result)
+    
+    Rules:
+    - If a record has no parentPackagingId, it is a root node (top-most level, e.g., CASE)
+    - If a record has a parentPackagingId that doesn't exist in the uploaded data,
+      it is also treated as a root node (the parent is external to this batch)
     """
     result = ValidationResult()
     nodes: Dict[str, HierarchyNode] = {}
@@ -203,17 +208,27 @@ def build_hierarchy(records: List[Dict[str, Any]]) -> Tuple[Dict[str, HierarchyN
         node_id = record['_id']
         nodes[node_id] = HierarchyNode(record)
     
+    # Track nodes with external parents (parent not in uploaded data)
+    external_parent_count = 0
+    
     # Build parent-child relationships
     for node_id, node in nodes.items():
         if node.parent_id:
             if node.parent_id not in nodes:
-                result.add_error(f"Node {node_id} references missing parent {node.parent_id}")
+                # Parent is not in uploaded data - this node becomes a root
+                # This is NOT an error, just informational
+                external_parent_count += 1
             else:
+                # Parent exists in uploaded data - establish relationship
                 parent = nodes[node.parent_id]
                 parent.children.append(node)
     
-    # Find root nodes (no parent or parent not in uploaded data)
+    # Find root nodes: no parent OR parent not in uploaded data
     root_nodes = [node for node in nodes.values() if not node.parent_id or node.parent_id not in nodes]
+    
+    # Add informational warning if there were external parents
+    if external_parent_count > 0:
+        result.add_warning(f"{external_parent_count} record(s) reference parent(s) not in uploaded data - treated as root nodes")
     
     # Check for cycles using DFS
     visited = set()
