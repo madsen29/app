@@ -2681,7 +2681,9 @@ async def bulk_create_epcis(
             "validationWarnings": summary.validation_warnings,
             "generationStatus": summary.generation_status,
             "filename": summary.filename,
-            "jobId": summary.job_id
+            "jobId": summary.job_id,
+            "sgtinsSuccessfullyParsed": summary.sgtins_successfully_parsed,
+            "sgtinParseFailures": summary.sgtin_parse_failures
         },
         "xmlContent": xml_content
     }
