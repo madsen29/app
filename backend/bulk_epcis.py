@@ -220,7 +220,7 @@ def validate_json_structure(data: List[Dict[str, Any]]) -> ValidationResult:
         result.add_error("JSON array is empty")
         return result
     
-    required_fields = ['_id', 'serialNumber', 'lot', 'expiration']
+    required_fields = ['_id', 'serialNumber', 'lot', 'expiration', 'gs1Prefix', 'productCode']
     
     for idx, record in enumerate(data):
         if not isinstance(record, dict):
@@ -232,6 +232,34 @@ def validate_json_structure(data: List[Dict[str, Any]]) -> ValidationResult:
                 result.add_error(f"Record {idx} ({record.get('_id', 'unknown')}): missing required field '{field}'")
     
     return result
+
+
+def validate_and_parse_sgtins(nodes: Dict[str, 'HierarchyNode']) -> Tuple[ValidationResult, int, int]:
+    """
+    Validate and parse SGTINs for all nodes.
+    
+    Returns:
+        (validation_result, success_count, failure_count)
+    """
+    result = ValidationResult()
+    success_count = 0
+    failure_count = 0
+    
+    for node_id, node in nodes.items():
+        try:
+            sgtin = parse_sgtin(
+                serial_number=node.raw_serial_number,
+                gs1_prefix=node.gs1_prefix,
+                product_code=node.product_code
+            )
+            node.sgtin = sgtin
+            success_count += 1
+        except SGTINParseError as e:
+            node.sgtin_parse_error = str(e)
+            result.add_error(f"Record {node_id}: SGTIN parsing failed - {e}")
+            failure_count += 1
+    
+    return result, success_count, failure_count
 
 
 def validate_sscc_format(sscc: str) -> ValidationResult:
