@@ -232,6 +232,10 @@ const BulkEPCISCreation = ({ onBack }) => {
                 <div className="text-2xl font-bold text-white">{result.summary.totalRecordsProcessed}</div>
               </div>
               <div className="bg-slate-700/50 rounded-lg p-4">
+                <div className="text-sm text-slate-400">SGTINs Parsed</div>
+                <div className="text-2xl font-bold text-green-400">{result.summary.sgtinsSuccessfullyParsed}</div>
+              </div>
+              <div className="bg-slate-700/50 rounded-lg p-4">
                 <div className="text-sm text-slate-400">Commissioning Events</div>
                 <div className="text-2xl font-bold text-blue-400">{result.summary.commissioningEventsCreated}</div>
               </div>
@@ -246,10 +250,6 @@ const BulkEPCISCreation = ({ onBack }) => {
               <div className="bg-slate-700/50 rounded-lg p-4">
                 <div className="text-sm text-slate-400">Max Hierarchy Depth</div>
                 <div className="text-2xl font-bold text-white">{result.summary.maxHierarchyDepth}</div>
-              </div>
-              <div className="bg-slate-700/50 rounded-lg p-4">
-                <div className="text-sm text-slate-400">Warnings</div>
-                <div className="text-2xl font-bold text-yellow-400">{result.summary.validationWarningsCount}</div>
               </div>
             </div>
             
