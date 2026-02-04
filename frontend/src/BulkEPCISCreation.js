@@ -329,7 +329,7 @@ const BulkEPCISCreation = ({ onBack }) => {
               </h2>
               
               <div
-                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                   selectedFile
                     ? 'border-green-500/50 bg-green-500/5'
                     : fileError
