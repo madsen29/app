@@ -8,7 +8,7 @@ import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
+BACKEND_URL = "https://bulk-gs1-builder.preview.emergentagent.com/api"
 
 def test_epcclass_xml_structure():
     """Test EPCClass XML structure against GS1 standard"""

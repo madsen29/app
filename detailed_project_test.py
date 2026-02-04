@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 # Get backend URL from environment
-BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
+BACKEND_URL = "https://bulk-gs1-builder.preview.emergentagent.com/api"
 
 class DetailedProjectAnalyzer:
     def __init__(self):

@@ -16,7 +16,7 @@ import sys
 import os
 
 # Get backend URL from environment
-BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
+BACKEND_URL = "https://bulk-gs1-builder.preview.emergentagent.com/api"
 
 class ProductCodeExtractionTester:
     def __init__(self):

@@ -15,7 +15,7 @@ import threading
 from datetime import datetime
 import sys
 
-BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
+BACKEND_URL = "https://bulk-gs1-builder.preview.emergentagent.com/api"
 
 class ComprehensiveAutoSaveTester:
     def __init__(self):

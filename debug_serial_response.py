@@ -7,7 +7,7 @@ import requests
 import json
 from datetime import datetime
 
-BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
+BACKEND_URL = "https://bulk-gs1-builder.preview.emergentagent.com/api"
 
 def debug_serial_number_response():
     session = requests.Session()

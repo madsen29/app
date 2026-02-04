@@ -18,7 +18,7 @@ from datetime import datetime
 import sys
 
 # Get backend URL from environment
-BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
+BACKEND_URL = "https://bulk-gs1-builder.preview.emergentagent.com/api"
 PROJECT_ID = "e2fe1108-6cbe-43c2-83c6-ce19ada894a7"
 
 class ProductSerialsTester:

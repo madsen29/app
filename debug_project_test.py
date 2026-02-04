@@ -7,7 +7,7 @@ import requests
 import json
 
 # Get backend URL from environment
-BACKEND_URL = "https://scandit-epcis.preview.emergentagent.com/api"
+BACKEND_URL = "https://bulk-gs1-builder.preview.emergentagent.com/api"
 PROJECT_ID = "a57661ea-634c-44b3-8d4e-08eb72f9c23a"  # From the previous test
 
 class ProjectDebugger:
