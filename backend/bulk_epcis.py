@@ -674,7 +674,8 @@ def generate_bulk_epcis_xml(
         
         epc_list = ET.SubElement(object_event, "epcList")
         epc = ET.SubElement(epc_list, "epc")
-        epc.text = f"urn:epc:id:sgtin:{node.serial_number}"
+        # Use parsed SGTIN instead of raw serial number
+        epc.text = f"urn:epc:id:sgtin:{node.sgtin}"
         
         action = ET.SubElement(object_event, "action")
         action.text = "ADD"
