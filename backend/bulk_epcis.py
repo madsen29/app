@@ -757,7 +757,40 @@ def generate_bulk_epcis_xml(
     for root_node in root_nodes:
         create_aggregation_events(root_node)
     
-    # 3. MASS AGGREGATION - All root nodes under user-provided SSCC
+    # 3. SSCC COMMISSIONING ObjectEvent - Commission the SSCC before aggregation
+    sscc_commissioning_event = ET.SubElement(event_list, "ObjectEvent")
+    
+    event_time = ET.SubElement(sscc_commissioning_event, "eventTime")
+    event_time.text = get_next_timestamp()
+    
+    event_timezone = ET.SubElement(sscc_commissioning_event, "eventTimeZoneOffset")
+    event_timezone.text = "+00:00"
+    
+    epc_list = ET.SubElement(sscc_commissioning_event, "epcList")
+    epc = ET.SubElement(epc_list, "epc")
+    # Use SSCC exactly as entered by user
+    epc.text = f"urn:epc:id:sscc:{shipping_sscc}"
+    
+    action = ET.SubElement(sscc_commissioning_event, "action")
+    action.text = "ADD"
+    
+    biz_step = ET.SubElement(sscc_commissioning_event, "bizStep")
+    biz_step.text = "urn:epcglobal:cbv:bizstep:commissioning"
+    
+    disposition = ET.SubElement(sscc_commissioning_event, "disposition")
+    disposition.text = "urn:epcglobal:cbv:disp:active"
+    
+    read_point_elem = ET.SubElement(sscc_commissioning_event, "readPoint")
+    read_point_id = ET.SubElement(read_point_elem, "id")
+    read_point_id.text = read_point
+    
+    biz_location_elem = ET.SubElement(sscc_commissioning_event, "bizLocation")
+    biz_location_id = ET.SubElement(biz_location_elem, "id")
+    biz_location_id.text = biz_location
+    
+    commissioning_count += 1
+    
+    # 4. MASS AGGREGATION - All root nodes under user-provided SSCC
     if root_nodes:
         mass_aggregation_event = ET.SubElement(event_list, "AggregationEvent")
         
@@ -768,9 +801,8 @@ def generate_bulk_epcis_xml(
         event_timezone.text = "+00:00"
         
         parent_id = ET.SubElement(mass_aggregation_event, "parentID")
-        # Format SSCC as URN
-        clean_sscc = shipping_sscc.replace(' ', '').replace('-', '').replace('.', '')
-        parent_id.text = f"urn:epc:id:sscc:{clean_sscc[0]}.{clean_sscc[1:]}"
+        # Use SSCC exactly as entered by user
+        parent_id.text = f"urn:epc:id:sscc:{shipping_sscc}"
         
         child_epcs = ET.SubElement(mass_aggregation_event, "childEPCs")
         for root_node in root_nodes:
@@ -794,7 +826,7 @@ def generate_bulk_epcis_xml(
         
         aggregation_count += 1
     
-    # 4. SHIPPING ObjectEvent - Final event for the SSCC
+    # 5. SHIPPING ObjectEvent - Final event for the SSCC
     shipping_event = ET.SubElement(event_list, "ObjectEvent")
     
     event_time = ET.SubElement(shipping_event, "eventTime")
@@ -805,8 +837,8 @@ def generate_bulk_epcis_xml(
     
     epc_list = ET.SubElement(shipping_event, "epcList")
     epc = ET.SubElement(epc_list, "epc")
-    clean_sscc = shipping_sscc.replace(' ', '').replace('-', '').replace('.', '')
-    epc.text = f"urn:epc:id:sscc:{clean_sscc[0]}.{clean_sscc[1:]}"
+    # Use SSCC exactly as entered by user
+    epc.text = f"urn:epc:id:sscc:{shipping_sscc}"
     
     action = ET.SubElement(shipping_event, "action")
     action.text = "OBSERVE"
