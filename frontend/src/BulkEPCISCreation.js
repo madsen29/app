@@ -386,21 +386,17 @@ const BulkEPCISCreation = ({ onBack }) => {
                 </div>
               )}
               
-              {/* JSON Format Helper */}
-              <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600/50">
-                <p className="text-sm text-slate-300 font-medium mb-2">Required fields per record:</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-1 text-xs text-slate-400">
-                  <span><code className="text-blue-400">_id</code> - Unique identifier</span>
-                  <span><code className="text-blue-400">serialNumber</code> - Full serial</span>
-                  <span><code className="text-blue-400">gs1Prefix</code> - Company prefix</span>
-                  <span><code className="text-blue-400">productCode</code> - Item reference</span>
-                  <span><code className="text-blue-400">lot</code> - Lot number</span>
-                  <span><code className="text-blue-400">expiration</code> - Expiry date</span>
-                </div>
-                <p className="text-xs text-slate-500 mt-2">
-                  Optional: <code className="text-slate-400">parentPackagingId</code>, <code className="text-slate-400">type</code> (EA/IN/CA), 
-                  <code className="text-slate-400"> regulatedProductName</code>, <code className="text-slate-400">manufacturerOfTradeItemPartyName</code>
-                </p>
+              {/* JSON Requirements Button */}
+              <div className="mt-4 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setShowRequirementsModal(true)}
+                  className="flex items-center px-4 py-2 text-sm text-blue-400 hover:text-blue-300 hover:bg-slate-700/50 rounded-lg transition-colors"
+                  data-testid="json-requirements-btn"
+                >
+                  <FiInfo className="mr-2" />
+                  .json File Requirements
+                </button>
               </div>
             </div>
             
