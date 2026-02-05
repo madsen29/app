@@ -483,7 +483,7 @@ const ProjectDashboard = ({ onSelectProject, onCreateProject, onLogout }) => {
                     data-testid="bulk-epcis-nav-link"
                   >
                     <FiPackage size={16} />
-                    <span>Bulk EPCIS Creation</span>
+                    <span>EPCIS Batch Generation</span>
                   </a>
                   <button
                     onClick={handleCreateProjectClick}
