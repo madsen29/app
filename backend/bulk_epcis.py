@@ -509,14 +509,14 @@ def generate_bulk_epcis_xml(
     # Sender
     sender = ET.SubElement(sbdh, "sbdh:Sender")
     sender_identifier = ET.SubElement(sender, "sbdh:Identifier")
-    sender_identifier.set("Authority", "GS1")
-    sender_identifier.text = sender_location.sgln.split('.')[0] if '.' in sender_location.sgln else sender_location.sgln
+    sender_identifier.set("Authority", "SGLN")
+    sender_identifier.text = f"urn:epc:id:sgln:{sender_location.sgln}"
     
     # Receiver
     receiver = ET.SubElement(sbdh, "sbdh:Receiver")
     receiver_identifier = ET.SubElement(receiver, "sbdh:Identifier")
-    receiver_identifier.set("Authority", "GS1")
-    receiver_identifier.text = receiver_location.sgln.split('.')[0] if '.' in receiver_location.sgln else receiver_location.sgln
+    receiver_identifier.set("Authority", "SGLN")
+    receiver_identifier.text = f"urn:epc:id:sgln:{receiver_location.sgln}"
     
     # Document Identification
     doc_identification = ET.SubElement(sbdh, "sbdh:DocumentIdentification")
