@@ -395,7 +395,7 @@ const BulkEPCISCreation = ({ onBack }) => {
                   data-testid="json-requirements-btn"
                 >
                   <FiInfo className="mr-2" />
-                  .json File Requirements
+                  File Requirements
                 </button>
               </div>
             </div>
