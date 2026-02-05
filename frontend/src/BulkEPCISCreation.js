@@ -614,7 +614,7 @@ const BulkEPCISCreation = ({ onBack }) => {
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
               <h3 className="text-xl font-semibold text-white flex items-center">
                 <FiFile className="mr-2 text-blue-400" />
-                .json File Requirements
+                File Requirements
               </h3>
               <button
                 onClick={() => setShowRequirementsModal(false)}
@@ -644,7 +644,7 @@ const BulkEPCISCreation = ({ onBack }) => {
                     </div>
                     <p className="text-sm text-slate-400 mb-2">Unique identifier for the record</p>
                     <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
-                      "69278f69b7c1a3bf9e0f9015"
+                      "69278f69b7c1a3bf9e0f9051"
                     </div>
                   </div>
                   
@@ -655,7 +655,7 @@ const BulkEPCISCreation = ({ onBack }) => {
                     </div>
                     <p className="text-sm text-slate-400 mb-2">Full serial number (indicator + gs1Prefix + productCode + checkDigit + serial)</p>
                     <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
-                      "3030781729685710011741000139"
+                      "0030781729685610833799145252"
                     </div>
                   </div>
                   
@@ -666,7 +666,7 @@ const BulkEPCISCreation = ({ onBack }) => {
                     </div>
                     <p className="text-sm text-slate-400 mb-2">GS1 company prefix used to construct the SGTIN</p>
                     <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
-                      "0307817296857"
+                      "030781"
                     </div>
                   </div>
                   
@@ -677,7 +677,7 @@ const BulkEPCISCreation = ({ onBack }) => {
                     </div>
                     <p className="text-sm text-slate-400 mb-2">Item reference / product code used to construct the SGTIN</p>
                     <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
-                      "1001"
+                      "729685"
                     </div>
                   </div>
                   
