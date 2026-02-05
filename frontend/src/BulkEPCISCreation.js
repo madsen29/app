@@ -605,6 +605,236 @@ const BulkEPCISCreation = ({ onBack }) => {
           </form>
         )}
       </main>
+      
+      {/* JSON Requirements Modal */}
+      {showRequirementsModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 rounded-xl border border-slate-700 max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
+              <h3 className="text-xl font-semibold text-white flex items-center">
+                <FiFile className="mr-2 text-blue-400" />
+                .json File Requirements
+              </h3>
+              <button
+                onClick={() => setShowRequirementsModal(false)}
+                className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
+              >
+                <FiX className="text-slate-400 hover:text-white" />
+              </button>
+            </div>
+            
+            {/* Modal Body */}
+            <div className="px-6 py-5 overflow-y-auto max-h-[calc(90vh-130px)]">
+              <p className="text-slate-300 mb-6">
+                Your JSON file should contain an array of packaging records. Each record represents a serialized item in your shipment.
+              </p>
+              
+              {/* Required Fields */}
+              <div className="mb-6">
+                <h4 className="text-lg font-medium text-white mb-3 flex items-center">
+                  <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                  Required Fields
+                </h4>
+                <div className="space-y-3">
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-1">
+                      <code className="text-blue-400 font-mono">_id</code>
+                      <span className="text-xs text-slate-500">string</span>
+                    </div>
+                    <p className="text-sm text-slate-400 mb-2">Unique identifier for the record</p>
+                    <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
+                      "69278f69b7c1a3bf9e0f9015"
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-1">
+                      <code className="text-blue-400 font-mono">serialNumber</code>
+                      <span className="text-xs text-slate-500">string</span>
+                    </div>
+                    <p className="text-sm text-slate-400 mb-2">Full serial number (indicator + gs1Prefix + productCode + checkDigit + serial)</p>
+                    <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
+                      "3030781729685710011741000139"
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-1">
+                      <code className="text-blue-400 font-mono">gs1Prefix</code>
+                      <span className="text-xs text-slate-500">string</span>
+                    </div>
+                    <p className="text-sm text-slate-400 mb-2">GS1 company prefix used to construct the SGTIN</p>
+                    <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
+                      "0307817296857"
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-1">
+                      <code className="text-blue-400 font-mono">productCode</code>
+                      <span className="text-xs text-slate-500">string</span>
+                    </div>
+                    <p className="text-sm text-slate-400 mb-2">Item reference / product code used to construct the SGTIN</p>
+                    <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
+                      "1001"
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-1">
+                      <code className="text-blue-400 font-mono">lot</code>
+                      <span className="text-xs text-slate-500">string</span>
+                    </div>
+                    <p className="text-sm text-slate-400 mb-2">Lot/batch number for the product</p>
+                    <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
+                      "110539"
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-1">
+                      <code className="text-blue-400 font-mono">expiration</code>
+                      <span className="text-xs text-slate-500">string (ISO date)</span>
+                    </div>
+                    <p className="text-sm text-slate-400 mb-2">Product expiration date in ISO format</p>
+                    <div className="bg-slate-900/50 rounded px-3 py-1.5 text-xs font-mono text-green-400">
+                      "2027-04-30T00:00:00.000Z"
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Conditional Field */}
+              <div className="mb-6">
+                <h4 className="text-lg font-medium text-white mb-3 flex items-center">
+                  <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                  Hierarchy Field
+                </h4>
+                <div className="bg-slate-700/50 rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-1">
+                    <code className="text-yellow-400 font-mono">parentPackagingId</code>
+                    <span className="text-xs text-slate-500">string | null</span>
+                  </div>
+                  <p className="text-sm text-slate-400 mb-2">
+                    References the <code className="text-blue-400">_id</code> of the parent packaging level. This field determines the aggregation hierarchy.
+                  </p>
+                  <div className="bg-slate-900/50 rounded p-3 text-xs space-y-2">
+                    <div className="flex items-start">
+                      <span className="text-slate-500 mr-2">•</span>
+                      <div>
+                        <span className="text-slate-300">Root items (top-level cases):</span>
+                        <code className="ml-2 text-green-400">null</code>
+                        <span className="text-slate-500 ml-2">or omit the field</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <span className="text-slate-500 mr-2">•</span>
+                      <div>
+                        <span className="text-slate-300">Child items:</span>
+                        <code className="ml-2 text-green-400">"69278f69b7c1a3bf9e0f9015"</code>
+                        <span className="text-slate-500 ml-2">(parent's _id)</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <span className="text-slate-500 mr-2">•</span>
+                      <div>
+                        <span className="text-slate-300">External parent (not in file):</span>
+                        <span className="text-slate-400 ml-2">Treated as root with a warning</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Optional Fields */}
+              <div className="mb-6">
+                <h4 className="text-lg font-medium text-white mb-3 flex items-center">
+                  <span className="w-2 h-2 bg-slate-500 rounded-full mr-2"></span>
+                  Optional Fields
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="bg-slate-700/50 rounded-lg p-3">
+                    <code className="text-slate-400 font-mono text-sm">type</code>
+                    <p className="text-xs text-slate-500 mt-1">Packaging type: EA, IN, CA</p>
+                    <div className="bg-slate-900/50 rounded px-2 py-1 text-xs font-mono text-green-400 mt-1">
+                      "CA"
+                    </div>
+                  </div>
+                  <div className="bg-slate-700/50 rounded-lg p-3">
+                    <code className="text-slate-400 font-mono text-sm">additionalTradeItemIdentification</code>
+                    <p className="text-xs text-slate-500 mt-1">NDC or other trade item ID</p>
+                    <div className="bg-slate-900/50 rounded px-2 py-1 text-xs font-mono text-green-400 mt-1">
+                      "00781729685"
+                    </div>
+                  </div>
+                  <div className="bg-slate-700/50 rounded-lg p-3">
+                    <code className="text-slate-400 font-mono text-sm">regulatedProductName</code>
+                    <p className="text-xs text-slate-500 mt-1">Product name for EPCClass vocabulary</p>
+                    <div className="bg-slate-900/50 rounded px-2 py-1 text-xs font-mono text-green-400 mt-1">
+                      "Albuterol Sulfate"
+                    </div>
+                  </div>
+                  <div className="bg-slate-700/50 rounded-lg p-3">
+                    <code className="text-slate-400 font-mono text-sm">manufacturerOfTradeItemPartyName</code>
+                    <p className="text-xs text-slate-500 mt-1">Manufacturer name</p>
+                    <div className="bg-slate-900/50 rounded px-2 py-1 text-xs font-mono text-green-400 mt-1">
+                      "Sandoz Inc"
+                    </div>
+                  </div>
+                  <div className="bg-slate-700/50 rounded-lg p-3">
+                    <code className="text-slate-400 font-mono text-sm">dosageFormType</code>
+                    <p className="text-xs text-slate-500 mt-1">Dosage form</p>
+                    <div className="bg-slate-900/50 rounded px-2 py-1 text-xs font-mono text-green-400 mt-1">
+                      "AEROSOL, METERED"
+                    </div>
+                  </div>
+                  <div className="bg-slate-700/50 rounded-lg p-3">
+                    <code className="text-slate-400 font-mono text-sm">strengthDescription</code>
+                    <p className="text-xs text-slate-500 mt-1">Product strength</p>
+                    <div className="bg-slate-900/50 rounded px-2 py-1 text-xs font-mono text-green-400 mt-1">
+                      "108 ug/1"
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Example */}
+              <div>
+                <h4 className="text-lg font-medium text-white mb-3 flex items-center">
+                  <FiFile className="mr-2 text-slate-400" />
+                  Example Record
+                </h4>
+                <pre className="bg-slate-900 rounded-lg p-4 text-xs font-mono overflow-x-auto text-slate-300">
+{`{
+  "_id": "69278f69b7c1a3bf9e0f9015",
+  "type": "CA",
+  "lot": "110539",
+  "serialNumber": "3030781729685710011741000139",
+  "expiration": "2027-04-30T00:00:00.000Z",
+  "parentPackagingId": null,
+  "gs1Prefix": "0307817296857",
+  "productCode": "1001",
+  "additionalTradeItemIdentification": "00781729685",
+  "regulatedProductName": "Albuterol Sulfate",
+  "manufacturerOfTradeItemPartyName": "Sandoz Inc"
+}`}
+                </pre>
+              </div>
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="px-6 py-4 border-t border-slate-700 flex justify-end">
+              <button
+                onClick={() => setShowRequirementsModal(false)}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
