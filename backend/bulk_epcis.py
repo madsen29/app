@@ -664,8 +664,22 @@ def generate_bulk_epcis_xml(
                 exp = ET.SubElement(ilmd, "cbvmda:itemExpirationDate")
                 exp.text = exp_str
     
-    # 1. COMMISSIONING ObjectEvents - One per valid record
+    # 1. COMMISSIONING ObjectEvents - Group by lot and expiration for efficiency
+    # Group nodes by (lot, expiration) tuple
+    from collections import defaultdict
+    lot_expiration_groups = defaultdict(list)
+    
     for node in all_nodes:
+        # Normalize expiration for grouping (use date portion only)
+        exp_key = node.expiration
+        if exp_key and 'T' in str(exp_key):
+            exp_key = str(exp_key).split('T')[0]
+        
+        group_key = (node.lot, exp_key)
+        lot_expiration_groups[group_key].append(node)
+    
+    # Create one ObjectEvent per lot/expiration group
+    for (lot, expiration), nodes_in_group in lot_expiration_groups.items():
         object_event = ET.SubElement(event_list, "ObjectEvent")
         
         event_time = ET.SubElement(object_event, "eventTime")
@@ -675,9 +689,10 @@ def generate_bulk_epcis_xml(
         event_timezone.text = "+00:00"
         
         epc_list = ET.SubElement(object_event, "epcList")
-        epc = ET.SubElement(epc_list, "epc")
-        # Use parsed SGTIN instead of raw serial number
-        epc.text = f"urn:epc:id:sgtin:{node.sgtin}"
+        # Add all EPCs in this group to the same epcList
+        for node in nodes_in_group:
+            epc = ET.SubElement(epc_list, "epc")
+            epc.text = f"urn:epc:id:sgtin:{node.sgtin}"
         
         action = ET.SubElement(object_event, "action")
         action.text = "ADD"
@@ -696,8 +711,8 @@ def generate_bulk_epcis_xml(
         biz_location_id = ET.SubElement(biz_location_elem, "id")
         biz_location_id.text = biz_location
         
-        # Add ILMD with lot and expiration
-        add_ilmd_extension(object_event, node.lot, node.expiration)
+        # Add ILMD with lot and expiration (same for all items in group)
+        add_ilmd_extension(object_event, lot, expiration)
         
         commissioning_count += 1
     
