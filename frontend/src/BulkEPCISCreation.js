@@ -382,6 +382,23 @@ const BulkEPCISCreation = ({ onBack }) => {
                   {fileError}
                 </div>
               )}
+              
+              {/* JSON Format Helper */}
+              <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600/50">
+                <p className="text-sm text-slate-300 font-medium mb-2">Required fields per record:</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-1 text-xs text-slate-400">
+                  <span><code className="text-blue-400">_id</code> - Unique identifier</span>
+                  <span><code className="text-blue-400">serialNumber</code> - Full serial</span>
+                  <span><code className="text-blue-400">gs1Prefix</code> - Company prefix</span>
+                  <span><code className="text-blue-400">productCode</code> - Item reference</span>
+                  <span><code className="text-blue-400">lot</code> - Lot number</span>
+                  <span><code className="text-blue-400">expiration</code> - Expiry date</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-2">
+                  Optional: <code className="text-slate-400">parentPackagingId</code>, <code className="text-slate-400">type</code> (EA/IN/CA), 
+                  <code className="text-slate-400"> regulatedProductName</code>, <code className="text-slate-400">manufacturerOfTradeItemPartyName</code>
+                </p>
+              </div>
             </div>
             
             {/* Shipping SSCC */}
