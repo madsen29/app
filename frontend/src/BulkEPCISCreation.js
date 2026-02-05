@@ -213,7 +213,7 @@ const BulkEPCISCreation = ({ onBack }) => {
               </button>
               <div className="flex items-center space-x-3">
                 <FiPackage className="text-blue-400 text-2xl" />
-                <h1 className="text-xl font-semibold">Bulk EPCIS Creation</h1>
+                <h1 className="text-xl font-semibold">EPCIS Batch Generation</h1>
               </div>
             </div>
           </div>
