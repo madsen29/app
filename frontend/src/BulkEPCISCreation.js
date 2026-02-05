@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { FiUpload, FiFile, FiX, FiDownload, FiAlertCircle, FiAlertTriangle, FiCheckCircle, FiArrowLeft, FiPackage } from 'react-icons/fi';
+import { FiUpload, FiFile, FiX, FiDownload, FiAlertCircle, FiAlertTriangle, FiCheckCircle, FiArrowLeft, FiPackage, FiInfo } from 'react-icons/fi';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -10,6 +10,9 @@ const BulkEPCISCreation = ({ onBack }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileError, setFileError] = useState('');
   const fileInputRef = useRef(null);
+  
+  // Modal state
+  const [showRequirementsModal, setShowRequirementsModal] = useState(false);
   
   // Form state
   const [shippingSSCC, setShippingSSCC] = useState('');
