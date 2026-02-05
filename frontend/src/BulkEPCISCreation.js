@@ -807,17 +807,19 @@ const BulkEPCISCreation = ({ onBack }) => {
                 </h4>
                 <pre className="bg-slate-900 rounded-lg p-4 text-xs font-mono overflow-x-auto text-slate-300">
 {`{
-  "_id": "69278f69b7c1a3bf9e0f9015",
-  "type": "CA",
+  "_id": "69278f69b7c1a3bf9e0f9051",
+  "type": "ITEM",
   "lot": "110539",
-  "serialNumber": "3030781729685710011741000139",
+  "serialNumber": "0030781729685610833799145252",
   "expiration": "2027-04-30T00:00:00.000Z",
-  "parentPackagingId": null,
-  "gs1Prefix": "0307817296857",
-  "productCode": "1001",
+  "parentPackagingId": "69278f69b7c1a3bf9e0f9015",
+  "gs1Prefix": "030781",
+  "productCode": "729685",
   "additionalTradeItemIdentification": "00781729685",
   "regulatedProductName": "Albuterol Sulfate",
-  "manufacturerOfTradeItemPartyName": "Sandoz Inc"
+  "manufacturerOfTradeItemPartyName": "Sandoz Inc",
+  "dosageFormType": "AEROSOL, METERED",
+  "strengthDescription": "108 ug/1"
 }`}
                 </pre>
               </div>
